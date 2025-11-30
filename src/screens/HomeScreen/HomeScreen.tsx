@@ -1,55 +1,107 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   ScrollView,
   Image,
+  Animated,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
 
+// Assign icons for each module
 const MODULES = [
-  { name: 'Core', screen: 'CoreModule', color: COLORS.TOAST_BROWN },
-  { name: 'Navigation', screen: 'NavigationModule', color: COLORS.TOAST_BROWN },
-  {
-    name: 'Reference',
-    screen: 'ReferenceModule',
-    color: COLORS.TOAST_BROWN,
-  },
-  { name: 'Signals', screen: 'SignalsModule', color: COLORS.TOAST_BROWN },
+  { name: 'Core', screen: 'CoreModule', icon: 'apps-outline' },
+  { name: 'Navigation', screen: 'NavigationModule', icon: 'compass-outline' },
+  { name: 'Reference', screen: 'ReferenceModule', icon: 'book-outline' },
+  { name: 'Signals', screen: 'SignalsModule', icon: 'radio-outline' },
 ];
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  // Hero fade-in animation
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 900,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  // Tile bounce animation handler (per-tile)
+  const createBounce = () => {
+    const anim = new Animated.Value(1);
+    return {
+      anim,
+      bounce: (callback?: () => void) => {
+        Animated.sequence([
+          Animated.timing(anim, {
+            toValue: 0.92,
+            duration: 90,
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: 90,
+            useNativeDriver: true,
+          }),
+        ]).start(() => callback && callback());
+      },
+    };
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Settings icon */}
-      <TouchableOpacity style={styles.settingsButton}>
-        <Icon name="settings-outline" size={26} color={COLORS.PRIMARY_DARK} />
-      </TouchableOpacity>
+      <TouchableWithoutFeedback>
+        <View style={styles.settingsButton}>
+          <Ionicons
+            name="settings-outline"
+            size={26}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </View>
+      </TouchableWithoutFeedback>
 
-      {/* Hero Logo */}
-      <Image
-        source={require('../../../assets/toast-logo.png')}
-        style={styles.logo}
-      />
+      {/* Hero Logo (fade-in) */}
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <Image
+          source={require('../../../assets/toast-logo.png')}
+          style={styles.logo}
+        />
+      </Animated.View>
 
       {/* Tagline */}
       <Text style={styles.tagline}>Tech-Offline And Survival Tools</Text>
 
       {/* Module Grid */}
       <View style={styles.grid}>
-        {MODULES.map(mod => (
-          <TouchableOpacity
-            key={mod.name}
-            style={styles.tile}
-            onPress={() => navigation.navigate(mod.screen)}
-          >
-            <Text style={styles.tileText}>{mod.name}</Text>
-          </TouchableOpacity>
-        ))}
+        {MODULES.map(mod => {
+          const { anim, bounce } = createBounce();
+
+          return (
+            <TouchableWithoutFeedback
+              key={mod.name}
+              onPress={() => bounce(() => navigation.navigate(mod.screen))}
+            >
+              <Animated.View
+                style={[styles.tile, { transform: [{ scale: anim }] }]}
+              >
+                <Ionicons
+                  name={mod.icon}
+                  size={40}
+                  color={COLORS.PRIMARY_DARK}
+                  style={{ marginBottom: 8 }}
+                />
+                <Text style={styles.tileText}>{mod.name}</Text>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          );
+        })}
       </View>
     </ScrollView>
   );
@@ -64,7 +116,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // Settings
   settingsButton: {
     position: 'absolute',
     top: 50,
@@ -73,7 +124,6 @@ const styles = StyleSheet.create({
     padding: 6,
   },
 
-  // Toast Logo
   logo: {
     width: 180,
     height: 180,
@@ -99,7 +149,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
   },
 
-  // Module Grid
   grid: {
     width: '100%',
     flexDirection: 'row',
@@ -121,7 +170,7 @@ const styles = StyleSheet.create({
   },
 
   tileText: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '700',
     color: COLORS.PRIMARY_DARK,
   },
