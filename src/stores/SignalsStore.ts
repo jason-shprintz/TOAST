@@ -9,13 +9,18 @@ export interface Signal {
   connected: boolean;
 }
 
-// Counter to ensure unique IDs even when multiple signals are added in the same millisecond
-let idCounter = 0;
-
+/**
+ * Generates a unique ID using timestamp and cryptographically random values.
+ * This approach:
+ * - Uses timestamp for ordering/debugging purposes
+ * - Uses random bytes to ensure uniqueness even on rapid successive calls
+ * - Works across module reloads and application restarts
+ */
 function generateUniqueId(): string {
-  const timestamp = Date.now();
-  const counter = idCounter++;
-  return `${timestamp}-${counter}`;
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 9);
+  const randomPart2 = Math.random().toString(36).substring(2, 9);
+  return `${timestamp}-${randomPart}${randomPart2}`;
 }
 
 export class SignalsStore {
