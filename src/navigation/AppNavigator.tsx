@@ -6,6 +6,7 @@ import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
 import SignalsModule from '../modules/Signals/SignalsModule';
+import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function AppNavigator() {
         <Stack.Screen name="NavigationModule" component={NavigationModule} />
         <Stack.Screen name="ReferenceModule" component={ReferenceModule} />
         <Stack.Screen name="SignalsModule" component={SignalsModule} />
+        <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

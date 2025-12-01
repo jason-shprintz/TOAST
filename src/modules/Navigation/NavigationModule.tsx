@@ -2,13 +2,35 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
+import { useNavigation } from '@react-navigation/native';
+import SectionHeader from '../../components/SectionHeader';
 
 export default function NavigationModule() {
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
+      <SectionHeader>Navigation</SectionHeader>
       <View style={styles.grid}>
-        <PlaceholderCard title="Map" icon="map-outline" />
-        <PlaceholderCard title="Compass" icon="compass-outline" />
+        <PlaceholderCard
+          title="Map"
+          icon="map-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Map',
+              icon: 'map-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Compass"
+          icon="compass-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Compass',
+              icon: 'compass-outline',
+            })
+          }
+        />
       </View>
     </View>
   );

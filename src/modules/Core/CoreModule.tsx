@@ -2,13 +2,35 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
+import { useNavigation } from '@react-navigation/native';
+import SectionHeader from '../../components/SectionHeader';
 
 export default function CoreModule() {
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
+      <SectionHeader>Core</SectionHeader>
       <View style={styles.grid}>
-        <PlaceholderCard title="Flashlight" icon="flashlight-outline" />
-        <PlaceholderCard title="Notepad" icon="document-text-outline" />
+        <PlaceholderCard
+          title="Flashlight"
+          icon="flashlight-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Flashlight',
+              icon: 'flashlight-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Notepad"
+          icon="document-text-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Notepad',
+              icon: 'document-text-outline',
+            })
+          }
+        />
       </View>
     </View>
   );

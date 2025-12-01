@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useRef, useEffect } from 'react';
 import {
   View,
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   },
 
   tagline: {
-    fontSize: 16,
+    fontSize: 20,
     color: COLORS.PRIMARY_DARK,
     backgroundColor: COLORS.SECONDARY_ACCENT,
     textAlign: 'center',
