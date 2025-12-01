@@ -11,12 +11,11 @@ export class RootStore {
   signalsStore: SignalsStore;
 
   constructor() {
+    makeAutoObservable(this);
     this.coreStore = new CoreStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.signalsStore = new SignalsStore();
-
-    makeAutoObservable(this);
   }
 
   // Global app state
