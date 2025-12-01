@@ -31,5 +31,6 @@ export class RootStore {
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.signalsStore = new SignalsStore();
+    this.isOfflineMode = true;
   }
 }
