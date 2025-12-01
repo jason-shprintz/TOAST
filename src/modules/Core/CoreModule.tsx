@@ -1,40 +1,45 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import { observer } from 'mobx-react-lite';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import SectionHeader from '../../components/SectionHeader';
+import { useCoreStore } from '../../stores';
 
-export default function CoreModule() {
+export default observer(function CoreModule() {
   const navigation = useNavigation<any>();
+  const coreStore = useCoreStore();
+
   return (
     <View style={styles.container}>
       <SectionHeader>Core</SectionHeader>
+
+      {/* Example of using MobX store data */}
+      <Text style={styles.statsText}>
+        Tools: {coreStore.totalTools} | Enabled: {coreStore.enabledTools.length}
+      </Text>
+
       <View style={styles.grid}>
-        <PlaceholderCard
-          title="Flashlight"
-          icon="flashlight-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Flashlight',
-              icon: 'flashlight-outline',
-            })
-          }
-        />
-        <PlaceholderCard
-          title="Notepad"
-          icon="document-text-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Notepad',
-              icon: 'document-text-outline',
-            })
-          }
-        />
+        {coreStore.tools.map(tool => (
+          <PlaceholderCard
+            key={tool.id}
+            title={tool.name}
+            icon={tool.icon}
+            onPress={() => {
+              coreStore.toggleTool(tool.id);
+              navigation.navigate('ComingSoon', {
+                title: tool.name,
+                icon: tool.icon,
+              });
+            }}
+            containerStyle={tool.enabled ? styles.enabledCard : undefined}
+          />
+        ))}
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -44,11 +49,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
   },
+  statsText: {
+    fontSize: 14,
+    color: COLORS.PRIMARY_DARK,
+    backgroundColor: COLORS.TOAST_BROWN,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginVertical: 12,
+    fontWeight: '600',
+  },
   grid: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingTop: 20,
+  },
+  enabledCard: {
+    borderColor: COLORS.ACCENT,
+    borderWidth: 3,
   },
 });
