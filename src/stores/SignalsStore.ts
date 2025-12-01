@@ -9,6 +9,15 @@ export interface Signal {
   connected: boolean;
 }
 
+// Counter to ensure unique IDs even when multiple signals are added in the same millisecond
+let idCounter = 0;
+
+function generateUniqueId(): string {
+  const timestamp = Date.now();
+  const counter = idCounter++;
+  return `${timestamp}-${counter}`;
+}
+
 export class SignalsStore {
   signals: Signal[] = [];
 
@@ -21,7 +30,7 @@ export class SignalsStore {
   addSignal(signal: Omit<Signal, 'id'>) {
     this.signals.push({
       ...signal,
-      id: Date.now().toString(),
+      id: generateUniqueId(),
     });
   }
 
