@@ -1,11 +1,12 @@
 # MobX State Management
 
 ## Overview
+
 TOAST uses MobX for reactive state management across the application. The store architecture is organized by domain with a central RootStore.
 
 ## Store Structure
 
-```
+``` bash
 src/stores/
 ├── index.ts              # Barrel export
 ├── RootStore.ts          # Root store combining all domain stores
@@ -40,21 +41,25 @@ export default observer(function MyComponent() {
 ### Store Features
 
 #### CoreStore
+
 - Manages flashlight and notepad tools
 - Track enabled/disabled state
 - Computed values for enabled tools count
 
 #### NavigationStore
+
 - Stores map and compass tools
 - Tracks current location coordinates
 - Records last used timestamps
 
 #### ReferenceStore
+
 - Manages reference items and bookmarks
 - Search functionality with filtering
 - Add/remove references dynamically
 
 #### SignalsStore
+
 - Handles ham radio and bluetooth signals
 - Scanning state management
 - Filter by signal type and connection status
@@ -74,6 +79,7 @@ export default observer(function MyComponent() {
 ## Example: CoreModule Integration
 
 See `src/modules/Core/CoreModule.tsx` for a complete example showing:
+
 - Store hook usage
 - Observer wrapper
 - Reactive UI updates
