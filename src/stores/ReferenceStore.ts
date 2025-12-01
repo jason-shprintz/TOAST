@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ReferenceItem {
   id: string;
@@ -20,7 +21,7 @@ export class ReferenceStore {
   addReference(reference: Omit<ReferenceItem, 'id' | 'bookmarked'>) {
     this.references.push({
       ...reference,
-      id: Date.now().toString(),
+      id: uuidv4(),
       bookmarked: false,
     });
   }
