@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Signal {
   id: string;
@@ -21,7 +22,7 @@ export class SignalsStore {
   addSignal(signal: Omit<Signal, 'id'>) {
     this.signals.push({
       ...signal,
-      id: Date.now().toString(),
+      id: uuidv4(),
     });
   }
 
