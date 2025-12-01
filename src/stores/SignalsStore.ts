@@ -10,10 +10,10 @@ export interface Signal {
 }
 
 /**
- * Generates a unique ID using timestamp and cryptographically random values.
+ * Generates a unique ID using timestamp and pseudo-random values.
  * This approach:
  * - Uses timestamp for ordering/debugging purposes
- * - Uses random bytes to ensure uniqueness even on rapid successive calls
+ * - Uses random characters to ensure uniqueness even on rapid successive calls
  * - Works across module reloads and application restarts
  */
 function generateUniqueId(): string {
