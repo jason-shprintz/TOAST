@@ -78,6 +78,6 @@ export class CoreStore {
   };
 
   dispose() {
-    this.appStateSubscription.remove();
+    this.appStateSubscription?.remove();
   }
 }
