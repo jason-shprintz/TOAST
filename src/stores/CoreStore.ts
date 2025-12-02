@@ -1,4 +1,6 @@
 import { makeAutoObservable } from 'mobx';
+import Torch from 'react-native-torch';
+import { AppState } from 'react-native';
 
 export interface Tool {
   id: string;
@@ -25,6 +27,8 @@ export class CoreStore {
 
   constructor() {
     makeAutoObservable(this);
+    // Keep torch consistent when app state changes (best-effort)
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   toggleTool(toolId: string) {
@@ -41,4 +45,30 @@ export class CoreStore {
   get totalTools() {
     return this.tools.length;
   }
+
+  // Flashlight state management
+  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' = 'off';
+
+  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe') {
+    // Exclusive selection: tapping active mode turns it off
+    const next = this.flashlightMode === mode ? 'off' : mode;
+    this.flashlightMode = next;
+    this.applyFlashlightState();
+  }
+
+  get isFlashlightOn() {
+    return this.flashlightMode === 'on';
+  }
+
+  private applyFlashlightState() {
+    // For now, only implement steady on/off. SOS/Strobe pending.
+    Torch.switchState(this.isFlashlightOn);
+  }
+
+  private handleAppStateChange = (state: string) => {
+    // If returning to foreground while flashlight should be on, re-apply.
+    if (state === 'active') {
+      this.applyFlashlightState();
+    }
+  };
 }

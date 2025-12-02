@@ -1,31 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import SectionHeader from '../../components/SectionHeader';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
-import Torch from 'react-native-torch';
+import { observer } from 'mobx-react-lite';
+import { useCoreStore } from '../../stores/StoreContext';
+const FlashlightScreenImpl = () => {
+  const core = useCoreStore();
+  const mode = core.flashlightMode;
 
-type Mode = 'off' | 'on' | 'sos' | 'strobe';
-
-export default function FlashlightScreen() {
-  const [mode, setMode] = useState<Mode>('off');
-
-  const selectMode = (next: Mode) => {
-    setMode(prev => (prev === next ? 'off' : next));
+  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe') => {
+    core.setFlashlightMode(next);
   };
-
-  useEffect(() => {
-    // Basic functionality: toggle native camera flash for On/Off.
-    if (mode === 'on') {
-      Torch.switchState(true);
-    } else {
-      Torch.switchState(false);
-    }
-    // For future: implement SOS and strobe timers.
-    return () => {
-      Torch.switchState(false);
-    };
-  }, [mode]);
 
   return (
     <View style={styles.container}>
@@ -53,7 +39,9 @@ export default function FlashlightScreen() {
       </View>
     </View>
   );
-}
+};
+
+export default observer(FlashlightScreenImpl);
 
 const styles = StyleSheet.create({
   container: {
