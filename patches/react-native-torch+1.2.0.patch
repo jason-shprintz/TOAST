@@ -1,0 +1,54 @@
+diff --git a/node_modules/react-native-torch/CHANGELOG.md b/node_modules/react-native-torch/CHANGELOG.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/LICENSE b/node_modules/react-native-torch/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/README.md b/node_modules/react-native-torch/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/android/build.gradle b/node_modules/react-native-torch/android/build.gradle
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/android/src/main/AndroidManifest.xml b/node_modules/react-native-torch/android/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/android/src/main/java/com/cubicphuse/RCTTorch/RCTTorchModule.java b/node_modules/react-native-torch/android/src/main/java/com/cubicphuse/RCTTorch/RCTTorchModule.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/android/src/main/java/com/cubicphuse/RCTTorch/RCTTorchPackage.java b/node_modules/react-native-torch/android/src/main/java/com/cubicphuse/RCTTorch/RCTTorchPackage.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/index.android.js b/node_modules/react-native-torch/index.android.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/index.ios.js b/node_modules/react-native-torch/index.ios.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/ios/RCTTorch.h b/node_modules/react-native-torch/ios/RCTTorch.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/ios/RCTTorch.m b/node_modules/react-native-torch/ios/RCTTorch.m
+old mode 100644
+new mode 100755
+index 3cb0362..2986b1a
+--- a/node_modules/react-native-torch/ios/RCTTorch.m
++++ b/node_modules/react-native-torch/ios/RCTTorch.m
+@@ -13,7 +13,7 @@
+ 
+ RCT_EXPORT_MODULE()
+ 
+-RCT_EXPORT_METHOD(switchState:(BOOL *)newState)
++RCT_EXPORT_METHOD(switchState:(BOOL)newState)
+ {
+     if ([AVCaptureDevice class]) {
+         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+diff --git a/node_modules/react-native-torch/ios/RCTTorch.xcodeproj/project.pbxproj b/node_modules/react-native-torch/ios/RCTTorch.xcodeproj/project.pbxproj
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/ios/RCTTorch.xcodeproj/project.xcworkspace/contents.xcworkspacedata b/node_modules/react-native-torch/ios/RCTTorch.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-torch/react-native-torch.podspec b/node_modules/react-native-torch/react-native-torch.podspec
+old mode 100644
+new mode 100755

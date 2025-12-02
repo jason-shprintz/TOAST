@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import SectionHeader from '../../components/SectionHeader';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
+import Torch from 'react-native-torch';
 
 type Mode = 'off' | 'on' | 'sos' | 'strobe';
 
@@ -12,6 +13,19 @@ export default function FlashlightScreen() {
   const selectMode = (next: Mode) => {
     setMode(prev => (prev === next ? 'off' : next));
   };
+
+  useEffect(() => {
+    // Basic functionality: toggle native camera flash for On/Off.
+    if (mode === 'on') {
+      Torch.switchState(true);
+    } else {
+      Torch.switchState(false);
+    }
+    // For future: implement SOS and strobe timers.
+    return () => {
+      Torch.switchState(false);
+    };
+  }, [mode]);
 
   return (
     <View style={styles.container}>
