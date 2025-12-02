@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import Torch from 'react-native-torch';
-import { AppState } from 'react-native';
+import { AppState, NativeEventSubscription } from 'react-native';
 
 export interface Tool {
   id: string;
@@ -25,10 +25,15 @@ export class CoreStore {
     },
   ];
 
+  private appStateSubscription: NativeEventSubscription;
+
   constructor() {
     makeAutoObservable(this);
     // Keep torch consistent when app state changes (best-effort)
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateSubscription = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
   }
 
   toggleTool(toolId: string) {
@@ -71,4 +76,8 @@ export class CoreStore {
       this.applyFlashlightState();
     }
   };
+
+  dispose() {
+    this.appStateSubscription.remove();
+  }
 }
