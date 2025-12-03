@@ -27,6 +27,7 @@ export class RootStore {
 
   // Reset all stores
   reset() {
+    this.coreStore.dispose();
     this.coreStore = new CoreStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
