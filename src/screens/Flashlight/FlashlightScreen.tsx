@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import SectionHeader from '../../components/SectionHeader';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores/StoreContext';
 import Slider from '@react-native-community/slider';
+import LogoHeader from '../../components/LogoHeader';
+import Grid from '../../components/Grid';
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const mode = core.flashlightMode;
@@ -16,13 +18,10 @@ const FlashlightScreenImpl = () => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../../assets/toast-logo.png')}
-        style={styles.logo}
-      />
+      <LogoHeader />
       <SectionHeader>Flashlight</SectionHeader>
 
-      <View style={styles.grid}>
+      <Grid style={styles.gridSpacing}>
         <PlaceholderCard
           title="Flashlight On"
           icon="flashlight-outline"
@@ -41,7 +40,7 @@ const FlashlightScreenImpl = () => {
           onPress={() => selectMode('strobe')}
           containerStyle={mode === 'strobe' ? styles.activeCard : undefined}
         />
-      </View>
+      </Grid>
 
       {mode === 'strobe' && (
         <View style={styles.strobeControls}>
@@ -73,28 +72,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
   },
-  grid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  gridSpacing: {
     paddingTop: 20,
   },
   activeCard: {
     borderColor: COLORS.ACCENT,
     borderWidth: 3,
-  },
-
-  logo: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain',
-    marginBottom: 10,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 90,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
   },
 
   strobeControls: {

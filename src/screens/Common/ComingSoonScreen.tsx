@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
+import LogoHeader from '../../components/LogoHeader';
 
 type ComingSoonParams = {
   title?: string;
@@ -13,6 +14,15 @@ type Props = {
   route: { params?: ComingSoonParams };
 };
 
+/**
+ * Displays a "Coming Soon" screen with customizable title, icon, and message.
+ *
+ * This screen is typically used to indicate that a feature is under construction or not yet available.
+ * The title, icon, and message can be provided via navigation route parameters; otherwise, default values are used.
+ *
+ * @param route - The navigation route object containing optional `title`, `icon`, and `message` parameters.
+ * @returns A React element rendering the "Coming Soon" UI.
+ */
 export default function ComingSoonScreen({ route }: Props) {
   const title = route?.params?.title ?? 'Coming Soon';
   const icon = route?.params?.icon ?? 'construct-outline';
@@ -21,10 +31,7 @@ export default function ComingSoonScreen({ route }: Props) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../../assets/toast-logo.png')}
-        style={styles.logo}
-      />
+      <LogoHeader />
       <View style={styles.card}>
         <Ionicons
           name={icon}
@@ -70,17 +77,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
-  },
-
-  logo: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain',
-    marginBottom: 10,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 90,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
   },
 });

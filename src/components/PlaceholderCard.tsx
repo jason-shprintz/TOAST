@@ -18,6 +18,17 @@ export type PlaceholderCardProps = {
   titleStyle?: TextStyle;
 };
 
+/**
+ * A card component that displays an icon and a title, with a bounce animation on press.
+ *
+ * @param title - The text to display as the card's title.
+ * @param icon - The name of the Ionicons icon to display.
+ * @param onPress - Optional callback function to execute when the card is pressed.
+ * @param containerStyle - Optional style overrides for the card container.
+ * @param titleStyle - Optional style overrides for the title text.
+ *
+ * The card animates with a bounce effect when pressed, and then triggers the `onPress` callback if provided.
+ */
 export default function PlaceholderCard({
   title,
   icon,

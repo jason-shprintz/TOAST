@@ -6,12 +6,14 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   ScrollView,
-  Image,
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
+import LogoHeader from '../../components/LogoHeader';
+import SectionHeader from '../../components/SectionHeader';
+import Grid from '../../components/Grid';
 
 // Assign icons for each module
 const MODULES = [
@@ -70,17 +72,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
       {/* Hero Logo (fade-in) */}
       <Animated.View style={{ opacity: fadeAnim }}>
-        <Image
-          source={require('../../../assets/toast-logo.png')}
-          style={styles.logo}
-        />
+        <LogoHeader />
       </Animated.View>
 
       {/* Tagline */}
-      <Text style={styles.tagline}>Tech-Offline And Survival Tools</Text>
+      <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
 
       {/* Module Grid */}
-      <View style={styles.grid}>
+      <Grid style={styles.grid}>
         {MODULES.map(mod => {
           const { anim, bounce } = createBounce();
 
@@ -103,7 +102,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </TouchableWithoutFeedback>
           );
         })}
-      </View>
+      </Grid>
     </ScrollView>
   );
 }
@@ -125,18 +124,6 @@ const styles = StyleSheet.create({
     padding: 6,
   },
 
-  logo: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain',
-    marginBottom: 10,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 90,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-
   tagline: {
     fontSize: 20,
     color: COLORS.PRIMARY_DARK,
@@ -151,10 +138,7 @@ const styles = StyleSheet.create({
   },
 
   grid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    paddingTop: 20,
   },
 
   tile: {

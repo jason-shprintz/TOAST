@@ -1,20 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import SectionHeader from '../../components/SectionHeader';
+import Grid from '../../components/Grid';
+import LogoHeader from '../../components/LogoHeader';
 
 export default function ReferenceModule() {
   const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../../assets/toast-logo.png')}
-        style={styles.logo}
-      />
+      <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
-      <View style={styles.grid}>
+      <Grid style={styles.gridSpacing}>
         <PlaceholderCard
           title="Book"
           icon="book-outline"
@@ -35,7 +34,7 @@ export default function ReferenceModule() {
             })
           }
         />
-      </View>
+      </Grid>
     </View>
   );
 }
@@ -48,22 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
   },
-  grid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  // grid replaced by shared Grid component
+  gridSpacing: {
     paddingTop: 20,
-  },
-  logo: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain',
-    marginBottom: 10,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 90,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
   },
 });
