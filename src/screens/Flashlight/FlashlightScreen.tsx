@@ -67,18 +67,10 @@ const FlashlightScreenImpl = () => {
 export default observer(FlashlightScreenImpl);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
   activeCard: {
     borderColor: COLORS.ACCENT,
     borderWidth: 3,
   },
-
   strobeControls: {
     width: '100%',
     marginTop: 20,

@@ -115,18 +115,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: 6,
   },
-  tagline: {
-    fontSize: 20,
-    color: COLORS.PRIMARY_DARK,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    textAlign: 'center',
-    marginBottom: 40,
-    fontWeight: '700',
-    padding: 10,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
   tile: {
     width: '48%',
     height: 130,

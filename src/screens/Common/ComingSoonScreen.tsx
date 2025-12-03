@@ -48,7 +48,6 @@ export default function ComingSoonScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  // container replaced by ScreenContainer
   card: {
     width: '100%',
     alignItems: 'center',

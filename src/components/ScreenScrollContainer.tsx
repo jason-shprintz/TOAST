@@ -6,6 +6,14 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
+/**
+ * A container component that wraps its children in a scrollable view.
+ * 
+ * @param style - Optional styles to apply to the scroll view's content container.
+ * @param children - The components or elements to be rendered inside the scrollable container.
+ * 
+ * @returns A `ScrollView` with the provided children and styles.
+ */
 export default function ScreenScrollContainer({
   style,
   children,
