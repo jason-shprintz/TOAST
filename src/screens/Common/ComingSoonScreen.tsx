@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
+import LogoHeader from '../../components/LogoHeader';
+import ScreenContainer from '../../components/ScreenContainer';
 
 type ComingSoonParams = {
   title?: string;
@@ -13,6 +15,15 @@ type Props = {
   route: { params?: ComingSoonParams };
 };
 
+/**
+ * Displays a "Coming Soon" screen with customizable title, icon, and message.
+ *
+ * This screen is typically used to indicate that a feature is under construction or not yet available.
+ * The title, icon, and message can be provided via navigation route parameters; otherwise, default values are used.
+ *
+ * @param route - The navigation route object containing optional `title`, `icon`, and `message` parameters.
+ * @returns A React element rendering the "Coming Soon" UI.
+ */
 export default function ComingSoonScreen({ route }: Props) {
   const title = route?.params?.title ?? 'Coming Soon';
   const icon = route?.params?.icon ?? 'construct-outline';
@@ -20,7 +31,8 @@ export default function ComingSoonScreen({ route }: Props) {
     route?.params?.message ?? 'This feature is under construction.';
 
   return (
-    <View style={styles.container}>
+    <ScreenContainer>
+      <LogoHeader />
       <View style={styles.card}>
         <Ionicons
           name={icon}
@@ -31,18 +43,11 @@ export default function ComingSoonScreen({ route }: Props) {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
-    </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
   card: {
     width: '100%',
     alignItems: 'center',

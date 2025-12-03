@@ -5,13 +5,15 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  ScrollView,
-  Image,
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
+import LogoHeader from '../../components/LogoHeader';
+import SectionHeader from '../../components/SectionHeader';
+import Grid from '../../components/Grid';
+import ScreenScrollContainer from '../../components/ScreenScrollContainer';
 
 // Assign icons for each module
 const MODULES = [
@@ -56,7 +58,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScreenScrollContainer>
       {/* Settings icon */}
       <TouchableWithoutFeedback>
         <View style={styles.settingsButton}>
@@ -70,17 +72,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
       {/* Hero Logo (fade-in) */}
       <Animated.View style={{ opacity: fadeAnim }}>
-        <Image
-          source={require('../../../assets/toast-logo.png')}
-          style={styles.logo}
-        />
+        <LogoHeader />
       </Animated.View>
 
       {/* Tagline */}
-      <Text style={styles.tagline}>Tech-Offline And Survival Tools</Text>
+      <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
 
       {/* Module Grid */}
-      <View style={styles.grid}>
+      <Grid>
         {MODULES.map(mod => {
           const { anim, bounce } = createBounce();
 
@@ -103,20 +102,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </TouchableWithoutFeedback>
           );
         })}
-      </View>
-    </ScrollView>
+      </Grid>
+    </ScreenScrollContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-
   settingsButton: {
     position: 'absolute',
     top: 50,
@@ -124,39 +115,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: 6,
   },
-
-  logo: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain',
-    marginBottom: 10,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 90,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-
-  tagline: {
-    fontSize: 20,
-    color: COLORS.PRIMARY_DARK,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    textAlign: 'center',
-    marginBottom: 40,
-    fontWeight: '700',
-    padding: 10,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-
-  grid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-
   tile: {
     width: '48%',
     height: 130,
@@ -169,7 +127,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
   },
-
   tileText: {
     fontSize: 22,
     fontWeight: '700',

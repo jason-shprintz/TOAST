@@ -4,6 +4,17 @@ import { COLORS } from '../theme';
 
 type Props = TextProps & { title?: string };
 
+/**
+ * Renders a section header using a `Text` component.
+ *
+ * Displays either the provided `title` prop or the `children` as the header content.
+ * Additional styles can be applied via the `style` prop, and other props are spread onto the `Text` component.
+ *
+ * @param title - The text to display as the section header. If not provided, `children` will be used.
+ * @param children - Alternative content to display if `title` is not specified.
+ * @param style - Custom styles to apply to the header.
+ * @param rest - Additional props to pass to the `Text` component.
+ */
 export default function SectionHeader({
   title,
   children,
@@ -28,7 +39,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    marginTop: 50,
     width: '80%',
     textAlign: 'center',
     alignSelf: 'center',
