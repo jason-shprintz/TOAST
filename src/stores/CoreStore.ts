@@ -178,7 +178,7 @@ export class CoreStore {
   private startStrobe() {
     this.stopStrobe();
     const hz = this.strobeFrequencyHz;
-    const periodMs = Math.max(10, Math.floor(1000 / hz));
+    const periodMs = Math.max(10, Math.floor(1000 / hz / 2));
     let on = false;
     this.strobeInterval = setInterval(() => {
       if (this.flashlightMode !== 'strobe') {
