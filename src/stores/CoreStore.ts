@@ -110,6 +110,7 @@ export class CoreStore {
   private readonly sosUnitMs = 200;
 
   private startSOS() {
+    this.stopSOS(); // Stop any existing SOS pattern
     // Sequence builder: returns array of {on:boolean, ms:number}
     const unit = this.sosUnitMs;
     const dot = [
