@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    marginTop: 50,
     width: '80%',
     textAlign: 'center',
     alignSelf: 'center',

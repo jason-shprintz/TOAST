@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../theme';
 
@@ -21,6 +21,10 @@ export default function ComingSoonScreen({ route }: Props) {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('../../../assets/toast-logo.png')}
+        style={styles.logo}
+      />
       <View style={styles.card}>
         <Ionicons
           name={icon}
@@ -66,5 +70,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
+  },
+
+  logo: {
+    width: 180,
+    height: 180,
+    resizeMode: 'contain',
+    marginBottom: 10,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    borderRadius: 90,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: COLORS.TOAST_BROWN,
   },
 });
