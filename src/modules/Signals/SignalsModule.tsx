@@ -1,19 +1,18 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import PlaceholderCard from '../../components/PlaceholderCard';
-import { COLORS } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import SectionHeader from '../../components/SectionHeader';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
+import ScreenContainer from '../../components/ScreenContainer';
 
 export default function SignalsModule() {
   const navigation = useNavigation<any>();
   return (
-    <View style={styles.container}>
+    <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Signals</SectionHeader>
-      <Grid style={styles.gridSpacing}>
+      <Grid>
         <PlaceholderCard
           title="Ham Radio"
           icon="radio-outline"
@@ -35,20 +34,6 @@ export default function SignalsModule() {
           }
         />
       </Grid>
-    </View>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  // grid replaced by shared Grid component
-  gridSpacing: {
-    paddingTop: 20,
-  },
-});

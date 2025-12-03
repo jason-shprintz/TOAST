@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import SectionHeader from '../../components/SectionHeader';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
@@ -7,7 +7,9 @@ import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores/StoreContext';
 import Slider from '@react-native-community/slider';
 import LogoHeader from '../../components/LogoHeader';
+import ScreenContainer from '../../components/ScreenContainer';
 import Grid from '../../components/Grid';
+
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const mode = core.flashlightMode;
@@ -17,11 +19,11 @@ const FlashlightScreenImpl = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Flashlight</SectionHeader>
 
-      <Grid style={styles.gridSpacing}>
+      <Grid>
         <PlaceholderCard
           title="Flashlight On"
           icon="flashlight-outline"
@@ -58,7 +60,7 @@ const FlashlightScreenImpl = () => {
           />
         </View>
       )}
-    </View>
+    </ScreenContainer>
   );
 };
 
@@ -71,9 +73,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     alignItems: 'center',
-  },
-  gridSpacing: {
-    paddingTop: 20,
   },
   activeCard: {
     borderColor: COLORS.ACCENT,

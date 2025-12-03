@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  ScrollView,
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -14,6 +13,7 @@ import { HomeScreenProps } from './types/homeScreenTypes';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import Grid from '../../components/Grid';
+import ScreenScrollContainer from '../../components/ScreenScrollContainer';
 
 // Assign icons for each module
 const MODULES = [
@@ -58,7 +58,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScreenScrollContainer>
       {/* Settings icon */}
       <TouchableWithoutFeedback>
         <View style={styles.settingsButton}>
@@ -79,7 +79,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
 
       {/* Module Grid */}
-      <Grid style={styles.grid}>
+      <Grid>
         {MODULES.map(mod => {
           const { anim, bounce } = createBounce();
 
@@ -103,19 +103,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           );
         })}
       </Grid>
-    </ScrollView>
+    </ScreenScrollContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-
   settingsButton: {
     position: 'absolute',
     top: 50,
@@ -123,7 +115,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: 6,
   },
-
   tagline: {
     fontSize: 20,
     color: COLORS.PRIMARY_DARK,
@@ -136,11 +127,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
   },
-
-  grid: {
-    paddingTop: 20,
-  },
-
   tile: {
     width: '48%',
     height: 130,
@@ -153,7 +139,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
   },
-
   tileText: {
     fontSize: 22,
     fontWeight: '700',
