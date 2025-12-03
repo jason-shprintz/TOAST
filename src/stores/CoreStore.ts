@@ -55,6 +55,8 @@ export class CoreStore {
   flashlightMode: 'off' | 'on' | 'sos' | 'strobe' = 'off';
   private sosTimer: ReturnType<typeof setTimeout> | null = null;
   private isTorchOn: boolean = false;
+  private strobeInterval: ReturnType<typeof setInterval> | null = null;
+  strobeFrequencyHz: number = 5; // default frequency
 
   setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe') {
     // Exclusive selection: tapping active mode turns it off
@@ -70,6 +72,7 @@ export class CoreStore {
   private applyFlashlightState() {
     // Stop any running patterns
     this.stopSOS();
+    this.stopStrobe();
     // Apply steady on/off
     if (this.flashlightMode === 'on') {
       this.setTorch(true);
@@ -77,6 +80,10 @@ export class CoreStore {
     }
     if (this.flashlightMode === 'sos') {
       this.startSOS();
+      return;
+    }
+    if (this.flashlightMode === 'strobe') {
+      this.startStrobe();
       return;
     }
     // Default: off
@@ -154,6 +161,42 @@ export class CoreStore {
     if (this.sosTimer) {
       clearTimeout(this.sosTimer);
       this.sosTimer = null;
+    }
+  }
+
+  // Strobe implementation: toggle torch at `strobeFrequencyHz`
+  setStrobeFrequency(hz: number) {
+    const clamped = Math.max(1, Math.min(30, Math.round(hz)));
+    this.strobeFrequencyHz = clamped;
+    if (this.flashlightMode === 'strobe') {
+      // restart strobe at new frequency
+      this.startStrobe();
+    }
+  }
+
+  private startStrobe() {
+    this.stopStrobe();
+    const hz = this.strobeFrequencyHz;
+    const periodMs = Math.max(10, Math.floor(1000 / hz));
+    let on = false;
+    this.strobeInterval = setInterval(() => {
+      if (this.flashlightMode !== 'strobe') {
+        this.stopStrobe();
+        return;
+      }
+      on = !on;
+      this.setTorch(on);
+    }, periodMs);
+  }
+
+  private stopStrobe() {
+    if (this.strobeInterval) {
+      clearInterval(this.strobeInterval);
+      this.strobeInterval = null;
+    }
+    // Ensure torch off when stopping strobe unless steady on is selected
+    if (this.flashlightMode !== 'on') {
+      this.setTorch(false);
     }
   }
 

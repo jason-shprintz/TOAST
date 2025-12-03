@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import SectionHeader from '../../components/SectionHeader';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores/StoreContext';
+import Slider from '@react-native-community/slider';
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const mode = core.flashlightMode;
@@ -41,6 +42,23 @@ const FlashlightScreenImpl = () => {
           containerStyle={mode === 'strobe' ? styles.activeCard : undefined}
         />
       </View>
+
+      {mode === 'strobe' && (
+        <View style={styles.strobeControls}>
+          <SectionHeader>Strobe Frequency</SectionHeader>
+          <Text style={styles.strobeLabel}>{core.strobeFrequencyHz} Hz</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={1}
+            maximumValue={30}
+            step={1}
+            value={core.strobeFrequencyHz}
+            onValueChange={(v: number) => core.setStrobeFrequency(v)}
+            minimumTrackTintColor={COLORS.ACCENT}
+            maximumTrackTintColor={COLORS.SECONDARY_ACCENT}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -77,5 +95,21 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
+  },
+
+  strobeControls: {
+    width: '100%',
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  strobeLabel: {
+    color: COLORS.TOAST_BROWN,
+    fontSize: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  slider: {
+    width: '100%',
+    height: 40,
   },
 });
