@@ -1,0 +1,7 @@
+// .markdownlint.jsonc
+{
+  // Disable the line-length rule (MD013)
+  "MD013": false,
+  // Disable the ordered list rule (MD029)
+  "MD029": false
+}
