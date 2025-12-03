@@ -202,6 +202,8 @@ export class CoreStore {
   }
 
   dispose() {
+    this.stopSOS();
+    this.stopStrobe();
     this.appStateSubscription?.remove();
   }
 }
