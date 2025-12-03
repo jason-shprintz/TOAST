@@ -147,6 +147,8 @@ export class CoreStore {
         if (nextIndex === -1) {
           // Pause then restart sequence
           this.setTorch(false);
+          // Clear current timer before creating a new one
+          this.sosTimer = null;
           this.sosTimer = setTimeout(() => runOnce(0), repeatPause[0].ms);
         } else {
           runOnce(nextIndex);
@@ -180,6 +182,7 @@ export class CoreStore {
     const hz = this.strobeFrequencyHz;
     const periodMs = Math.max(10, Math.floor(1000 / hz / 2));
     let on = false;
+    this.setTorch(on); // Set initial state immediately 
     this.strobeInterval = setInterval(() => {
       if (this.flashlightMode !== 'strobe') {
         this.stopStrobe();
