@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import { COLORS } from '../../theme';
@@ -15,11 +15,6 @@ export default observer(function CoreModule() {
     <View style={styles.container}>
       <SectionHeader>Core</SectionHeader>
 
-      {/* Example of using MobX store data */}
-      <Text style={styles.statsText}>
-        Tools: {coreStore.totalTools} | Enabled: {coreStore.enabledTools.length}
-      </Text>
-
       <View style={styles.grid}>
         {coreStore.tools.map(tool => (
           <PlaceholderCard
@@ -27,13 +22,15 @@ export default observer(function CoreModule() {
             title={tool.name}
             icon={tool.icon}
             onPress={() => {
-              coreStore.toggleTool(tool.id);
-              navigation.navigate('ComingSoon', {
-                title: tool.name,
-                icon: tool.icon,
-              });
+              if (tool.id === 'flashlight') {
+                navigation.navigate('Flashlight');
+              } else {
+                navigation.navigate('ComingSoon', {
+                  title: tool.name,
+                  icon: tool.icon,
+                });
+              }
             }}
-            containerStyle={tool.enabled ? styles.enabledCard : undefined}
           />
         ))}
       </View>
@@ -65,9 +62,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingTop: 20,
-  },
-  enabledCard: {
-    borderColor: COLORS.ACCENT,
-    borderWidth: 3,
   },
 });
