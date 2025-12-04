@@ -6,22 +6,34 @@ export interface Tool {
   id: string;
   name: string;
   icon: string;
-  enabled: boolean;
 }
 
 export class CoreStore {
   tools: Tool[] = [
     {
+      id: 'device-status',
+      name: 'Device Status',
+      icon: 'speedometer-outline',
+    },
+    {
       id: 'flashlight',
       name: 'Flashlight',
       icon: 'flashlight-outline',
-      enabled: false,
     },
     {
       id: 'notepad',
       name: 'Notepad',
       icon: 'document-text-outline',
-      enabled: false,
+    },
+    {
+      id: 'unit-conversion',
+      name: 'Unit Conversion',
+      icon: 'swap-horizontal-outline',
+    },
+    {
+      id: 'checklist',
+      name: 'Checklist',
+      icon: 'list-outline',
     },
   ];
 
@@ -34,17 +46,6 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
-  }
-
-  toggleTool(toolId: string) {
-    const tool = this.tools.find(t => t.id === toolId);
-    if (tool) {
-      tool.enabled = !tool.enabled;
-    }
-  }
-
-  get enabledTools() {
-    return this.tools.filter(tool => tool.enabled);
   }
 
   get totalTools() {
@@ -182,7 +183,7 @@ export class CoreStore {
     const hz = this.strobeFrequencyHz;
     const periodMs = Math.max(10, Math.floor(1000 / hz / 2));
     let on = false;
-    this.setTorch(on); // Set initial state immediately 
+    this.setTorch(on); // Set initial state immediately
     this.strobeInterval = setInterval(() => {
       if (this.flashlightMode !== 'strobe') {
         this.stopStrobe();
