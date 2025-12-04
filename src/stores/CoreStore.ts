@@ -353,8 +353,8 @@ export class CoreStore {
     // Quick sampling for ~3 minutes
     this.batteryQuickDeadline = Date.now() + 3 * 60 * 1000;
     this.clearBatteryIntervals();
-    this.batteryQuickIv = setInterval(async () => {
-      await this.sampleBattery();
+    this.batteryQuickIv = setInterval(() => {
+      this.sampleBattery();
       const hasEstimate = this.batteryEstimateMinutes != null;
       const expired =
         this.batteryQuickDeadline != null &&
