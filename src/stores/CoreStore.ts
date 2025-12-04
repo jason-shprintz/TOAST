@@ -326,6 +326,8 @@ export class CoreStore {
             const minutesLeft = level / ratePerMin;
             this.batteryEstimateMinutes = minutesLeft;
           }
+        } else if (charging || dLevel < 0) {
+          this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
         }
       }
       this.lastBatterySample = { level, at: Date.now() };
