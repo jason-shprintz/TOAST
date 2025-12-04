@@ -1,6 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 import Torch from 'react-native-torch';
 import { AppState, NativeEventSubscription } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import NetInfo, {
+  NetInfoState,
+  NetInfoSubscription,
+} from '@react-native-community/netinfo';
+import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 
 export interface Tool {
   id: string;
@@ -52,6 +58,9 @@ export class CoreStore {
     return this.tools.length;
   }
 
+  // --------------------------------------------------------------------
+  // ===== Flashlight =====
+  // --------------------------------------------------------------------
   // Flashlight state management
   flashlightMode: 'off' | 'on' | 'sos' | 'strobe' = 'off';
   private sosTimer: ReturnType<typeof setTimeout> | null = null;
@@ -59,6 +68,13 @@ export class CoreStore {
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
 
+  /**
+   * Sets the flashlight mode to the specified value.
+   * If the selected mode is already active, toggles the flashlight off.
+   * Otherwise, activates the selected mode.
+   *
+   * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', or 'strobe'.
+   */
   setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe') {
     // Exclusive selection: tapping active mode turns it off
     const next = this.flashlightMode === mode ? 'off' : mode;
@@ -70,6 +86,17 @@ export class CoreStore {
     return this.flashlightMode === 'on';
   }
 
+  /**
+   * Applies the current flashlight state based on the `flashlightMode` property.
+   * Stops any running SOS or strobe patterns before setting the new state.
+   *
+   * - If `flashlightMode` is `'on'`, turns the torch on.
+   * - If `flashlightMode` is `'sos'`, starts the SOS pattern.
+   * - If `flashlightMode` is `'strobe'`, starts the strobe pattern.
+   * - For any other value, turns the torch off.
+   *
+   * @private
+   */
   private applyFlashlightState() {
     // Stop any running patterns
     this.stopSOS();
@@ -91,6 +118,14 @@ export class CoreStore {
     this.setTorch(false);
   }
 
+  /**
+   * Handles changes in the application's state.
+   *
+   * If the app returns to the foreground (`state` is `'active'`),
+   * this method re-applies the flashlight state to ensure it is set correctly.
+   *
+   * @param state - The new state of the application (e.g., `'active'`, `'background'`, etc.).
+   */
   private handleAppStateChange = (state: string) => {
     // If returning to foreground while flashlight should be on, re-apply.
     if (state === 'active') {
@@ -110,6 +145,18 @@ export class CoreStore {
   // Choose unit=200ms for readable pacing.
   private readonly sosUnitMs = 200;
 
+  /**
+   * Starts the SOS flashlight signal pattern.
+   *
+   * This method initiates a repeating sequence that flashes the torch in the Morse code pattern for "SOS":
+   * three short flashes (dots), three long flashes (dashes), and three short flashes (dots), with appropriate
+   * timing gaps between signals and letters. The sequence repeats with a pause between cycles.
+   *
+   * If the flashlight mode is changed from 'sos', the sequence stops and the torch is turned off.
+   * Any existing SOS pattern is stopped before starting a new one.
+   *
+   * @private
+   */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
     // Sequence builder: returns array of {on:boolean, ms:number}
@@ -161,6 +208,12 @@ export class CoreStore {
     runOnce(0);
   }
 
+  /**
+   * Stops the SOS timer if it is currently active.
+   * Clears the timeout and resets the `sosTimer` property to `null`.
+   *
+   * @private
+   */
   private stopSOS() {
     if (this.sosTimer) {
       clearTimeout(this.sosTimer);
@@ -178,6 +231,14 @@ export class CoreStore {
     }
   }
 
+  /**
+   * Starts the strobe effect for the torch by toggling its state at a frequency defined by `strobeFrequencyHz`.
+   * The strobe interval is calculated to ensure a minimum period of 10ms.
+   * If the flashlight mode changes from 'strobe', the strobe effect is stopped automatically.
+   * The torch is set to its initial state immediately before starting the interval.
+   *
+   * @private
+   */
   private startStrobe() {
     this.stopStrobe();
     const hz = this.strobeFrequencyHz;
@@ -194,6 +255,10 @@ export class CoreStore {
     }, periodMs);
   }
 
+  /**
+   * Stops the strobe effect by clearing the strobe interval and resetting its reference.
+   * Ensures the torch is turned off unless the flashlight mode is set to steady on.
+   */
   private stopStrobe() {
     if (this.strobeInterval) {
       clearInterval(this.strobeInterval);
@@ -205,9 +270,258 @@ export class CoreStore {
     }
   }
 
+  // --------------------------------------------------------------------
+  // ===== Device Status =====
+  // --------------------------------------------------------------------
+  // Battery state
+  batteryLevel: number | null = null;
+  isCharging: boolean | null = null;
+  batteryEstimateMinutes: number | null = null;
+  private lastBatterySample: { level: number; at: number } | null = null;
+  private batteryQuickIv: ReturnType<typeof setInterval> | null = null;
+  private batterySlowIv: ReturnType<typeof setInterval> | null = null;
+  private batteryQuickDeadline: number | null = null;
+
+  // Storage state
+  storageTotal: number | null = null;
+  storageFree: number | null = null;
+
+  // Connectivity
+  netInfo: NetInfoState | null = null;
+  private netUnsub: NetInfoSubscription | null = null;
+
+  // GPS
+  lastFix: GeoPosition | null = null;
+  locationError: string | null = null;
+  private gpsIv: ReturnType<typeof setInterval> | null = null;
+
+  /**
+   * Samples the current battery level and charging state using DeviceInfo.
+   * Updates the store's battery level and charging status.
+   * If a previous battery sample exists, estimates the remaining battery time in minutes
+   * based on the rate of battery consumption.
+   * Handles errors silently.
+   *
+   * @private
+   * @returns {Promise<void>} Resolves when the sampling is complete.
+   */
+  private sampleBattery = async (): Promise<void> => {
+    try {
+      const level = await DeviceInfo.getBatteryLevel();
+      const power = await DeviceInfo.getPowerState();
+      this.batteryLevel = level;
+      const charging =
+        power.batteryState === 'charging' ||
+        power.batteryState === 'full' ||
+        power.charging === true;
+      this.isCharging = charging;
+
+      if (this.lastBatterySample) {
+        const now = Date.now();
+        const dtMin = (now - this.lastBatterySample.at) / 60000;
+        const dLevel = this.lastBatterySample.level - level; // positive on drop
+        if (dtMin > 0 && dLevel > 0) {
+          const ratePerMin = dLevel / dtMin;
+          if (ratePerMin > 0) {
+            const minutesLeft = level / ratePerMin;
+            this.batteryEstimateMinutes = minutesLeft;
+          }
+        }
+      }
+      this.lastBatterySample = { level, at: Date.now() };
+    } catch {
+      // ignore
+    }
+  };
+
+  /**
+   * Starts the battery sampling process.
+   *
+   * - Immediately samples the battery.
+   * - Initiates a quick sampling interval every 15 seconds for approximately 3 minutes.
+   * - During quick sampling, checks if a battery estimate is available or if the quick sampling period has expired.
+   * - If no estimate is available but battery level is known, sets a fallback estimate (8 hours at 100%).
+   * - After quick sampling, clears intervals and switches to slow sampling every 60 seconds.
+   *
+   * @private
+   */
+  private startBatterySampling = () => {
+    // Immediate sample
+    this.sampleBattery();
+    // Quick sampling for ~3 minutes
+    this.batteryQuickDeadline = Date.now() + 3 * 60 * 1000;
+    this.clearBatteryIntervals();
+    this.batteryQuickIv = setInterval(async () => {
+      await this.sampleBattery();
+      const hasEstimate = this.batteryEstimateMinutes != null;
+      const expired =
+        this.batteryQuickDeadline != null &&
+        Date.now() >= this.batteryQuickDeadline;
+      if (hasEstimate || expired) {
+        if (!hasEstimate && this.batteryLevel != null) {
+          // Fallback baseline 8h at 100%
+          this.batteryEstimateMinutes = Math.round(this.batteryLevel * 480);
+        }
+        this.clearBatteryIntervals();
+        this.batterySlowIv = setInterval(this.sampleBattery, 60000);
+      }
+    }, 15000);
+  };
+
+  /**
+   * Clears any active battery-related intervals and resets their references to null.
+   *
+   * This method checks if the quick and slow battery interval timers are set,
+   * clears them if they exist, and then sets their references to null to prevent
+   * further unintended usage.
+   */
+  private clearBatteryIntervals = () => {
+    if (this.batteryQuickIv) clearInterval(this.batteryQuickIv);
+    if (this.batterySlowIv) clearInterval(this.batterySlowIv);
+    this.batteryQuickIv = null;
+    this.batterySlowIv = null;
+  };
+
+  /**
+   * Asynchronously refreshes the device's storage information.
+   * Retrieves the total disk capacity and free disk storage using `DeviceInfo`,
+   * and updates the `storageTotal` and `storageFree` properties.
+   * If retrieval fails, the error is silently ignored.
+   *
+   * @returns {Promise<void>} Resolves when storage information has been updated.
+   */
+  private refreshStorage = async (): Promise<void> => {
+    try {
+      const [total, free] = await Promise.all([
+        DeviceInfo.getTotalDiskCapacity(),
+        DeviceInfo.getFreeDiskStorage(),
+      ]);
+      this.storageTotal = total ?? null;
+      this.storageFree = free ?? null;
+    } catch {
+      // ignore
+    }
+  };
+
+  /**
+   * Starts a network information subscription if one is not already active.
+   * Uses `NetInfo.addEventListener` to listen for network state changes and updates
+   * the `netInfo` property with the latest state.
+   * Ensures that only one subscription is active at a time by checking `netUnsub`.
+   *
+   * @private
+   */
+  private startNetSubscription = () => {
+    if (this.netUnsub) return;
+    this.netUnsub = NetInfo.addEventListener(state => {
+      this.netInfo = state;
+    });
+  };
+
+  /**
+   * Stops the current network subscription by invoking the unsubscribe function if it exists,
+   * and resets the subscription reference to null.
+   *
+   * @private
+   */
+  private stopNetSubscription = () => {
+    if (this.netUnsub) this.netUnsub();
+    this.netUnsub = null;
+  };
+
+  /**
+   * Attempts to retrieve the current GPS position using the Geolocation API.
+   *
+   * On success, updates `lastFix` with the position and clears any location error.
+   * On failure, sets `locationError` with the error message.
+   *
+   * Uses high accuracy, a timeout of 15 seconds, and allows cached positions up to 5 seconds old.
+   */
+  private gpsGetFix = () => {
+    Geolocation.getCurrentPosition(
+      pos => {
+        this.lastFix = pos;
+        this.locationError = null;
+      },
+      err => {
+        this.locationError = err.message;
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
+    );
+  };
+
+  /**
+   * Starts polling for GPS location updates.
+   *
+   * Requests location authorization from the user. If permission is granted,
+   * immediately fetches the current GPS fix and sets up a polling interval to
+   * repeatedly fetch the GPS fix every 60 seconds. If permission is denied or
+   * an error occurs during authorization, sets an appropriate location error message.
+   *
+   * @private
+   * @returns {Promise<void>} Resolves when polling is started or an error is handled.
+   */
+  private async startGpsPolling(): Promise<void> {
+    try {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        this.gpsGetFix();
+        if (this.gpsIv) clearInterval(this.gpsIv);
+        this.gpsIv = setInterval(() => this.gpsGetFix(), 60000);
+      } else {
+        this.locationError = 'Location permission not granted';
+      }
+    } catch {
+      this.locationError = 'Location permission error';
+    }
+  }
+
+  /**
+   * Stops the GPS polling interval if it is currently active.
+   * Clears the interval and resets the interval reference to null.
+   *
+   * @private
+   */
+  private stopGpsPolling() {
+    if (this.gpsIv) clearInterval(this.gpsIv);
+    this.gpsIv = null;
+  }
+
+  /**
+   * Initiates monitoring of device status by starting battery sampling,
+   * refreshing storage information, subscribing to network status updates,
+   * and polling GPS data.
+   *
+   * @remarks
+   * This method aggregates multiple device status monitoring routines
+   * to provide comprehensive device health and connectivity information.
+   */
+  startDeviceStatusMonitoring = () => {
+    this.startBatterySampling();
+    this.refreshStorage();
+    this.startNetSubscription();
+    this.startGpsPolling();
+  };
+
+  /**
+   * Stops monitoring the device status by clearing battery intervals,
+   * unsubscribing from network status updates, and stopping GPS polling.
+   *
+   * @remarks
+   * This method should be called when device status monitoring is no longer needed,
+   * such as during cleanup or when the application is paused.
+   */
+  stopDeviceStatusMonitoring = () => {
+    this.clearBatteryIntervals();
+    this.stopNetSubscription();
+    this.stopGpsPolling();
+  };
+
+  // Cleanup on store disposal
   dispose() {
     this.stopSOS();
     this.stopStrobe();
     this.appStateSubscription?.remove();
+    this.stopDeviceStatusMonitoring();
   }
 }
