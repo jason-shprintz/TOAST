@@ -25,6 +25,8 @@ export default observer(function CoreModule() {
             onPress={() => {
               if (tool.id === 'flashlight') {
                 navigation.navigate('Flashlight');
+              } else if (tool.id === 'device-status') {
+                navigation.navigate('DeviceStatus');
               } else {
                 navigation.navigate('ComingSoon', {
                   title: tool.name,

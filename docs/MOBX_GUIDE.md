@@ -43,8 +43,6 @@ export default observer(function MyComponent() {
 #### CoreStore
 
 - Manages flashlight and notepad tools
-- Track enabled/disabled state
-- Computed values for enabled tools count
 
 #### NavigationStore
 

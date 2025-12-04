@@ -8,6 +8,7 @@ import ReferenceModule from '../modules/Reference/ReferenceModule';
 import SignalsModule from '../modules/Signals/SignalsModule';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
+import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function AppNavigator() {
         <Stack.Screen name="SignalsModule" component={SignalsModule} />
         <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
         <Stack.Screen name="Flashlight" component={FlashlightScreen} />
+        <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
