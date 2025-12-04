@@ -93,7 +93,10 @@ export function useDeviceStatus() {
       const mins = Math.round(minutes % 60);
       const hWord = hrs === 1 ? 'hour' : 'hours';
       const mWord = mins === 1 ? 'minute' : 'minutes';
-      return `${hrs} ${hWord} ${mins} ${mWord} remaining`;
+      const parts = [];
+      if (hrs > 0) parts.push(`${hrs} ${hWord}`);
+      if (mins > 0 || hrs === 0) parts.push(`${mins} ${mWord}`);
+      return `${parts.join(' ')} remaining`;
     })();
 
     if (core.isCharging) return `${pct}% (Charging — ${estimateStr})`;
