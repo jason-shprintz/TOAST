@@ -5,7 +5,7 @@
  * @returns A formatted string representing the size in B, KB, MB, GB, or TB.
  */
 function formatBytes(bytes: number | null | undefined) {
-  if (!bytes || bytes < 0) return 'Unknown';
+  if (bytes == null || bytes < 0) return 'Unknown';
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let i = 0;
   let b = bytes;
