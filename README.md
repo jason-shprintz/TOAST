@@ -73,7 +73,7 @@ Fundamental offline tools available to all users.
   - Emergency checklists (bug-out bag, first aid, evacuation), fully editable
 
 - **Device Status Dashboard**  
-  - Battery estimate, storage usage, last GPS fix, offline connectivity status
+  - Battery estimate (enhance), ~~storage usage, last GPS fix, offline connectivity status~~
 
 - **Unit Conversion Tools**  
   - Length, weight, temperature, wind speed, pressure conversions
