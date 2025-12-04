@@ -358,7 +358,7 @@ export class CoreStore {
         this.batteryQuickDeadline != null &&
         Date.now() >= this.batteryQuickDeadline;
       if (hasEstimate || expired) {
-        if (!hasEstimate && this.batteryLevel != null) {
+        if (!hasEstimate && this.batteryLevel != null && !this.isCharging) {
           // Fallback baseline 8h at 100%
           this.batteryEstimateMinutes = Math.round(this.batteryLevel * 480);
         }
