@@ -64,7 +64,7 @@ Fundamental offline tools available to all users.
 #### **Planned Core Features**
 
 - **Flashlight & Screen Beacon Tools**  
-  - Flashlight toggle, strobe modes, colored screen beacon, SOS pattern
+  - ~~Flashlight toggle, strobe modes,~~ colored screen beacon, ~~SOS pattern~~
 
 - **Local Notes / Field Logs**  
   - Offline notes with optional timestamp + last known GPS position
@@ -77,9 +77,6 @@ Fundamental offline tools available to all users.
 
 - **Unit Conversion Tools**  
   - Length, weight, temperature, wind speed, pressure conversions
-
-- **Quick Emergency Access Hub**  
-  - Large action buttons: Flashlight, Compass, SOS, Notes, etc.
 
 ---
 
