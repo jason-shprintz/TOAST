@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import Torch from 'react-native-torch';
 import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -46,7 +46,7 @@ export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
     // Keep torch consistent when app state changes (best-effort)
     this.appStateSubscription = AppState.addEventListener(
       'change',
@@ -309,12 +309,14 @@ export class CoreStore {
     try {
       const level = await DeviceInfo.getBatteryLevel();
       const power = await DeviceInfo.getPowerState();
-      this.batteryLevel = level;
       const charging =
         power.batteryState === 'charging' ||
         power.batteryState === 'full' ||
         power.charging === true;
-      this.isCharging = charging;
+      runInAction(() => {
+        this.batteryLevel = level;
+        this.isCharging = charging;
+      });
 
       if (this.lastBatterySample) {
         const now = Date.now();
@@ -324,13 +326,19 @@ export class CoreStore {
           const ratePerMin = dLevel / dtMin;
           if (ratePerMin > 0) {
             const minutesLeft = level / ratePerMin;
-            this.batteryEstimateMinutes = minutesLeft;
+            runInAction(() => {
+              this.batteryEstimateMinutes = minutesLeft;
+            });
           }
         } else if (charging || dLevel < 0) {
-          this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
+          runInAction(() => {
+            this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
+          });
         }
       }
-      this.lastBatterySample = { level, at: Date.now() };
+      runInAction(() => {
+        this.lastBatterySample = { level, at: Date.now() };
+      });
     } catch {
       // ignore
     }
@@ -362,7 +370,9 @@ export class CoreStore {
       if (hasEstimate || expired) {
         if (!hasEstimate && this.batteryLevel != null && !this.isCharging) {
           // Fallback baseline 8h at 100%
-          this.batteryEstimateMinutes = Math.round(this.batteryLevel * 480);
+          runInAction(() => {
+            this.batteryEstimateMinutes = Math.round(this.batteryLevel! * 480);
+          });
         }
         this.clearBatteryIntervals();
         this.batterySlowIv = setInterval(this.sampleBattery, 60000);
@@ -398,8 +408,10 @@ export class CoreStore {
         DeviceInfo.getTotalDiskCapacity(),
         DeviceInfo.getFreeDiskStorage(),
       ]);
-      this.storageTotal = total ?? null;
-      this.storageFree = free ?? null;
+      runInAction(() => {
+        this.storageTotal = total ?? null;
+        this.storageFree = free ?? null;
+      });
     } catch {
       // ignore
     }
@@ -416,7 +428,9 @@ export class CoreStore {
   private startNetSubscription = () => {
     if (this.netUnsub) return;
     this.netUnsub = NetInfo.addEventListener(state => {
-      this.netInfo = state;
+      runInAction(() => {
+        this.netInfo = state;
+      });
     });
   };
 
@@ -442,11 +456,15 @@ export class CoreStore {
   private gpsGetFix = () => {
     Geolocation.getCurrentPosition(
       pos => {
-        this.lastFix = pos;
-        this.locationError = null;
+        runInAction(() => {
+          this.lastFix = pos;
+          this.locationError = null;
+        });
       },
       err => {
-        this.locationError = err.message;
+        runInAction(() => {
+          this.locationError = err.message;
+        });
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
     );
@@ -471,10 +489,14 @@ export class CoreStore {
         if (this.gpsIv) clearInterval(this.gpsIv);
         this.gpsIv = setInterval(() => this.gpsGetFix(), 60000);
       } else {
-        this.locationError = 'Location permission not granted';
+        runInAction(() => {
+          this.locationError = 'Location permission not granted';
+        });
       }
     } catch {
-      this.locationError = 'Location permission error';
+      runInAction(() => {
+        this.locationError = 'Location permission error';
+      });
     }
   }
 
