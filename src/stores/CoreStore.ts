@@ -7,11 +7,34 @@ import NetInfo, {
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
+// SQLite is optional; ensure dependency is installed before use
+let SQLite: any;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  SQLite = require('react-native-sqlite-storage');
+} catch {
+  SQLite = null as any;
+}
 
 export interface Tool {
   id: string;
   name: string;
   icon: string;
+}
+
+export type NoteInputType = 'text' | 'sketch';
+export type NoteCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
+
+export interface Note {
+  id: string;
+  createdAt: number; // epoch ms
+  latitude?: number;
+  longitude?: number;
+  category: NoteCategory;
+  type: NoteInputType; // text or sketch
+  text?: string;
+  sketchDataUri?: string; // placeholder for sketch image
+  photoUris: string[]; // attached photos (uris)
 }
 
 export class CoreStore {
@@ -541,7 +564,203 @@ export class CoreStore {
     this.stopGpsPolling();
   };
 
-  // Cleanup on store disposal
+  // --------------------------------------------------------------------
+  // ===== Notepad =====
+  // --------------------------------------------------------------------
+  notes: Note[] = [];
+  categories: NoteCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
+  private notesDb: any | null = null;
+
+  private generateId() {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  async createNote(params: {
+    category?: NoteCategory;
+    type: NoteInputType;
+    text?: string;
+    sketchDataUri?: string;
+  }) {
+    // Ensure we have latest GPS fix before saving
+    try {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        await new Promise<void>(resolve => {
+          Geolocation.getCurrentPosition(
+            pos => {
+              const { latitude, longitude } = pos.coords;
+              const note: Note = {
+                id: this.generateId(),
+                createdAt: Date.now(),
+                latitude,
+                longitude,
+                category: params.category ?? 'General',
+                type: params.type,
+                text: params.text,
+                sketchDataUri: params.sketchDataUri,
+                photoUris: [],
+              };
+              this.notes.unshift(note);
+              resolve();
+            },
+            () => {
+              const note: Note = {
+                id: this.generateId(),
+                createdAt: Date.now(),
+                category: params.category ?? 'General',
+                type: params.type,
+                text: params.text,
+                sketchDataUri: params.sketchDataUri,
+                photoUris: [],
+              };
+              this.notes.unshift(note);
+              resolve();
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 },
+          );
+        });
+      } else {
+        const note: Note = {
+          id: this.generateId(),
+          createdAt: Date.now(),
+          category: params.category ?? 'General',
+          type: params.type,
+          text: params.text,
+          sketchDataUri: params.sketchDataUri,
+          photoUris: [],
+        };
+        this.notes.unshift(note);
+      }
+    } catch {
+      const note: Note = {
+        id: this.generateId(),
+        createdAt: Date.now(),
+        category: params.category ?? 'General',
+        type: params.type,
+        text: params.text,
+        sketchDataUri: params.sketchDataUri,
+        photoUris: [],
+      };
+      this.notes.unshift(note);
+    }
+  }
+
+  setNoteCategory(noteId: string, category: NoteCategory) {
+    const idx = this.notes.findIndex(n => n.id === noteId);
+    if (idx >= 0) {
+      this.notes[idx].category = category;
+    }
+  }
+
+  saveText(noteId: string, text: string) {
+    const note = this.notes.find(item => item.id === noteId);
+    if (note) {
+      note.text = text;
+      this.updateNote(note);
+    }
+  }
+
+  saveSketch(noteId: string, dataUri: string) {
+    const note = this.notes.find(item => item.id === noteId);
+    if (note) {
+      note.sketchDataUri = dataUri;
+      this.updateNote(note);
+    }
+  }
+
+  attachPhoto(noteId: string, uri: string) {
+    const note = this.notes.find(item => item.id === noteId);
+    if (note) {
+      note.photoUris.push(uri);
+      this.updateNote(note);
+    }
+  }
+
+  get recentNotesTop20(): Note[] {
+    return this.notes
+      .slice()
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, 20);
+  }
+
+  get notesByCategory(): Record<NoteCategory, Note[]> {
+    const map: Record<NoteCategory, Note[]> = {
+      General: [],
+      Work: [],
+      Personal: [],
+      Ideas: [],
+    };
+    for (const n of this.notes) {
+      map[n.category].push(n);
+    }
+    return map;
+  }
+
+  // ===== SQLite persistence =====
+  async initNotesDb() {
+    if (this.notesDb) return;
+    if (!SQLite) return;
+    SQLite.enablePromise?.(true);
+    this.notesDb = await SQLite.openDatabase({
+      name: 'toast.db',
+      location: 'default',
+    });
+    await this.notesDb.executeSql(
+      'CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, createdAt INTEGER, latitude REAL, longitude REAL, category TEXT, type TEXT, text TEXT, sketchDataUri TEXT, photoUris TEXT)',
+    );
+  }
+
+  async loadNotes() {
+    await this.initNotesDb();
+    if (!this.notesDb) return;
+    const res = await this.notesDb.executeSql(
+      'SELECT * FROM notes ORDER BY createdAt DESC',
+    );
+    const rows = res[0].rows;
+    const loaded: Note[] = [];
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows.item(i);
+      loaded.push({
+        id: r.id,
+        createdAt: r.createdAt,
+        latitude: r.latitude ?? undefined,
+        longitude: r.longitude ?? undefined,
+        category: r.category,
+        type: r.type,
+        text: r.text ?? undefined,
+        sketchDataUri: r.sketchDataUri ?? undefined,
+        photoUris: r.photoUris ? JSON.parse(r.photoUris) : [],
+      });
+    }
+    this.notes = loaded;
+  }
+
+  async persistNote(note: Note) {
+    await this.initNotesDb();
+    if (!this.notesDb) return;
+    await this.notesDb.executeSql(
+      'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
+      [
+        note.id,
+        note.createdAt,
+        note.latitude ?? null,
+        note.longitude ?? null,
+        note.category,
+        note.type,
+        note.text ?? null,
+        note.sketchDataUri ?? null,
+        JSON.stringify(note.photoUris ?? []),
+      ],
+    );
+  }
+
+  async updateNote(note: Note) {
+    await this.persistNote(note);
+  }
+
+  // --------------------------------------------------------------------
+  // ==== Cleanup on store disposal ====
+  // --------------------------------------------------------------------
   dispose() {
     this.stopSOS();
     this.stopStrobe();

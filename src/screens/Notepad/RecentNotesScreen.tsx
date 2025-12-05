@@ -1,21 +1,38 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
+import { observer } from 'mobx-react-lite';
+import { useCoreStore } from '../../stores';
 
-export default function RecentNotesScreen() {
+export default observer(function RecentNotesScreen() {
+  const core = useCoreStore();
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Recent Notes</SectionHeader>
       <View style={styles.card}>
-        <Text style={styles.value}>Placeholder for recent notes list.</Text>
+        <FlatList
+          data={core.recentNotesTop20}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.itemRow}>
+              <Text style={styles.itemTitle}>
+                {item.text?.slice(0, 40) || '(Untitled)'}
+              </Text>
+              <Text style={styles.itemMeta}>
+                {new Date(item.createdAt).toLocaleString()} • {item.category}
+              </Text>
+            </View>
+          )}
+          ListEmptyComponent={<Text style={styles.value}>No notes yet.</Text>}
+        />
       </View>
     </ScreenContainer>
   );
-}
+});
 
 const styles = StyleSheet.create({
   card: {
@@ -31,5 +48,21 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
+  },
+  itemRow: {
+    paddingVertical: 8,
+    borderBottomColor: COLORS.SECONDARY_ACCENT,
+    borderBottomWidth: 1,
+  },
+  itemTitle: {
+    fontSize: 16,
+    color: COLORS.PRIMARY_DARK,
+    fontWeight: '600',
+  },
+  itemMeta: {
+    fontSize: 12,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.8,
+    marginTop: 2,
   },
 });
