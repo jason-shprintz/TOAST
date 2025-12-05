@@ -6,6 +6,10 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
@@ -14,9 +18,11 @@ import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
+  const navigation = useNavigation();
   const [text, setText] = useState('');
   const [category, setCategory] = useState(core.categories[0]);
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
@@ -24,107 +30,146 @@ export default observer(function NewNoteScreen() {
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   return (
     <ScreenContainer>
-      <LogoHeader />
-      <SectionHeader>New Note</SectionHeader>
-      <View style={styles.card}>
-        <View style={styles.inlineCenter}>
-          <View style={styles.dropdown}>
-            <TouchableOpacity
-              style={styles.dropdownHeader}
-              onPress={() => setShowCategoryMenu(v => !v)}
-            >
-              <Text style={styles.dropdownHeaderText}>{category}</Text>
-              <Icon
-                name="chevron-down-outline"
-                size={18}
-                color={COLORS.PRIMARY_DARK}
-              />
-            </TouchableOpacity>
-            {showCategoryMenu && (
-              <View style={styles.dropdownMenu}>
-                {core.categories.map(cat => (
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.innerContainer}>
+            <View style={styles.logoCenter}>
+              <LogoHeader />
+            </View>
+            <SectionHeader>New Note</SectionHeader>
+            <View style={styles.card}>
+              <View style={styles.inlineCenter}>
+                <View style={styles.dropdown}>
                   <TouchableOpacity
-                    key={cat}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setCategory(cat);
-                      setShowCategoryMenu(false);
-                    }}
+                    style={styles.dropdownHeader}
+                    onPress={() => setShowCategoryMenu(v => !v)}
                   >
-                    <Text style={styles.dropdownItemText}>{cat}</Text>
+                    <Text style={styles.dropdownHeaderText}>{category}</Text>
+                    <Icon
+                      name="chevron-down-outline"
+                      size={18}
+                      color={COLORS.PRIMARY_DARK}
+                    />
                   </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
+                  {showCategoryMenu && (
+                    <View style={styles.dropdownMenu}>
+                      {core.categories.map(cat => (
+                        <TouchableOpacity
+                          key={cat}
+                          style={styles.dropdownItem}
+                          onPress={() => {
+                            setCategory(cat);
+                            setShowCategoryMenu(false);
+                          }}
+                        >
+                          <Text style={styles.dropdownItemText}>{cat}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </View>
 
-          <View style={styles.dropdown}>
-            <TouchableOpacity
-              style={styles.dropdownHeader}
-              onPress={() => setShowTypeMenu(v => !v)}
-            >
-              <Text style={styles.dropdownHeaderText}>
+                <View style={styles.dropdown}>
+                  <TouchableOpacity
+                    style={styles.dropdownHeader}
+                    onPress={() => setShowTypeMenu(v => !v)}
+                  >
+                    <Text style={styles.dropdownHeaderText}>
+                      {noteType === 'text' ? 'Type Text' : 'Sketch'}
+                    </Text>
+                    <Icon
+                      name="chevron-down-outline"
+                      size={18}
+                      color={COLORS.PRIMARY_DARK}
+                    />
+                  </TouchableOpacity>
+                  {showTypeMenu && (
+                    <View style={styles.dropdownMenu}>
+                      {['text', 'sketch'].map(t => (
+                        <TouchableOpacity
+                          key={t}
+                          style={styles.dropdownItem}
+                          onPress={() => {
+                            setNoteType(t as 'text' | 'sketch');
+                            setShowTypeMenu(false);
+                          }}
+                        >
+                          <Text style={styles.dropdownItemText}>
+                            {t === 'text' ? 'Type Text' : 'Sketch'}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <TouchableOpacity
+                  style={styles.iconButton}
+                  onPress={() => {
+                    /* placeholder attach photo */
+                  }}
+                >
+                  <Icon
+                    name="camera-outline"
+                    size={22}
+                    color={COLORS.PRIMARY_DARK}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.label}>
                 {noteType === 'text' ? 'Type Text' : 'Sketch'}
               </Text>
-              <Icon
-                name="chevron-down-outline"
-                size={18}
-                color={COLORS.PRIMARY_DARK}
+              <TextInput
+                style={styles.input}
+                placeholder="Type your note..."
+                multiline
+                value={text}
+                onChangeText={setText}
               />
-            </TouchableOpacity>
-            {showTypeMenu && (
-              <View style={styles.dropdownMenu}>
-                {['text', 'sketch'].map(t => (
-                  <TouchableOpacity
-                    key={t}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setNoteType(t as 'text' | 'sketch');
-                      setShowTypeMenu(false);
-                    }}
-                  >
-                    <Text style={styles.dropdownItemText}>
-                      {t === 'text' ? 'Type Text' : 'Sketch'}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+
+              <View style={styles.inline}>
+                <Button
+                  title="Save Note"
+                  onPress={() => {
+                    core.createNote({ type: noteType, text, category });
+                    // Return to previous screen (Notepad)
+                    // Prefer goBack to avoid hard-coding route names
+                    if (navigation && 'goBack' in navigation) {
+                      // @ts-ignore
+                      navigation.goBack();
+                    }
+                  }}
+                />
+                <Button
+                  title="Clear Note"
+                  onPress={() => {
+                    setText('');
+                  }}
+                />
               </View>
-            )}
+            </View>
           </View>
-
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => {
-              /* placeholder attach photo */
-            }}
-          >
-            <Icon name="camera-outline" size={22} color={COLORS.PRIMARY_DARK} />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.label}>
-          {noteType === 'text' ? 'Type Text' : 'Sketch'}
-        </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your note..."
-          multiline
-          value={text}
-          onChangeText={setText}
-        />
-
-        <View style={styles.inline}>
-          <Button
-            title="Save Note"
-            onPress={() => core.createNote({ type: noteType, text, category })}
-          />
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 });
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  innerContainer: {
+    flex: 1,
+    width: '100%',
+  },
   card: {
     width: '100%',
     backgroundColor: COLORS.TOAST_BROWN,
@@ -135,6 +180,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 12,
     overflow: 'scroll',
+  },
+  logoCenter: {
+    alignItems: 'center',
+    width: '100%',
   },
   label: {
     fontSize: 14,
