@@ -9,6 +9,10 @@ import SignalsModule from '../modules/Signals/SignalsModule';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
+import NotepadScreen from '../screens/Notepad/NotepadScreen';
+import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
+import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
+import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,13 +26,20 @@ export default function AppNavigator() {
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
+        {/* Modules */}
         <Stack.Screen name="CoreModule" component={CoreModule} />
         <Stack.Screen name="NavigationModule" component={NavigationModule} />
         <Stack.Screen name="ReferenceModule" component={ReferenceModule} />
         <Stack.Screen name="SignalsModule" component={SignalsModule} />
+        {/* Shared */}
         <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+        {/* Core Module */}
         <Stack.Screen name="Flashlight" component={FlashlightScreen} />
         <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
+        <Stack.Screen name="Notepad" component={NotepadScreen} />
+        <Stack.Screen name="NewNote" component={NewNoteScreen} />
+        <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
+        <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
