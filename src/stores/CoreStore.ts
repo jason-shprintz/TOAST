@@ -600,7 +600,9 @@ export class CoreStore {
                 sketchDataUri: params.sketchDataUri,
                 photoUris: [],
               };
-              this.notes.unshift(note);
+              runInAction(() => {
+                this.notes.unshift(note);
+              });
               resolve();
             },
             () => {
@@ -613,7 +615,9 @@ export class CoreStore {
                 sketchDataUri: params.sketchDataUri,
                 photoUris: [],
               };
-              this.notes.unshift(note);
+              runInAction(() => {
+                this.notes.unshift(note);
+              });
               resolve();
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 },
@@ -629,7 +633,9 @@ export class CoreStore {
           sketchDataUri: params.sketchDataUri,
           photoUris: [],
         };
-        this.notes.unshift(note);
+        runInAction(() => {
+          this.notes.unshift(note);
+        });
       }
     } catch {
       const note: Note = {
@@ -641,14 +647,20 @@ export class CoreStore {
         sketchDataUri: params.sketchDataUri,
         photoUris: [],
       };
-      this.notes.unshift(note);
+      runInAction(() => {
+        this.notes.unshift(note);
+      });
+      await this.persistNote(note);
     }
   }
 
   setNoteCategory(noteId: string, category: NoteCategory) {
     const idx = this.notes.findIndex(n => n.id === noteId);
     if (idx >= 0) {
-      this.notes[idx].category = category;
+      runInAction(() => {
+        this.notes[idx].category = category;
+      });
+      this.updateNote(this.notes[idx]);
     }
   }
 
@@ -658,22 +670,24 @@ export class CoreStore {
       runInAction(() => {
         note.text = text;
       });
-      this.updateNote(note);
     }
   }
 
   saveSketch(noteId: string, dataUri: string) {
     const note = this.notes.find(item => item.id === noteId);
     if (note) {
-      note.sketchDataUri = dataUri;
-      this.updateNote(note);
+      runInAction(() => {
+        note.sketchDataUri = dataUri;
+      });
     }
   }
 
   attachPhoto(noteId: string, uri: string) {
     const note = this.notes.find(item => item.id === noteId);
     if (note) {
-      note.photoUris.push(uri);
+      runInAction(() => {
+        note.photoUris.push(uri);
+      });
       this.updateNote(note);
     }
   }
@@ -699,14 +713,17 @@ export class CoreStore {
   async initNotesDb() {
     if (this.notesDb) return;
     if (!SQLite) return;
-    SQLite.enablePromise?.(true);
-    this.notesDb = await SQLite.openDatabase({
-      name: 'toast.db',
-      location: 'default',
-    });
-    await this.notesDb.executeSql(
-      'CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, createdAt INTEGER, latitude REAL, longitude REAL, category TEXT, type TEXT, text TEXT, sketchDataUri TEXT, photoUris TEXT)',
-    );
+    try {
+      SQLite.enablePromise?.(true);
+      this.notesDb = await SQLite.openDatabase({
+        name: 'toast.db',
+        location: 'default',
+      });
+      await this.notesDb.executeSql(/* ... */);
+    } catch (error) {
+      console.error('Failed to initialize notes database:', error);
+      this.notesDb = null;
+    }
   }
 
   async loadNotes() {
