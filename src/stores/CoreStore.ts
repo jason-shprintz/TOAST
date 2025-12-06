@@ -612,7 +612,8 @@ export class CoreStore {
     const note: Note = {
       id: this.generateId(),
       createdAt: Date.now(),
-      ...(latitude !== undefined && longitude !== undefined && { latitude, longitude }),
+      ...(latitude !== undefined &&
+        longitude !== undefined && { latitude, longitude }),
       category: params.category ?? 'General',
       type: params.type,
       text: params.text,
@@ -623,6 +624,7 @@ export class CoreStore {
     runInAction(() => {
       this.notes.unshift(note);
     });
+    await this.persistNote(note);
   }
 
   setNoteCategory(noteId: string, category: NoteCategory) {
