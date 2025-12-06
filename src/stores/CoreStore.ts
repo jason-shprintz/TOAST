@@ -655,7 +655,9 @@ export class CoreStore {
   saveText(noteId: string, text: string) {
     const note = this.notes.find(item => item.id === noteId);
     if (note) {
-      note.text = text;
+      runInAction(() => {
+        note.text = text;
+      });
       this.updateNote(note);
     }
   }
