@@ -637,24 +637,6 @@ export class CoreStore {
     }
   }
 
-  saveText(noteId: string, text: string) {
-    const note = this.notes.find(item => item.id === noteId);
-    if (note) {
-      runInAction(() => {
-        note.text = text;
-      });
-    }
-  }
-
-  saveSketch(noteId: string, dataUri: string) {
-    const note = this.notes.find(item => item.id === noteId);
-    if (note) {
-      runInAction(() => {
-        note.sketchDataUri = dataUri;
-      });
-    }
-  }
-
   attachPhoto(noteId: string, uri: string) {
     const note = this.notes.find(item => item.id === noteId);
     if (note) {
