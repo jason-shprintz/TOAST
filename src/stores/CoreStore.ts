@@ -587,77 +587,42 @@ export class CoreStore {
     text?: string;
     sketchDataUri?: string;
   }) {
-    // Ensure we have latest GPS fix before saving
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+
     try {
       const auth = await Geolocation.requestAuthorization('whenInUse');
       if (auth === 'granted') {
         await new Promise<void>(resolve => {
           Geolocation.getCurrentPosition(
             pos => {
-              const { latitude, longitude } = pos.coords;
-              const note: Note = {
-                id: this.generateId(),
-                createdAt: Date.now(),
-                latitude,
-                longitude,
-                category: params.category ?? 'General',
-                type: params.type,
-                text: params.text,
-                sketchDataUri: params.sketchDataUri,
-                photoUris: [],
-              };
-              runInAction(() => {
-                this.notes.unshift(note);
-              });
+              latitude = pos.coords.latitude;
+              longitude = pos.coords.longitude;
               resolve();
             },
-            () => {
-              const note: Note = {
-                id: this.generateId(),
-                createdAt: Date.now(),
-                category: params.category ?? 'General',
-                type: params.type,
-                text: params.text,
-                sketchDataUri: params.sketchDataUri,
-                photoUris: [],
-              };
-              runInAction(() => {
-                this.notes.unshift(note);
-              });
-              resolve();
-            },
+            () => resolve(),
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 },
           );
         });
-      } else {
-        const note: Note = {
-          id: this.generateId(),
-          createdAt: Date.now(),
-          category: params.category ?? 'General',
-          type: params.type,
-          text: params.text,
-          sketchDataUri: params.sketchDataUri,
-          photoUris: [],
-        };
-        runInAction(() => {
-          this.notes.unshift(note);
-        });
       }
     } catch {
-      const note: Note = {
-        id: this.generateId(),
-        createdAt: Date.now(),
-        category: params.category ?? 'General',
-        type: params.type,
-        text: params.text,
-        sketchDataUri: params.sketchDataUri,
-        photoUris: [],
-      };
-      runInAction(() => {
-        this.notes.unshift(note);
-      });
-      await this.persistNote(note);
+      // Location unavailable, proceed without it
     }
+
+    const note: Note = {
+      id: this.generateId(),
+      createdAt: Date.now(),
+      ...(latitude !== undefined && longitude !== undefined && { latitude, longitude }),
+      category: params.category ?? 'General',
+      type: params.type,
+      text: params.text,
+      sketchDataUri: params.sketchDataUri,
+      photoUris: [],
+    };
+
+    runInAction(() => {
+      this.notes.unshift(note);
+    });
   }
 
   setNoteCategory(noteId: string, category: NoteCategory) {
