@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,6 +15,7 @@ import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import { MAX_TITLE_LENGTH } from './constants';
 import ScreenContainer from '../../components/ScreenContainer';
+import { noteListSharedStyles as shared } from './noteListStyles';
 
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
@@ -39,9 +40,9 @@ export default observer(function RecentNotesScreen() {
                   setExpandedId(prev => (prev === item.id ? null : item.id))
                 }
               >
-                <View style={styles.itemRow}>
+                <View style={shared.itemRow}>
                   <Text
-                    style={styles.itemTitle}
+                    style={shared.itemTitle}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -49,17 +50,15 @@ export default observer(function RecentNotesScreen() {
                       ? previewText.slice(0, MAX_TITLE_LENGTH)
                       : '(Untitled)'}
                   </Text>
-                  <Text style={styles.itemMeta}>
+                  <Text style={shared.itemMeta}>
                     {new Date(item.createdAt).toLocaleString()} •{' '}
                     {item.category}
                   </Text>
                   {isExpanded ? (
-                    <Text style={styles.itemBodyExpanded}>
-                      {previewText || ''}
-                    </Text>
+                    <Text style={shared.itemBody}>{previewText || ''}</Text>
                   ) : (
                     <Text
-                      style={styles.itemBody}
+                      style={shared.itemBody}
                       numberOfLines={3}
                       ellipsizeMode="tail"
                     >
@@ -69,12 +68,13 @@ export default observer(function RecentNotesScreen() {
                   {!isExpanded &&
                     previewText &&
                     previewText.length > MAX_TITLE_LENGTH && (
-                      <Text style={styles.moreHint}>Show more…</Text>
+                      <Text style={shared.moreHint}>Show more…</Text>
                     )}
-                  <View style={styles.actionsRow}>
+                  <View style={shared.actionsRow}>
                     <TouchableOpacity
                       accessibilityLabel="Delete note"
                       accessibilityRole="button"
+                      style={shared.trashButton}
                       onPress={() => {
                         Alert.alert(
                           'Delete Note',
@@ -101,7 +101,7 @@ export default observer(function RecentNotesScreen() {
               </TouchableOpacity>
             );
           }}
-          ListEmptyComponent={<Text style={styles.value}>No notes yet.</Text>}
+          ListEmptyComponent={<Text style={shared.value}>No notes yet.</Text>}
         />
       </View>
     </ScreenContainer>
@@ -123,41 +123,5 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-  },
-  value: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-  },
-  itemRow: {
-    paddingVertical: 8,
-    borderBottomColor: COLORS.SECONDARY_ACCENT,
-    borderBottomWidth: 1,
-  },
-  itemTitle: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: '600',
-  },
-  itemMeta: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  itemBody: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    marginTop: 6,
-  },
-  moreHint: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginTop: 4,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 8,
   },
 });
