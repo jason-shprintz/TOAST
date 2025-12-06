@@ -1,10 +1,22 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { RootStore } from './RootStore';
 
 const StoreContext = createContext<RootStore | null>(null);
 
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const rootStore = React.useMemo(() => new RootStore(), []);
+
+  // Initialize and load persisted notes from SQLite on app start
+  useEffect(() => {
+    (async () => {
+      try {
+        await rootStore.coreStore.loadNotes();
+      } catch (e) {
+        console.warn('Failed to load notes on startup:', e);
+      }
+    })();
+    // No cleanup required for DB load
+  }, [rootStore]);
 
   return (
     <StoreContext.Provider value={rootStore}>{children}</StoreContext.Provider>

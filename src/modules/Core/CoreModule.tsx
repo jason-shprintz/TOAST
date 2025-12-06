@@ -27,6 +27,8 @@ export default observer(function CoreModule() {
                 navigation.navigate('Flashlight');
               } else if (tool.id === 'device-status') {
                 navigation.navigate('DeviceStatus');
+              } else if (tool.id === 'notepad') {
+                navigation.navigate('Notepad');
               } else {
                 navigation.navigate('ComingSoon', {
                   title: tool.name,

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
 import Torch from 'react-native-torch';
 import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -7,11 +7,34 @@ import NetInfo, {
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
+// SQLite is optional; ensure dependency is installed before use
+let SQLite: any;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  SQLite = require('react-native-sqlite-storage');
+} catch {
+  SQLite = null as any;
+}
 
 export interface Tool {
   id: string;
   name: string;
   icon: string;
+}
+
+export type NoteInputType = 'text' | 'sketch';
+export type NoteCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
+
+export interface Note {
+  id: string;
+  createdAt: number; // epoch ms
+  latitude?: number;
+  longitude?: number;
+  category: NoteCategory;
+  type: NoteInputType; // text or sketch
+  text?: string;
+  sketchDataUri?: string; // placeholder for sketch image
+  photoUris: string[]; // attached photos (uris)
 }
 
 export class CoreStore {
@@ -46,7 +69,13 @@ export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(
+      this,
+      {
+        notesByCategory: computed({ equals: comparer.structural }),
+      },
+      { autoBind: true },
+    );
     // Keep torch consistent when app state changes (best-effort)
     this.appStateSubscription = AppState.addEventListener(
       'change',
@@ -309,12 +338,14 @@ export class CoreStore {
     try {
       const level = await DeviceInfo.getBatteryLevel();
       const power = await DeviceInfo.getPowerState();
-      this.batteryLevel = level;
       const charging =
         power.batteryState === 'charging' ||
         power.batteryState === 'full' ||
         power.charging === true;
-      this.isCharging = charging;
+      runInAction(() => {
+        this.batteryLevel = level;
+        this.isCharging = charging;
+      });
 
       if (this.lastBatterySample) {
         const now = Date.now();
@@ -324,13 +355,19 @@ export class CoreStore {
           const ratePerMin = dLevel / dtMin;
           if (ratePerMin > 0) {
             const minutesLeft = level / ratePerMin;
-            this.batteryEstimateMinutes = minutesLeft;
+            runInAction(() => {
+              this.batteryEstimateMinutes = minutesLeft;
+            });
           }
         } else if (charging || dLevel < 0) {
-          this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
+          runInAction(() => {
+            this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
+          });
         }
       }
-      this.lastBatterySample = { level, at: Date.now() };
+      runInAction(() => {
+        this.lastBatterySample = { level, at: Date.now() };
+      });
     } catch {
       // ignore
     }
@@ -362,7 +399,9 @@ export class CoreStore {
       if (hasEstimate || expired) {
         if (!hasEstimate && this.batteryLevel != null && !this.isCharging) {
           // Fallback baseline 8h at 100%
-          this.batteryEstimateMinutes = Math.round(this.batteryLevel * 480);
+          runInAction(() => {
+            this.batteryEstimateMinutes = Math.round(this.batteryLevel! * 480);
+          });
         }
         this.clearBatteryIntervals();
         this.batterySlowIv = setInterval(this.sampleBattery, 60000);
@@ -398,8 +437,10 @@ export class CoreStore {
         DeviceInfo.getTotalDiskCapacity(),
         DeviceInfo.getFreeDiskStorage(),
       ]);
-      this.storageTotal = total ?? null;
-      this.storageFree = free ?? null;
+      runInAction(() => {
+        this.storageTotal = total ?? null;
+        this.storageFree = free ?? null;
+      });
     } catch {
       // ignore
     }
@@ -416,7 +457,9 @@ export class CoreStore {
   private startNetSubscription = () => {
     if (this.netUnsub) return;
     this.netUnsub = NetInfo.addEventListener(state => {
-      this.netInfo = state;
+      runInAction(() => {
+        this.netInfo = state;
+      });
     });
   };
 
@@ -442,11 +485,15 @@ export class CoreStore {
   private gpsGetFix = () => {
     Geolocation.getCurrentPosition(
       pos => {
-        this.lastFix = pos;
-        this.locationError = null;
+        runInAction(() => {
+          this.lastFix = pos;
+          this.locationError = null;
+        });
       },
       err => {
-        this.locationError = err.message;
+        runInAction(() => {
+          this.locationError = err.message;
+        });
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
     );
@@ -471,10 +518,14 @@ export class CoreStore {
         if (this.gpsIv) clearInterval(this.gpsIv);
         this.gpsIv = setInterval(() => this.gpsGetFix(), 60000);
       } else {
-        this.locationError = 'Location permission not granted';
+        runInAction(() => {
+          this.locationError = 'Location permission not granted';
+        });
       }
     } catch {
-      this.locationError = 'Location permission error';
+      runInAction(() => {
+        this.locationError = 'Location permission error';
+      });
     }
   }
 
@@ -519,7 +570,200 @@ export class CoreStore {
     this.stopGpsPolling();
   };
 
-  // Cleanup on store disposal
+  // --------------------------------------------------------------------
+  // ===== Notepad =====
+  // --------------------------------------------------------------------
+  notes: Note[] = [];
+  categories: NoteCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
+  private notesDb: any | null = null;
+
+  private generateId() {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  async createNote(params: {
+    category?: NoteCategory;
+    type: NoteInputType;
+    text?: string;
+    sketchDataUri?: string;
+  }) {
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+
+    try {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        await new Promise<void>(resolve => {
+          Geolocation.getCurrentPosition(
+            pos => {
+              latitude = pos.coords.latitude;
+              longitude = pos.coords.longitude;
+              resolve();
+            },
+            () => resolve(),
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 },
+          );
+        });
+      }
+    } catch {
+      // Location unavailable, proceed without it
+    }
+
+    const note: Note = {
+      id: this.generateId(),
+      createdAt: Date.now(),
+      ...(latitude !== undefined &&
+        longitude !== undefined && { latitude, longitude }),
+      category: params.category ?? 'General',
+      type: params.type,
+      text: params.text,
+      sketchDataUri: params.sketchDataUri,
+      photoUris: [],
+    };
+
+    runInAction(() => {
+      this.notes.unshift(note);
+    });
+    await this.persistNote(note);
+  }
+
+  setNoteCategory(noteId: string, category: NoteCategory) {
+    const idx = this.notes.findIndex(n => n.id === noteId);
+    if (idx >= 0) {
+      runInAction(() => {
+        this.notes[idx].category = category;
+      });
+      this.updateNote(this.notes[idx]);
+    }
+  }
+
+  attachPhoto(noteId: string, uri: string) {
+    const note = this.notes.find(item => item.id === noteId);
+    if (note) {
+      runInAction(() => {
+        note.photoUris.push(uri);
+      });
+      this.updateNote(note);
+    }
+  }
+
+  get recentNotesTop20(): Note[] {
+    return this.notes.slice(0, 20);
+  }
+
+  get notesByCategory(): Record<NoteCategory, Note[]> {
+    const map: Record<NoteCategory, Note[]> = {
+      General: [],
+      Work: [],
+      Personal: [],
+      Ideas: [],
+    };
+    for (const n of this.notes) {
+      map[n.category].push(n);
+    }
+    return map;
+  }
+
+  // ===== SQLite persistence =====
+  async initNotesDb() {
+    if (this.notesDb) return;
+    if (!SQLite) return;
+    try {
+      SQLite.enablePromise?.(true);
+      this.notesDb = await SQLite.openDatabase({
+        name: 'toast.db',
+        location: 'default',
+      });
+      await this.notesDb.executeSql(
+        'CREATE TABLE IF NOT EXISTS notes (' +
+          'id TEXT PRIMARY KEY NOT NULL,' +
+          'createdAt INTEGER NOT NULL,' +
+          'latitude REAL,' +
+          'longitude REAL,' +
+          'category TEXT NOT NULL,' +
+          "type TEXT NOT NULL CHECK(type IN ('text','sketch'))," +
+          'text TEXT,' +
+          'sketchDataUri TEXT,' +
+          'photoUris TEXT' +
+          ')',
+      );
+    } catch (error) {
+      console.error('Failed to initialize notes database:', error);
+      this.notesDb = null;
+    }
+  }
+
+  async loadNotes() {
+    await this.initNotesDb();
+    if (!this.notesDb) return;
+    const res = await this.notesDb.executeSql(
+      'SELECT * FROM notes ORDER BY createdAt DESC',
+    );
+    const rows = res[0].rows;
+    const loaded: Note[] = [];
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows.item(i);
+      loaded.push({
+        id: r.id,
+        createdAt: r.createdAt,
+        latitude: r.latitude ?? undefined,
+        longitude: r.longitude ?? undefined,
+        category: r.category,
+        type: r.type,
+        text: r.text ?? undefined,
+        sketchDataUri: r.sketchDataUri ?? undefined,
+        photoUris: (() => {
+          if (!r.photoUris) return [];
+          try {
+            return JSON.parse(r.photoUris);
+          } catch (e) {
+            console.warn('Failed to parse photoUris for note:', r.id, e);
+            return [];
+          }
+        })(),
+      });
+    }
+    runInAction(() => {
+      this.notes = loaded;
+    });
+  }
+
+  async persistNote(note: Note) {
+    try {
+      await this.initNotesDb();
+      if (!this.notesDb) return;
+      await this.notesDb.executeSql(
+        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
+        [
+          note.id,
+          note.createdAt,
+          note.latitude ?? null,
+          note.longitude ?? null,
+          note.category,
+          note.type,
+          note.text ?? null,
+          note.sketchDataUri ?? null,
+          JSON.stringify(note.photoUris ?? []),
+        ],
+      );
+    } catch (error) {
+      console.error('Failed to persist note:', error);
+      throw error;
+    }
+  }
+
+  async updateNote(note: Note) {
+    try {
+      await this.persistNote(note);
+    } catch (error) {
+      console.error('Failed to update note:', error);
+      throw error;
+    }
+  }
+
+  // --------------------------------------------------------------------
+  // ==== Cleanup on store disposal ====
+  // --------------------------------------------------------------------
   dispose() {
     this.stopSOS();
     this.stopStrobe();
