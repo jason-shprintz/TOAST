@@ -10,6 +10,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
@@ -148,13 +149,21 @@ export default observer(function NewNoteScreen() {
               <View style={styles.inline}>
                 <Button
                   title="Save Note"
-                  onPress={() => {
-                    core.createNote({ type: noteType, text, category });
-                    // Return to previous screen (Notepad)
-                    // Prefer goBack to avoid hard-coding route names
-                    if (navigation && 'goBack' in navigation) {
-                      // @ts-ignore
-                      navigation.goBack();
+                  onPress={async () => {
+                    try {
+                      await core.createNote({ type: noteType, text, category });
+                      // Return to previous screen (Notepad)
+                      // Prefer goBack to avoid hard-coding route names
+                      if (navigation && 'goBack' in navigation) {
+                        // @ts-ignore
+                        navigation.goBack();
+                      }
+                    } catch (error) {
+                      Alert.alert(
+                        'Error',
+                        'Failed to save note. Please try again.',
+                      );
+                      console.error('Failed to create note:', error);
                     }
                   }}
                 />
