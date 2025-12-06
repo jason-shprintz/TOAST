@@ -762,26 +762,36 @@ export class CoreStore {
   }
 
   async persistNote(note: Note) {
-    await this.initNotesDb();
-    if (!this.notesDb) return;
-    await this.notesDb.executeSql(
-      'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
-      [
-        note.id,
-        note.createdAt,
-        note.latitude ?? null,
-        note.longitude ?? null,
-        note.category,
-        note.type,
-        note.text ?? null,
-        note.sketchDataUri ?? null,
-        JSON.stringify(note.photoUris ?? []),
-      ],
-    );
+    try {
+      await this.initNotesDb();
+      if (!this.notesDb) return;
+      await this.notesDb.executeSql(
+        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
+        [
+          note.id,
+          note.createdAt,
+          note.latitude ?? null,
+          note.longitude ?? null,
+          note.category,
+          note.type,
+          note.text ?? null,
+          note.sketchDataUri ?? null,
+          JSON.stringify(note.photoUris ?? []),
+        ],
+      );
+    } catch (error) {
+      console.error('Failed to persist note:', error);
+      throw error;
+    }
   }
 
   async updateNote(note: Note) {
-    await this.persistNote(note);
+    try {
+      await this.persistNote(note);
+    } catch (error) {
+      console.error('Failed to update note:', error);
+      throw error;
+    }
   }
 
   // --------------------------------------------------------------------
