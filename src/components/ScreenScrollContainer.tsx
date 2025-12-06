@@ -8,10 +8,10 @@ type Props = {
 
 /**
  * A container component that wraps its children in a scrollable view.
- * 
+ *
  * @param style - Optional styles to apply to the scroll view's content container.
  * @param children - The components or elements to be rendered inside the scrollable container.
- * 
+ *
  * @returns A `ScrollView` with the provided children and styles.
  */
 export default function ScreenScrollContainer({
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: COLORS.BACKGROUND,
     paddingTop: 60,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     alignItems: 'center',
   },

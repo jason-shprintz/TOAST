@@ -1,18 +1,18 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import { MAX_TITLE_LENGTH } from './constants';
+import ScreenScrollContainer from '../../components/ScreenScrollContainer';
 
 export default observer(function SavedNotesScreen() {
   const core = useCoreStore();
   const byCat = core.notesByCategory;
   return (
-    <ScreenContainer>
+    <ScreenScrollContainer>
       <LogoHeader />
       <SectionHeader>Saved Notes</SectionHeader>
       {core.categories.map(cat => (
@@ -34,7 +34,7 @@ export default observer(function SavedNotesScreen() {
           )}
         </View>
       ))}
-    </ScreenContainer>
+    </ScreenScrollContainer>
   );
 });
 

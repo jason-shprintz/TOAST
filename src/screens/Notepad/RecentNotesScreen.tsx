@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
-import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import { MAX_TITLE_LENGTH } from './constants';
+import ScreenContainer from '../../components/ScreenContainer';
 
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
@@ -16,6 +16,7 @@ export default observer(function RecentNotesScreen() {
       <SectionHeader>Recent Notes</SectionHeader>
       <View style={styles.card}>
         <FlatList
+          style={styles.list}
           data={core.recentNotesTop20}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
@@ -45,6 +46,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
+    marginBottom: 16,
+    flex: 1,
+  },
+  list: {
+    flex: 1,
   },
   value: {
     fontSize: 16,
