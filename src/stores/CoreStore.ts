@@ -647,6 +647,22 @@ export class CoreStore {
     }
   }
 
+  async deleteNote(noteId: string) {
+    // Remove from in-memory list immediately
+    runInAction(() => {
+      this.notes = this.notes.filter(n => n.id !== noteId);
+    });
+    // Remove from SQLite if available
+    try {
+      await this.initNotesDb();
+      if (!this.notesDb) return;
+      await this.notesDb.executeSql('DELETE FROM notes WHERE id = ?', [noteId]);
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+      // Do not rethrow to avoid crashing UI; optionally we could reload notes
+    }
+  }
+
   get recentNotesTop20(): Note[] {
     return this.notes.slice(0, 20);
   }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
@@ -64,6 +65,33 @@ export default observer(function SavedNotesScreen() {
                       previewText.length > MAX_TITLE_LENGTH && (
                         <Text style={styles.moreHint}>Show more…</Text>
                       )}
+                    <View style={styles.actionsRow}>
+                      <TouchableOpacity
+                        accessibilityLabel="Delete note"
+                        accessibilityRole="button"
+                        style={styles.trashButton}
+                        onPress={() => {
+                          Alert.alert(
+                            'Delete Note',
+                            'Are you sure you want to delete this note?',
+                            [
+                              { text: 'Cancel', style: 'cancel' },
+                              {
+                                text: 'Delete',
+                                style: 'destructive',
+                                onPress: () => core.deleteNote(n.id),
+                              },
+                            ],
+                          );
+                        }}
+                      >
+                        <Icon
+                          name="trash-outline"
+                          size={18}
+                          color={COLORS.PRIMARY_DARK}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </TouchableOpacity>
               );
@@ -128,5 +156,13 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
     marginTop: 4,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+  },
+  trashButton: {
+    padding: 4,
   },
 });
