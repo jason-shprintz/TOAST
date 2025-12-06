@@ -692,7 +692,19 @@ export class CoreStore {
         name: 'toast.db',
         location: 'default',
       });
-      await this.notesDb.executeSql(/* ... */);
+      await this.notesDb.executeSql(
+        'CREATE TABLE IF NOT EXISTS notes (' +
+          'id TEXT PRIMARY KEY NOT NULL,' +
+          'createdAt INTEGER NOT NULL,' +
+          'latitude REAL,' +
+          'longitude REAL,' +
+          'category TEXT NOT NULL,' +
+          "type TEXT NOT NULL CHECK(type IN ('text','sketch'))," +
+          'text TEXT,' +
+          'sketchDataUri TEXT,' +
+          'photoUris TEXT' +
+          ')',
+      );
     } catch (error) {
       console.error('Failed to initialize notes database:', error);
       this.notesDb = null;
