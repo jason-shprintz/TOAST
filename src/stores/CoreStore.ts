@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
 import Torch from 'react-native-torch';
 import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -69,7 +69,13 @@ export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
 
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
+    makeAutoObservable(
+      this,
+      {
+        notesByCategory: computed({ equals: comparer.structural }),
+      },
+      { autoBind: true },
+    );
     // Keep torch consistent when app state changes (best-effort)
     this.appStateSubscription = AppState.addEventListener(
       'change',
