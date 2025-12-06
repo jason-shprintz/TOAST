@@ -745,7 +745,15 @@ export class CoreStore {
         type: r.type,
         text: r.text ?? undefined,
         sketchDataUri: r.sketchDataUri ?? undefined,
-        photoUris: r.photoUris ? JSON.parse(r.photoUris) : [],
+        photoUris: (() => {
+          if (!r.photoUris) return [];
+          try {
+            return JSON.parse(r.photoUris);
+          } catch (e) {
+            console.warn('Failed to parse photoUris for note:', r.id, e);
+            return [];
+          }
+        })(),
       });
     }
     runInAction(() => {
