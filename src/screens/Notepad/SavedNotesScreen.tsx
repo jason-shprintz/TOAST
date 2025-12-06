@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
@@ -11,6 +11,7 @@ import ScreenScrollContainer from '../../components/ScreenScrollContainer';
 export default observer(function SavedNotesScreen() {
   const core = useCoreStore();
   const byCat = core.notesByCategory;
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   return (
     <ScreenScrollContainer>
       <LogoHeader />
@@ -21,16 +22,52 @@ export default observer(function SavedNotesScreen() {
           {byCat[cat].length === 0 ? (
             <Text style={styles.value}>No notes in this category.</Text>
           ) : (
-            byCat[cat].map(n => (
-              <View key={n.id} style={styles.itemRow}>
-                <Text style={styles.itemTitle}>
-                  {n.text?.slice(0, MAX_TITLE_LENGTH) || '(Untitled)'}
-                </Text>
-                <Text style={styles.itemMeta}>
-                  {new Date(n.createdAt).toLocaleString()}
-                </Text>
-              </View>
-            ))
+            byCat[cat].map(n => {
+              const isExpanded = expandedId === n.id;
+              const previewText = n.text || '';
+              return (
+                <TouchableOpacity
+                  key={n.id}
+                  accessibilityRole="button"
+                  onPress={() =>
+                    setExpandedId(prev => (prev === n.id ? null : n.id))
+                  }
+                >
+                  <View style={styles.itemRow}>
+                    <Text
+                      style={styles.itemTitle}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {previewText
+                        ? previewText.slice(0, MAX_TITLE_LENGTH)
+                        : '(Untitled)'}
+                    </Text>
+                    <Text style={styles.itemMeta}>
+                      {new Date(n.createdAt).toLocaleString()}
+                    </Text>
+                    {isExpanded ? (
+                      <Text style={styles.itemBodyExpanded}>
+                        {previewText || ''}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={styles.itemBody}
+                        numberOfLines={3}
+                        ellipsizeMode="tail"
+                      >
+                        {previewText || ''}
+                      </Text>
+                    )}
+                    {!isExpanded &&
+                      previewText &&
+                      previewText.length > MAX_TITLE_LENGTH && (
+                        <Text style={styles.moreHint}>Show more…</Text>
+                      )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })
           )}
         </View>
       ))}
@@ -75,5 +112,21 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
     opacity: 0.8,
     marginTop: 2,
+  },
+  itemBody: {
+    fontSize: 14,
+    color: COLORS.PRIMARY_DARK,
+    marginTop: 6,
+  },
+  itemBodyExpanded: {
+    fontSize: 14,
+    color: COLORS.PRIMARY_DARK,
+    marginTop: 6,
+  },
+  moreHint: {
+    fontSize: 12,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.7,
+    marginTop: 4,
   },
 });
