@@ -19,6 +19,7 @@ import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
@@ -28,6 +29,9 @@ export default observer(function NewNoteScreen() {
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const { isVisible } = useKeyboardStatus();
+  const keyboardVisibleHook = isVisible;
+
   return (
     <ScreenContainer>
       <KeyboardAvoidingView
@@ -124,7 +128,9 @@ export default observer(function NewNoteScreen() {
                 {noteType === 'text' ? 'Type Text' : 'Sketch'}
               </Text>
               <TextInput
-                style={styles.input}
+                style={
+                  keyboardVisibleHook ? styles.inputSmall : styles.inputLarge
+                }
                 placeholder="Type your note..."
                 multiline
                 value={text}
@@ -208,8 +214,18 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
-  input: {
-    minHeight: 150,
+  inputSmall: {
+    height: 100,
+    backgroundColor: 'rgba(0,0,0,0.06)',
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+    color: COLORS.PRIMARY_DARK,
+  },
+  inputLarge: {
+    height: 250,
     backgroundColor: 'rgba(0,0,0,0.06)',
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
