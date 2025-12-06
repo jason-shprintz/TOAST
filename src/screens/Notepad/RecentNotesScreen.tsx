@@ -149,11 +149,6 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
     marginTop: 6,
   },
-  itemBodyExpanded: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    marginTop: 6,
-  },
   moreHint: {
     fontSize: 12,
     color: COLORS.PRIMARY_DARK,
