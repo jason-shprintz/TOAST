@@ -30,7 +30,6 @@ export default observer(function NewNoteScreen() {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const { isVisible } = useKeyboardStatus();
-  const keyboardVisibleHook = isVisible;
 
   return (
     <ScreenContainer>
@@ -50,6 +49,9 @@ export default observer(function NewNoteScreen() {
                   <TouchableOpacity
                     style={styles.dropdownHeader}
                     onPress={() => setShowCategoryMenu(v => !v)}
+                    accessibilityLabel={`Category: ${category}`}
+                    accessibilityHint="Opens category selection menu"
+                    accessibilityRole="button"
                   >
                     <Text style={styles.dropdownHeaderText}>{category}</Text>
                     <Icon
@@ -80,6 +82,11 @@ export default observer(function NewNoteScreen() {
                   <TouchableOpacity
                     style={styles.dropdownHeader}
                     onPress={() => setShowTypeMenu(v => !v)}
+                    accessibilityLabel={`Note type: ${
+                      noteType === 'text' ? 'Type Text' : 'Sketch'
+                    }`}
+                    accessibilityHint="Opens note type selection menu"
+                    accessibilityRole="button"
                   >
                     <Text style={styles.dropdownHeaderText}>
                       {noteType === 'text' ? 'Type Text' : 'Sketch'}
@@ -115,6 +122,9 @@ export default observer(function NewNoteScreen() {
                   onPress={() => {
                     /* placeholder attach photo */
                   }}
+                  accessibilityLabel="Attach photo"
+                  accessibilityHint="Opens camera to attach a photo to your note"
+                  accessibilityRole="button"
                 >
                   <Icon
                     name="camera-outline"
@@ -128,9 +138,7 @@ export default observer(function NewNoteScreen() {
                 {noteType === 'text' ? 'Type Text' : 'Sketch'}
               </Text>
               <TextInput
-                style={
-                  keyboardVisibleHook ? styles.inputSmall : styles.inputLarge
-                }
+                style={isVisible ? styles.inputSmall : styles.inputLarge}
                 placeholder="Type your note..."
                 multiline
                 value={text}
@@ -185,7 +193,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
-    overflow: 'scroll',
   },
   logoCenter: {
     alignItems: 'center',
@@ -282,31 +289,5 @@ const styles = StyleSheet.create({
   iconButton: {
     paddingHorizontal: 10,
     paddingVertical: 8,
-  },
-  sketchBox: {
-    height: 120,
-    backgroundColor: 'rgba(0,0,0,0.06)',
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
-    justifyContent: 'center',
-  },
-  photoBox: {
-    height: 120,
-    backgroundColor: 'rgba(0,0,0,0.06)',
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
-    justifyContent: 'center',
-  },
-  photo: {
-    width: '100%',
-    height: 180,
-    borderRadius: 8,
-    marginBottom: 12,
   },
 });
