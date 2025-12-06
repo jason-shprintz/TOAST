@@ -732,7 +732,9 @@ export class CoreStore {
         photoUris: r.photoUris ? JSON.parse(r.photoUris) : [],
       });
     }
-    this.notes = loaded;
+    runInAction(() => {
+      this.notes = loaded;
+    });
   }
 
   async persistNote(note: Note) {
