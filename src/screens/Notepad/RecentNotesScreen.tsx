@@ -6,6 +6,7 @@ import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
+import { MAX_TITLE_LENGTH } from './constants';
 
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
@@ -20,7 +21,7 @@ export default observer(function RecentNotesScreen() {
           renderItem={({ item }) => (
             <View style={styles.itemRow}>
               <Text style={styles.itemTitle}>
-                {item.text?.slice(0, 40) || '(Untitled)'}
+                {item.text?.slice(0, MAX_TITLE_LENGTH) || '(Untitled)'}
               </Text>
               <Text style={styles.itemMeta}>
                 {new Date(item.createdAt).toLocaleString()} • {item.category}
