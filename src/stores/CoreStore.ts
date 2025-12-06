@@ -677,10 +677,7 @@ export class CoreStore {
   }
 
   get recentNotesTop20(): Note[] {
-    return this.notes
-      .slice()
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, 20);
+    return this.notes.slice(0, 20);
   }
 
   get notesByCategory(): Record<NoteCategory, Note[]> {
