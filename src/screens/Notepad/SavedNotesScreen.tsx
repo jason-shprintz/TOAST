@@ -70,7 +70,8 @@ export default observer(function SavedNotesScreen() {
                         accessibilityLabel="Delete note"
                         accessibilityRole="button"
                         style={shared.trashButton}
-                        onPress={() => {
+                        onPress={e => {
+                          e.stopPropagation();
                           Alert.alert(
                             'Delete Note',
                             'Are you sure you want to delete this note?',
