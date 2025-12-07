@@ -10,7 +10,6 @@ import Torch from 'react-native-torch';
 // SQLite is optional; ensure dependency is installed before use
 let SQLite: any;
 try {
-   
   SQLite = require('react-native-sqlite-storage');
 } catch {
   SQLite = null as any;
