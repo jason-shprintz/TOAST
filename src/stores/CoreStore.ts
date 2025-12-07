@@ -648,18 +648,30 @@ export class CoreStore {
   }
 
   async deleteNote(noteId: string) {
-    // Remove from in-memory list immediately
-    runInAction(() => {
-      this.notes = this.notes.filter(n => n.id !== noteId);
-    });
-    // Remove from SQLite if available
+    // Remove from SQLite first to ensure consistency
     try {
       await this.initNotesDb();
-      if (!this.notesDb) return;
+      if (!this.notesDb) {
+        // If no database, just remove from memory
+        runInAction(() => {
+          this.notes = this.notes.filter(n => n.id !== noteId);
+        });
+        return;
+      }
       await this.notesDb.executeSql('DELETE FROM notes WHERE id = ?', [noteId]);
+      // Only remove from in-memory list after successful database deletion
+      runInAction(() => {
+        this.notes = this.notes.filter(n => n.id !== noteId);
+      });
     } catch (error) {
-      console.error('Failed to delete note:', error);
-      // Do not rethrow to avoid crashing UI; optionally we could reload notes
+      console.error('Failed to delete note from database:', noteId, error);
+      // Reload notes from database to recover from inconsistent state
+      try {
+        await this.loadNotes();
+        console.log('Successfully reloaded notes from database after delete failure');
+      } catch (reloadError) {
+        console.error('Failed to reload notes after delete failure - app state may be inconsistent:', reloadError);
+      }
     }
   }
 
