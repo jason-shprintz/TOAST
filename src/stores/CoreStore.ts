@@ -647,6 +647,34 @@ export class CoreStore {
     }
   }
 
+  async deleteNote(noteId: string) {
+    // Remove from SQLite first to ensure consistency
+    try {
+      await this.initNotesDb();
+      if (!this.notesDb) {
+        // If no database, just remove from memory
+        runInAction(() => {
+          this.notes = this.notes.filter(n => n.id !== noteId);
+        });
+        return;
+      }
+      await this.notesDb.executeSql('DELETE FROM notes WHERE id = ?', [noteId]);
+      // Only remove from in-memory list after successful database deletion
+      runInAction(() => {
+        this.notes = this.notes.filter(n => n.id !== noteId);
+      });
+    } catch (error) {
+      console.error('Failed to delete note from database:', noteId, error);
+      // Reload notes from database to recover from inconsistent state
+      try {
+        await this.loadNotes();
+        console.log('Successfully reloaded notes from database after delete failure');
+      } catch (reloadError) {
+        console.error('Failed to reload notes after delete failure - app state may be inconsistent:', reloadError);
+      }
+    }
+  }
+
   get recentNotesTop20(): Note[] {
     return this.notes.slice(0, 20);
   }

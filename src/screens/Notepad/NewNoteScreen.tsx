@@ -31,6 +31,7 @@ export default observer(function NewNoteScreen() {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const { isVisible } = useKeyboardStatus();
+  const hasText: boolean = text.trim().length > 0;
 
   return (
     <ScreenContainer>
@@ -135,20 +136,10 @@ export default observer(function NewNoteScreen() {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>
-                {noteType === 'text' ? 'Type Text' : 'Sketch'}
-              </Text>
-              <TextInput
-                style={isVisible ? styles.inputSmall : styles.inputLarge}
-                placeholder="Type your note..."
-                multiline
-                value={text}
-                onChangeText={setText}
-              />
-
               <View style={styles.inline}>
                 <Button
                   title="Save Note"
+                  disabled={!hasText}
                   onPress={async () => {
                     try {
                       await core.createNote({ type: noteType, text, category });
@@ -169,11 +160,23 @@ export default observer(function NewNoteScreen() {
                 />
                 <Button
                   title="Clear Note"
+                  disabled={!hasText}
                   onPress={() => {
                     setText('');
                   }}
                 />
               </View>
+
+              <Text style={styles.label}>
+                {noteType === 'text' ? 'Type Text' : 'Sketch'}
+              </Text>
+              <TextInput
+                style={isVisible ? styles.inputSmall : styles.inputLarge}
+                placeholder="Type your note..."
+                multiline
+                value={text}
+                onChangeText={setText}
+              />
             </View>
           </View>
         </TouchableWithoutFeedback>

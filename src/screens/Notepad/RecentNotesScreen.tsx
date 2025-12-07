@@ -1,34 +1,109 @@
-import React from 'react';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
-import ScreenContainer from '../../components/ScreenContainer';
+import React, { useMemo, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { observer } from 'mobx-react-lite';
 import { useCoreStore } from '../../stores';
 import { MAX_TITLE_LENGTH } from './constants';
+import ScreenContainer from '../../components/ScreenContainer';
+import { noteListSharedStyles as shared } from './noteListStyles';
 
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const data = useMemo(() => core.recentNotesTop20, [core.recentNotesTop20]);
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Recent Notes</SectionHeader>
       <View style={styles.card}>
         <FlatList
-          data={core.recentNotesTop20}
+          style={styles.list}
+          data={data}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemRow}>
-              <Text style={styles.itemTitle}>
-                {item.text?.slice(0, MAX_TITLE_LENGTH) || '(Untitled)'}
-              </Text>
-              <Text style={styles.itemMeta}>
-                {new Date(item.createdAt).toLocaleString()} • {item.category}
-              </Text>
-            </View>
-          )}
-          ListEmptyComponent={<Text style={styles.value}>No notes yet.</Text>}
+          renderItem={({ item }) => {
+            const isExpanded = expandedId === item.id;
+            const previewText = item.text || '';
+            return (
+              <TouchableOpacity
+                accessibilityRole="button"
+                onPress={() =>
+                  setExpandedId(prev => (prev === item.id ? null : item.id))
+                }
+              >
+                <View style={shared.itemRow}>
+                  <Text
+                    style={shared.itemTitle}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {previewText
+                      ? previewText.slice(0, MAX_TITLE_LENGTH)
+                      : '(Untitled)'}
+                  </Text>
+
+                  {isExpanded ? (
+                    <Text style={shared.itemBodyExpanded}>
+                      {previewText || ''}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={shared.itemBody}
+                      numberOfLines={3}
+                      ellipsizeMode="tail"
+                    >
+                      {previewText || ''}
+                    </Text>
+                  )}
+                  {!isExpanded && previewText && (
+                    <Text style={shared.moreHint}>Show more…</Text>
+                  )}
+                  <View style={shared.actionsRow}>
+                    <Text style={shared.itemMeta}>
+                      {new Date(item.createdAt).toLocaleString()} •{' '}
+                      {item.category}
+                    </Text>
+                    <TouchableOpacity
+                      accessibilityLabel="Delete note"
+                      accessibilityRole="button"
+                      style={shared.trashButton}
+                      onPress={e => {
+                        e.stopPropagation();
+                        Alert.alert(
+                          'Delete Note',
+                          'Are you sure you want to delete this note?',
+                          [
+                            { text: 'Cancel', style: 'cancel' },
+                            {
+                              text: 'Delete',
+                              style: 'destructive',
+                              onPress: () => core.deleteNote(item.id),
+                            },
+                          ],
+                        );
+                      }}
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={18}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+          ListEmptyComponent={<Text style={shared.value}>No notes yet.</Text>}
         />
       </View>
     </ScreenContainer>
@@ -45,25 +120,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
+    marginBottom: 16,
+    flex: 1,
   },
-  value: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-  },
-  itemRow: {
-    paddingVertical: 8,
-    borderBottomColor: COLORS.SECONDARY_ACCENT,
-    borderBottomWidth: 1,
-  },
-  itemTitle: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: '600',
-  },
-  itemMeta: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.8,
-    marginTop: 2,
+  list: {
+    flex: 1,
   },
 });
