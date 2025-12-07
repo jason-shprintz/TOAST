@@ -1,14 +1,14 @@
+import Slider from '@react-native-community/slider';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import SectionHeader from '../../components/SectionHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
-import { COLORS } from '../../theme';
-import { observer } from 'mobx-react-lite';
-import { useCoreStore } from '../../stores/StoreContext';
-import Slider from '@react-native-community/slider';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
 import Grid from '../../components/Grid';
+import LogoHeader from '../../components/LogoHeader';
+import PlaceholderCard from '../../components/PlaceholderCard';
+import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
+import { useCoreStore } from '../../stores/StoreContext';
+import { COLORS } from '../../theme';
 
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();

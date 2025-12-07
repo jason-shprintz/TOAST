@@ -1,16 +1,16 @@
-import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
-import Torch from 'react-native-torch';
-import { AppState, NativeEventSubscription } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import NetInfo, {
   NetInfoState,
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
+import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
+import { AppState, NativeEventSubscription } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
+import Torch from 'react-native-torch';
 // SQLite is optional; ensure dependency is installed before use
 let SQLite: any;
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+   
   SQLite = require('react-native-sqlite-storage');
 } catch {
   SQLite = null as any;

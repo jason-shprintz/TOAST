@@ -1,12 +1,12 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import PlaceholderCard from '../../components/PlaceholderCard';
-import SectionHeader from '../../components/SectionHeader';
-import LogoHeader from '../../components/LogoHeader';
-import Grid from '../../components/Grid';
-import { useCoreStore } from '../../stores';
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+import Grid from '../../components/Grid';
+import LogoHeader from '../../components/LogoHeader';
+import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
+import { useCoreStore } from '../../stores';
 
 export default observer(function CoreModule() {
   const navigation = useNavigation<any>();

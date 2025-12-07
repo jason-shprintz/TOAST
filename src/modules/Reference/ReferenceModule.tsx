@@ -1,10 +1,10 @@
-import React from 'react';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import { useNavigation } from '@react-navigation/native';
-import SectionHeader from '../../components/SectionHeader';
+import React from 'react';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
+import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
 
 export default function ReferenceModule() {
   const navigation = useNavigation<any>();

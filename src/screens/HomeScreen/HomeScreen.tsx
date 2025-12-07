@@ -8,12 +8,12 @@ import {
   Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Grid from '../../components/Grid';
+import LogoHeader from '../../components/LogoHeader';
+import ScreenScrollContainer from '../../components/ScreenScrollContainer';
+import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
-import LogoHeader from '../../components/LogoHeader';
-import SectionHeader from '../../components/SectionHeader';
-import Grid from '../../components/Grid';
-import ScreenScrollContainer from '../../components/ScreenScrollContainer';
 
 // Assign icons for each module
 const MODULES = [

@@ -1,11 +1,11 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import SectionHeader from '../../components/SectionHeader';
-import ScreenContainer from '../../components/ScreenContainer';
 import LogoHeader from '../../components/LogoHeader';
-import { COLORS } from '../../theme';
+import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
 import { useDeviceStatus } from '../../hooks/useDeviceStatus';
-import { observer } from 'mobx-react-lite';
+import { COLORS } from '../../theme';
 
 function DeviceStatusScreen() {
   const { storageText, batteryText, lastFixText, offlineText } =

@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React, { useMemo, useState } from 'react';
 import {
   StyleSheet,
@@ -9,12 +10,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
-import SectionHeader from '../../components/SectionHeader';
-import { COLORS } from '../../theme';
-import { observer } from 'mobx-react-lite';
-import { useCoreStore } from '../../stores';
-import { MAX_TITLE_LENGTH } from './constants';
 import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
+import { useCoreStore } from '../../stores';
+import { COLORS } from '../../theme';
+import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
 export default observer(function RecentNotesScreen() {

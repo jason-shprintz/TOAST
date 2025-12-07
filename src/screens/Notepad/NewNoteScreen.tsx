@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -12,15 +14,13 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import ScreenContainer from '../../components/ScreenContainer';
-import LogoHeader from '../../components/LogoHeader';
-import SectionHeader from '../../components/SectionHeader';
-import { COLORS } from '../../theme';
-import { observer } from 'mobx-react-lite';
-import { useCoreStore } from '../../stores';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import LogoHeader from '../../components/LogoHeader';
+import ScreenContainer from '../../components/ScreenContainer';
+import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
+import { useCoreStore } from '../../stores';
+import { COLORS } from '../../theme';
 
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();

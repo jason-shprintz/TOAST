@@ -1,16 +1,16 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import React from 'react';
+import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
-import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
-import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
-import NotepadScreen from '../screens/Notepad/NotepadScreen';
+import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
+import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 
