@@ -664,12 +664,13 @@ export class CoreStore {
         this.notes = this.notes.filter(n => n.id !== noteId);
       });
     } catch (error) {
-      console.error('Failed to delete note:', error);
+      console.error('Failed to delete note from database:', noteId, error);
       // Reload notes from database to recover from inconsistent state
       try {
         await this.loadNotes();
+        console.log('Successfully reloaded notes from database after delete failure');
       } catch (reloadError) {
-        console.error('Failed to reload notes after delete failure:', reloadError);
+        console.error('Failed to reload notes after delete failure - app state may be inconsistent:', reloadError);
       }
     }
   }
