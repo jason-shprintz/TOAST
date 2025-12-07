@@ -50,12 +50,11 @@ export default observer(function RecentNotesScreen() {
                       ? previewText.slice(0, MAX_TITLE_LENGTH)
                       : '(Untitled)'}
                   </Text>
-                  <Text style={shared.itemMeta}>
-                    {new Date(item.createdAt).toLocaleString()} •{' '}
-                    {item.category}
-                  </Text>
+
                   {isExpanded ? (
-                    <Text style={shared.itemBody}>{previewText || ''}</Text>
+                    <Text style={shared.itemBodyExpanded}>
+                      {previewText || ''}
+                    </Text>
                   ) : (
                     <Text
                       style={shared.itemBody}
@@ -65,12 +64,14 @@ export default observer(function RecentNotesScreen() {
                       {previewText || ''}
                     </Text>
                   )}
-                  {!isExpanded &&
-                    previewText &&
-                    previewText.length > MAX_TITLE_LENGTH && (
-                      <Text style={shared.moreHint}>Show more…</Text>
-                    )}
+                  {!isExpanded && previewText && (
+                    <Text style={shared.moreHint}>Show more…</Text>
+                  )}
                   <View style={shared.actionsRow}>
+                    <Text style={shared.itemMeta}>
+                      {new Date(item.createdAt).toLocaleString()} •{' '}
+                      {item.category}
+                    </Text>
                     <TouchableOpacity
                       accessibilityLabel="Delete note"
                       accessibilityRole="button"

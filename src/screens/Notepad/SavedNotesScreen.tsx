@@ -45,11 +45,11 @@ export default observer(function SavedNotesScreen() {
                         ? previewText.slice(0, MAX_TITLE_LENGTH)
                         : '(Untitled)'}
                     </Text>
-                    <Text style={shared.itemMeta}>
-                      {new Date(n.createdAt).toLocaleString()}
-                    </Text>
+
                     {isExpanded ? (
-                      <Text style={shared.itemBody}>{previewText || ''}</Text>
+                      <Text style={shared.itemBodyExpanded}>
+                        {previewText || ''}
+                      </Text>
                     ) : (
                       <Text
                         style={shared.itemBody}
@@ -59,12 +59,13 @@ export default observer(function SavedNotesScreen() {
                         {previewText || ''}
                       </Text>
                     )}
-                    {!isExpanded &&
-                      previewText &&
-                      previewText.length > MAX_TITLE_LENGTH && (
-                        <Text style={shared.moreHint}>Show more…</Text>
-                      )}
+                    {!isExpanded && previewText && (
+                      <Text style={shared.moreHint}>Show more…</Text>
+                    )}
                     <View style={shared.actionsRow}>
+                      <Text style={shared.itemMeta}>
+                        {new Date(n.createdAt).toLocaleString()}
+                      </Text>
                       <TouchableOpacity
                         accessibilityLabel="Delete note"
                         accessibilityRole="button"
@@ -109,16 +110,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
     marginTop: 12,
   },
   label: {
     fontSize: 14,
     color: COLORS.PRIMARY_DARK,
-    opacity: 0.9,
     marginBottom: 6,
     fontWeight: '700',
+    padding: 10,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    borderRadius: 12,
   },
   value: {
     fontSize: 16,
