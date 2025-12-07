@@ -114,16 +114,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   label: {
-    fontSize: 14,
+    fontSize: 18,
     color: COLORS.PRIMARY_DARK,
     marginBottom: 6,
     fontWeight: '700',
     padding: 10,
     backgroundColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 12,
-  },
-  value: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
   },
 });

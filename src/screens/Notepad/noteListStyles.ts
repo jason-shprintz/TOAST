@@ -5,6 +5,7 @@ export const noteListSharedStyles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
+    padding: 10,
   },
   itemRow: {
     paddingVertical: 8,

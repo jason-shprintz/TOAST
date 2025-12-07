@@ -10,11 +10,11 @@ type Props = {
 /**
  * Renders the Toast logo as a circular image with customizable size and style.
  *
- * @param size - The diameter of the logo in pixels. Defaults to 180.
+ * @param size - The diameter of the logo in pixels. Defaults to 120.
  * @param style - Optional additional styles to apply to the logo image.
  * @returns A React element displaying the Toast logo.
  */
-export default function LogoHeader({ size = 180, style }: Props) {
+export default function LogoHeader({ size = 120, style }: Props) {
   const dynamicStyle: StyleProp<ImageStyle> = [
     styles.base,
     {

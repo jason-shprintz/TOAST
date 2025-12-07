@@ -14,22 +14,62 @@ export default function ReferenceModule() {
       <SectionHeader>Reference</SectionHeader>
       <Grid>
         <PlaceholderCard
-          title="Book"
-          icon="book-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Book',
-              icon: 'book-outline',
-            })
-          }
-        />
-        <PlaceholderCard
           title="Bookmark"
           icon="bookmark-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
               title: 'Bookmark',
               icon: 'bookmark-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Emergency"
+          icon="medkit-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Emergency',
+              icon: 'medkit-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Flora"
+          icon="leaf-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Flora',
+              icon: 'leaf-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Fauna"
+          icon="paw-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Fauna',
+              icon: 'paw-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Gardening"
+          icon="flower-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Gardening',
+              icon: 'flower-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Hunting"
+          icon="compass-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Hunting',
+              icon: 'compass-outline',
             })
           }
         />
