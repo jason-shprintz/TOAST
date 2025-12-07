@@ -5,7 +5,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
-import SignalsModule from '../modules/Signals/SignalsModule';
+import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
@@ -30,7 +30,10 @@ export default function AppNavigator() {
         <Stack.Screen name="CoreModule" component={CoreModule} />
         <Stack.Screen name="NavigationModule" component={NavigationModule} />
         <Stack.Screen name="ReferenceModule" component={ReferenceModule} />
-        <Stack.Screen name="SignalsModule" component={SignalsModule} />
+        <Stack.Screen
+          name="CommunicationsModule"
+          component={CommunicationsModule}
+        />
         {/* Shared */}
         <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
         {/* Core Module */}

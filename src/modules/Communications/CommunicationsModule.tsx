@@ -6,12 +6,12 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 
-export default function SignalsModule() {
+export default function CommunicationsModule() {
   const navigation = useNavigation<any>();
   return (
     <ScreenContainer>
       <LogoHeader />
-      <SectionHeader>Signals</SectionHeader>
+      <SectionHeader>Communications</SectionHeader>
       <Grid>
         <PlaceholderCard
           title="Ham Radio"
@@ -20,6 +20,16 @@ export default function SignalsModule() {
             navigation.navigate('ComingSoon', {
               title: 'Ham Radio',
               icon: 'radio-outline',
+            })
+          }
+        />
+        <PlaceholderCard
+          title="Morse Code"
+          icon="code-outline"
+          onPress={() =>
+            navigation.navigate('ComingSoon', {
+              title: 'Morse Code',
+              icon: 'code-outline',
             })
           }
         />

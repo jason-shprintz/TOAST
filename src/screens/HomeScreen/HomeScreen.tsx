@@ -20,7 +20,11 @@ const MODULES = [
   { name: 'Core', screen: 'CoreModule', icon: 'apps-outline' },
   { name: 'Navigation', screen: 'NavigationModule', icon: 'compass-outline' },
   { name: 'Reference', screen: 'ReferenceModule', icon: 'book-outline' },
-  { name: 'Signals', screen: 'SignalsModule', icon: 'radio-outline' },
+  {
+    name: 'Comms',
+    screen: 'CommunicationsModule',
+    icon: 'call-outline',
+  },
 ];
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
