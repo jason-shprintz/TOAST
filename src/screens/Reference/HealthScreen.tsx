@@ -6,65 +6,50 @@ import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
-export default function ReferenceModule() {
+export default function HealthScreen() {
   const navigation = useNavigation<any>();
   return (
     <ScreenContainer>
       <LogoHeader />
-      <SectionHeader>Reference</SectionHeader>
+      <SectionHeader>Health</SectionHeader>
       <Grid>
         <PlaceholderCard
-          title="Bookmark"
-          icon="bookmark-outline"
+          title="Emergency"
+          icon="alert-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Bookmark',
-              icon: 'bookmark-outline',
+              title: 'Emergency',
+              icon: 'alert-outline',
             })
           }
         />
         <PlaceholderCard
-          title="Health"
+          title="Illness"
           icon="medkit-outline"
-          onPress={() => navigation.navigate('Health')}
-        />
-        <PlaceholderCard
-          title="Flora"
-          icon="leaf-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Flora',
-              icon: 'leaf-outline',
+              title: 'Illness',
+              icon: 'medkit-outline',
             })
           }
         />
         <PlaceholderCard
-          title="Fauna"
-          icon="paw-outline"
+          title="Injury"
+          icon="bandage-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Fauna',
-              icon: 'paw-outline',
+              title: 'Injury',
+              icon: 'bandage-outline',
             })
           }
         />
         <PlaceholderCard
-          title="Gardening"
-          icon="flower-outline"
+          title="Preventative"
+          icon="shield-checkmark-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Gardening',
-              icon: 'flower-outline',
-            })
-          }
-        />
-        <PlaceholderCard
-          title="Hunting"
-          icon="compass-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Hunting',
-              icon: 'compass-outline',
+              title: 'Preventative',
+              icon: 'shield-checkmark-outline',
             })
           }
         />

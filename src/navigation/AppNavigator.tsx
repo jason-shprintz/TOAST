@@ -13,6 +13,7 @@ import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
+import HealthScreen from '../screens/Reference/HealthScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,8 @@ export default function AppNavigator() {
         <Stack.Screen name="NewNote" component={NewNoteScreen} />
         <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
         <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
+        {/* Reference Module */}
+        <Stack.Screen name="Health" component={HealthScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
