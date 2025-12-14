@@ -45,7 +45,7 @@ export default function SurvivalScreen(): JSX.Element {
           />
           <CardTopic
             title="Water"
-            icon="rainy-outline"
+            icon="water-outline"
             onPress={() =>
               navigation.navigate('Category', {
                 category: categoryMap.Water,
@@ -56,7 +56,7 @@ export default function SurvivalScreen(): JSX.Element {
           />
           <CardTopic
             title="Shelter"
-            icon="alert-outline"
+            icon="home-outline"
             onPress={() =>
               navigation.navigate('Category', {
                 category: categoryMap.Shelter,
