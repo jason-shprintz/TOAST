@@ -16,22 +16,12 @@ export default function ReferenceModule() {
         <PlaceholderCard
           title="Bookmark"
           icon="bookmark-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Bookmark',
-              icon: 'bookmark-outline',
-            })
-          }
+          onPress={() => navigation.navigate('Bookmark')}
         />
         <PlaceholderCard
-          title="Emergency"
+          title="Health"
           icon="medkit-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Emergency',
-              icon: 'medkit-outline',
-            })
-          }
+          onPress={() => navigation.navigate('Health')}
         />
         <PlaceholderCard
           title="Flora"

@@ -73,6 +73,7 @@ export default function PlaceholderCard({
 const styles = StyleSheet.create({
   card: {
     width: '48%',
+    minWidth: 150,
     height: 130,
     borderRadius: 14,
     justifyContent: 'center',
@@ -90,5 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: COLORS.PRIMARY_DARK,
+    textAlign: 'center',
+    paddingHorizontal: 6,
   },
 });

@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   inputSmall: {
     height: 100,
-    backgroundColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   },
   inputLarge: {
     height: 250,
-    backgroundColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,

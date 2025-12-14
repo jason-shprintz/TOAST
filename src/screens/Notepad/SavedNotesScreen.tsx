@@ -107,7 +107,7 @@ export default observer(function SavedNotesScreen() {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    backgroundColor: COLORS.TOAST_BROWN,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
@@ -120,6 +120,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     padding: 10,
     backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 12,
+    borderRadius: 10,
   },
 });

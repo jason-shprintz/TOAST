@@ -1,0 +1,888 @@
+{
+  "metadata": {
+    "name": "TOAST First Aid Reference",
+    "version": "1.0.0",
+    "last_updated": "2025-12-07",
+    "disclaimer": "This information is general first aid guidance and is not a substitute for professional medical training or care. Always seek qualified medical help as soon as it is available.",
+    "categories": ["Emergency", "Injury", "Illness", "Preventive"],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
+  },
+  "entries": [
+    {
+      "id": "emergency_severe_bleeding",
+      "category": "Emergency",
+      "title": "Severe Bleeding",
+      "summary": "Control heavy bleeding from a wound when help is not immediately available.",
+      "difficulty": "intermediate",
+      "tags": ["bleeding", "hemorrhage", "wound", "trauma", "tourniquet"],
+      "steps": [
+        "Check that the area is safe before approaching the injured person.",
+        "Have the person lie down if possible to reduce the risk of fainting.",
+        "Expose the wound by carefully removing or cutting away clothing around it.",
+        "Place a clean cloth, bandage, or any clean absorbent material directly over the wound.",
+        "Apply firm, steady pressure with your hand or hands directly on the wound.",
+        "If blood soaks through the cloth, place additional cloth or pads on top and continue pressing. Do not remove the original cloth.",
+        "If the wound is on a limb and there is no suspected fracture, gently raise the limb above the level of the heart while maintaining pressure.",
+        "Continue direct pressure for at least 10–15 minutes without checking too often; lifting the cloth can restart bleeding.",
+        "If bleeding remains heavy and life-threatening despite firm direct pressure, apply a tourniquet if you have one and know how to use it.",
+        "Place the tourniquet 5–7 cm (2–3 inches) above the wound, between the wound and the heart, and never directly over a joint.",
+        "Tighten the tourniquet until the bleeding stops or significantly slows. It will usually be painful when effective.",
+        "Secure the tourniquet so it cannot loosen and note the time it was applied.",
+        "After bleeding is controlled, cover the person with a blanket or clothing to keep them warm and monitor for signs of shock such as pale skin, rapid pulse, or confusion.",
+        "Seek professional medical care as soon as it becomes available, even if the bleeding appears controlled."
+      ],
+      "do_not": [
+        "Do not remove blood-soaked cloths already on the wound; add new layers on top instead.",
+        "Do not apply a tourniquet unless bleeding is severe and not controlled by direct pressure.",
+        "Do not place a tourniquet directly over a joint or over sharp objects or debris.",
+        "Do not loosen a properly applied tourniquet unless instructed by a medical professional."
+      ],
+      "watch_for": [
+        "Continued heavy bleeding despite direct pressure.",
+        "Signs of shock: pale or clammy skin, rapid breathing, weakness, confusion, or loss of consciousness.",
+        "Loss of feeling or movement below the tourniquet site."
+      ],
+      "notes": [
+        "In a survival situation, a tourniquet can be made from a wide band of cloth and a rigid object used as a windlass to twist and tighten.",
+        "If professional help is delayed, monitor the person’s breathing and level of responsiveness frequently."
+      ]
+    },
+    {
+      "id": "emergency_cardiac_arrest_cpr",
+      "category": "Emergency",
+      "title": "Cardiac Arrest and CPR",
+      "summary": "Provide chest compressions when a person is not breathing and has no signs of circulation.",
+      "difficulty": "advanced",
+      "tags": [
+        "cpr",
+        "cardiac arrest",
+        "unresponsive",
+        "breathing",
+        "resuscitation"
+      ],
+      "steps": [
+        "Ensure the area is safe for you and the person.",
+        "Check responsiveness by speaking loudly and gently shaking their shoulder.",
+        "If there is no response, place the person on their back on a firm surface.",
+        "Open the airway by tilting the head back slightly and lifting the chin.",
+        "Look for normal breathing for no more than 10 seconds: watch the chest, listen for breath sounds, feel for air on your cheek.",
+        "If the person is not breathing or only gasping, begin chest compressions immediately.",
+        "Kneel beside the person’s chest. Place the heel of one hand in the center of the chest on the lower half of the breastbone, between the nipples.",
+        "Place your other hand on top of the first and interlock your fingers. Keep your arms straight and shoulders directly over your hands.",
+        "Press down hard and fast, compressing the chest about 5 cm (2 inches) in adults, allowing full recoil between compressions.",
+        "Aim for a rate of 100–120 compressions per minute (about two compressions per second).",
+        "If you are trained and willing to give rescue breaths: after 30 compressions, open the airway (head tilt–chin lift), pinch the nose closed, seal your mouth over theirs, and give 1 steady breath over 1 second. Watch for chest rise.",
+        "Give a second breath, then immediately resume chest compressions for another 30 compressions.",
+        "If you are not trained or do not wish to give rescue breaths, continue hands-only CPR with continuous chest compressions.",
+        "Continue CPR until the person shows clear signs of life (such as normal breathing or movement), you are physically unable to continue, or trained help becomes available.",
+        "If an automated external defibrillator (AED) becomes available, follow its voice prompts while continuing CPR as instructed."
+      ],
+      "do_not": [
+        "Do not spend more than 10 seconds checking for breathing or pulse if you are not trained.",
+        "Do not interrupt chest compressions for more than a few seconds unless absolutely necessary.",
+        "Do not give breaths if you are not comfortable or trained; continuous compressions are still helpful."
+      ],
+      "watch_for": [
+        "Return of normal breathing or purposeful movement.",
+        "Coughing or attempts to speak, which can indicate improved circulation.",
+        "Changes in skin color, such as improvement from blue or gray toward normal tone."
+      ],
+      "notes": [
+        "High-quality chest compressions are more important than perfect technique; focus on depth, rate, and full chest recoil.",
+        "If there are multiple rescuers, take turns doing compressions every 2 minutes to prevent fatigue."
+      ]
+    },
+    {
+      "id": "emergency_choking_adult_child",
+      "category": "Emergency",
+      "title": "Choking (Adult or Child)",
+      "summary": "Help a person who has a blocked airway and cannot breathe effectively.",
+      "difficulty": "intermediate",
+      "tags": ["choking", "airway", "back blows", "abdominal thrusts"],
+      "steps": [
+        "Quickly assess if the person can speak, cough, or breathe.",
+        "If the person is able to cough or talk, encourage them to keep coughing to try to clear the obstruction, and stay close to monitor.",
+        "If the person cannot speak, cough, or breathe, treat it as a severe airway obstruction.",
+        "Stand slightly behind and to the side of the person. Support their chest with one hand and lean them forward.",
+        "Deliver 5 firm back blows between the shoulder blades with the heel of your hand, checking after each blow to see if the object is expelled.",
+        "If the obstruction is not cleared, stand behind the person and wrap your arms around their waist.",
+        "Make a fist with one hand and place it just above the person’s navel (belly button) but well below the breastbone.",
+        "Grasp your fist with your other hand and pull sharply inward and upward, performing abdominal thrusts.",
+        "Give up to 5 abdominal thrusts, checking after each thrust to see if the object is expelled.",
+        "Alternate between 5 back blows and 5 abdominal thrusts until the object is cleared or the person becomes unresponsive.",
+        "If the person becomes unresponsive, gently lower them to the ground and begin CPR, starting with chest compressions.",
+        "Each time you open the airway to give breaths during CPR, look into the mouth for a visible object and remove it if you can see it and reach it easily.",
+        "Continue efforts until normal breathing returns or help becomes available."
+      ],
+      "do_not": [
+        "Do not perform blind finger sweeps in the mouth; this can push the object deeper into the airway.",
+        "Do not slap the person on the back while they are upright and not leaning forward, as this can drive the object deeper.",
+        "Do not perform abdominal thrusts on infants or on pregnant individuals; special techniques are required for those cases."
+      ],
+      "watch_for": [
+        "Sudden ability to cough, speak, or breathe, which suggests the obstruction is cleared.",
+        "Worsening signs such as bluish skin, loss of consciousness, or weak or absent breathing.",
+        "Changes in responsiveness; be ready to start CPR if the person collapses."
+      ],
+      "notes": [
+        "After a severe choking episode, even if the object is expelled, the person may have internal injury and should be evaluated by a medical professional when possible.",
+        "For infants and pregnant individuals, use modified techniques; this guide is focused on adults and older children."
+      ]
+    },
+    {
+      "id": "emergency_anaphylaxis",
+      "category": "Emergency",
+      "title": "Severe Allergic Reaction (Anaphylaxis)",
+      "summary": "Recognize and respond to a life-threatening allergic reaction.",
+      "difficulty": "intermediate",
+      "tags": ["allergy", "anaphylaxis", "epinephrine", "breathing"],
+      "steps": [
+        "Look for signs of a severe allergic reaction: trouble breathing, wheezing, swelling of the face, lips, or tongue, hives, vomiting, or a feeling of impending doom.",
+        "If the person has a prescribed epinephrine auto-injector, retrieve it immediately.",
+        "Remove the auto-injector from its case and follow the instructions on the label.",
+        "Hold the injector firmly in your fist with the needle end pointing downward, keeping fingers away from both ends.",
+        "Place the needle end against the outer thigh, halfway between the hip and knee. The injection can be given through clothing if necessary.",
+        "Press the injector firmly into the thigh until you hear or feel a click, and hold it there for the recommended time (usually several seconds) to deliver the medication.",
+        "Remove the injector and massage the injection site for about 10 seconds.",
+        "Have the person lie down or sit in a comfortable position. If breathing is easier when sitting upright, support them in that position.",
+        "Loosen tight clothing, especially around the neck and chest.",
+        "Monitor breathing and level of consciousness continuously.",
+        "If symptoms such as difficulty breathing, swelling, or dizziness return or do not improve after 5–10 minutes, and a second dose is available, give a second injection in the other thigh if possible.",
+        "Keep the person warm and calm while awaiting or traveling to medical care."
+      ],
+      "do_not": [
+        "Do not delay epinephrine use when severe allergic reaction is suspected; it is more dangerous to wait.",
+        "Do not inject epinephrine into the hands, fingers, or buttocks; the outer thigh is the safest and most effective site.",
+        "Do not allow the person to stand or walk if they feel faint or weak; this can worsen low blood pressure."
+      ],
+      "watch_for": [
+        "Rapid improvement in breathing and reduction of swelling after epinephrine.",
+        "Rebound symptoms such as returning difficulty breathing, hives, or swelling.",
+        "Signs of shock: pale or cool skin, rapid pulse, weakness, or confusion."
+      ],
+      "notes": [
+        "Even when symptoms improve after epinephrine, professional evaluation is important because symptoms can return hours later.",
+        "If no epinephrine is available, focus on airway support, calming the person, and getting to medical care as quickly as possible."
+      ]
+    },
+    {
+      "id": "emergency_shock",
+      "category": "Emergency",
+      "title": "Shock",
+      "summary": "Manage a person showing signs of shock from injury or illness.",
+      "difficulty": "basic",
+      "tags": ["shock", "circulation", "trauma", "blood loss"],
+      "steps": [
+        "Recognize signs of shock: pale or clammy skin, rapid pulse, fast or shallow breathing, weakness, confusion, or fainting.",
+        "Help the person lie flat on their back if possible.",
+        "If there is no suspected head, neck, back, or leg injury, raise the legs 20–30 cm (8–12 inches) to improve blood flow to the core.",
+        "Keep the person warm by covering them with a blanket, coat, or extra clothing.",
+        "Loosen tight clothing around the neck, chest, and waist to make breathing easier.",
+        "Treat any obvious causes such as severe bleeding by applying direct pressure or using a tourniquet when appropriate.",
+        "Reassure the person and encourage slow, steady breathing if they are conscious.",
+        "Monitor breathing and responsiveness frequently.",
+        "If the person becomes unresponsive and stops breathing normally, begin CPR."
+      ],
+      "do_not": [
+        "Do not give food or drink, especially if surgery might be needed or if the person may vomit.",
+        "Do not move the person unnecessarily if you suspect spinal injury.",
+        "Do not allow the person to become chilled; avoid leaving them exposed to cold or wind."
+      ],
+      "watch_for": [
+        "Worsening confusion, restlessness, or anxiety.",
+        "Decreasing level of responsiveness or loss of consciousness.",
+        "Changes in breathing pattern, such as very slow or absent breathing."
+      ],
+      "notes": [
+        "Shock is a life-threatening condition; early recognition and support can help sustain life until advanced care is available.",
+        "Re-check vital signs (breathing, responsiveness, skin color) regularly."
+      ]
+    },
+    {
+      "id": "emergency_stroke",
+      "category": "Emergency",
+      "title": "Stroke (Suspected)",
+      "summary": "Support a person who may be having a stroke when immediate medical help is not available.",
+      "difficulty": "intermediate",
+      "tags": ["stroke", "brain", "fast", "paralysis"],
+      "steps": [
+        "Use the FAST check: Face drooping on one side, Arm weakness on one side, Speech difficulty, Time of onset.",
+        "If you suspect a stroke, help the person sit or lie in a comfortable position with their head slightly raised.",
+        "Reassure the person and keep them as calm and still as possible.",
+        "Loosen tight clothing, especially around the neck and chest.",
+        "If the person is alert and able to swallow, you may offer small sips of water, but only if there is no difficulty swallowing.",
+        "If there are swallowing problems, do not give any food or drink to avoid choking.",
+        "If the person becomes drowsy or unresponsive, place them in the recovery position on their side with the mouth angled downward to allow fluids to drain.",
+        "Monitor breathing and responsiveness closely.",
+        "Record the time that symptoms first began if known, as this information will be important for medical personnel later.",
+        "Seek professional medical care as soon as it becomes available."
+      ],
+      "do_not": [
+        "Do not give the person anything to eat or drink if they have trouble swallowing.",
+        "Do not let the person walk around; they could fall or worsen their condition.",
+        "Do not ignore mild or temporary symptoms; strokes can progress rapidly."
+      ],
+      "watch_for": [
+        "Sudden worsening of weakness, vision, or speech.",
+        "Loss of consciousness or seizures.",
+        "Changes in breathing or color, indicating a possible need for CPR."
+      ],
+      "notes": [
+        "Some stroke symptoms can be subtle at first; when in doubt, treat as a stroke.",
+        "Even if symptoms improve, a suspected stroke requires medical evaluation to prevent further damage."
+      ]
+    },
+    {
+      "id": "injury_burns",
+      "category": "Injury",
+      "title": "Burns (Thermal)",
+      "summary": "Cool and protect burned skin to limit damage and infection.",
+      "difficulty": "basic",
+      "tags": ["burn", "thermal", "scald", "fire"],
+      "steps": [
+        "Stop the burning process by removing the person from the source of heat, flame, or hot liquid.",
+        "If it is safe, remove any jewelry, belts, or tight clothing near the burned area before swelling begins.",
+        "Cool the burn immediately with cool (not ice-cold) running water for at least 20 minutes, or use clean, cool, wet cloths if running water is not available.",
+        "Avoid cooling large burns for too long if it risks causing hypothermia; focus on the burned area while keeping the rest of the body warm.",
+        "After cooling, gently pat the area dry with a clean cloth.",
+        "Cover the burn with a sterile non-stick dressing, a clean cloth, or plastic wrap applied loosely to protect from infection.",
+        "Keep the person warm and monitor for signs of shock, especially with large burns.",
+        "If blisters form, leave them intact; they help protect the underlying skin.",
+        "Seek professional care as soon as it is available, especially for burns on the face, hands, feet, groin, joints, or large areas of the body."
+      ],
+      "do_not": [
+        "Do not apply ice or very cold water directly to large burns; this can cause additional tissue damage and hypothermia.",
+        "Do not apply oils, butter, toothpaste, or creams to a fresh burn.",
+        "Do not break blisters deliberately.",
+        "Do not remove clothing that is stuck to the burn; cut around it instead."
+      ],
+      "watch_for": [
+        "Increasing pain, redness, or swelling after the first day.",
+        "Signs of infection such as pus, foul odor, or fever.",
+        "Signs of shock with extensive burns."
+      ],
+      "notes": [
+        "Chemical and electrical burns require different specific steps; this section refers to heat and scald burns.",
+        "In remote settings, keeping burns clean and protected from dirt and insects is critical."
+      ]
+    },
+    {
+      "id": "injury_wounds_cuts",
+      "category": "Injury",
+      "title": "Wounds and Cuts",
+      "summary": "Clean and dress cuts and open wounds to reduce bleeding and infection.",
+      "difficulty": "basic",
+      "tags": ["wound", "cut", "laceration", "bleeding"],
+      "steps": [
+        "Wash your hands or clean them with sanitizer if available before touching the wound.",
+        "If the wound is bleeding, apply direct pressure with a clean cloth or bandage until bleeding slows or stops.",
+        "Once bleeding is controlled, gently rinse the wound with clean water to remove dirt and debris.",
+        "If needed, use clean tweezers to remove visible small debris, wiping the tweezers between attempts.",
+        "Do not attempt to remove deeply embedded objects; instead, stabilize them with padding around the object.",
+        "After cleaning, gently pat the area dry with a clean cloth or sterile gauze.",
+        "Apply a thin layer of a suitable ointment if available and appropriate.",
+        "Cover the wound with a sterile bandage, gauze, or clean cloth to protect it from dirt and friction.",
+        "Change the dressing at least once a day or whenever it becomes wet or dirty.",
+        "Monitor the wound daily for signs of infection."
+      ],
+      "do_not": [
+        "Do not use strong antiseptics inside deep wounds unless instructed by medical guidance, as they can delay healing.",
+        "Do not blow on the wound, as this can introduce bacteria.",
+        "Do not remove large or deeply embedded objects; they may be helping to limit bleeding."
+      ],
+      "watch_for": [
+        "Redness spreading outward from the wound.",
+        "Increasing pain, swelling, or warmth around the wound.",
+        "Pus, bad smell, or fever that may indicate infection."
+      ],
+      "notes": [
+        "In a survival situation, keeping even small wounds clean can prevent serious infections.",
+        "If a wound is very deep, gaping, or located on a joint or face, seek professional care for possible closure when available."
+      ]
+    },
+    {
+      "id": "injury_sprains_strains",
+      "category": "Injury",
+      "title": "Sprains and Strains",
+      "summary": "Support injured joints and muscles using rest, cold, compression, and elevation.",
+      "difficulty": "basic",
+      "tags": ["sprain", "strain", "ankle", "joint", "soft tissue"],
+      "steps": [
+        "Stop the activity immediately when a joint or muscle is injured with pain, swelling, or difficulty moving.",
+        "Have the person sit or lie down and support the injured area.",
+        "Use the RICE method: Rest, Ice, Compression, Elevation.",
+        "Rest: avoid putting weight or stress on the injured area.",
+        "Ice: apply a cold pack or wrapped ice to the area for up to 20 minutes at a time, with at least 1 hour between applications for the first 24 hours.",
+        "Compression: wrap the area with an elastic bandage, starting away from the body and wrapping toward it, with firm but not painful pressure.",
+        "Elevation: raise the injured limb above the level of the heart if possible to reduce swelling.",
+        "After the first 48 hours, introduce gentle movement exercises as tolerated to prevent stiffness, without forcing through strong pain."
+      ],
+      "do_not": [
+        "Do not apply ice directly to bare skin; wrap it in cloth.",
+        "Do not wrap compression bandages so tightly that they cause numbness, tingling, or increased pain.",
+        "Do not ignore severe or persistent pain that might indicate a fracture rather than a simple sprain."
+      ],
+      "watch_for": [
+        "Inability to bear any weight on the limb.",
+        "Deformity, bone tenderness, or severe swelling suggesting a possible fracture.",
+        "Numbness or loss of circulation, such as pale or blue skin below the injury."
+      ],
+      "notes": [
+        "Minor sprains typically improve within a few days; lack of improvement may indicate a more serious injury.",
+        "If a joint repeatedly sprains, it may be unstable and need medical evaluation when possible."
+      ]
+    },
+    {
+      "id": "injury_fracture",
+      "category": "Injury",
+      "title": "Suspected Fracture",
+      "summary": "Immobilize broken bones and prevent further damage.",
+      "difficulty": "intermediate",
+      "tags": ["fracture", "broken bone", "splint", "trauma"],
+      "steps": [
+        "Suspect a fracture if there is severe pain, swelling, deformity, inability to move or bear weight, or a grating sensation.",
+        "Keep the injured person as still as possible, supporting the injured limb in the most comfortable position.",
+        "Do not attempt to straighten the limb or push protruding bone back inside.",
+        "If there is severe bleeding, control it with direct pressure while avoiding direct pressure on protruding bones.",
+        "Prepare a splint using rigid materials such as boards, sticks, or rolled magazines and padding such as clothing or cloth.",
+        "Place padding between the limb and the splint to protect the skin and improve comfort.",
+        "Apply the splint so it immobilizes the joints above and below the suspected fracture site.",
+        "Secure the splint with bandages, cloth strips, or belts; tie knots away from the skin and not directly over the fracture.",
+        "Check circulation beyond the injury after splinting: look for normal color, warmth, feeling, and movement in fingers or toes.",
+        "Loosen the splint slightly if circulation is reduced but without removing immobilization.",
+        "Keep the person warm and monitor for signs of shock."
+      ],
+      "do_not": [
+        "Do not move the person unless absolutely necessary for safety.",
+        "Do not attempt to straighten an obviously deformed limb.",
+        "Do not place a splint so tight that it cuts off circulation."
+      ],
+      "watch_for": [
+        "Loss of pulse, feeling, or movement below the injury.",
+        "Increasing pain or swelling despite immobilization.",
+        "Signs of shock, especially with fractures of large bones like the thigh."
+      ],
+      "notes": [
+        "In remote settings, proper splinting helps reduce pain and prevents further damage to blood vessels and nerves.",
+        "Open fractures, where bone is visible through the skin, have a high risk of infection and need medical care as soon as available."
+      ]
+    },
+    {
+      "id": "injury_head_injury",
+      "category": "Injury",
+      "title": "Head Injury (Minor to Moderate)",
+      "summary": "Monitor and care for a person with a non-penetrating head injury.",
+      "difficulty": "intermediate",
+      "tags": ["head injury", "concussion", "fall", "impact"],
+      "steps": [
+        "If the person has had a blow to the head, first ensure the scene is safe.",
+        "Ask about what happened and observe for confusion, headache, dizziness, nausea, or brief loss of consciousness.",
+        "If the person is awake and responsive, keep them still and seated or lying down.",
+        "Monitor their level of alertness; check if they can answer simple questions correctly.",
+        "Apply a cold pack wrapped in cloth to any swollen area to reduce pain and swelling.",
+        "Advise rest and avoidance of physical activity or tasks that require intense concentration for at least 24 hours.",
+        "Check periodically for worsening symptoms such as repeated vomiting, increasing headache, confusion, or difficulty walking.",
+        "If the person falls asleep, wake them periodically to ensure they can be roused and are coherent.",
+        "Seek professional evaluation as soon as it is practical, especially if symptoms persist."
+      ],
+      "do_not": [
+        "Do not allow the person to return quickly to strenuous activity or sports after a head injury.",
+        "Do not give alcohol or sedating medications.",
+        "Do not move the person if you suspect neck or spine injury unless they are in danger where they are."
+      ],
+      "watch_for": [
+        "Repeated vomiting or worsening headache.",
+        "Confusion, slurred speech, or unusual behavior.",
+        "Weakness or numbness in limbs, seizures, or unequal pupil size."
+      ],
+      "notes": [
+        "Even a mild concussion can have serious effects; rest and observation are important.",
+        "Any sign of deterioration after a head injury should be treated seriously."
+      ]
+    },
+    {
+      "id": "injury_eye_injury",
+      "category": "Injury",
+      "title": "Eye Injury",
+      "summary": "Protect and care for eyes exposed to chemicals, debris, or trauma.",
+      "difficulty": "intermediate",
+      "tags": ["eye", "chemical", "foreign object", "vision"],
+      "steps": [
+        "If a chemical has splashed into the eye, begin flushing immediately with clean water.",
+        "Hold the eyelids open and pour water slowly from the inner corner of the eye outward to avoid contaminating the other eye.",
+        "Continue flushing for at least 15 minutes or longer if the person still feels burning or irritation.",
+        "If a small particle such as dust is in the eye, encourage blinking to help tears wash it out.",
+        "If the particle does not flush out, gently rinse the eye with clean water.",
+        "If there is an object embedded in the eye or a penetrating injury, do not attempt to remove it.",
+        "Stabilize a penetrating object by placing bulky padding around it without pressing on the eye.",
+        "Cover both eyes with clean dressings or a loose cloth to reduce eye movement; eyes move together, so covering both helps.",
+        "Keep the person as still as possible and seek professional care as soon as available."
+      ],
+      "do_not": [
+        "Do not rub the eye; this can cause further damage.",
+        "Do not use tools or fingers to dig around in the eye for objects.",
+        "Do not apply pressure directly to a penetrating eye injury."
+      ],
+      "watch_for": [
+        "Persistent pain, redness, or blurred vision after flushing.",
+        "Discharge, swelling, or extreme sensitivity to light.",
+        "Any change in vision such as double vision or loss of part of the visual field."
+      ],
+      "notes": [
+        "Chemical burns to the eye are time-critical; immediate and prolonged flushing is the most important step.",
+        "Eye injuries can worsen quickly; protect the eye and limit movement until medical care is available."
+      ]
+    },
+    {
+      "id": "illness_heat_exhaustion",
+      "category": "Illness",
+      "title": "Heat Exhaustion",
+      "summary": "Treat early heat-related illness before it progresses to heat stroke.",
+      "difficulty": "basic",
+      "tags": ["heat", "exhaustion", "dehydration", "overheating"],
+      "steps": [
+        "Recognize symptoms such as heavy sweating, weakness, dizziness, headache, nausea, or muscle cramps.",
+        "Move the person to a cooler place, preferably in the shade or a well-ventilated shelter.",
+        "Have the person lie down with legs slightly raised if they feel faint.",
+        "Remove or loosen excess clothing to allow heat to escape.",
+        "Offer cool water or an electrolyte drink in small, frequent sips if the person is fully alert.",
+        "Apply cool, wet cloths to the skin, especially on the neck, armpits, and groin.",
+        "Fan the person to increase evaporation and cooling.",
+        "Allow the person to rest until they feel fully recovered and avoid heavy exertion for the rest of the day.",
+        "Watch for any signs of worsening condition that could indicate heat stroke."
+      ],
+      "do_not": [
+        "Do not give very large amounts of water all at once; this may cause nausea or vomiting.",
+        "Do not give caffeinated or alcoholic drinks, which can worsen dehydration.",
+        "Do not ignore confusion, loss of coordination, or very high body temperature; these are serious warning signs."
+      ],
+      "watch_for": [
+        "Confusion, slurred speech, or seizures.",
+        "Hot, dry skin or cessation of sweating despite heat.",
+        "Collapse, loss of consciousness, or inability to drink."
+      ],
+      "notes": [
+        "Heat exhaustion is a warning stage; early treatment can prevent heat stroke.",
+        "In hot environments, schedule rest periods in the shade and maintain regular hydration."
+      ]
+    },
+    {
+      "id": "illness_heat_stroke",
+      "category": "Illness",
+      "title": "Heat Stroke",
+      "summary": "Rapidly cool a person with life-threatening overheating.",
+      "difficulty": "advanced",
+      "tags": ["heat stroke", "overheating", "emergency", "high temperature"],
+      "steps": [
+        "Recognize signs of heat stroke: very high body temperature, confusion, agitation, hot skin that may be dry or still sweating, rapid pulse, or loss of consciousness.",
+        "Move the person immediately to the coolest available place, out of direct sun.",
+        "Remove excess clothing to allow maximum skin exposure to cooling.",
+        "Cool the person rapidly using any available methods: wet the skin with cool water, apply wet cloths, or immerse in cool (not ice-cold) water if safe and feasible.",
+        "Apply cold packs or wet cloths to the neck, armpits, and groin, which are areas of high blood flow.",
+        "Fan the person continuously to increase evaporation and heat loss.",
+        "If the person is awake and able to swallow safely, give small sips of cool water but do not delay cooling efforts.",
+        "Place an unresponsive person in the recovery position, ensuring the airway remains open.",
+        "Monitor breathing and responsiveness constantly; be ready to begin CPR if breathing stops.",
+        "Continue active cooling until the person’s condition improves or advanced medical care is available."
+      ],
+      "do_not": [
+        "Do not leave the person alone while their condition is unstable.",
+        "Do not give large amounts of fluid to an unconscious or semi-conscious person.",
+        "Do not use alcohol rubs on the skin for cooling."
+      ],
+      "watch_for": [
+        "Seizures, which may occur due to high body temperature.",
+        "Vomiting, which can threaten the airway if the person is unresponsive.",
+        "Signs of shock or organ failure such as worsening confusion or rapid deterioration."
+      ],
+      "notes": [
+        "Heat stroke is a medical emergency; rapid and aggressive cooling can save a life.",
+        "Continue monitoring even after the person appears improved, as heat stroke can have delayed effects."
+      ]
+    },
+    {
+      "id": "illness_hypothermia",
+      "category": "Illness",
+      "title": "Hypothermia",
+      "summary": "Warm a person whose body temperature is dangerously low.",
+      "difficulty": "intermediate",
+      "tags": ["hypothermia", "cold", "exposure", "shivering"],
+      "steps": [
+        "Recognize hypothermia signs: intense shivering, slurred speech, confusion, clumsiness, slow breathing, or drowsiness.",
+        "Move the person to a sheltered, dry location away from wind and cold.",
+        "Gently remove wet clothing and replace it with dry layers if available.",
+        "Wrap the person in warm blankets, sleeping bags, or dry clothing, covering the head and neck but not the face.",
+        "Use body-to-body warmth by sharing a sleeping bag or blanket if safe and appropriate.",
+        "Provide warm, sweet drinks if the person is fully awake and able to swallow safely.",
+        "Warm the core (chest and abdomen) first; keep hands and feet covered but avoid direct heat on extremities.",
+        "Handle the person gently, as sudden movement can trigger heart rhythm problems in severe hypothermia.",
+        "Monitor breathing and responsiveness, and be prepared to start CPR if breathing stops."
+      ],
+      "do_not": [
+        "Do not rub or massage cold limbs; this can damage tissues and push cold blood back to the heart.",
+        "Do not give alcohol, which increases heat loss and impairs judgment.",
+        "Do not expose the person to direct intense heat (such as a fire or very hot water) on cold skin."
+      ],
+      "watch_for": [
+        "Shivering that stops abruptly, which may indicate worsening hypothermia.",
+        "Increasing confusion, drowsiness, or inability to respond.",
+        "Very slow, shallow breathing or weak pulse."
+      ],
+      "notes": [
+        "Mild hypothermia can often be reversed with shelter, dry clothing, and warm drinks.",
+        "Severe hypothermia is life-threatening and requires gentle handling and prolonged warming efforts."
+      ]
+    },
+    {
+      "id": "illness_dehydration",
+      "category": "Illness",
+      "title": "Dehydration",
+      "summary": "Recognize and treat dehydration from heat, illness, or lack of water.",
+      "difficulty": "basic",
+      "tags": ["dehydration", "fluids", "electrolytes", "heat"],
+      "steps": [
+        "Recognize mild to moderate dehydration: thirst, dry mouth, dark yellow urine, headache, dizziness, or fatigue.",
+        "Encourage the person to rest in a cool, shaded location.",
+        "Provide clean water or an oral rehydration solution in small, frequent sips.",
+        "If an electrolyte drink is not available, use a solution made from clean water with a small amount of salt and sugar if you know a safe recipe.",
+        "Continue offering fluids slowly even if the person feels nauseated, as tolerated.",
+        "Advise the person to avoid heavy exertion until hydration is restored and they feel normal again.",
+        "Monitor urine output; adequate hydration usually produces light-colored urine.",
+        "If vomiting or diarrhea is present, increase fluid intake and consider oral rehydration solutions if available."
+      ],
+      "do_not": [
+        "Do not give very large amounts of fluid at once, which can cause vomiting.",
+        "Do not ignore signs of severe dehydration such as very little or no urine, extreme dizziness, or confusion.",
+        "Do not rely only on caffeinated or sugary drinks; they may worsen dehydration if used alone."
+      ],
+      "watch_for": [
+        "No urination for 8 hours or more.",
+        "Rapid heartbeat, sunken eyes, or very dry mouth.",
+        "Confusion, irritability, or lethargy suggesting severe dehydration."
+      ],
+      "notes": [
+        "Preventing dehydration is easier than treating it; drink regularly in hot or physically demanding conditions.",
+        "In survival situations, prioritizing safe drinking water is critical for ongoing health."
+      ]
+    },
+    {
+      "id": "illness_asthma_attack",
+      "category": "Illness",
+      "title": "Asthma Attack",
+      "summary": "Assist a person having breathing difficulty due to asthma.",
+      "difficulty": "intermediate",
+      "tags": ["asthma", "breathing", "wheezing", "inhaler"],
+      "steps": [
+        "Recognize signs of an asthma attack: wheezing, coughing, chest tightness, and difficulty breathing.",
+        "Help the person sit upright in a comfortable position; leaning slightly forward with arms supported can make breathing easier.",
+        "Encourage slow, steady breathing in through the nose and out through the mouth.",
+        "If the person has a prescribed reliever inhaler, bring it to them and help them use it as directed.",
+        "Common guidance is to take one puff, breathe it in slowly and deeply, and hold the breath for several seconds if possible.",
+        "Wait a short period, then repeat as needed up to the number of puffs recommended in their asthma plan, allowing a few breaths between puffs.",
+        "Keep the environment calm; anxiety can worsen breathing difficulty.",
+        "Remove or move away from triggers such as smoke, dust, or strong odors.",
+        "If symptoms do not improve or worsen, continue supportive breathing exercises and seek advanced care as soon as it is available."
+      ],
+      "do_not": [
+        "Do not leave the person alone while they are in distress.",
+        "Do not force the person to lie down flat; this can make breathing more difficult.",
+        "Do not allow smoking or exposure to smoke near the person."
+      ],
+      "watch_for": [
+        "Increasing difficulty speaking in full sentences.",
+        "Bluish color of lips or fingertips, indicating lack of oxygen.",
+        "Extreme fatigue, confusion, or collapse."
+      ],
+      "notes": [
+        "People with asthma often know their own action plan; ask them what usually helps and support them in following it.",
+        "If you are unsure whether it is asthma or another breathing problem, treat it as serious and focus on calming and supporting breathing."
+      ]
+    },
+    {
+      "id": "illness_low_blood_sugar",
+      "category": "Illness",
+      "title": "Low Blood Sugar (Hypoglycemia)",
+      "summary": "Help a person with suspected low blood sugar, especially if they have diabetes.",
+      "difficulty": "basic",
+      "tags": ["diabetes", "hypoglycemia", "low blood sugar", "fainting"],
+      "steps": [
+        "Recognize symptoms: shakiness, sweating, hunger, irritability, confusion, headache, or sudden weakness.",
+        "If the person is alert and able to swallow, offer a fast-acting sugar source such as juice, regular soda, honey, sugar, or candy.",
+        "Encourage the person to sit or lie down to prevent injury if they become dizzy.",
+        "After 10–15 minutes, reassess symptoms; if they still feel unwell, give another small portion of fast-acting sugar.",
+        "Once they begin to feel better, follow with a longer-acting carbohydrate food if available, such as crackers or bread.",
+        "Encourage the person to rest until they feel normal and steady.",
+        "If they have diabetes and know their usual correction routine, support them in following it when they are thinking clearly again."
+      ],
+      "do_not": [
+        "Do not give food or drink to someone who is unconscious or unable to swallow safely.",
+        "Do not assume confusion or unusual behavior is just emotional; it may be low blood sugar.",
+        "Do not give large amounts of food too quickly; this may cause vomiting."
+      ],
+      "watch_for": [
+        "Worsening confusion or inability to respond appropriately.",
+        "Loss of consciousness or seizures.",
+        "Lack of improvement after repeated sugar intake in a conscious person."
+      ],
+      "notes": [
+        "If you know the person uses insulin, low blood sugar is a possible emergency cause of sudden symptoms.",
+        "When in doubt between high and low blood sugar, small amounts of sugar are safer than doing nothing if the person is conscious."
+      ]
+    },
+    {
+      "id": "illness_food_poisoning_diarrhea",
+      "category": "Illness",
+      "title": "Food Poisoning and Diarrhea",
+      "summary": "Manage vomiting and diarrhea and prevent dangerous dehydration.",
+      "difficulty": "basic",
+      "tags": ["diarrhea", "vomiting", "food poisoning", "stomach"],
+      "steps": [
+        "Recognize signs: nausea, vomiting, loose or frequent stools, stomach cramps, and sometimes fever.",
+        "Encourage rest in a comfortable position, preferably near a toilet or improvised container for vomiting.",
+        "Offer small sips of clean water frequently; if tolerated, gradually increase the amount.",
+        "If available, use oral rehydration solutions or electrolyte drinks to replace lost salts.",
+        "Avoid solid food until vomiting slows; then reintroduce bland foods like rice, bread, or crackers as tolerated.",
+        "Encourage hygiene: wash hands and clean surfaces to prevent spreading illness to others.",
+        "Monitor for signs of dehydration such as very little urine, dark urine, dizziness, or dry mouth.",
+        "If there is blood in vomit or stool, high fever, or severe abdominal pain, consider the illness more serious and seek medical care when possible."
+      ],
+      "do_not": [
+        "Do not force food or large volumes of fluid when the person is actively vomiting.",
+        "Do not give anti-diarrheal medications without medical advice if there is high fever or blood in the stool.",
+        "Do not ignore severe or prolonged symptoms, especially in children or older adults."
+      ],
+      "watch_for": [
+        "Persistent vomiting that prevents keeping fluids down.",
+        "No urination for many hours or very dark, concentrated urine.",
+        "Confusion, weakness, or fainting that may indicate severe dehydration."
+      ],
+      "notes": [
+        "Mild food poisoning usually resolves on its own, but dehydration can become dangerous if fluids are not replaced.",
+        "Safe food handling and clean water are key to preventing many gastrointestinal illnesses."
+      ]
+    },
+    {
+      "id": "illness_fever",
+      "category": "Illness",
+      "title": "Fever Management",
+      "summary": "Support a person with elevated body temperature from illness.",
+      "difficulty": "basic",
+      "tags": ["fever", "infection", "temperature", "illness"],
+      "steps": [
+        "Recognize fever by warm or hot skin, sweating, chills, headache, or feeling unusually hot or cold.",
+        "Encourage the person to rest and limit physical activity.",
+        "Keep clothing light and breathable; add or remove layers to maintain comfort.",
+        "Offer plenty of fluids such as water, herbal teas, or broths to prevent dehydration.",
+        "Use cool, damp cloths on the forehead, neck, or wrists to provide comfort if desired.",
+        "Monitor for other symptoms such as rash, severe headache, difficulty breathing, confusion, or pain.",
+        "If fever persists for several days, becomes very high, or is accompanied by alarming symptoms, seek medical care when accessible."
+      ],
+      "do_not": [
+        "Do not over-bundle the person in heavy blankets; this can raise body temperature further.",
+        "Do not give alcohol to lower fever.",
+        "Do not ignore difficulty breathing, chest pain, or severe neck stiffness, as these may indicate serious illness."
+      ],
+      "watch_for": [
+        "Changes in mental state such as confusion, delirium, or unresponsiveness.",
+        "Very high fever that does not improve with cooling and fluids.",
+        "Signs of dehydration or severe weakness."
+      ],
+      "notes": [
+        "Fever is a common response to infection and not always dangerous by itself.",
+        "Keeping the person comfortable and hydrated is the primary focus in basic first aid."
+      ]
+    },
+    {
+      "id": "preventive_wound_infection",
+      "category": "Preventive",
+      "title": "Preventing Wound Infection",
+      "summary": "Keep wounds clean and protected to avoid infection.",
+      "difficulty": "basic",
+      "tags": ["infection", "wound care", "prevention", "hygiene"],
+      "steps": [
+        "Wash your hands or clean them with sanitizer before touching any wound or dressing.",
+        "Clean new cuts and scrapes promptly with clean water to remove dirt and debris.",
+        "Cover wounds with clean, dry dressings or bandages to protect them from dirt and insects.",
+        "Change dressings daily or whenever they become wet, dirty, or loose.",
+        "Check the wound each time you change the dressing for signs of infection.",
+        "Keep the area around the wound clean and dry.",
+        "Encourage the injured person to avoid scratching or picking at scabs."
+      ],
+      "do_not": [
+        "Do not leave deep or dirty wounds open and unattended.",
+        "Do not reuse dirty dressings if clean materials are available.",
+        "Do not apply unknown substances or unclean materials directly to open wounds."
+      ],
+      "watch_for": [
+        "Redness spreading outward from the wound.",
+        "Increased pain, swelling, or warmth.",
+        "Pus, bad odor, or fever."
+      ],
+      "notes": [
+        "Good wound care significantly reduces the risk of serious infection in survival situations.",
+        "If signs of infection appear, continue cleaning and protecting the wound and seek medical help when possible."
+      ]
+    },
+    {
+      "id": "preventive_heat_hydration",
+      "category": "Preventive",
+      "title": "Heat and Hydration Prevention",
+      "summary": "Reduce the risk of heat illness by staying cool and hydrated.",
+      "difficulty": "basic",
+      "tags": ["heat", "hydration", "prevention", "sun"],
+      "steps": [
+        "Drink water regularly throughout the day, not just when you feel very thirsty.",
+        "Increase fluid intake when working, hiking, or exercising in hot weather.",
+        "Wear lightweight, loose-fitting, and light-colored clothing to reflect sunlight.",
+        "Use hats, scarves, or improvised head coverings to shade the head and neck.",
+        "Plan strenuous activities for cooler times of day, such as early morning or late evening.",
+        "Take frequent breaks in the shade or a cool shelter.",
+        "Avoid heavy meals and alcohol in high heat, as they can increase heat stress.",
+        "Monitor yourself and others for early signs of heat exhaustion, such as excessive sweating or dizziness."
+      ],
+      "do_not": [
+        "Do not rely solely on thirst as a guide for fluid needs in very hot conditions.",
+        "Do not ignore early symptoms of heat illness.",
+        "Do not wear heavy, dark clothing in direct sun if alternatives are available."
+      ],
+      "watch_for": [
+        "Headache, fatigue, or irritability indicating early heat stress.",
+        "Reduced sweating or very dark urine suggesting dehydration.",
+        "Any signs of heat exhaustion or heat stroke."
+      ],
+      "notes": [
+        "Prevention is especially important when medical help may be far away.",
+        "Adjust your pace and workload to match the conditions and your fitness level."
+      ]
+    },
+    {
+      "id": "preventive_cold_exposure",
+      "category": "Preventive",
+      "title": "Cold Weather and Exposure Prevention",
+      "summary": "Stay warm and dry to prevent hypothermia and frostbite.",
+      "difficulty": "basic",
+      "tags": ["cold", "hypothermia", "clothing", "exposure"],
+      "steps": [
+        "Dress in layers, with an inner layer that wicks moisture, an insulating middle layer, and a wind or waterproof outer layer.",
+        "Keep your head, neck, hands, and feet covered with hats, scarves, gloves, and warm socks.",
+        "Avoid cotton next to the skin in very cold conditions; it holds moisture and increases heat loss.",
+        "Change out of wet clothing as soon as possible, especially socks, gloves, and base layers.",
+        "Stay as dry as you can by using waterproof coverings and avoiding sitting directly on cold ground or snow.",
+        "Avoid excessive sweating by adjusting your pace and removing a layer if you become too warm.",
+        "Seek shelter from wind and precipitation whenever possible.",
+        "Eat regular meals and drink warm fluids if available to maintain energy and body heat."
+      ],
+      "do_not": [
+        "Do not ignore shivering; it is an early sign that your body is losing heat.",
+        "Do not allow boots or clothing to stay soaked for long periods.",
+        "Do not sleep directly on bare ground; use insulating materials under your body."
+      ],
+      "watch_for": [
+        "Numbness, tingling, or pale skin in fingers, toes, nose, or ears.",
+        "Uncontrolled shivering or confusion.",
+        "Slurred speech or clumsiness indicating developing hypothermia."
+      ],
+      "notes": [
+        "Proper preparation for cold conditions can prevent many life-threatening situations.",
+        "Even in cool, damp weather above freezing, hypothermia can occur if clothing is wet and wind is strong."
+      ]
+    },
+    {
+      "id": "preventive_safe_food_water",
+      "category": "Preventive",
+      "title": "Safe Food and Water",
+      "summary": "Reduce the risk of illness from contaminated food and water.",
+      "difficulty": "basic",
+      "tags": ["water", "food safety", "boiling", "sanitation"],
+      "steps": [
+        "Whenever possible, drink water from trusted, clean sources.",
+        "If the safety of water is uncertain, boil it at a rolling boil for at least 1 minute (3 minutes at high altitude) before drinking.",
+        "Cool boiled water before storing it in clean, covered containers.",
+        "Avoid letting stored water sit uncovered where insects or debris can enter.",
+        "Cook food thoroughly, especially meat and eggs, until there is no visible pink or raw center.",
+        "Keep raw and cooked foods separate to avoid cross-contamination.",
+        "Wash or peel fruits and vegetables when possible.",
+        "Discard foods that smell bad, look moldy, or have unusual texture or color.",
+        "Clean cooking surfaces and utensils with hot water and soap or ash and water if nothing else is available."
+      ],
+      "do_not": [
+        "Do not drink untreated water from rivers, lakes, or puddles if you can avoid it.",
+        "Do not eat food that has been left out in the heat for a long time.",
+        "Do not consume food from bulging or heavily damaged containers."
+      ],
+      "watch_for": [
+        "Signs of gastrointestinal illness such as vomiting, diarrhea, or cramps.",
+        "Cloudy or foul-smelling water that may indicate contamination.",
+        "Insects, rodent droppings, or other contamination around food storage areas."
+      ],
+      "notes": [
+        "In survival situations, the choice may be between drinking untreated water or risking dehydration; consider boiling or filtering whenever possible.",
+        "Good sanitation practices greatly reduce the risk of food- and waterborne diseases."
+      ]
+    },
+    {
+      "id": "preventive_disease_general",
+      "category": "Preventive",
+      "title": "General Disease Prevention",
+      "summary": "Use hygiene and simple habits to lower the risk of infections.",
+      "difficulty": "basic",
+      "tags": ["disease", "infection", "hygiene", "prevention"],
+      "steps": [
+        "Wash your hands frequently with soap and clean water, especially before eating and after using the toilet.",
+        "If soap is not available, use alcohol-based sanitizer or ash with water as a last resort.",
+        "Avoid touching your eyes, nose, and mouth with unwashed hands.",
+        "Cover your mouth and nose with your elbow or a cloth when coughing or sneezing.",
+        "Keep living and sleeping areas as clean and well-ventilated as possible.",
+        "Dispose of waste and garbage away from living areas and water sources to reduce pests.",
+        "Avoid close contact with people who show signs of contagious illness when possible.",
+        "Maintain adequate rest, hydration, and nutrition to support your immune system."
+      ],
+      "do_not": [
+        "Do not allow garbage and food scraps to accumulate near sleeping areas.",
+        "Do not share personal items like toothbrushes or utensils if illness is circulating.",
+        "Do not ignore sanitation in temporary or outdoor shelters; infection risk can increase quickly."
+      ],
+      "watch_for": [
+        "Clusters of people developing similar symptoms, suggesting spread of infection.",
+        "Sudden changes in health after contact with sick individuals.",
+        "Signs of serious illness such as difficulty breathing, persistent high fever, or rash with fever."
+      ],
+      "notes": [
+        "Simple hygiene measures are often the most effective tools in preventing disease outbreaks in group settings.",
+        "In resource-limited environments, prioritizing clean water and waste management is crucial."
+      ]
+    },
+    {
+      "id": "preventive_environment_snakes_insects",
+      "category": "Preventive",
+      "title": "Environmental Awareness",
+      "summary": "Avoid bites and stings by being aware of local wildlife hazards.",
+      "difficulty": "basic",
+      "tags": ["snake", "insect", "bites", "stings", "environment"],
+      "steps": [
+        "Learn which venomous snakes, spiders, and insects are common in the area if possible.",
+        "Avoid placing hands or feet where you cannot see, such as under rocks, in tall grass, or inside holes.",
+        "Use a stick or tool to move logs or rocks instead of using bare hands.",
+        "Wear boots, long pants, and gloves when walking or working in areas with snakes or thorny plants.",
+        "Shake out shoes, clothing, and bedding before use to remove hidden insects or small animals.",
+        "Keep sleeping areas off the ground if possible and use nets or covers to reduce contact with insects.",
+        "Store food securely to avoid attracting animals and insects.",
+        "Stay on clear paths when possible rather than walking through thick vegetation."
+      ],
+      "do_not": [
+        "Do not try to handle or provoke snakes or unknown animals.",
+        "Do not put your hands or feet into crevices or holes without checking first.",
+        "Do not leave food scraps or open containers near sleeping areas."
+      ],
+      "watch_for": [
+        "Snake or insect nests, burrows, or frequent sightings in one area.",
+        "Increased insect activity around standing water or waste.",
+        "Any bites or stings that cause rapid swelling, difficulty breathing, or widespread rash."
+      ],
+      "notes": [
+        "Prevention of bites and stings is easier and safer than treating them after they occur.",
+        "If a bite or sting does occur, remain calm, limit movement, and seek further guidance from appropriate first-aid instructions or medical care."
+      ]
+    }
+  ]
+}

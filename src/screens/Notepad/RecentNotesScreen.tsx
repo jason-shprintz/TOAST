@@ -113,7 +113,7 @@ export default observer(function RecentNotesScreen() {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    backgroundColor: COLORS.TOAST_BROWN,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
