@@ -62,12 +62,12 @@ export default function HealthScreen(): JSX.Element {
           }
         />
         <PlaceholderCard
-          title="Preventative"
+          title="Preventive"
           icon="shield-checkmark-outline"
           onPress={() =>
             navigation.navigate('HealthCategory', {
               category: categoryMap.Preventative,
-              title: 'Preventative',
+              title: 'Preventive',
             })
           }
         />
