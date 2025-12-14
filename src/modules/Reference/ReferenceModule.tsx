@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -13,17 +13,17 @@ export default function ReferenceModule() {
       <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Bookmark"
           icon="bookmark-outline"
           onPress={() => navigation.navigate('Bookmark')}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Health"
           icon="medkit-outline"
           onPress={() => navigation.navigate('Health')}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Flora"
           icon="leaf-outline"
           onPress={() =>
@@ -33,7 +33,7 @@ export default function ReferenceModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Fauna"
           icon="paw-outline"
           onPress={() =>
@@ -43,7 +43,7 @@ export default function ReferenceModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Gardening"
           icon="flower-outline"
           onPress={() =>
@@ -53,7 +53,7 @@ export default function ReferenceModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Hunting"
           icon="compass-outline"
           onPress={() =>

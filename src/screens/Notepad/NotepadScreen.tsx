@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
+import CardTopic from '../../components/CardTopic';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -14,17 +14,17 @@ export default function NotepadScreen() {
       <SectionHeader>Notepad</SectionHeader>
 
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="New Note"
           icon="create-outline"
           onPress={() => navigation.navigate('NewNote')}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Recent Notes"
           icon="time-outline"
           onPress={() => navigation.navigate('RecentNotes')}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Saved Notes"
           icon="save-outline"
           onPress={() => navigation.navigate('SavedNotes')}

@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
+import CardTopic from '../../components/CardTopic';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -13,7 +13,7 @@ export default function NavigationModule() {
       <LogoHeader />
       <SectionHeader>Navigation</SectionHeader>
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Map"
           icon="map-outline"
           onPress={() =>
@@ -23,7 +23,7 @@ export default function NavigationModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Compass"
           icon="compass-outline"
           onPress={() =>

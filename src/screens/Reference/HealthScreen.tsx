@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
 // no local React Native imports needed
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -31,7 +31,7 @@ export default function HealthScreen(): JSX.Element {
       <LogoHeader />
       <SectionHeader>Health</SectionHeader>
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Emergency"
           icon="alert-outline"
           onPress={() =>
@@ -41,7 +41,7 @@ export default function HealthScreen(): JSX.Element {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Illness"
           icon="medkit-outline"
           onPress={() =>
@@ -51,7 +51,7 @@ export default function HealthScreen(): JSX.Element {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Injury"
           icon="bandage-outline"
           onPress={() =>
@@ -61,7 +61,7 @@ export default function HealthScreen(): JSX.Element {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Preventive"
           icon="shield-checkmark-outline"
           onPress={() =>

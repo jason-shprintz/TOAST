@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
+import CardTopic from '../../components/CardTopic';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
@@ -24,19 +24,19 @@ const FlashlightScreenImpl = () => {
       <SectionHeader>Flashlight</SectionHeader>
 
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Flashlight On"
           icon="flashlight-outline"
           onPress={() => selectMode('on')}
           containerStyle={mode === 'on' ? styles.activeCard : undefined}
         />
-        <PlaceholderCard
+        <CardTopic
           title="SOS"
           icon="alert-outline"
           onPress={() => selectMode('sos')}
           containerStyle={mode === 'sos' ? styles.activeCard : undefined}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Strobe"
           icon="flash-outline"
           onPress={() => selectMode('strobe')}

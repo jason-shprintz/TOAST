@@ -10,7 +10,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../theme';
 
-export type PlaceholderCardProps = {
+export type CardTopicProps = {
   title: string;
   icon: string; // Ionicons name
   onPress?: () => void;
@@ -29,13 +29,13 @@ export type PlaceholderCardProps = {
  *
  * The card animates with a bounce effect when pressed, and then triggers the `onPress` callback if provided.
  */
-export default function PlaceholderCard({
+export default function CardTopic({
   title,
   icon,
   onPress,
   containerStyle,
   titleStyle,
-}: PlaceholderCardProps) {
+}: CardTopicProps) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const bounce = () => {

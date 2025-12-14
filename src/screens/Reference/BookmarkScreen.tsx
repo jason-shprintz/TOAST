@@ -3,7 +3,7 @@ import React, { JSX, useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
+import CardTopic from '../../components/CardTopic';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { getBookmarks, BookmarkItem } from '../../stores/BookmarksStore';
@@ -52,7 +52,7 @@ export default function BookmarkScreen(): JSX.Element {
               .slice()
               .sort((a, b) => a.title.localeCompare(b.title))
               .map(item => (
-                <PlaceholderCard
+                <CardTopic
                   key={item.id}
                   title={item.title}
                   icon="document-text-outline"
