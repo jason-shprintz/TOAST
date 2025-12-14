@@ -12,10 +12,11 @@ import { COLORS } from '../theme';
 
 export type CardTopicProps = {
   title: string;
-  icon: string; // Ionicons name
+  icon: string; // icon name
   onPress?: () => void;
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
+  IconComponent?: React.ComponentType<any>;
 };
 
 /**
@@ -35,6 +36,7 @@ export default function CardTopic({
   onPress,
   containerStyle,
   titleStyle,
+  IconComponent = Ionicons,
 }: CardTopicProps) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -58,7 +60,7 @@ export default function CardTopic({
       <Animated.View
         style={[styles.card, { transform: [{ scale }] }, containerStyle]}
       >
-        <Ionicons
+        <IconComponent
           name={icon}
           size={40}
           color={COLORS.PRIMARY_DARK}

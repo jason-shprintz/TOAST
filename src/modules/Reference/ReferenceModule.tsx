@@ -24,42 +24,42 @@ export default function ReferenceModule() {
           onPress={() => navigation.navigate('Health')}
         />
         <CardTopic
-          title="Flora"
+          title="Survival Field"
           icon="leaf-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Flora',
+              title: 'Survival Field',
               icon: 'leaf-outline',
             })
           }
         />
         <CardTopic
-          title="Fauna"
-          icon="paw-outline"
+          title="Weather"
+          icon="cloud-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Fauna',
-              icon: 'paw-outline',
+              title: 'Weather',
+              icon: 'cloud-outline',
             })
           }
         />
         <CardTopic
-          title="Gardening"
-          icon="flower-outline"
+          title="Tool & Knots"
+          icon="hammer-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Gardening',
-              icon: 'flower-outline',
+              title: 'Tool & Knots',
+              icon: 'hammer-outline',
             })
           }
         />
         <CardTopic
-          title="Hunting"
-          icon="compass-outline"
+          title="Emergency"
+          icon="warning-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Hunting',
-              icon: 'compass-outline',
+              title: 'Emergency',
+              icon: 'warning-outline',
             })
           }
         />
