@@ -19,7 +19,7 @@ async function initDb(): Promise<void> {
   if (db || !SQLite) return;
   try {
     SQLite.enablePromise?.(true);
-    db = await SQLite.openDatabase({ name: 'toast.db', location: 'default' });
+    db = await SQLite.openDatabase({ name: 'bookmarks.db', location: 'default' });
     await db.executeSql(
       'CREATE TABLE IF NOT EXISTS bookmarks (' +
         'id TEXT PRIMARY KEY NOT NULL,' +
