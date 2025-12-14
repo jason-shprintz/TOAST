@@ -132,9 +132,9 @@
     },
 
     {
-      "id": "water_purification_field_methods",
+      "id": "water_purification",
       "category": "Water",
-      "title": "Water Purification (Field Methods)",
+      "title": "Water Purification",
       "summary": "Collect and purify water from natural sources to reduce the risk of illness.",
       "difficulty": "basic",
       "tags": [

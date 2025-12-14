@@ -21,6 +21,7 @@ import { COLORS } from '../../theme';
 export type ReferenceEntry = {
   id: string;
   title: string;
+  category?: string;
   summary?: string;
   steps?: string[];
   do_not?: string[];
@@ -65,7 +66,7 @@ export default function EntryScreen({ entry }: Props): JSX.Element {
       await addBookmark({
         id: resolvedEntry.id,
         title: resolvedEntry.title,
-        category: routeEntry?.category || '',
+        category: routeEntry?.category || entry?.category || '',
       });
       setBookmarked(true);
     }
