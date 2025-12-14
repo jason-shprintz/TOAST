@@ -13,12 +13,12 @@ const categoryMap: Record<string, string> = {
   Water: 'Water',
   Shelter: 'Shelter',
   FoodAndForaging: 'Food & Foraging',
-  TrackingAndNavigation: 'Tracking & Navigation',
+  TrackingAndAwareness: 'Tracking & Awareness',
 };
 
 /**
  * Renders the Survival Guide screen, providing quick access to essential survival topics.
- * Displays a header, section title, and a grid of topic cards (Fire, Water, Shelter, Food & Foraging, Tracking & Navigation).
+ * Displays a header, section title, and a grid of topic cards (Fire, Water, Shelter, Food & Foraging, Tracking & Awareness).
  * Each card navigates to a detailed category screen with relevant data when pressed.
  *
  * @returns {JSX.Element} The rendered Survival Guide screen component.
@@ -77,12 +77,12 @@ export default function SurvivalScreen(): JSX.Element {
             }
           />
           <CardTopic
-            title="Tracking & Navigation"
+            title="Tracking & Awareness"
             icon="map-outline"
             onPress={() =>
               navigation.navigate('Category', {
-                category: categoryMap.TrackingAndNavigation,
-                title: 'Tracking & Navigation',
+                category: categoryMap.TrackingAndAwareness,
+                title: 'Tracking & Awareness',
                 data: data,
               })
             }

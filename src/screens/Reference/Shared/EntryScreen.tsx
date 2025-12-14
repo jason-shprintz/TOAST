@@ -8,16 +8,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
-import SectionHeader from '../../components/SectionHeader';
+import LogoHeader from '../../../components/LogoHeader';
+import ScreenContainer from '../../../components/ScreenContainer';
+import SectionHeader from '../../../components/SectionHeader';
 import {
   addBookmark,
   removeBookmark,
   isBookmarked,
-} from '../../stores/BookmarksStore';
-import { COLORS } from '../../theme';
-import ReferenceEntryType from '../../types/data-type';
+} from '../../../stores/BookmarksStore';
+import { COLORS } from '../../../theme';
+import ReferenceEntryType from '../../../types/data-type';
 
 type EntryScreenRouteProp = RouteProp<
   { Entry: { entry: ReferenceEntryType } },

@@ -14,9 +14,9 @@ import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
-import CategoryScreen from '../screens/Reference/CategoryScreen';
-import EntryScreen from '../screens/Reference/EntryScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
+import CategoryScreen from '../screens/Reference/Shared/CategoryScreen';
+import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 
 const Stack = createNativeStackNavigator();

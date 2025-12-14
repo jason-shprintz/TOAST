@@ -15,9 +15,9 @@
   },
   "entries": [
     {
-      "id": "fire_starting_basics",
+      "id": "fire_starting",
       "category": "Firecraft",
-      "title": "Fire Starting (Basics)",
+      "title": "Fire Starting",
       "summary": "Build and light a small, controlled fire for warmth, cooking, and signaling when resources are limited.",
       "difficulty": "intermediate",
       "tags": [
@@ -130,7 +130,6 @@
         "In very dry conditions, consider using a stove or going without fire entirely."
       ]
     },
-
     {
       "id": "water_purification",
       "category": "Water",
@@ -241,7 +240,6 @@
         "Even small sips can help maintain morale and function while you search for new sources."
       ]
     },
-
     {
       "id": "shelter_building_basic_debris_shelter",
       "category": "Shelter",
@@ -344,11 +342,10 @@
         "Combining shade with adequate water and rest is the best prevention against heat illness."
       ]
     },
-
     {
-      "id": "edible_plants_safety_and_examples",
+      "id": "edible_plants",
       "category": "Food & Foraging",
-      "title": "Edible Plants (Safety and Common Examples)",
+      "title": "Edible Plants",
       "summary": "Follow strict safety rules when foraging and learn a few commonly recognized edible plants.",
       "difficulty": "advanced",
       "tags": ["edible plants", "foraging", "wild food", "safety", "plants"],
@@ -381,9 +378,9 @@
       ]
     },
     {
-      "id": "food_fishing_basic_methods",
+      "id": "food_fishing",
       "category": "Food & Foraging",
-      "title": "Fishing (Basic Methods)",
+      "title": "Fishing",
       "summary": "Use simple fishing techniques to obtain food from lakes, rivers, or streams.",
       "difficulty": "intermediate",
       "tags": ["fishing", "food", "lines", "hooks", "water"],
@@ -415,9 +412,9 @@
       ]
     },
     {
-      "id": "food_small_game_general",
+      "id": "food_small_game",
       "category": "Food & Foraging",
-      "title": "Small Game (General Considerations)",
+      "title": "Small Game",
       "summary": "Understand basic principles around obtaining and using small game for food without detailed hunting tactics.",
       "difficulty": "advanced",
       "tags": ["small game", "food", "protein", "traps"],
@@ -447,11 +444,10 @@
         "If you are unfamiliar with processing animals, seek training before you need the skill."
       ]
     },
-
     {
-      "id": "animal_tracks_identification_basics",
+      "id": "animal_tracks",
       "category": "Tracking & Awareness",
-      "title": "Animal Tracks (Identification Basics)",
+      "title": "Animal Tracks",
       "summary": "Use tracks and sign to understand animal presence, find resources, and improve safety.",
       "difficulty": "basic",
       "tags": ["animal tracks", "tracking", "wildlife", "sign", "navigation"],

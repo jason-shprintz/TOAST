@@ -1,12 +1,12 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
-import SectionHeader from '../../components/SectionHeader';
-import ReferenceEntryType from '../../types/data-type';
+import CardTopic from '../../../components/CardTopic';
+import Grid from '../../../components/Grid';
+import LogoHeader from '../../../components/LogoHeader';
+import ScreenContainer from '../../../components/ScreenContainer';
+import SectionHeader from '../../../components/SectionHeader';
+import ReferenceEntryType from '../../../types/data-type';
 
 /**
  * Displays a list of reference entries filtered by category.
