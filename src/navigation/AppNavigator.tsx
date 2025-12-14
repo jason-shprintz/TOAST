@@ -18,9 +18,28 @@ import HealthScreen from '../screens/Reference/HealthScreen';
 import CategoryScreen from '../screens/Reference/Shared/CategoryScreen';
 import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
+import WeatherScreen from '../screens/Reference/WeatherScreen';
 
 const Stack = createNativeStackNavigator();
 
+/**
+ * AppNavigator is the root navigation component for the application.
+ *
+ * It sets up the main navigation stack using React Navigation, defining all the primary screens and modules
+ * available in the app. The navigator is wrapped in a `NavigationContainer` and uses a stack-based navigation pattern.
+ *
+ * @returns {JSX.Element} The navigation container with the configured stack navigator.
+ *
+ * @remarks
+ * - The initial route is set to "Home".
+ * - The header is hidden for all screens by default.
+ * - Screens are grouped by modules (Core, Navigation, Reference, Communications) and shared screens.
+ *
+ * @example
+ * ```tsx
+ * <AppNavigator />
+ * ```
+ */
 export default function AppNavigator() {
   return (
     <NavigationContainer>
@@ -42,18 +61,19 @@ export default function AppNavigator() {
         {/* Shared */}
         <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
         {/* Core Module */}
-        <Stack.Screen name="Flashlight" component={FlashlightScreen} />
         <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
-        <Stack.Screen name="Notepad" component={NotepadScreen} />
+        <Stack.Screen name="Flashlight" component={FlashlightScreen} />
         <Stack.Screen name="NewNote" component={NewNoteScreen} />
+        <Stack.Screen name="Notepad" component={NotepadScreen} />
         <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
         <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
         {/* Reference Module */}
-        <Stack.Screen name="Health" component={HealthScreen} />
-        <Stack.Screen name="Entry" component={EntryScreen} />
-        <Stack.Screen name="Category" component={CategoryScreen} />
-        <Stack.Screen name="Survival" component={SurvivalScreen} />
         <Stack.Screen name="Bookmark" component={BookmarkScreen} />
+        <Stack.Screen name="Category" component={CategoryScreen} />
+        <Stack.Screen name="Entry" component={EntryScreen} />
+        <Stack.Screen name="Health" component={HealthScreen} />
+        <Stack.Screen name="Survival" component={SurvivalScreen} />
+        <Stack.Screen name="Weather" component={WeatherScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
