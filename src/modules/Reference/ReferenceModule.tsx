@@ -44,11 +44,11 @@ export default function ReferenceModule() {
           }
         />
         <CardTopic
-          title="Tool & Knots"
+          title="Tools & Knots"
           icon="hammer-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Tool & Knots',
+              title: 'Tools & Knots',
               icon: 'hammer-outline',
             })
           }
