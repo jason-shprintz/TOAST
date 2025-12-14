@@ -24,14 +24,9 @@ export default function ReferenceModule() {
           onPress={() => navigation.navigate('Health')}
         />
         <CardTopic
-          title="Survival Field"
+          title="Survival Guide"
           icon="leaf-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Survival Field',
-              icon: 'leaf-outline',
-            })
-          }
+          onPress={() => navigation.navigate('Survival')}
         />
         <CardTopic
           title="Weather"

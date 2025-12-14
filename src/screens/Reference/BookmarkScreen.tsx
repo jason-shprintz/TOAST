@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { JSX, useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import CardTopic from '../../components/CardTopic';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { getBookmarks, BookmarkItem } from '../../stores/BookmarksStore';

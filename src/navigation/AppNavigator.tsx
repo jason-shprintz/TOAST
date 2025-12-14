@@ -14,9 +14,11 @@ import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
+import EntryScreen from '../screens/Reference/EntryScreen';
 import HealthCategoryScreen from '../screens/Reference/HealthCategoryScreen';
-import HealthEntryScreen from '../screens/Reference/HealthEntryScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
+import SurvivalCategoryScreen from '../screens/Reference/SurvivalCategoryScreen';
+import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -50,7 +52,13 @@ export default function AppNavigator() {
         {/* Reference Module */}
         <Stack.Screen name="Health" component={HealthScreen} />
         <Stack.Screen name="HealthCategory" component={HealthCategoryScreen} />
-        <Stack.Screen name="HealthEntry" component={HealthEntryScreen} />
+        <Stack.Screen name="HealthEntry" component={EntryScreen} />
+        <Stack.Screen name="Survival" component={SurvivalScreen} />
+        <Stack.Screen
+          name="SurvivalCategory"
+          component={SurvivalCategoryScreen}
+        />
+        <Stack.Screen name="SurvivalEntry" component={EntryScreen} />
         <Stack.Screen name="Bookmark" component={BookmarkScreen} />
       </Stack.Navigator>
     </NavigationContainer>

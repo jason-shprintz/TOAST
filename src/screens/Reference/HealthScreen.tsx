@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
-// no local React Native imports needed
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';

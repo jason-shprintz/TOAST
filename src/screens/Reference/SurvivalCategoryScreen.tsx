@@ -1,14 +1,14 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
-import { StyleSheet, ScrollView, Text } from 'react-native';
+import { Text, StyleSheet, ScrollView } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import data from '../../data/health.json';
+import data from '../../data/survival.json';
 
-export default function HealthCategoryScreen(): JSX.Element {
+export default function SurvivalCategoryScreen(): JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { category, title } = route.params || {};
@@ -35,7 +35,7 @@ export default function HealthCategoryScreen(): JSX.Element {
                 title={item.title}
                 icon="document-text-outline"
                 onPress={() =>
-                  navigation.navigate('HealthEntry', { entry: item })
+                  navigation.navigate('SurvivalEntry', { entry: item })
                 }
               />
             ))}

@@ -11,7 +11,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import data from '../../data/health.json';
 import {
   addBookmark,
   removeBookmark,
@@ -19,51 +18,60 @@ import {
 } from '../../stores/BookmarksStore';
 import { COLORS } from '../../theme';
 
-/**
- * Displays detailed information for a specific health reference entry, including summary, steps, cautions, and notes.
- *
- * This screen allows users to view the content of a health entry, bookmark or remove the bookmark for the entry,
- * and see categorized information such as steps to follow, things to avoid, warning signs, and additional notes.
- *
- * - Fetches the entry by `id` from navigation route parameters.
- * - Checks and manages bookmark status for the entry.
- * - Renders entry details in categorized sections if available.
- * - Handles missing or invalid entry gracefully with a fallback message.
- *
- * @returns {JSX.Element} The rendered health entry screen component.
- */
-export default function HealthEntryScreen(): JSX.Element {
-  const route = useRoute<any>();
-  const { id } = route.params || {};
-  const [bookmarked, setBookmarked] = useState<boolean>(false);
+export type ReferenceEntry = {
+  id: string;
+  title: string;
+  summary?: string;
+  steps?: string[];
+  do_not?: string[];
+  watch_for?: string[];
+  notes?: string[];
+};
 
-  const entry = useMemo(() => {
-    return (data.entries || []).find(e => e.id === id);
-  }, [id]);
+type Props = {
+  entry?: ReferenceEntry | null; // Optional direct entry; typically provided via route params by Category screens
+};
+
+/**
+ * Shared screen to render a reference entry's details (summary, steps, do_not, watch_for, notes).
+ * Accepts an optional `headerRight` element to render actions (e.g., bookmark toggle) beside the header.
+ */
+export default function EntryScreen({ entry }: Props): JSX.Element {
+  const route = useRoute<any>();
+  const { entry: routeEntry } = route.params || {};
+
+  const resolvedEntry: ReferenceEntry | null = useMemo(() => {
+    if (entry) return entry as ReferenceEntry;
+    if (routeEntry) return routeEntry as ReferenceEntry;
+    return null;
+  }, [entry, routeEntry]);
+
+  const [bookmarked, setBookmarked] = useState<boolean>(false);
 
   useEffect(() => {
     const check = async () => {
-      if (id) setBookmarked(await isBookmarked(id));
+      const entryId = resolvedEntry?.id;
+      if (entryId) setBookmarked(await isBookmarked(entryId));
     };
     check();
-  }, [id]);
+  }, [resolvedEntry?.id]);
 
   const toggleBookmark = async () => {
-    if (!entry) return;
+    if (!resolvedEntry) return;
     if (bookmarked) {
-      await removeBookmark(entry.id);
+      await removeBookmark(resolvedEntry.id);
       setBookmarked(false);
     } else {
       await addBookmark({
-        id: entry.id,
-        title: entry.title,
-        category: entry.category,
+        id: resolvedEntry.id,
+        title: resolvedEntry.title,
+        category: routeEntry?.category || '',
       });
       setBookmarked(true);
     }
   };
 
-  if (!entry) {
+  if (!resolvedEntry) {
     return (
       <ScreenContainer>
         <LogoHeader />
@@ -80,7 +88,7 @@ export default function HealthEntryScreen(): JSX.Element {
   return (
     <ScreenContainer>
       <LogoHeader />
-      <SectionHeader>{entry.title}</SectionHeader>
+      <SectionHeader>{resolvedEntry.title}</SectionHeader>
       <View style={styles.actions}>
         <TouchableOpacity onPress={toggleBookmark} style={styles.actionBtn}>
           <Ionicons
@@ -91,44 +99,44 @@ export default function HealthEntryScreen(): JSX.Element {
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.container}>
-        {!!entry.summary && (
+        {!!resolvedEntry.summary && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Summary</Text>
-            <Text style={styles.cardBody}>{entry.summary}</Text>
+            <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
           </View>
         )}
 
-        {!!entry.steps?.length && (
+        {!!resolvedEntry.steps?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Steps</Text>
-            {entry.steps.map((s: string, idx: number) => (
+            {resolvedEntry.steps.map((s: string, idx: number) => (
               <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
             ))}
           </View>
         )}
 
-        {!!entry.do_not?.length && (
+        {!!resolvedEntry.do_not?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Do Not</Text>
-            {entry.do_not.map((s: string, idx: number) => (
+            {resolvedEntry.do_not.map((s: string, idx: number) => (
               <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
             ))}
           </View>
         )}
 
-        {!!entry.watch_for?.length && (
+        {!!resolvedEntry.watch_for?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Watch For</Text>
-            {entry.watch_for.map((s: string, idx: number) => (
+            {resolvedEntry.watch_for.map((s: string, idx: number) => (
               <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
             ))}
           </View>
         )}
 
-        {!!entry.notes?.length && (
+        {!!resolvedEntry.notes?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Notes</Text>
-            {entry.notes.map((s: string, idx: number) => (
+            {resolvedEntry.notes.map((s: string, idx: number) => (
               <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
             ))}
           </View>
@@ -157,10 +165,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     backgroundColor: COLORS.PRIMARY_LIGHT,
-  },
-  actionText: {
-    fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
   },
   missingWrap: {
     paddingHorizontal: 14,
