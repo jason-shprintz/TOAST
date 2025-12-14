@@ -67,7 +67,7 @@ export default function SurvivalScreen(): JSX.Element {
           />
           <CardTopic
             title="Food & Foraging"
-            icon="water-outline"
+            icon="nutrition-outline"
             onPress={() =>
               navigation.navigate('Category', {
                 category: categoryMap.FoodAndForaging,
