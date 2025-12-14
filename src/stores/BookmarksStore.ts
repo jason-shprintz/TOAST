@@ -1,4 +1,3 @@
-// SQLite-backed bookmarks
 export type BookmarkItem = {
   id: string;
   title: string;
@@ -15,11 +14,28 @@ try {
 
 let db: any | null = null;
 
+/**
+ * Initializes the bookmarks SQLite database if it has not already been initialized.
+ *
+ * - Enables promise-based API for SQLite if available.
+ * - Opens (or creates) a database named 'bookmarks.db' in the default location.
+ * - Creates a 'bookmarks' table if it does not already exist, with columns:
+ *   - `id`: Primary key, text, not null.
+ *   - `title`: Text, not null.
+ *   - `category`: Text, nullable.
+ *   - `createdAt`: Integer, not null (timestamp).
+ * - Handles and logs any errors during initialization.
+ *
+ * @returns {Promise<void>} A promise that resolves when the database is initialized.
+ */
 async function initDb(): Promise<void> {
   if (db || !SQLite) return;
   try {
     SQLite.enablePromise?.(true);
-    db = await SQLite.openDatabase({ name: 'bookmarks.db', location: 'default' });
+    db = await SQLite.openDatabase({
+      name: 'bookmarks.db',
+      location: 'default',
+    });
     await db.executeSql(
       'CREATE TABLE IF NOT EXISTS bookmarks (' +
         'id TEXT PRIMARY KEY NOT NULL,' +
@@ -34,6 +50,14 @@ async function initDb(): Promise<void> {
   }
 }
 
+/**
+ * Retrieves all bookmarks from the database, ordered by creation date in descending order.
+ *
+ * @returns {Promise<BookmarkItem[]>} A promise that resolves to an array of `BookmarkItem` objects.
+ * If the database is not initialized or an error occurs, an empty array is returned.
+ *
+ * @throws No explicit errors are thrown; errors are logged and an empty array is returned on failure.
+ */
 export async function getBookmarks(): Promise<BookmarkItem[]> {
   await initDb();
   if (!db) return [];
@@ -59,6 +83,14 @@ export async function getBookmarks(): Promise<BookmarkItem[]> {
   }
 }
 
+/**
+ * Checks if a bookmark with the specified ID exists in the database.
+ *
+ * @param id - The unique identifier of the bookmark to check.
+ * @returns A promise that resolves to `true` if the bookmark exists, or `false` otherwise.
+ *
+ * @throws Will log an error to the console if the database query fails.
+ */
 export async function isBookmarked(id: string): Promise<boolean> {
   await initDb();
   if (!db) return false;
@@ -73,6 +105,17 @@ export async function isBookmarked(id: string): Promise<boolean> {
   }
 }
 
+/**
+ * Adds a new bookmark to the database.
+ *
+ * Initializes the database connection if necessary, then attempts to insert the provided
+ * bookmark item into the `bookmarks` table. If a bookmark with the same `id` already exists,
+ * the insertion is ignored. The `createdAt` timestamp is set to the current time if not provided.
+ *
+ * @param item - The bookmark item to add, containing at least an `id` and `title`.
+ * @returns A promise that resolves when the operation is complete.
+ * @throws Logs an error to the console if the insertion fails.
+ */
 export async function addBookmark(item: BookmarkItem): Promise<void> {
   await initDb();
   if (!db) return;
@@ -87,6 +130,16 @@ export async function addBookmark(item: BookmarkItem): Promise<void> {
   }
 }
 
+/**
+ * Removes a bookmark from the database by its unique identifier.
+ *
+ * Initializes the database connection if necessary, then attempts to delete
+ * the bookmark with the specified `id` from the `bookmarks` table.
+ * Logs an error to the console if the operation fails.
+ *
+ * @param id - The unique identifier of the bookmark to remove.
+ * @returns A promise that resolves when the bookmark has been removed.
+ */
 export async function removeBookmark(id: string): Promise<void> {
   await initDb();
   if (!db) return;

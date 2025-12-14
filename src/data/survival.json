@@ -1,0 +1,548 @@
+{
+  "metadata": {
+    "name": "Survival Guide",
+    "version": "1.1.0",
+    "last_updated": "2025-12-14",
+    "disclaimer": "This information is general survival guidance and is not a substitute for professional training. Always use your judgment and prioritize safety in real-world situations.",
+    "categories": [
+      "Firecraft",
+      "Water",
+      "Shelter",
+      "Food & Foraging",
+      "Tracking & Awareness"
+    ],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
+  },
+  "entries": [
+    {
+      "id": "fire_starting",
+      "category": "Firecraft",
+      "title": "Fire Starting",
+      "summary": "Build and light a small, controlled fire for warmth, cooking, and signaling when resources are limited.",
+      "difficulty": "intermediate",
+      "tags": [
+        "fire",
+        "fire starting",
+        "tinder",
+        "kindling",
+        "ferro rod",
+        "survival"
+      ],
+      "steps": [
+        "Choose a safe fire site on bare soil or rock, away from overhanging branches, dry grass, or tents.",
+        "Clear a circle at least 1–2 meters (3–6 feet) wide down to mineral soil; remove leaves, sticks, and duff.",
+        "If possible, build a small fire ring or use existing fire rings to contain your fire.",
+        "Gather three types of fuel before lighting: tinder (very fine, dry material), kindling (small sticks about pencil thickness), and fuel wood (larger sticks and branches).",
+        "Select tinder such as dry grass, shredded bark, wood shavings, cotton pads, or birch bark. Keep it as dry and fluffy as possible.",
+        "Build a small fire structure: common options include a teepee (sticks leaning together), log cabin (small square stack), or lean-to (kindling leaning over the tinder).",
+        "Place tinder in the center and arrange kindling loosely above it so air can flow; avoid packing it too tightly.",
+        "Using your ignition source (matches, lighter, ferro rod, or other), light the tinder at several points, shielding the flame from wind with your body or hands.",
+        "Gently blow at the base of the tinder to feed oxygen, being careful not to scatter embers.",
+        "As the kindling catches, gradually add slightly larger sticks, allowing each layer to ignite before adding more.",
+        "Maintain a small, controlled fire sized for your task rather than a large, wasteful blaze.",
+        "Keep extra dry tinder and kindling stored under cover for relighting if needed."
+      ],
+      "do_not": [
+        "Do not build a fire under low branches, near dry brush, or inside tents or enclosed shelters.",
+        "Do not use flammable liquids like fuel or alcohol unless you fully understand the risk.",
+        "Do not leave a fire unattended, even for a short time.",
+        "Do not build a fire larger than necessary; large fires are harder to control and require more fuel."
+      ],
+      "watch_for": [
+        "Wind changes that could blow embers into dry grass, leaves, or your shelter.",
+        "Crackling or rolling logs that may escape the fire ring.",
+        "Exhaustion or dehydration while collecting wood; pace yourself, especially in extreme weather."
+      ],
+      "notes": [
+        "In wet conditions, look for dry material inside dead standing trees, under overhangs, or inside bark.",
+        "Carry at least two reliable ignition methods in your kit, such as a lighter and a ferro rod.",
+        "Practice building small, efficient fires before you need the skill in a true emergency."
+      ]
+    },
+    {
+      "id": "fire_starting_wet_conditions",
+      "category": "Firecraft",
+      "title": "Fire Starting in Wet Conditions",
+      "summary": "Light a fire when wood and ground are damp or wet.",
+      "difficulty": "advanced",
+      "tags": ["fire", "wet conditions", "tinder", "kindling", "rain"],
+      "steps": [
+        "Look for the driest available location: under dense trees, overhangs, or rock ledges that have blocked some rain.",
+        "Create a dry base by laying a platform of dry sticks, bark, or flat rocks to keep your fire off wet ground or snow.",
+        "Harvest dry inner wood by splitting dead branches or logs; the core is often drier than the outer surface.",
+        "Use a knife or sharp edge to shave dry curls from the inner wood to create feather sticks or fine shavings as tinder and kindling.",
+        "Gather extra tinder and kindling—at least two to three times more than you think you need, because some will fail to catch.",
+        "If you have fire starters (cotton with petroleum jelly, waxed pads, commercial cubes), prepare them at the center of your fire lay.",
+        "Build a compact structure, such as a small teepee or lean-to, with the driest material closest to the flame and wetter material reserved for later.",
+        "Light the tinder while shielding it carefully from wind and drizzle with your body, pack, or a held-up jacket.",
+        "Feed the early flame with the smallest, driest pieces first, patiently adding slightly larger sticks only after the smaller ones are burning well.",
+        "As the fire grows stronger, begin to dry damp sticks by placing them near, but not directly in, the flames before adding them."
+      ],
+      "do_not": [
+        "Do not try to ignite large, wet logs directly; they will smother your fire.",
+        "Do not skip making a dry base; ground moisture can quickly extinguish a small flame.",
+        "Do not use all your best tinder in one attempt if you have multiple chances; reserve some as backup."
+      ],
+      "watch_for": [
+        "Steam instead of flame when adding wood, indicating that pieces are still too wet.",
+        "Smoke that thickens and darkens, which can mean the fire is being smothered.",
+        "Weather changes such as increasing rain or wind that may require additional windbreaks or shelter for the fire."
+      ],
+      "notes": [
+        "Carrying a small, dedicated fire kit dramatically improves your odds of success in bad weather.",
+        "Practice splitting and feathering wood before an emergency; it is a key wet-weather skill.",
+        "Consider building a partial reflector wall to focus heat and protect the fire from wind."
+      ]
+    },
+    {
+      "id": "fire_safety_and_extinguishing",
+      "category": "Firecraft",
+      "title": "Fire Safety and Extinguishing",
+      "summary": "Use, control, and put out campfires safely to avoid wildfires and injuries.",
+      "difficulty": "basic",
+      "tags": ["fire safety", "extinguish", "wildfire", "campfire"],
+      "steps": [
+        "Before lighting a fire, confirm that conditions and local rules (if known) allow open flame; in high wind or drought, consider going without.",
+        "Keep the fire small and contained within a fire ring, rocks, or a dug-out pit whenever possible.",
+        "Maintain a clear zone around the fire that is free of dry grass, leaves, and gear.",
+        "Keep water, loose soil, or sand nearby at all times to control or extinguish the fire quickly.",
+        "Supervise the fire continuously; assign someone responsible for watching it if you must step away briefly.",
+        "When you are ready to put the fire out, spread the coals and remaining wood to help them cool.",
+        "Pour water on the fire slowly, stirring the ashes and coals while you pour until hissing stops.",
+        "If water is scarce, use soil or sand to smother the coals, mixing thoroughly so no hot pockets remain.",
+        "Continue adding water or soil and stirring until everything is cool to the touch.",
+        "Scatter cold ashes and unused sticks away from vegetation if appropriate, leaving the site as natural as possible."
+      ],
+      "do_not": [
+        "Do not leave a fire unattended or go to sleep with a large active fire.",
+        "Do not bury hot coals under a thin layer of soil; they can remain hot and start fires later.",
+        "Do not build fires in strong winds where embers can travel far.",
+        "Do not use stones that may contain moisture from rivers or lakes directly in the fire; they can crack or explode."
+      ],
+      "watch_for": [
+        "Embers blowing outside the fire ring, especially during gusts.",
+        "Roots or organic material smoldering under the surface after the main fire is out.",
+        "Nearby vegetation heating or drying out excessively, raising fire risk."
+      ],
+      "notes": [
+        "A well-managed fire is a tool; a poorly managed fire becomes a hazard to you and others.",
+        "Cold, wet hands inside the ashes are an effective way to confirm a fire is truly out if you can do so safely.",
+        "In very dry conditions, consider using a stove or going without fire entirely."
+      ]
+    },
+    {
+      "id": "water_purification",
+      "category": "Water",
+      "title": "Water Purification",
+      "summary": "Collect and purify water from natural sources to reduce the risk of illness.",
+      "difficulty": "basic",
+      "tags": [
+        "water",
+        "purification",
+        "boiling",
+        "filter",
+        "disinfection",
+        "survival"
+      ],
+      "steps": [
+        "Identify the best available source: flowing water (streams, springs) is usually safer than stagnant ponds or puddles.",
+        "Avoid sources near obvious contamination such as animal carcasses, heavy human traffic, industrial sites, or downstream of camps and livestock.",
+        "Collect water from as clear a part of the source as possible, using a container, cup, or improvised scoop.",
+        "If water is visibly dirty, let it settle or pour it through cloth to remove large particles before disinfecting.",
+        "Boiling method: bring water to a rolling boil for at least 1 minute; at high elevations, boil for at least 3 minutes.",
+        "Allow boiled water to cool naturally with a cover over the container to prevent re-contamination.",
+        "If you have chemical tablets, follow the instructions exactly, allowing the full contact time before drinking.",
+        "If you have a portable filter, use it according to its directions and protect it from freezing.",
+        "Improvised filter: layer cloth, sand, charcoal, and small gravel in a container; pour water through repeatedly, then disinfect by boiling or chemicals if possible.",
+        "Store treated water in clean containers with lids or covers and remember which containers hold safe water."
+      ],
+      "do_not": [
+        "Do not assume clear water is safe; harmful microbes are often invisible.",
+        "Do not drink untreated surface water unless you have no other option and are at risk of severe dehydration.",
+        "Do not contaminate clean water by dipping dirty hands or containers into it.",
+        "Do not skip contact time when using chemicals; rushing reduces effectiveness."
+      ],
+      "watch_for": [
+        "Signs of gastrointestinal illness after drinking from new sources.",
+        "Sediment or particles remaining after treatment; re-filter and disinfect if possible.",
+        "Fuel availability for boiling; plan ahead for multiple days."
+      ],
+      "notes": [
+        "Water is usually a higher priority than food; even partial purification is often better than none.",
+        "Combining filtration with boiling or chemical treatment provides stronger protection.",
+        "Pre-filled, treated bottles in your kit can give you a buffer while you learn the local water sources."
+      ]
+    },
+    {
+      "id": "water_finding_sources",
+      "category": "Water",
+      "title": "Finding Water Sources",
+      "summary": "Locate potential water sources in different environments using terrain and wildlife clues.",
+      "difficulty": "intermediate",
+      "tags": ["water finding", "navigation", "terrain", "survival"],
+      "steps": [
+        "Study the terrain: water tends to collect in low areas such as valleys, ravines, and depressions.",
+        "Follow dry stream beds downhill; they may lead to pools or springs, especially at bends or where rock layers force water to the surface.",
+        "Look for green, dense vegetation lines in otherwise dry areas; these may indicate underground or surface water nearby.",
+        "Observe insect activity such as swarms of mosquitoes or other flying insects at dawn and dusk; they often concentrate near water.",
+        "Watch for animal tracks and trails that converge; many game trails lead toward regular water sources.",
+        "Listen for the sound of running water, especially at night or in still air when sound travels farther.",
+        "In forests, search the base of rock outcrops, tree root systems, or depressions where rainwater collects.",
+        "In morning hours, gather dew by dragging clean cloth over grass and then wringing it into a container; repeat as necessary.",
+        "In some environments, you can dig at the lowest point of a dry creek bed or near vegetation and wait for water to seep in, then filter and treat it."
+      ],
+      "do_not": [
+        "Do not rely on a single clue; confirm water sources with multiple signs if possible.",
+        "Do not drink water directly from unknown sources without treatment if you can avoid it.",
+        "Do not exhaust yourself searching during the hottest part of the day; use early morning and late afternoon when possible."
+      ],
+      "watch_for": [
+        "Animal trails that suddenly become muddy or damp, indicating a nearby water source.",
+        "Areas with lush plants or reeds that stand out compared to surrounding terrain.",
+        "Signs of contamination like dead animals, strong chemical smells, or discolored water."
+      ],
+      "notes": [
+        "Carrying a basic map or having offline maps preloaded greatly improves your chances of finding water.",
+        "In very arid regions, water may be scarce; plan ahead and do not travel far without adequate reserves.",
+        "Small amounts of water gathered consistently (dew, small seeps) can add up over time."
+      ]
+    },
+    {
+      "id": "water_conservation_rationing",
+      "category": "Water",
+      "title": "Water Conservation and Rationing",
+      "summary": "Use available water wisely while minimizing health risks.",
+      "difficulty": "basic",
+      "tags": ["water", "rationing", "hydration", "heat"],
+      "steps": [
+        "Limit unnecessary exertion, especially in heat; rest in shade during the hottest hours to reduce sweat loss.",
+        "Travel during cooler times such as early morning or late evening to conserve water.",
+        "Wear loose, light-colored clothing and a head covering to reduce direct sun exposure.",
+        "Sip water regularly instead of chugging large amounts at once; aim to stay ahead of thirst rather than respond to severe thirst.",
+        "If water supplies are very low and resupply is uncertain, reduce activity and focus on finding new water sources rather than continuing long travel.",
+        "Use water efficiently for tasks: reuse lightly used water (like from rinsing) for cleaning gear or pre-washing other items when safe.",
+        "Monitor urine color and frequency as a rough indicator of hydration; aim for light yellow and regular urination when possible.",
+        "Prioritize drinking over washing or cooking when supplies are very limited; staying hydrated is more important in the short term."
+      ],
+      "do_not": [
+        "Do not deliberately dehydrate yourself by refusing to drink when water is available.",
+        "Do not engage in intense exercise or heavy work during peak heat if you have limited water.",
+        "Do not use untreated or dirty water for drinking unless no safer option exists and dehydration risks are severe."
+      ],
+      "watch_for": [
+        "Dark, infrequent urine, dizziness, confusion, or rapid heartbeat—all signs of worsening dehydration.",
+        "Headache, irritability, and fatigue during heat and exertion.",
+        "Signs of heat exhaustion or heat stroke when conserving water in hot environments."
+      ],
+      "notes": [
+        "Ration your sweat, not just your water—managing exertion is key to making limited water last.",
+        "If you expect to be in dry areas, carry more water than you think you need whenever possible.",
+        "Even small sips can help maintain morale and function while you search for new sources."
+      ]
+    },
+    {
+      "id": "shelter_building_basic_debris_shelter",
+      "category": "Shelter",
+      "title": "Shelter Building (Basic Debris Shelter)",
+      "summary": "Construct a simple, insulated shelter using natural materials to stay dry and retain body heat.",
+      "difficulty": "intermediate",
+      "tags": ["shelter", "debris shelter", "cold", "rain", "survival"],
+      "steps": [
+        "Choose a location that is safe from falling branches, rockfall, and flooding; avoid dry stream beds and low spots where water can collect.",
+        "Look for natural features to help, such as a downed log, rock outcrop, or thick bushes that can act as a windbreak.",
+        "Lay out a ridgepole (a strong main branch or pole) roughly as long as your body plus extra space for gear.",
+        "Support one end of the ridgepole on a stump, rock, forked branches, or a low tree branch; the other end rests on the ground.",
+        "Lean smaller branches along both sides of the ridgepole to create a framework, leaving a small entry point at one end.",
+        "Cover the framework thickly with leaves, grass, evergreen boughs, or other debris, aiming for at least the thickness of your arm.",
+        "Add more debris until the roof and sides are well sealed, then place another layer of branches on top to help hold material in place.",
+        "Create an insulated bed inside using leaves, needles, or dry grass thick enough to lift your body off the cold ground.",
+        "Narrow the interior so it is just large enough for you to lie in; smaller spaces are easier to warm with body heat.",
+        "If conditions are very cold and dry, build a small fire outside the entrance and use a reflective barrier to bounce heat toward the shelter, maintaining safe distance and ventilation."
+      ],
+      "do_not": [
+        "Do not build directly under dead branches that could fall in wind or snow.",
+        "Do not make the shelter excessively large; it will be harder to keep warm.",
+        "Do not sleep directly on bare ground; it will quickly drain body heat.",
+        "Do not light a fire inside a small debris shelter; smoke and fire risk are severe."
+      ],
+      "watch_for": [
+        "Water pooling or running near your shelter during rain.",
+        "Shifting or collapsing branches, especially under heavy snow or wind.",
+        "Condensation or damp bedding; add more dry debris if available."
+      ],
+      "notes": [
+        "Practice building debris shelters in good weather to understand how much material you need.",
+        "Carrying a lightweight tarp or emergency blanket greatly reduces time and effort for effective shelter.",
+        "In milder weather, you can build a more open version focused on shade and bug protection."
+      ]
+    },
+    {
+      "id": "shelter_tarp_configurations",
+      "category": "Shelter",
+      "title": "Tarp Shelter Configurations",
+      "summary": "Set up simple tarp shelters for rain, wind, or sun protection.",
+      "difficulty": "basic",
+      "tags": ["shelter", "tarp", "rain", "wind", "sunshade"],
+      "steps": [
+        "Choose a site with good drainage and few overhead hazards such as dead branches.",
+        "Lay out your tarp and identify anchor points like trees, rocks, or stakes.",
+        "For an A-frame shelter, run a ridgeline cord between two trees, then drape the tarp over the line.",
+        "Stake or tie down the tarp corners and edges, angling one side lower to block prevailing wind and rain.",
+        "For a lean-to, tie one edge of the tarp to a line between trees or directly to a branch, then stake the opposite edge to the ground.",
+        "In heavy rain, tilt one side more steeply to encourage water runoff away from your sleeping area.",
+        "Use rocks, sticks, or extra cord to tighten sagging sections and prevent water pooling.",
+        "Adjust the height of the shelter: higher for ventilation in hot weather, lower and tighter for warmth and wind protection."
+      ],
+      "do_not": [
+        "Do not pitch the tarp in a low depression where water may collect.",
+        "Do not leave sharp edges or branches rubbing the tarp fabric, which can cause tears.",
+        "Do not rely on a perfectly flat pitch in heavy rain; pooled water can stretch or collapse the tarp."
+      ],
+      "watch_for": [
+        "Wind direction changes that might require repositioning the low side.",
+        "Leaks along seams or attachment points; adjust angles or add tie-outs as needed.",
+        "Ground becoming muddy or saturated beneath you, indicating you should shift position."
+      ],
+      "notes": [
+        "A small tarp can be configured in many ways; learning a few knots and hitches makes setup faster and more secure.",
+        "Combining a tarp roof with natural side walls (brush, logs) improves weather protection.",
+        "In hot climates, prioritize shade and airflow rather than fully enclosing the shelter."
+      ]
+    },
+    {
+      "id": "shelter_hot_climate_shade",
+      "category": "Shelter",
+      "title": "Hot Climate Shade and Cooling",
+      "summary": "Create shade and airflow shelters to prevent overheating in hot environments.",
+      "difficulty": "basic",
+      "tags": ["shelter", "shade", "heat", "desert"],
+      "steps": [
+        "Select a site that can provide natural shade at some point during the day, such as near rocks, trees, or cliffs.",
+        "Raise a tarp, blanket, or other material so that air can circulate underneath, rather than enclosing all sides.",
+        "Orient the shelter to block the highest-intensity sun, usually from above and from the south in many regions.",
+        "Keep the roof light-colored or reflective if possible to reduce heat absorption.",
+        "If you have extra fabric, create a second layer above the first with a small air gap to increase cooling.",
+        "Lie or sit on an insulating layer such as a sleeping pad, vegetation, or clothing to reduce heat from hot ground.",
+        "Ventilate the shelter by leaving at least two sides open to allow breezes to pass through.",
+        "Plan your activity schedule to rest in the shade during peak heat and move or work during cooler hours."
+      ],
+      "do_not": [
+        "Do not build a low, fully enclosed shelter in high heat; it will trap hot air.",
+        "Do not sit directly on dark, sun-baked rocks or ground for prolonged periods.",
+        "Do not ignore early signs of heat exhaustion while working around camp."
+      ],
+      "watch_for": [
+        "Increasing fatigue, headache, or dizziness, especially during midday.",
+        "Hot, dry skin and reduced sweating, which may signal heat stroke.",
+        "Dehydration markers such as dark urine and strong thirst."
+      ],
+      "notes": [
+        "In hot environments, shade can be more life-saving than insulation.",
+        "Even minimal shade can significantly lower surface temperatures and subjective heat stress.",
+        "Combining shade with adequate water and rest is the best prevention against heat illness."
+      ]
+    },
+    {
+      "id": "edible_plants",
+      "category": "Food & Foraging",
+      "title": "Edible Plants",
+      "summary": "Follow strict safety rules when foraging and learn a few commonly recognized edible plants.",
+      "difficulty": "advanced",
+      "tags": ["edible plants", "foraging", "wild food", "safety", "plants"],
+      "steps": [
+        "Adopt the rule: if you are not absolutely sure a plant is safe, do not eat it.",
+        "Learn and prioritize a few well-known, easy-to-identify plants for your region; depth of knowledge is safer than guessing with many species.",
+        "Avoid plants with milky or colored sap, strong bitter or almond-like smell, or fine hair-covered pods and leaves unless you know the species.",
+        "Avoid plants growing in polluted areas such as roadsides, industrial sites, or downstream from obvious contamination.",
+        "Test only one new plant at a time if you must experiment: touch a small portion to your inner forearm, then lips, then tongue, and finally chew a tiny piece and hold it in your mouth before swallowing a small amount.",
+        "Wait several hours after swallowing a small test portion to check for nausea, cramps, dizziness, or other adverse effects before eating more.",
+        "Cook plants when possible to reduce some bitter compounds and potential irritants.",
+        "Focus on high-yield, safer options like nuts, seeds, and starchy roots of known species rather than many unknown leaves.",
+        "Combine wild plants with other food sources such as fish or stored food rather than relying entirely on unknown foraging."
+      ],
+      "do_not": [
+        "Do not eat plants solely based on animal behavior; many animals can eat plants that are toxic to humans.",
+        "Do not rely on folklore tests like tasting a small bit and waiting a few minutes; many plant toxins act slowly.",
+        "Do not consume large quantities of any new plant all at once, even if it seems safe initially.",
+        "Do not ignore mild symptoms such as nausea or dizziness after eating a wild plant."
+      ],
+      "watch_for": [
+        "Skin reactions like redness, itching, or blisters after contact with plant sap or leaves.",
+        "Digestive upset, vomiting, diarrhea, or dizziness after eating wild plants.",
+        "Changes in heartbeat, breathing, or vision that may indicate serious poisoning."
+      ],
+      "notes": [
+        "Regional field guides and hands-on training offer the best foundation for safe foraging.",
+        "Foraging can supplement calories but is rarely a complete food solution in short-term emergencies.",
+        "If you feel unwell after eating a plant, stop eating it immediately and focus on hydration and rest."
+      ]
+    },
+    {
+      "id": "food_fishing",
+      "category": "Food & Foraging",
+      "title": "Fishing",
+      "summary": "Use simple fishing techniques to obtain food from lakes, rivers, or streams.",
+      "difficulty": "intermediate",
+      "tags": ["fishing", "food", "lines", "hooks", "water"],
+      "steps": [
+        "Look for likely fish habitats: deeper pools, undercut banks, submerged logs, weed beds, and areas where currents slow.",
+        "If you have a fishing line and hooks, tie strong knots and check the line for damage before use.",
+        "Use available bait such as worms, insects, small pieces of fish, or artificial lures if you have them.",
+        "Fish during cooler parts of the day (early morning, evening) when many species are more active near the surface.",
+        "Cast or drop your bait near cover where fish may hide, being careful to avoid snags.",
+        "Be patient and minimize noise and vibration along the bank to avoid spooking fish.",
+        "If allowed by your context and local rules (when known), you may set passive lines by anchoring baited hooks to branches or stakes and checking them regularly.",
+        "Handle fish carefully; keep them cool and clean until you are ready to prepare them.",
+        "Cook fish thoroughly over a fire or heat source until the flesh is opaque and flakes easily."
+      ],
+      "do_not": [
+        "Do not fish in obviously contaminated water if you have safer food options.",
+        "Do not leave unattended lines where animals or people may be accidentally hooked.",
+        "Do not waste bait; retrieve and reuse it when possible if you move locations."
+      ],
+      "watch_for": [
+        "Signs of fish activity such as splashes, surface feeding, or visible schooling near shore.",
+        "Changes in water level or current that might affect where fish congregate.",
+        "Spoilage signs such as bad odor or slimy texture if fish are left unrefrigerated for long."
+      ],
+      "notes": [
+        "Even simple handlines can be effective with patience and good placement.",
+        "Learning a few reliable knots and bait rigs improves success rates.",
+        "Fish provide valuable protein and fats that are often hard to obtain from plants alone."
+      ]
+    },
+    {
+      "id": "food_small_game",
+      "category": "Food & Foraging",
+      "title": "Small Game",
+      "summary": "Understand basic principles around obtaining and using small game for food without detailed hunting tactics.",
+      "difficulty": "advanced",
+      "tags": ["small game", "food", "protein", "traps"],
+      "steps": [
+        "Recognize that capturing small game requires energy and time; weigh potential return against effort and risk.",
+        "Look for signs of small animals such as tracks, droppings, burrows, nests, and well-worn trails.",
+        "Position any lawful or context-appropriate methods near areas of frequent animal movement, such as along game trails, near water, or at burrow entrances.",
+        "Check your setups regularly to avoid unnecessary suffering of animals and to protect meat from spoilage and scavengers.",
+        "Once small game is obtained, keep it cool, clean, and shaded until you can prepare it.",
+        "Prepare animals away from your sleeping area to avoid attracting predators and scavengers to where you rest.",
+        "Cook meat thoroughly, ensuring that no pink or raw areas remain near bones or thicker parts.",
+        "Dispose of inedible parts and remains away from camp and water sources, burying if possible to reduce attracting wildlife."
+      ],
+      "do_not": [
+        "Do not injure animals and fail to follow up; track and recover them if it is safe and feasible.",
+        "Do not prepare animals inside your primary sleeping shelter, which can draw unwanted animals.",
+        "Do not eat meat that smells bad, appears spoiled, or has unusual discoloration even after cooking."
+      ],
+      "watch_for": [
+        "Predator activity near areas where remains are discarded.",
+        "Spoilage signs in meat that has been stored too warm for too long.",
+        "Illness symptoms after eating wild game, such as severe stomach pain or persistent vomiting."
+      ],
+      "notes": [
+        "Small game can be an important protein source, but safety, legality, and ethics should always be considered when circumstances allow.",
+        "In some survival situations, focusing on fish and plant foods may be more efficient than pursuing small mammals or birds.",
+        "If you are unfamiliar with processing animals, seek training before you need the skill."
+      ]
+    },
+    {
+      "id": "animal_tracks",
+      "category": "Tracking & Awareness",
+      "title": "Animal Tracks",
+      "summary": "Use tracks and sign to understand animal presence, find resources, and improve safety.",
+      "difficulty": "basic",
+      "tags": ["animal tracks", "tracking", "wildlife", "sign", "navigation"],
+      "steps": [
+        "Look for clear tracks in soft ground, mud, sand, or snow; early morning and late afternoon light makes prints easier to see.",
+        "Observe the overall shape of the track: note the number of toes, presence or absence of claw marks, and the shape of the main pad or hoof.",
+        "Measure or estimate the size of the track, including length, width, and stride distance between prints.",
+        "Study the pattern of movement: straight, purposeful lines often indicate predators; wandering or zigzag patterns may suggest grazing animals.",
+        "Note any claw marks: canine tracks usually show claws, while feline tracks often do not.",
+        "Identify common hoof prints: deer and similar animals leave two-part, heart-shaped prints that point in the direction of travel.",
+        "Look for additional sign such as scat, fur on bushes, rubbed bark, broken branches, and disturbed ground near water sources.",
+        "Use tracks to infer time since passage: crisp edges and undisturbed details suggest recent travel; weathered or collapsed tracks are older.",
+        "Maintain awareness of your surroundings when following tracks, especially if they belong to large predators or lead into thick cover."
+      ],
+      "do_not": [
+        "Do not approach large animals or follow predator tracks into confined spaces such as dense brush, caves, or thickets.",
+        "Do not rely only on a single print; look for multiple tracks and signs before making conclusions.",
+        "Do not ignore wind direction; avoid letting your scent blow directly toward wildlife you may not want to encounter."
+      ],
+      "watch_for": [
+        "Fresh predator tracks near your camp or water source, especially in early morning or evening.",
+        "Clusters of tracks and sign around game trails or natural funnels, indicating frequent animal use.",
+        "Scat containing fur, bones, or strong odor, indicating meat-eating animals."
+      ],
+      "notes": [
+        "Tracking is a skill that improves with practice; study prints in safe settings before relying on this skill in an emergency.",
+        "Animal trails can lead to water sources, feeding areas, or easier routes through dense terrain, but always weigh the risk of close wildlife encounters.",
+        "Even if you do not hunt, understanding tracks helps you avoid conflicts with wildlife and choose safer camp locations."
+      ]
+    },
+    {
+      "id": "tracking_trail_sign_navigation",
+      "category": "Tracking & Awareness",
+      "title": "Trail Sign and Navigation Awareness",
+      "summary": "Use natural signs and simple markers to stay oriented and find your way.",
+      "difficulty": "basic",
+      "tags": ["navigation", "trail sign", "orienteering", "awareness"],
+      "steps": [
+        "Note prominent landmarks such as mountains, cliffs, large trees, or distinctive rock formations as you travel.",
+        "Periodically look back along your route so you recognize the view if you need to return.",
+        "Mark your path discreetly with small signs such as carefully placed sticks, stones, or broken branches, avoiding damage to live trees when possible.",
+        "Use the position of the sun to maintain a general sense of direction, remembering it rises roughly in the east and sets roughly in the west.",
+        "If you have a compass, check your bearing regularly and record directions in a notebook or on a map if available.",
+        "In dense vegetation, note transitions between terrain types (forest edge, meadow, ridge line) as reference points.",
+        "If you realize you may be lost, stop moving quickly, take stock of landmarks, and consider returning to your last known point.",
+        "Use watercourses as navigation aids: traveling downstream often leads toward lower elevations and possibly roads or settlements, but consider terrain hazards first."
+      ],
+      "do_not": [
+        "Do not press forward blindly when unsure of your location; this often makes things worse.",
+        "Do not mark trails in ways that damage living trees or create unnecessary environmental impact.",
+        "Do not rely solely on electronic devices; batteries can fail and signals can be lost."
+      ],
+      "watch_for": [
+        "Repeatedly encountering the same landmarks, which may indicate you are moving in circles.",
+        "Weather changes such as fog or heavy rain that may reduce visibility and obscure landmarks.",
+        "Signs of established trails or old paths that might lead toward human activity."
+      ],
+      "notes": [
+        "Simple habits like looking back and noticing landmarks greatly reduce the risk of getting lost.",
+        "If you must leave a main trail, note your starting point carefully and limit how far you stray without clear markers.",
+        "When in doubt, staying put near a known location can make it easier for rescuers to find you."
+      ]
+    },
+    {
+      "id": "tracking_wildlife_encounters",
+      "category": "Tracking & Awareness",
+      "title": "Wildlife Encounters and Camp Safety",
+      "summary": "Reduce the risk of dangerous encounters with large animals and protect your camp.",
+      "difficulty": "basic",
+      "tags": ["wildlife", "safety", "camp", "bears", "predators"],
+      "steps": [
+        "Choose camp locations away from animal trails, water crossings, and obvious feeding areas such as berry patches.",
+        "Store food securely, using bear-resistant containers or hanging food from a tree branch when necessary and possible.",
+        "Keep sleeping areas separate from cooking and food storage sites.",
+        "Dispose of food scraps and waste well away from camp, burying when appropriate and allowed by local practices.",
+        "Make your presence known during travel in areas with large predators by talking, clapping, or making moderate noise, especially in dense vegetation or near loud streams.",
+        "If you see fresh large-animal sign (fresh scat, strong odor, recent tracks), consider changing your route or moving camp.",
+        "Keep pets under control if present; they can trigger unwanted animal encounters if they roam freely.",
+        "Know and follow region-specific guidance for wildlife behavior if you have that information in your reference material."
+      ],
+      "do_not": [
+        "Do not store food inside your sleeping shelter if large predators are a possibility.",
+        "Do not approach young animals or their suspected parents; protective behavior can be aggressive.",
+        "Do not run blindly if you encounter large wildlife; sudden movements can trigger chase responses."
+      ],
+      "watch_for": [
+        "Frequent animal tracks or scat near your camp, indicating a high-traffic area.",
+        "Noises at night such as rummaging around food storage areas or tents.",
+        "Birds or scavengers circling or gathering, which may indicate carcasses and potential predator activity."
+      ],
+      "notes": [
+        "Preventing encounters is usually easier and safer than reacting once an animal is close.",
+        "Clean camps and careful food handling significantly reduce wildlife interest in your location.",
+        "If specific regional guidance exists (such as for bears or large cats), follow it as your primary reference."
+      ]
+    }
+  ]
+}
