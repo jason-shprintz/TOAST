@@ -42,5 +42,6 @@ const styles = StyleSheet.create({
     width: '80%',
     textAlign: 'center',
     alignSelf: 'center',
+    marginVertical: 12,
   },
 });

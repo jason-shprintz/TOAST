@@ -855,7 +855,7 @@
     {
       "id": "preventive_environment_snakes_insects",
       "category": "Preventive",
-      "title": "Environmental Awareness (Snakes and Insects)",
+      "title": "Environmental Awareness",
       "summary": "Avoid bites and stings by being aware of local wildlife hazards.",
       "difficulty": "basic",
       "tags": ["snake", "insect", "bites", "stings", "environment"],

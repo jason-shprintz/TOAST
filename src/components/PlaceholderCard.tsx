@@ -90,5 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: COLORS.PRIMARY_DARK,
+    textAlign: 'center',
+    paddingHorizontal: 6,
   },
 });
