@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
@@ -20,15 +21,15 @@ import { COLORS } from '../../theme';
 
 /**
  * Displays detailed information for a specific health reference entry, including summary, steps, cautions, and notes.
- * 
+ *
  * This screen allows users to view the content of a health entry, bookmark or remove the bookmark for the entry,
  * and see categorized information such as steps to follow, things to avoid, warning signs, and additional notes.
- * 
+ *
  * - Fetches the entry by `id` from navigation route parameters.
  * - Checks and manages bookmark status for the entry.
  * - Renders entry details in categorized sections if available.
  * - Handles missing or invalid entry gracefully with a fallback message.
- * 
+ *
  * @returns {JSX.Element} The rendered health entry screen component.
  */
 export default function HealthEntryScreen(): JSX.Element {
@@ -82,9 +83,11 @@ export default function HealthEntryScreen(): JSX.Element {
       <SectionHeader>{entry.title}</SectionHeader>
       <View style={styles.actions}>
         <TouchableOpacity onPress={toggleBookmark} style={styles.actionBtn}>
-          <Text style={styles.actionText}>
-            {bookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
-          </Text>
+          <Ionicons
+            name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+            size={22}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.container}>
