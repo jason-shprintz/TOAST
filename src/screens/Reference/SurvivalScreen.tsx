@@ -6,12 +6,25 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import survivalData from '../../data/survival.json';
+import data from '../../data/survival.json';
+
+const categoryMap: Record<string, string> = {
+  Firecraft: 'Firecraft',
+  Water: 'Water',
+  Shelter: 'Shelter',
+  FoodAndForaging: 'Food & Foraging',
+  TrackingAndNavigation: 'Tracking & Navigation',
+};
+
+/**
+ * Renders the Survival Guide screen, providing quick access to essential survival topics.
+ * Displays a header, section title, and a grid of topic cards (Fire, Water, Shelter, Food & Foraging, Tracking & Navigation).
+ * Each card navigates to a detailed category screen with relevant data when pressed.
+ *
+ * @returns {JSX.Element} The rendered Survival Guide screen component.
+ */
 export default function SurvivalScreen(): JSX.Element {
   const navigation = useNavigation<any>();
-
-  const getEntryById = (id: string) =>
-    survivalData.entries.find(e => e.id === id);
 
   return (
     <ScreenContainer>
@@ -20,83 +33,57 @@ export default function SurvivalScreen(): JSX.Element {
       <ScrollView>
         <Grid>
           <CardTopic
-            title="Fire Starting (Basics)"
+            title="Fire"
             icon="flame-outline"
             onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('fire_starting_basics'),
+              navigation.navigate('Category', {
+                category: categoryMap.Firecraft,
+                title: 'Fire',
+                data: data,
               })
             }
           />
           <CardTopic
-            title="Fire Starting in Wet Conditions"
+            title="Water"
             icon="rainy-outline"
             onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('fire_starting_wet_conditions'),
+              navigation.navigate('Category', {
+                category: categoryMap.Water,
+                title: 'Water',
+                data: data,
               })
             }
           />
           <CardTopic
-            title="Fire Safety and Extinguishing"
+            title="Shelter"
             icon="alert-outline"
             onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('fire_safety_and_extinguishing'),
+              navigation.navigate('Category', {
+                category: categoryMap.Shelter,
+                title: 'Shelter',
+                data: data,
               })
             }
           />
           <CardTopic
-            title="Water Purification"
+            title="Food & Foraging"
             icon="water-outline"
             onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('water_purification'),
+              navigation.navigate('Category', {
+                category: categoryMap.FoodAndForaging,
+                title: 'Food & Foraging',
+                data: data,
               })
             }
           />
           <CardTopic
-            title="Finding Water Sources"
+            title="Tracking & Navigation"
             icon="map-outline"
             onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('water_finding_sources'),
-              })
-            }
-          />
-          <CardTopic
-            title="Shelter Building (Basic Debris Shelter)"
-            icon="home-outline"
-            onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('shelter_building_basic_debris_shelter'),
-              })
-            }
-          />
-          <CardTopic
-            title="Tarp Shelter Configurations"
-            icon="trail-sign-outline"
-            onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('shelter_tarp_configurations'),
-              })
-            }
-          />
-          <CardTopic
-            title="Animal Tracks (Identification Basics)"
-            icon="footsteps"
-            onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('animal_tracks_identification_basics'),
-              })
-            }
-          />
-          <CardTopic
-            title="Trail Sign and Navigation Awareness"
-            icon="navigate-outline"
-            onPress={() =>
-              navigation.navigate('SurvivalEntry', {
-                entry: getEntryById('tracking_trail_sign_navigation'),
+              navigation.navigate('Category', {
+                category: categoryMap.TrackingAndNavigation,
+                title: 'Tracking & Navigation',
+                data: data,
               })
             }
           />

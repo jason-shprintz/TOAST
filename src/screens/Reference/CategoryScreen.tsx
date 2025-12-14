@@ -6,16 +6,31 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import data from '../../data/survival.json';
+import ReferenceEntryType from '../../types/data-type';
 
-export default function SurvivalCategoryScreen(): JSX.Element {
+/**
+ * Displays a list of reference entries filtered by category.
+ *
+ * This screen retrieves the `category`, `title`, and `data` from the navigation route parameters,
+ * filters the entries to only those matching the selected category, and displays them in a grid layout.
+ * If no entries are found for the category, a helper message is shown.
+ *
+ * @returns {JSX.Element} The rendered category screen component.
+ *
+ * @remarks
+ * - Navigates to the 'Entry' screen when a topic card is pressed, passing the selected entry as a parameter.
+ * - Expects `route.params` to contain `category`, `title`, and `data.entries`.
+ */
+export default function CategoryScreen(): JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const { category, title } = route.params || {};
+  const { category, title, data } = route.params || {};
 
   const entries = useMemo(() => {
-    return (data.entries || []).filter(e => e.category === category);
-  }, [category]);
+    return (data.entries || []).filter(
+      (e: ReferenceEntryType) => e.category === category,
+    );
+  }, [category, data.entries]);
 
   return (
     <ScreenContainer>
@@ -28,15 +43,15 @@ export default function SurvivalCategoryScreen(): JSX.Element {
         <Grid>
           {entries
             .slice()
-            .sort((a, b) => a.title.localeCompare(b.title))
-            .map(item => (
+            .sort((a: ReferenceEntryType, b: ReferenceEntryType) =>
+              a.title.localeCompare(b.title),
+            )
+            .map((item: ReferenceEntryType) => (
               <CardTopic
                 key={item.id}
                 title={item.title}
                 icon="document-text-outline"
-                onPress={() =>
-                  navigation.navigate('SurvivalEntry', { entry: item })
-                }
+                onPress={() => navigation.navigate('Entry', { entry: item })}
               />
             ))}
         </Grid>

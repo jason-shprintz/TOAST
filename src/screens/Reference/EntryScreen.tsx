@@ -1,4 +1,4 @@
-import { useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
 import {
   StyleSheet,
@@ -17,35 +17,33 @@ import {
   isBookmarked,
 } from '../../stores/BookmarksStore';
 import { COLORS } from '../../theme';
+import ReferenceEntryType from '../../types/data-type';
 
-export type ReferenceEntry = {
-  id: string;
-  title: string;
-  category?: string;
-  summary?: string;
-  steps?: string[];
-  do_not?: string[];
-  watch_for?: string[];
-  notes?: string[];
-};
-
-type Props = {
-  entry?: ReferenceEntry | null; // Optional direct entry; typically provided via route params by Category screens
-};
+type EntryScreenRouteProp = RouteProp<
+  { Entry: { entry: ReferenceEntryType } },
+  'Entry'
+>;
 
 /**
- * Shared screen to render a reference entry's details (summary, steps, do_not, watch_for, notes).
- * Accepts an optional `headerRight` element to render actions (e.g., bookmark toggle) beside the header.
+ * EntryScreen displays detailed information about a specific reference entry,
+ * including its summary, steps, cautions ("Do Not"), things to watch for, and notes.
+ *
+ * The screen also allows users to bookmark or un-bookmark the entry.
+ *
+ * - If the entry is not found, a "Topic Not Found" message is shown.
+ * - The bookmark state is managed and persisted using async storage helpers.
+ * - The entry data is received via navigation route parameters.
+ *
+ * @returns {JSX.Element} The rendered EntryScreen component.
  */
-export default function EntryScreen({ entry }: Props): JSX.Element {
-  const route = useRoute<any>();
+export default function EntryScreen(): JSX.Element {
+  const route = useRoute<EntryScreenRouteProp>();
   const { entry: routeEntry } = route.params || {};
 
-  const resolvedEntry: ReferenceEntry | null = useMemo(() => {
-    if (entry) return entry as ReferenceEntry;
-    if (routeEntry) return routeEntry as ReferenceEntry;
+  const resolvedEntry: ReferenceEntryType | null = useMemo(() => {
+    if (routeEntry) return routeEntry as ReferenceEntryType;
     return null;
-  }, [entry, routeEntry]);
+  }, [routeEntry]);
 
   const [bookmarked, setBookmarked] = useState<boolean>(false);
 
@@ -66,7 +64,7 @@ export default function EntryScreen({ entry }: Props): JSX.Element {
       await addBookmark({
         id: resolvedEntry.id,
         title: resolvedEntry.title,
-        category: routeEntry?.category || entry?.category || '',
+        category: routeEntry?.category || '',
       });
       setBookmarked(true);
     }

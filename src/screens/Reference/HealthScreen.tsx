@@ -5,6 +5,7 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import data from '../../data/health.json';
 
 const categoryMap: Record<string, string> = {
   Emergency: 'Emergency',
@@ -14,13 +15,13 @@ const categoryMap: Record<string, string> = {
 };
 
 /**
- * Displays the main Health screen with navigation options for different health-related categories.
+ * Displays the Health reference screen, providing navigation to various health-related categories.
  *
- * This screen presents a grid of cards, each representing a health category such as Emergency, Illness, Injury, and Preventative.
- * Selecting a card navigates the user to the corresponding HealthCategory screen, passing the selected category and title as parameters.
+ * This screen presents a grid of topics including Emergency, Illness, Injury, and Preventive,
+ * each represented by a `CardTopic` component. Selecting a topic navigates to the 'Category' screen
+ * with the corresponding category data.
  *
- * @component
- * @returns {JSX.Element} The rendered Health screen component.
+ * @returns {JSX.Element} The rendered HealthScreen component.
  */
 export default function HealthScreen(): JSX.Element {
   const navigation = useNavigation<any>();
@@ -34,9 +35,10 @@ export default function HealthScreen(): JSX.Element {
           title="Emergency"
           icon="alert-outline"
           onPress={() =>
-            navigation.navigate('HealthCategory', {
+            navigation.navigate('Category', {
               category: categoryMap.Emergency,
               title: 'Emergency',
+              data: data,
             })
           }
         />
@@ -44,9 +46,10 @@ export default function HealthScreen(): JSX.Element {
           title="Illness"
           icon="medkit-outline"
           onPress={() =>
-            navigation.navigate('HealthCategory', {
+            navigation.navigate('Category', {
               category: categoryMap.Illness,
               title: 'Illness',
+              data: data,
             })
           }
         />
@@ -54,9 +57,10 @@ export default function HealthScreen(): JSX.Element {
           title="Injury"
           icon="bandage-outline"
           onPress={() =>
-            navigation.navigate('HealthCategory', {
+            navigation.navigate('Category', {
               category: categoryMap.Injury,
               title: 'Injury',
+              data: data,
             })
           }
         />
@@ -64,9 +68,10 @@ export default function HealthScreen(): JSX.Element {
           title="Preventive"
           icon="shield-checkmark-outline"
           onPress={() =>
-            navigation.navigate('HealthCategory', {
+            navigation.navigate('Category', {
               category: categoryMap.Preventative,
               title: 'Preventive',
+              data: data,
             })
           }
         />
