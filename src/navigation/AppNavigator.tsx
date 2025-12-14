@@ -13,6 +13,7 @@ import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
+import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import HealthCategoryScreen from '../screens/Reference/HealthCategoryScreen';
 import HealthEntryScreen from '../screens/Reference/HealthEntryScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -50,6 +51,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Health" component={HealthScreen} />
         <Stack.Screen name="HealthCategory" component={HealthCategoryScreen} />
         <Stack.Screen name="HealthEntry" component={HealthEntryScreen} />
+        <Stack.Screen name="Bookmark" component={BookmarkScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

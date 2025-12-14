@@ -7,7 +7,6 @@ import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 import Torch from 'react-native-torch';
-// SQLite is optional; ensure dependency is installed before use
 let SQLite: any;
 try {
   SQLite = require('react-native-sqlite-storage');

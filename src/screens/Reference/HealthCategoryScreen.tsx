@@ -1,5 +1,5 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
-import React, { useMemo } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
@@ -8,7 +8,26 @@ import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/health.json';
 
-export default function HealthCategoryScreen() {
+/**
+ * Displays a list of health reference entries filtered by category.
+ *
+ * This screen retrieves the selected category and title from the navigation route parameters,
+ * filters the available entries to match the category, and displays them in a grid.
+ * If no entries are found, a helper message is shown.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered health category screen.
+ *
+ * @remarks
+ * - Navigates to the `HealthEntry` screen when a card is pressed.
+ * - Expects `category` and optionally `title` in route params.
+ *
+ * @example
+ * ```tsx
+ * <HealthCategoryScreen />
+ * ```
+ */
+export default function HealthCategoryScreen(): JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { category, title } = route.params || {};
@@ -26,17 +45,17 @@ export default function HealthCategoryScreen() {
           <Text style={styles.helperText}>No topics found.</Text>
         )}
         <Grid>
-            {entries
+          {entries
             .slice()
             .sort((a, b) => a.title.localeCompare(b.title))
             .map(item => (
               <PlaceholderCard
-              key={item.id}
-              title={item.title}
-              icon="document-text-outline"
-              onPress={() =>
-                navigation.navigate('HealthEntry', { id: item.id })
-              }
+                key={item.id}
+                title={item.title}
+                icon="document-text-outline"
+                onPress={() =>
+                  navigation.navigate('HealthEntry', { id: item.id })
+                }
               />
             ))}
         </Grid>

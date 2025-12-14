@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { JSX } from 'react';
 // no local React Native imports needed
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
@@ -14,7 +14,16 @@ const categoryMap: Record<string, string> = {
   Preventative: 'Preventive',
 };
 
-export default function HealthScreen() {
+/**
+ * Displays the main Health screen with navigation options for different health-related categories.
+ *
+ * This screen presents a grid of cards, each representing a health category such as Emergency, Illness, Injury, and Preventative.
+ * Selecting a card navigates the user to the corresponding HealthCategory screen, passing the selected category and title as parameters.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Health screen component.
+ */
+export default function HealthScreen(): JSX.Element {
   const navigation = useNavigation<any>();
 
   return (
@@ -66,4 +75,3 @@ export default function HealthScreen() {
     </ScreenContainer>
   );
 }
-
