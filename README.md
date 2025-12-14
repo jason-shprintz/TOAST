@@ -142,7 +142,7 @@ Offline survival and emergency knowledge packs.
   - Fire starting, water purification, shelter building, edible plants, animal tracks
 
 - **First Aid Guide**  
-  - CPR, bleeding control, burns, hypothermia, poisoning procedures
+  - ~~CPR, bleeding control, burns, hypothermia, poisoning procedures~~
 
 - **Weather Interpretation Guide**  
   - Cloud types, storm indicators, Beaufort scale, natural navigation techniques

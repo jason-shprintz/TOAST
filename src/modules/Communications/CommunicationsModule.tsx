@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -13,7 +13,7 @@ export default function CommunicationsModule() {
       <LogoHeader />
       <SectionHeader>Communications</SectionHeader>
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Ham Radio"
           icon="radio-outline"
           onPress={() =>
@@ -23,7 +23,7 @@ export default function CommunicationsModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Morse Code"
           icon="code-outline"
           onPress={() =>
@@ -33,7 +33,7 @@ export default function CommunicationsModule() {
             })
           }
         />
-        <PlaceholderCard
+        <CardTopic
           title="Bluetooth"
           icon="bluetooth-outline"
           onPress={() =>

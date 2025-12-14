@@ -1,9 +1,9 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/health.json';
@@ -49,7 +49,7 @@ export default function HealthCategoryScreen(): JSX.Element {
             .slice()
             .sort((a, b) => a.title.localeCompare(b.title))
             .map(item => (
-              <PlaceholderCard
+              <CardTopic
                 key={item.id}
                 title={item.title}
                 icon="document-text-outline"

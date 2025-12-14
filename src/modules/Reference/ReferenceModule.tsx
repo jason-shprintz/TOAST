@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -13,53 +13,53 @@ export default function ReferenceModule() {
       <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
       <Grid>
-        <PlaceholderCard
+        <CardTopic
           title="Bookmark"
           icon="bookmark-outline"
           onPress={() => navigation.navigate('Bookmark')}
         />
-        <PlaceholderCard
+        <CardTopic
           title="Health"
           icon="medkit-outline"
           onPress={() => navigation.navigate('Health')}
         />
-        <PlaceholderCard
-          title="Flora"
+        <CardTopic
+          title="Survival Field"
           icon="leaf-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Flora',
+              title: 'Survival Field',
               icon: 'leaf-outline',
             })
           }
         />
-        <PlaceholderCard
-          title="Fauna"
-          icon="paw-outline"
+        <CardTopic
+          title="Weather"
+          icon="cloud-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Fauna',
-              icon: 'paw-outline',
+              title: 'Weather',
+              icon: 'cloud-outline',
             })
           }
         />
-        <PlaceholderCard
-          title="Gardening"
-          icon="flower-outline"
+        <CardTopic
+          title="Tools & Knots"
+          icon="hammer-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Gardening',
-              icon: 'flower-outline',
+              title: 'Tools & Knots',
+              icon: 'hammer-outline',
             })
           }
         />
-        <PlaceholderCard
-          title="Hunting"
-          icon="compass-outline"
+        <CardTopic
+          title="Emergency"
+          icon="warning-outline"
           onPress={() =>
             navigation.navigate('ComingSoon', {
-              title: 'Hunting',
-              icon: 'compass-outline',
+              title: 'Emergency',
+              icon: 'warning-outline',
             })
           }
         />
