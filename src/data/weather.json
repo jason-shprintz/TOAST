@@ -1,0 +1,479 @@
+{
+  "metadata": {
+    "name": "Weather",
+    "version": "1.0.0",
+    "last_updated": "2025-12-14",
+    "disclaimer": "This information provides general wilderness weather survival guidance. It is not a substitute for professional training. Use your judgment and adapt to real conditions.",
+    "categories": [
+      "Cold Weather",
+      "Heat & Sun",
+      "Rain & Flooding",
+      "Wind & Storms",
+      "Snow & Ice"
+    ],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
+  },
+  "entries": [
+    {
+      "id": "cold_weather_hypothermia_prevention",
+      "category": "Cold Weather",
+      "title": "Hypothermia Prevention",
+      "summary": "Recognize early signs of hypothermia and take steps to retain heat, stay dry, and preserve energy in cold environments.",
+      "difficulty": "basic",
+      "tags": ["cold", "hypothermia", "body heat", "clothing", "wind chill"],
+      "steps": [
+        "Layer clothing: use a moisture-wicking base layer, insulating mid-layer, and windproof/water-resistant outer layer.",
+        "Keep clothing dry. Swap wet clothing as soon as possible; wring out moisture or use body heat to dry small items.",
+        "Cover extremities: wear a hat, gloves, and warm socks to prevent rapid heat loss.",
+        "Stay off bare ground by sitting or lying on insulating materials such as a foam pad, pine boughs, or clothing.",
+        "Keep moving in short intervals to maintain circulation without sweating; sweat increases heat loss.",
+        "Eat high-energy foods (nuts, chocolate, dried fruit) and drink warm fluids if possible to fuel heat production.",
+        "If symptoms occur (shivering, confusion, slurred speech), seek shelter immediately and add insulation."
+      ],
+      "do_not": [
+        "Do not drink alcohol; it increases heat loss and impairs judgment.",
+        "Do not ignore early shivering or numbness; these are warning signs.",
+        "Do not overexert to the point of sweating; wet clothing accelerates hypothermia."
+      ],
+      "watch_for": [
+        "Uncontrollable shivering, loss of coordination, slurred speech.",
+        "Cold, pale, or rigid extremities.",
+        "Irrational behavior or apathy, signs of moderate to severe hypothermia."
+      ],
+      "notes": [
+        "Wind chill dramatically speeds heat loss; prioritize wind protection even when temperatures seem mild.",
+        "Insulation works best when dry and fluffy—regularly shake out lofted materials.",
+        "Shelter and fire become critical if you are cold AND wet."
+      ]
+    },
+    {
+      "id": "cold_weather_frostbite_management",
+      "category": "Cold Weather",
+      "title": "Frostbite (Identification & Field Management)",
+      "summary": "Identify early frostbite and take safe steps to warm affected areas without causing additional tissue damage.",
+      "difficulty": "intermediate",
+      "tags": ["frostbite", "cold injury", "extremities", "warming"],
+      "steps": [
+        "Check exposed skin frequently, especially fingers, toes, nose, cheeks, and ears.",
+        "Look for pale, waxy, numb, or hard skin—these are signs of frostbite.",
+        "Move to shelter or block wind with a jacket, pack, or terrain feature.",
+        "Warm affected areas gradually using body heat (armpits, against warm skin, spare dry mittens).",
+        "Replace wet gloves or socks with dry materials if available.",
+        "If rewarming begins, keep the area warm; repeated freezing after thawing causes severe damage.",
+        "Avoid walking on frostbitten feet unless absolutely necessary; pressure can worsen injury."
+      ],
+      "do_not": [
+        "Do not rub frostbitten skin; this causes tissue tearing.",
+        "Do not heat with open flames, stoves, or boiling water; burning is easy when numb.",
+        "Do not rewarm if the area may freeze again; wait until sustained warmth is possible."
+      ],
+      "watch_for": [
+        "Skin turning red or purple as it rewarms (normal), but watch for severe swelling or blisters.",
+        "Loss of sensation persisting after warming.",
+        "Cold exposure combined with dehydration or exhaustion, which increases risk."
+      ],
+      "notes": [
+        "Prevention is easier than treatment—cover all exposed skin in wind and sub-freezing temperatures.",
+        "Frostnip (early stage) is reversible; full frostbite requires medical care when available."
+      ]
+    },
+    {
+      "id": "heat_sun_heatstroke_prevention",
+      "category": "Heat & Sun",
+      "title": "Heatstroke Prevention",
+      "summary": "Manage hydration, shade, and exertion to avoid overheating in hot climates.",
+      "difficulty": "basic",
+      "tags": [
+        "heatstroke",
+        "sun exposure",
+        "hydration",
+        "shade",
+        "electrolytes"
+      ],
+      "steps": [
+        "Limit activity during the hottest part of the day (10 a.m. to 4 p.m.); schedule movement for mornings and evenings.",
+        "Stay in shade as much as possible; create shade using a tarp, branches, or reflective blankets.",
+        "Drink water frequently in small sips; combine with electrolytes if you have salt packets or mineral tablets.",
+        "Wear loose, light-colored clothing that allows airflow and protects from direct sun.",
+        "Cool pulse points by soaking a scarf or cloth with water and applying it to the neck, armpits, or groin.",
+        "Rest at regular intervals whenever your breathing or heart rate climbs noticeably.",
+        "Monitor urine color; dark yellow indicates dehydration and need to increase water intake."
+      ],
+      "do_not": [
+        "Do not wait until you feel thirsty to hydrate; thirst lags behind dehydration.",
+        "Do not push through dizziness, nausea, or headache—these are early heat illness signs.",
+        "Do not wear heavy or dark fabrics that trap heat."
+      ],
+      "watch_for": [
+        "Headache, dizziness, weakness, rapid heartbeat.",
+        "Hot, flushed, dry skin (a sign of dangerous heatstroke).",
+        "Mental confusion, stumbling, or lack of sweating in extreme cases."
+      ],
+      "notes": [
+        "Evaporation cools the body; wet a cloth and fan yourself when breeze is limited.",
+        "Electrolyte-rich foods (nuts, jerky, seeds) help maintain balance during intense heat."
+      ]
+    },
+    {
+      "id": "heat_sun_sunburn_prevention_and_relief",
+      "category": "Heat & Sun",
+      "title": "Sunburn Prevention & Field Relief",
+      "summary": "Reduce UV exposure and treat sunburn to prevent heat loss, infection, and worsening injury.",
+      "difficulty": "basic",
+      "tags": ["sunburn", "UV", "sun exposure", "skin protection"],
+      "steps": [
+        "Cover skin with clothing, hats, or improvised shades (bandanas, wraps, cloth layers).",
+        "Use natural shade whenever possible, such as trees, cliffs, or your shelter.",
+        "Moisten clothing in extreme heat to cool the skin while still blocking UV.",
+        "If burned, keep skin covered and out of direct sun.",
+        "Cool the area with clean water or damp cloths to relieve heat and soothe pain.",
+        "Drink extra water; sunburn increases dehydration."
+      ],
+      "do_not": [
+        "Do not pop blisters; they protect underlying skin.",
+        "Do not scrub or peel burned skin.",
+        "Do not apply oily substances that trap heat during the first 24 hours."
+      ],
+      "watch_for": [
+        "Large blisters, severe swelling, fever, or chills—signs of more serious injury.",
+        "Skin cracking or infection at the burn site."
+      ],
+      "notes": [
+        "Cloud cover does NOT prevent UV exposure; up to 80% of UV can penetrate clouds.",
+        "Staying covered and shaded is more effective than relying on sunscreen you may not have."
+      ]
+    },
+    {
+      "id": "rain_flooding_flash_flood_response",
+      "category": "Rain & Flooding",
+      "title": "Flash Flood Safety",
+      "summary": "Recognize flood-prone areas and take immediate action when heavy rain threatens rising water.",
+      "difficulty": "intermediate",
+      "tags": ["flash flood", "rain", "weather", "river", "ravine"],
+      "steps": [
+        "Avoid camping in dry washes, gullies, ravines, riverbeds, or basins, even if they appear safe.",
+        "Move to higher ground immediately if rain intensifies or you hear rushing water.",
+        "Listen for unusual roaring sounds or rapid changes in wind, which can indicate incoming water.",
+        "Cross water only at shallow, slow-moving points; use a stick to probe depth and stability.",
+        "If caught near rising water, climb to stable elevation rather than trying to outrun the flow."
+      ],
+      "do_not": [
+        "Do not attempt to cross fast-moving water deeper than your ankles; currents can sweep you easily.",
+        "Do not camp within floodplains, even if weather is currently calm.",
+        "Do not assume rain needs to fall locally—storms miles upstream can cause sudden floods."
+      ],
+      "watch_for": [
+        "Sudden water discoloration or debris in streams (sign of upstream flooding).",
+        "Rapidly rising water or damp soil that becomes saturated quickly.",
+        "Dark, fast-moving storm clouds over distant mountains or valleys."
+      ],
+      "notes": [
+        "Flash floods remain one of the top killers in desert and canyon environments.",
+        "High ground is your best defense—always know where to move quickly."
+      ]
+    },
+    {
+      "id": "rain_wet_weather_staying_dry",
+      "category": "Rain & Flooding",
+      "title": "Staying Dry in Wet Weather",
+      "summary": "Retain body heat and protect gear by managing moisture, building cover, and minimizing water exposure.",
+      "difficulty": "basic",
+      "tags": ["rain", "wet weather", "moisture management", "shelter"],
+      "steps": [
+        "Create a rain cover using a tarp, poncho, large leaves, or improvised materials.",
+        "Pitch shelters on raised areas to avoid runoff and pooling.",
+        "Divert water by digging small drainage trenches away from the shelter entrance if necessary.",
+        "Store critical gear (fire starters, dry clothing, electronics) inside waterproof bags or wrapped in plastic.",
+        "Keep your feet dry by rotating socks and insulating them inside clothing if needed."
+      ],
+      "do_not": [
+        "Do not let clothing become fully saturated; moisture accelerates heat loss.",
+        "Do not camp at the bottom of slopes where water naturally drains.",
+        "Do not leave fire-starting materials exposed; protect them early."
+      ],
+      "watch_for": [
+        "Condensation buildup inside shelters; increase ventilation as needed.",
+        "Rain-driven wind that can push water sideways under shelter edges.",
+        "Hypothermia risk even in mild temperatures when wet and wind combine."
+      ],
+      "notes": [
+        "Even light rain can soak you through after an hour—prioritize waterproofing early.",
+        "A dry base layer dramatically improves morale and survival chances."
+      ]
+    },
+    {
+      "id": "wind_storms_strong_wind_management",
+      "category": "Wind & Storms",
+      "title": "Surviving Strong Wind",
+      "summary": "Protect yourself and your shelter from high winds, falling branches, and debris.",
+      "difficulty": "intermediate",
+      "tags": ["wind", "storm", "windbreak", "shelter stability"],
+      "steps": [
+        "Seek natural windbreaks such as rock faces, thick bushes, or terrain depressions.",
+        "Reinforce shelter structures using extra branches, rocks, or stakes.",
+        "Remove or secure loose gear that can blow away or become dangerous.",
+        "Orient shelter openings away from prevailing wind direction.",
+        "Stay low to the ground on unstable ridges or exposed trails."
+      ],
+      "do_not": [
+        "Do not camp beneath dead branches or leaning trees prone to falling in wind.",
+        "Do not stand near cliff edges during gusts.",
+        "Do not rely on lightweight shelters without reinforcement."
+      ],
+      "watch_for": [
+        "Snapping sounds from trees, which may signal falling limbs.",
+        "Shifting wind direction; storms often change orientation rapidly.",
+        "Flying debris or dust, indicating increasing wind strength."
+      ],
+      "notes": [
+        "Wind drastically increases heat loss—treat windy conditions like colder temperatures.",
+        "Using your pack or poncho as a temporary windblock helps reduce exposure while moving."
+      ]
+    },
+    {
+      "id": "wind_storms_lightning_safety",
+      "category": "Wind & Storms",
+      "title": "Lightning Safety",
+      "summary": "Identify lightning hazards and adopt safe body positioning and shelter strategies during storms.",
+      "difficulty": "advanced",
+      "tags": ["lightning", "storm", "weather", "electrical", "high ground"],
+      "steps": [
+        "Move off ridges, peaks, and exposed high ground immediately.",
+        "Avoid isolated tall trees; instead, shelter near shorter, uniform tree clusters if forested.",
+        "Keep at least 50–100 feet (15–30 m) away from tall objects like cliffs, towers, or solitary trees.",
+        "Separate from metal gear; place metal items several feet away.",
+        "Adopt the lightning position: crouch with feet together, minimize ground contact, tuck head, and keep hands on ears.",
+        "Spread out if in a group, keeping at least 50 feet between individuals to reduce multiple casualties."
+      ],
+      "do_not": [
+        "Do not lie flat on the ground; this increases conduction exposure.",
+        "Do not shelter under isolated tall trees or rock overhangs that may conduct lightning.",
+        "Do not stand in or near water; move to dry ground immediately."
+      ],
+      "watch_for": [
+        "Hair standing on end or tingling sensations—immediate lightning danger.",
+        "Sudden temperature drop or shifting wind before lightning storms.",
+        "Dark, fast-moving cloud systems forming an anvil shape."
+      ],
+      "notes": [
+        "Lightning can strike miles from the storm core—take precautions early.",
+        "Crouching reduces your profile while minimizing ground contact, limiting conduction risk."
+      ]
+    },
+    {
+      "id": "snow_ice_avalanches_awareness",
+      "category": "Snow & Ice",
+      "title": "Avalanche Awareness (Basic Field Guidance)",
+      "summary": "Recognize avalanche-prone terrain and take steps to avoid dangerous snow conditions when traveling through mountains.",
+      "difficulty": "advanced",
+      "tags": ["avalanche", "snow", "slab", "mountain", "steep terrain"],
+      "steps": [
+        "Identify slopes between 30–45 degrees—these are the most avalanche-prone.",
+        "Look for signs of unstable snow: recent slides, cracking snow, hollow 'whump' sounds, or rapid warming.",
+        "Travel along ridgelines or low-angle terrain whenever possible.",
+        "Cross suspect slopes one at a time to minimize risk.",
+        "Have an escape plan before entering any avalanche terrain—note safe runouts or islands of safety."
+      ],
+      "do_not": [
+        "Do not linger beneath cornices (overhanging snow ledges); they can break off without warning.",
+        "Do not traverse avalanche slopes after heavy snowfall, rapid warming, or strong wind loading.",
+        "Do not bunch up in groups while crossing risky areas."
+      ],
+      "watch_for": [
+        "New snowfall of more than a few inches in a short time.",
+        "Sudden temperature increases, especially above freezing.",
+        "Wind-deposited slabs on leeward (downwind) slopes."
+      ],
+      "notes": [
+        "Avalanches can occur even in shallow snowpacks under the right conditions.",
+        "If trapped, create an air pocket in front of your mouth and try to stay near the surface by swimming motions."
+      ]
+    },
+    {
+      "id": "snow_ice_snow_shelter_insulation",
+      "category": "Snow & Ice",
+      "title": "Snow Shelter (Insulated Trench or Cave)",
+      "summary": "Use snow as insulation to create a stable shelter that preserves body heat in frigid conditions.",
+      "difficulty": "intermediate",
+      "tags": [
+        "snow shelter",
+        "igloo",
+        "trench shelter",
+        "insulation",
+        "cold weather"
+      ],
+      "steps": [
+        "Choose an area with deep, stable snow away from avalanche paths and tree wells.",
+        "Dig a trench or hollow with enough room for your body and minimal excess space.",
+        "Create a roof using branches, skis, or poles, then cover heavily with snow for insulation.",
+        "Ventilate by poking a fist-sized hole in the roof to prevent carbon dioxide buildup.",
+        "Build an elevated sleeping surface using snow blocks or insulating materials to reduce heat loss.",
+        "Block the entrance with a backpack or snow mound while allowing minimal airflow."
+      ],
+      "do_not": [
+        "Do not create a completely sealed shelter; ventilation is essential.",
+        "Do not build in unstable snow where collapse risk is high.",
+        "Do not use candles or stoves inside unless the shelter is large and adequately vented."
+      ],
+      "watch_for": [
+        "Roof sagging or cracking—add reinforcement or exit immediately.",
+        "Moisture from melting snow on clothing or bedding.",
+        "Poor ventilation leading to dizziness or difficulty breathing."
+      ],
+      "notes": [
+        "Snow shelters can be surprisingly warm if built correctly—snow is an excellent insulator.",
+        "Practice construction in safe conditions before relying on this technique in emergencies."
+      ]
+    },
+    {
+      "id": "season_winter_survival_basics",
+      "category": "Cold Weather",
+      "title": "Winter Conditions (Deep Cold Survival Basics)",
+      "summary": "Adapt to subfreezing temperatures by managing heat loss, fuel usage, snow hazards, and limited daylight.",
+      "difficulty": "intermediate",
+      "tags": ["winter", "cold", "snow", "wind chill", "insulation"],
+      "steps": [
+        "Start your day early; winter daylight hours are short and navigating in darkness increases risk.",
+        "Wear layered clothing with a windproof outer shell to minimize heat loss.",
+        "Keep extremities warm with insulated gloves, wool socks, and a hat that covers your ears.",
+        "Stay dry at all costs—snow that melts on clothing accelerates hypothermia.",
+        "Use snow as insulation in shelters by piling snow along windward walls or using it to block draft gaps.",
+        "Increase calorie intake; winter survival requires significantly more energy.",
+        "Monitor your pace to avoid sweating; remove layers briefly if you feel overheating."
+      ],
+      "do_not": [
+        "Do not camp beneath trees loaded with heavy snow that may fall during nighttime warming.",
+        "Do not underestimate wind; even mild wind dramatically lowers effective temperature.",
+        "Do not walk directly into blowing snow without eye protection or improvised shielding."
+      ],
+      "watch_for": [
+        "Frostbite on exposed skin, especially in wind.",
+        "Snow blindness caused by UV reflection; wear sunglasses or fashion eye slits from bark or cloth.",
+        "Rapid temperature drops around sunset, increasing hypothermia risk."
+      ],
+      "notes": [
+        "In freezing conditions, keep water bottles insulated or upside down to prevent freezing at the opening.",
+        "Snow can be melted for water but requires heat; avoid eating snow directly, as it lowers core temperature."
+      ]
+    },
+    {
+      "id": "season_spring_thaw_hazards",
+      "category": "Rain & Flooding",
+      "title": "Spring Thaw Hazards",
+      "summary": "Navigate changing terrain, unstable ice, and increased flooding risks as temperatures rise during spring melt.",
+      "difficulty": "intermediate",
+      "tags": ["spring", "flooding", "thaw", "ice", "mud"],
+      "steps": [
+        "Assume all ice is unstable; warming temperatures weaken ice even if it appears solid.",
+        "Avoid traveling across frozen lakes or rivers unless you can confirm thickness and stability.",
+        "Watch for swollen streams and rivers; melting snow can cause rapid and unpredictable flooding.",
+        "Travel on higher ground to avoid soft, collapsing banks and mud traps.",
+        "Monitor weather for warm rain, which speeds melting and increases flood potential.",
+        "Use trekking poles or sticks to test ground stability before stepping onto muddy or thawing areas."
+      ],
+      "do_not": [
+        "Do not camp on riverbanks or low-lying areas during spring melt.",
+        "Do not cross streams that are rising quickly or carrying debris.",
+        "Do not assume morning ice is safe just because temperatures dropped overnight."
+      ],
+      "watch_for": [
+        "Ground that appears solid but collapses when stepped on.",
+        "Vegetation leaning downstream—indicates strong water flow beneath or nearby.",
+        "Ice separating from the shore, creating hidden gaps."
+      ],
+      "notes": [
+        "Spring is one of the most unpredictable seasons for foot travel; prioritize conservative navigation choices.",
+        "Snow bridges over streams collapse frequently during thaw—test carefully before crossing."
+      ]
+    },
+    {
+      "id": "season_summer_heat_management",
+      "category": "Heat & Sun",
+      "title": "Summer Heat Survival",
+      "summary": "Stay cool, hydrated, and protected from direct sunlight during extreme summer heat.",
+      "difficulty": "basic",
+      "tags": ["summer", "heat", "sun", "hydration", "shade"],
+      "steps": [
+        "Travel early in the morning or late in the afternoon; avoid peak heat hours.",
+        "Create shade using tarps, branches, reflective materials, or clothing layers.",
+        "Hydrate regularly, even when not thirsty; sip small amounts frequently.",
+        "Cover exposed skin with lightweight, breathable fabric to prevent sunburn and dehydration.",
+        "Rest in shaded or breezy locations to cool your core body temperature.",
+        "Use evaporative cooling by wetting a cloth and covering your neck, face, or pulse points."
+      ],
+      "do_not": [
+        "Do not push through early symptoms of heat exhaustion such as headache or nausea.",
+        "Do not drink caffeine or alcohol in high heat; both accelerate dehydration.",
+        "Do not ration water too early; dehydration impairs judgment quickly."
+      ],
+      "watch_for": [
+        "Rapid breathing, confusion, or lack of sweating—potential heatstroke.",
+        "Sunburn increasing heat absorption and dehydration.",
+        "Dry, cracked lips or dark urine indicating dehydration."
+      ],
+      "notes": [
+        "When water sources are uncertain, conserve sweat, not water—move slowly and stay shaded.",
+        "High heat combined with wind can dehydrate you faster than you feel."
+      ]
+    },
+    {
+      "id": "season_fall_transition_weather",
+      "category": "Wind & Storms",
+      "title": "Fall Weather Transition",
+      "summary": "Prepare for unstable temperatures, sudden windstorms, and early freezes during seasonal transition months.",
+      "difficulty": "basic",
+      "tags": ["fall", "autumn", "wind", "temperature swings", "storms"],
+      "steps": [
+        "Carry additional layers even on warm days; fall temperatures drop rapidly after sunset.",
+        "Expect strong gusts and cold fronts—reinforce shelters earlier in the day.",
+        "Monitor cloud patterns for storm fronts; fall storms can form and move quickly.",
+        "Gather firewood early; wet fall conditions make dry tinder harder to find.",
+        "Insulate your sleeping area to prepare for sudden nighttime freezes."
+      ],
+      "do_not": [
+        "Do not underestimate the temperature drop after sunset—prepare early.",
+        "Do not camp under trees shedding heavy branches; windstorms in fall often break dead limbs.",
+        "Do not leave gear unsecured; sudden gusts can carry it away."
+      ],
+      "watch_for": [
+        "Darkening skies combined with sudden cold gusts—sign of incoming storm front.",
+        "Rapid barometric drops (ears popping or pressure sensations).",
+        "Unexpected frost on exposed surfaces in early morning."
+      ],
+      "notes": [
+        "Fall is a transitional season; prepare for both warm daytime conditions and freezing nights.",
+        "Ground moisture increases as temperatures drop, so elevate sleeping gear whenever possible."
+      ]
+    },
+    {
+      "id": "season_monsoon_rain_patterns",
+      "category": "Rain & Flooding",
+      "title": "Monsoon & Seasonal Heavy Rain Patterns",
+      "summary": "Recognize recurring storm cycles and protect yourself from sudden downpours, flash floods, and lightning common in monsoon regions.",
+      "difficulty": "advanced",
+      "tags": ["monsoon", "heavy rain", "lightning", "flash flood", "humidity"],
+      "steps": [
+        "Observe daily patterns: monsoon storms often build in late afternoon but can vary regionally.",
+        "Set up camp early in the day on elevated, well-drained terrain.",
+        "Build trenches or drainage channels around shelters if heavy rain is expected.",
+        "Air out clothing and gear during morning dry periods to prevent mold and moisture buildup.",
+        "Prepare lightning-safe positions when thunderstorms are likely.",
+        "Avoid canyon systems, slot canyons, and desert washes during monsoon season."
+      ],
+      "do_not": [
+        "Do not assume storms will follow predictable timing—monsoon systems shift quickly.",
+        "Do not shelter in caves or under rock overhangs prone to runoff or collapse.",
+        "Do not remain in narrow canyons even if the sky above appears clear."
+      ],
+      "watch_for": [
+        "Towering cumulonimbus clouds forming rapidly in the afternoon.",
+        "Sudden humidity spikes and strong gusts of wind preceding storm rainfall.",
+        "Distant thunder, even faint—storms can send floodwaters miles ahead."
+      ],
+      "notes": [
+        "Monsoon rains often arrive in cycles—plan activity windows in the calm periods.",
+        "Humidity reduces evaporative cooling; overheating can occur even during storms."
+      ]
+    }
+  ]
+}

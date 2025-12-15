@@ -31,12 +31,7 @@ export default function ReferenceModule() {
         <CardTopic
           title="Weather"
           icon="rainy-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Weather',
-              icon: 'rainy-outline',
-            })
-          }
+          onPress={() => navigation.navigate('Weather')}
         />
         <CardTopic
           title="Tools & Knots"
