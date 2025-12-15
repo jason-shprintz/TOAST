@@ -47,9 +47,9 @@
       ]
     },
     {
-      "id": "cold_weather_frostbite_management",
+      "id": "cold_weather_frostbite",
       "category": "Cold Weather",
-      "title": "Frostbite (Identification & Field Management)",
+      "title": "Frostbite",
       "summary": "Identify early frostbite and take safe steps to warm affected areas without causing additional tissue damage.",
       "difficulty": "intermediate",
       "tags": ["frostbite", "cold injury", "extremities", "warming"],
@@ -263,7 +263,7 @@
     {
       "id": "snow_ice_avalanches_awareness",
       "category": "Snow & Ice",
-      "title": "Avalanche Awareness (Basic Field Guidance)",
+      "title": "Avalanche Awareness",
       "summary": "Recognize avalanche-prone terrain and take steps to avoid dangerous snow conditions when traveling through mountains.",
       "difficulty": "advanced",
       "tags": ["avalanche", "snow", "slab", "mountain", "steep terrain"],
@@ -290,9 +290,9 @@
       ]
     },
     {
-      "id": "snow_ice_snow_shelter_insulation",
+      "id": "snow_ice_snow_shelter",
       "category": "Snow & Ice",
-      "title": "Snow Shelter (Insulated Trench or Cave)",
+      "title": "Snow Shelter",
       "summary": "Use snow as insulation to create a stable shelter that preserves body heat in frigid conditions.",
       "difficulty": "intermediate",
       "tags": [
@@ -328,7 +328,7 @@
     {
       "id": "season_winter_survival_basics",
       "category": "Cold Weather",
-      "title": "Winter Conditions (Deep Cold Survival Basics)",
+      "title": "Winter Conditions",
       "summary": "Adapt to subfreezing temperatures by managing heat loss, fuel usage, snow hazards, and limited daylight.",
       "difficulty": "intermediate",
       "tags": ["winter", "cold", "snow", "wind chill", "insulation"],
@@ -473,6 +473,120 @@
       "notes": [
         "Monsoon rains often arrive in cycles—plan activity windows in the calm periods.",
         "Humidity reduces evaporative cooling; overheating can occur even during storms."
+      ]
+    },
+    {
+      "id": "weather_cloud_types_overview",
+      "category": "Wind & Storms",
+      "title": "Cloud Types & Weather Prediction",
+      "summary": "Recognize major cloud types and interpret what they indicate about incoming weather patterns.",
+      "difficulty": "basic",
+      "tags": ["clouds", "weather", "forecasting", "sky reading", "atmosphere"],
+      "steps": [
+        "Cirrus Clouds (high altitude, thin and wispy): often signal fair weather but may indicate that a storm system is approaching within 24–48 hours.",
+        "Cirrostratus Clouds (milky, halo around sun/moon): usually precede warm fronts and can indicate steady precipitation coming.",
+        "Cirrocumulus Clouds (small ripples like fish scales): often appear in cold, fair weather but may precede a storm in tropical regions.",
+        "Altostratus Clouds (gray sheet covering sky): signal widespread moisture and usually precede prolonged rain or snow.",
+        "Altocumulus Clouds (white/gray patches): may signal thunderstorms later in the day when seen in warm, humid conditions.",
+        "Stratus Clouds (low, uniform gray): bring drizzle or light snow and reduce visibility; often accompany stable but damp weather.",
+        "Stratocumulus Clouds (low, lumpy): rarely lead to heavy precipitation; can indicate changing but mild weather.",
+        "Nimbostratus Clouds (thick, dark, covering sky): indicate continuous, steady rain or snow lasting hours.",
+        "Cumulus Clouds (puffy white with flat bases): fair weather clouds unless they grow vertically.",
+        "Cumulonimbus Clouds (towering, anvil-shaped): produce thunderstorms, lightning, hail, strong winds, and heavy rain. Dangerous for wilderness travel."
+      ],
+      "do_not": [
+        "Do not ignore rapid vertical cloud growth; it often precedes thunderstorms.",
+        "Do not camp in exposed or low-lying areas when cumulonimbus clouds are forming.",
+        "Do not assume a clear morning guarantees a calm afternoon—cloud type changes can warn of storms hours ahead."
+      ],
+      "watch_for": [
+        "Increasing thickness of clouds from high (cirrus) to low (stratus), signaling incoming fronts.",
+        "Anvil-shaped cumulonimbus tops spreading horizontally—a sign that a storm is actively developing.",
+        "Halo around sun or moon, which indicates ice crystals and often a warm front approaching."
+      ],
+      "notes": [
+        "Learning cloud progression teaches you to predict changing weather without instruments.",
+        "Observation over time improves accuracy—practice reading the sky even in non-survival situations."
+      ]
+    },
+    {
+      "id": "weather_storm_indicators",
+      "category": "Wind & Storms",
+      "title": "Storm Indicators",
+      "summary": "Identify atmospheric, environmental, and visual signals that a storm is developing or approaching.",
+      "difficulty": "intermediate",
+      "tags": [
+        "storm",
+        "forecasting",
+        "weather signs",
+        "thunderstorm",
+        "pressure drop"
+      ],
+      "steps": [
+        "Watch for rapid cloud thickening, especially cumulus clouds growing vertically into cumulonimbus formations.",
+        "Pay attention to sudden wind shifts; storms often pull in cooler air or create gust fronts.",
+        "Note changes in pressure: a feeling of fullness in the ears or sudden stillness often precedes storms.",
+        "Look for darkening skies, especially with greenish or yellowish tints indicating hail potential.",
+        "Listen for distant thunder, even faint—storms travel quickly, and lightning can strike far ahead of rain.",
+        "Smell for ozone or a 'metallic' scent, which can appear just before lightning-heavy storms.",
+        "Observe wildlife: birds flying low, insects disappearing, or sudden silence can correlate with incoming storms."
+      ],
+      "do_not": [
+        "Do not ignore a rapid temperature drop; it likely signals a storm front moving in.",
+        "Do not stay in exposed areas like ridgelines or meadows once thunder is audible.",
+        "Do not assume storms only approach from the west; local wind patterns can vary."
+      ],
+      "watch_for": [
+        "Shelf clouds or rolling formations at the leading edge of thunderstorms.",
+        "Cold gusts followed by sudden calm—the storm may be moments away.",
+        "Vertical lightning, which indicates strong updrafts and potential severe conditions."
+      ],
+      "notes": [
+        "Storms can develop rapidly in mountains, deserts, and humid regions—anticipate rather than react.",
+        "Paying attention to small cues early gives you time to secure shelter or relocate safely."
+      ]
+    },
+    {
+      "id": "weather_beaufort_scale",
+      "category": "Wind & Storms",
+      "title": "Beaufort Wind Scale",
+      "summary": "Use the Beaufort scale to estimate wind speed based on its visible effects on the environment.",
+      "difficulty": "basic",
+      "tags": [
+        "beaufort",
+        "wind speed",
+        "navigation",
+        "weather scale",
+        "wind indicators"
+      ],
+      "steps": [
+        "Force 0 (Calm): Smoke rises vertically; no wind movement.",
+        "Force 1 (Light Air): Smoke drifts slightly; leaves barely move.",
+        "Force 2 (Light Breeze): Leaves rustle; small twigs move.",
+        "Force 3 (Gentle Breeze): Flags extend slightly; leaves and small branches move.",
+        "Force 4 (Moderate Breeze): Dust and loose paper lift; small branches sway.",
+        "Force 5 (Fresh Breeze): Small trees begin to sway; waves form on lakes.",
+        "Force 6 (Strong Breeze): Large branches move; umbrellas difficult to use.",
+        "Force 7 (Near Gale): Whole trees move; walking becomes challenging.",
+        "Force 8 (Gale): Twigs break off trees; progress on foot is difficult.",
+        "Force 9 (Severe Gale): Slight structural damage possible; visibility reduced.",
+        "Force 10 (Storm): Trees uprooted in places; heavy structural effects.",
+        "Force 11 (Violent Storm): Widespread structural damage; extremely dangerous.",
+        "Force 12 (Hurricane): Devastation; complete loss of structural integrity in many areas."
+      ],
+      "do_not": [
+        "Do not travel on exposed ridges or open water above Force 6 conditions.",
+        "Do not camp near trees during gale-force winds or higher.",
+        "Do not underestimate Force 3–4 winds when combined with cold, as wind chill increases dramatically."
+      ],
+      "watch_for": [
+        "Tree movement—one of the easiest ways to estimate wind strength.",
+        "Whitecaps forming on lakes (typically start at Force 4–5).",
+        "Loose debris lifting from the ground, which signals dangerous wind speeds."
+      ],
+      "notes": [
+        "You can estimate wind speed visually without instruments, critical when planning shelter placement and travel.",
+        "Wind often increases before major weather systems—use the Beaufort scale to detect early storm escalation."
       ]
     }
   ]

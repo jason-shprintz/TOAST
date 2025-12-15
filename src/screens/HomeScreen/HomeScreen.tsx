@@ -1,16 +1,15 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  Animated,
+  ScrollView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
-import ScreenScrollContainer from '../../components/ScreenScrollContainer';
+import ScreenContainer from '../../components/ScreenScrollContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
@@ -28,41 +27,8 @@ const MODULES = [
 ];
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
-  // Hero fade-in animation
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 900,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
-  // Tile bounce animation handler (per-tile)
-  const createBounce = () => {
-    const anim = new Animated.Value(1);
-    return {
-      anim,
-      bounce: (callback?: () => void) => {
-        Animated.sequence([
-          Animated.timing(anim, {
-            toValue: 0.92,
-            duration: 90,
-            useNativeDriver: true,
-          }),
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 90,
-            useNativeDriver: true,
-          }),
-        ]).start(() => callback && callback());
-      },
-    };
-  };
-
   return (
-    <ScreenScrollContainer>
+    <ScreenContainer>
       {/* Settings icon */}
       <TouchableWithoutFeedback>
         <View style={styles.settingsButton}>
@@ -74,40 +40,28 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         </View>
       </TouchableWithoutFeedback>
 
-      {/* Hero Logo (fade-in) */}
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <LogoHeader />
-      </Animated.View>
+      {/* Hero Logo */}
+      <LogoHeader />
 
       {/* Tagline */}
       <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
 
       {/* Module Grid */}
-      <Grid>
-        {MODULES.map(mod => {
-          const { anim, bounce } = createBounce();
-
-          return (
-            <TouchableWithoutFeedback
-              key={mod.name}
-              onPress={() => bounce(() => navigation.navigate(mod.screen))}
-            >
-              <Animated.View
-                style={[styles.tile, { transform: [{ scale: anim }] }]}
-              >
-                <Ionicons
-                  name={mod.icon}
-                  size={40}
-                  color={COLORS.PRIMARY_DARK}
-                  style={{ marginBottom: 8 }}
-                />
-                <Text style={styles.tileText}>{mod.name}</Text>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          );
-        })}
-      </Grid>
-    </ScreenScrollContainer>
+      <ScrollView>
+        <Grid>
+          {MODULES.map(mod => {
+            return (
+              <CardTopic
+                key={mod.name}
+                icon={mod.icon}
+                title={mod.name}
+                onPress={() => navigation.navigate(mod.screen)}
+              />
+            );
+          })}
+        </Grid>
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
