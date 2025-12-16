@@ -1,49 +1,37 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
+import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import { toolType } from '../../types/tools-type';
 
 export default function CommunicationsModule() {
-  const navigation = useNavigation<any>();
+  const communicationTools: toolType[] = [
+    {
+      name: 'Ham Radio',
+      screen: 'ComingSoon',
+      icon: 'radio-outline',
+      id: 'comm_ham_radio',
+    },
+    {
+      name: 'Morse Code',
+      screen: 'ComingSoon',
+      icon: 'code-outline',
+      id: 'comm_morse_code',
+    },
+    {
+      name: 'Bluetooth',
+      screen: 'ComingSoon',
+      icon: 'bluetooth-outline',
+      id: 'comm_bluetooth',
+    },
+  ];
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Communications</SectionHeader>
-      <Grid>
-        <CardTopic
-          title="Ham Radio"
-          icon="radio-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Ham Radio',
-              icon: 'radio-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Morse Code"
-          icon="code-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Morse Code',
-              icon: 'code-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Bluetooth"
-          icon="bluetooth-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Bluetooth',
-              icon: 'bluetooth-outline',
-            })
-          }
-        />
-      </Grid>
+      <MapTools tools={communicationTools} />
     </ScreenContainer>
   );
 }

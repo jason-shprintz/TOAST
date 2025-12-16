@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { ScrollView } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
@@ -8,52 +9,56 @@ import SectionHeader from '../../components/SectionHeader';
 
 export default function ReferenceModule() {
   const navigation = useNavigation<any>();
+
+  
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
-      <Grid>
-        <CardTopic
-          title="Bookmark"
-          icon="bookmark-outline"
-          onPress={() => navigation.navigate('Bookmark')}
-        />
-        <CardTopic
-          title="Health"
-          icon="medkit-outline"
-          onPress={() => navigation.navigate('Health')}
-        />
-        <CardTopic
-          title="Survival Guide"
-          icon="leaf-outline"
-          onPress={() => navigation.navigate('Survival')}
-        />
-        <CardTopic
-          title="Weather"
-          icon="rainy-outline"
-          onPress={() => navigation.navigate('Weather')}
-        />
-        <CardTopic
-          title="Tools & Knots"
-          icon="hammer-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Tools & Knots',
-              icon: 'hammer-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Emergency"
-          icon="warning-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Emergency',
-              icon: 'warning-outline',
-            })
-          }
-        />
-      </Grid>
+      <ScrollView>
+        <Grid>
+          <CardTopic
+            title="Bookmark"
+            icon="bookmark-outline"
+            onPress={() => navigation.navigate('Bookmark')}
+          />
+          <CardTopic
+            title="Health"
+            icon="medkit-outline"
+            onPress={() => navigation.navigate('Health')}
+          />
+          <CardTopic
+            title="Survival Guide"
+            icon="leaf-outline"
+            onPress={() => navigation.navigate('Survival')}
+          />
+          <CardTopic
+            title="Weather"
+            icon="rainy-outline"
+            onPress={() => navigation.navigate('Weather')}
+          />
+          <CardTopic
+            title="Tools & Knots"
+            icon="hammer-outline"
+            onPress={() =>
+              navigation.navigate('ComingSoon', {
+                title: 'Tools & Knots',
+                icon: 'hammer-outline',
+              })
+            }
+          />
+          <CardTopic
+            title="Emergency"
+            icon="warning-outline"
+            onPress={() =>
+              navigation.navigate('ComingSoon', {
+                title: 'Emergency',
+                icon: 'warning-outline',
+              })
+            }
+          />
+        </Grid>
+      </ScrollView>
     </ScreenContainer>
   );
 }

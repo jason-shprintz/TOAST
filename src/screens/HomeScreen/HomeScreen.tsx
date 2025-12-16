@@ -14,7 +14,6 @@ import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { HomeScreenProps } from './types/homeScreenTypes';
 
-// Assign icons for each module
 const MODULES = [
   { name: 'Core', screen: 'CoreModule', icon: 'apps-outline' },
   { name: 'Navigation', screen: 'NavigationModule', icon: 'compass-outline' },

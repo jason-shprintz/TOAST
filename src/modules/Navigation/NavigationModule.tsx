@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { ScrollView } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
@@ -12,28 +13,30 @@ export default function NavigationModule() {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Navigation</SectionHeader>
-      <Grid>
-        <CardTopic
-          title="Map"
-          icon="map-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Map',
-              icon: 'map-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Compass"
-          icon="compass-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Compass',
-              icon: 'compass-outline',
-            })
-          }
-        />
-      </Grid>
+      <ScrollView>
+        <Grid>
+          <CardTopic
+            title="Map"
+            icon="map-outline"
+            onPress={() =>
+              navigation.navigate('ComingSoon', {
+                title: 'Map',
+                icon: 'map-outline',
+              })
+            }
+          />
+          <CardTopic
+            title="Compass"
+            icon="compass-outline"
+            onPress={() =>
+              navigation.navigate('ComingSoon', {
+                title: 'Compass',
+                icon: 'compass-outline',
+              })
+            }
+          />
+        </Grid>
+      </ScrollView>
     </ScreenContainer>
   );
 }
