@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
 import { ScrollView } from 'react-native';
-import { toolType } from '../types/common-types';
+import { ToolType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
 
-type MapToolsProps = {
-  tools: toolType[];
+type ToolListProps = {
+  tools: ToolType[];
 };
 
 /**
@@ -19,7 +19,7 @@ type MapToolsProps = {
  *   - Otherwise, the card navigates to the specified screen.
  * @returns A JSX element containing a scrollable grid of tool/feature cards.
  */
-export default function MapTools({ tools }: MapToolsProps): JSX.Element {
+export default function ToolList({ tools }: ToolListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
   return (

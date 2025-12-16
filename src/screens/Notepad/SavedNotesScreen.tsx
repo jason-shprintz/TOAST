@@ -18,6 +18,9 @@ import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CONTAINER_WIDTH = SCREEN_WIDTH * 0.9;
+
 export default observer(function SavedNotesScreen() {
   const core = useCoreStore();
   const byCat = core.notesByCategory;
@@ -113,9 +116,6 @@ export default observer(function SavedNotesScreen() {
     </ScreenContainer>
   );
 });
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const CONTAINER_WIDTH = SCREEN_WIDTH * 0.9;
 
 const styles = StyleSheet.create({
   container: {

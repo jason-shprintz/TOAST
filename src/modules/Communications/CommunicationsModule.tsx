@@ -1,11 +1,11 @@
 import React from 'react';
 import LogoHeader from '../../components/LogoHeader';
-import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import { toolType } from '../../types/common-types';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
 
-const communicationTools: toolType[] = [
+const communicationTools: ToolType[] = [
   {
     name: 'Ham Radio',
     screen: 'ComingSoon',
@@ -31,7 +31,7 @@ export default function CommunicationsModule() {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Communications</SectionHeader>
-      <MapTools tools={communicationTools} />
+      <ToolList tools={communicationTools} />
     </ScreenContainer>
   );
 }

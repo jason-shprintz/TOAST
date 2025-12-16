@@ -2,13 +2,13 @@ import React from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
-import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import ToolList from '../../components/ToolList';
 import { COLORS } from '../../theme';
-import { toolType } from '../../types/common-types';
+import { ToolType } from '../../types/common-types';
 
-const modules: toolType[] = [
+const modules: ToolType[] = [
   { name: 'Core', screen: 'CoreModule', icon: 'apps-outline', id: 'home_core' },
   {
     name: 'Navigation',
@@ -46,7 +46,7 @@ export default function HomeScreen() {
 
       <LogoHeader />
       <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
-      <MapTools tools={modules} />
+      <ToolList tools={modules} />
     </ScreenContainer>
   );
 }

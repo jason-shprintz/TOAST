@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import LogoHeader from '../../components/LogoHeader';
-import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import { toolType } from '../../types/common-types';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
 
-const coreTools: toolType[] = [
+const coreTools: ToolType[] = [
   {
     name: 'Device Status',
     screen: 'DeviceStatus',
@@ -44,7 +44,7 @@ export default observer(function CoreModule() {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Core</SectionHeader>
-      <MapTools tools={coreTools} />
+      <ToolList tools={coreTools} />
     </ScreenContainer>
   );
 });

@@ -1,11 +1,11 @@
 import React from 'react';
 import LogoHeader from '../../components/LogoHeader';
-import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import { toolType } from '../../types/common-types';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
 
-const referenceTools: toolType[] = [
+const referenceTools: ToolType[] = [
   {
     name: 'Bookmark',
     screen: 'Bookmark',
@@ -49,7 +49,7 @@ export default function ReferenceModule() {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
-      <MapTools tools={referenceTools} />
+      <ToolList tools={referenceTools} />
     </ScreenContainer>
   );
 }
