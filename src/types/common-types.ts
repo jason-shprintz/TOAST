@@ -7,7 +7,7 @@ export type toolType = {
   icon: string;
 };
 
-export type categoryType = {
+export type CategoryType = {
   id: string;
   title: string;
   icon: string;
