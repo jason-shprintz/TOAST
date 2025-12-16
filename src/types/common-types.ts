@@ -1,6 +1,6 @@
 import ReferenceEntryType from './data-type';
 
-export type toolType = {
+export type ToolType = {
   id: string;
   name: string;
   screen: string;
