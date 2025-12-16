@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LogoHeader from '../../components/LogoHeader';
 import MapTools from '../../components/MapTools';
-import ScreenContainer from '../../components/ScreenScrollContainer';
+import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 import { toolType } from '../../types/common-types';
