@@ -11,7 +11,7 @@ import ReferenceEntryType from '../../../types/data-type';
 /**
  * Displays a list of reference entries filtered by category.
  *
- * This screen retrieves the `category`, `title`, and `data` from the navigation route parameters,
+ * This screen retrieves the `title` and `data` from the navigation route parameters,
  * filters the entries to only those matching the selected category, and displays them in a grid layout.
  * If no entries are found for the category, a helper message is shown.
  *
@@ -19,23 +19,21 @@ import ReferenceEntryType from '../../../types/data-type';
  *
  * @remarks
  * - Navigates to the 'Entry' screen when a topic card is pressed, passing the selected entry as a parameter.
- * - Expects `route.params` to contain `category`, `title`, and `data.entries`.
+ * - Expects `route.params` to contain `title` (category name) and `data` (ReferenceEntryType[]).
  */
 export default function CategoryScreen(): JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const { category, title, data } = route.params || {};
+  const { title, data } = route.params || {};
 
   const entries = useMemo(() => {
-    return (data.entries || []).filter(
-      (e: ReferenceEntryType) => e.category === category,
-    );
-  }, [category, data.entries]);
+    return (data ?? []).filter((e: ReferenceEntryType) => e.category === title);
+  }, [title, data]);
 
   return (
     <ScreenContainer>
       <LogoHeader />
-      <SectionHeader>{title || category}</SectionHeader>
+      <SectionHeader>{title}</SectionHeader>
       <ScrollView contentContainerStyle={styles.container}>
         {entries.length === 0 && (
           <Text style={styles.helperText}>No topics found.</Text>
