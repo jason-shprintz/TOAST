@@ -6,7 +6,7 @@ import MapTools from '../../components/MapTools';
 import ScreenContainer from '../../components/ScreenScrollContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
-import { toolType } from '../../types/tools-type';
+import { toolType } from '../../types/common-types';
 
 const modules: toolType[] = [
   { name: 'Core', screen: 'CoreModule', icon: 'apps-outline', id: 'home_core' },

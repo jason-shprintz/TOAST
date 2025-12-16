@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
 import { ScrollView } from 'react-native';
-import { toolType } from '../types/tools-type';
+import { toolType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
 
