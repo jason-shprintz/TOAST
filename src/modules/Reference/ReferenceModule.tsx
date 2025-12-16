@@ -1,59 +1,55 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
+
+const referenceTools: ToolType[] = [
+  {
+    name: 'Bookmark',
+    screen: 'Bookmark',
+    icon: 'bookmark-outline',
+    id: 'ref_bookmark',
+  },
+  {
+    name: 'Health',
+    screen: 'Health',
+    icon: 'medkit-outline',
+    id: 'ref_health',
+  },
+  {
+    name: 'Survival Guide',
+    screen: 'Survival',
+    icon: 'leaf-outline',
+    id: 'ref_survival_guide',
+  },
+  {
+    name: 'Weather',
+    screen: 'Weather',
+    icon: 'rainy-outline',
+    id: 'ref_weather',
+  },
+  {
+    name: 'Tools & Knots',
+    screen: 'ComingSoon',
+    icon: 'hammer-outline',
+    id: 'ref_tools_knots',
+  },
+  {
+    name: 'Emergency',
+    screen: 'ComingSoon',
+    icon: 'warning-outline',
+    id: 'ref_emergency',
+  },
+];
 
 export default function ReferenceModule() {
-  const navigation = useNavigation<any>();
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Reference</SectionHeader>
-      <Grid>
-        <CardTopic
-          title="Bookmark"
-          icon="bookmark-outline"
-          onPress={() => navigation.navigate('Bookmark')}
-        />
-        <CardTopic
-          title="Health"
-          icon="medkit-outline"
-          onPress={() => navigation.navigate('Health')}
-        />
-        <CardTopic
-          title="Survival Guide"
-          icon="leaf-outline"
-          onPress={() => navigation.navigate('Survival')}
-        />
-        <CardTopic
-          title="Weather"
-          icon="rainy-outline"
-          onPress={() => navigation.navigate('Weather')}
-        />
-        <CardTopic
-          title="Tools & Knots"
-          icon="hammer-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Tools & Knots',
-              icon: 'hammer-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Emergency"
-          icon="warning-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Emergency',
-              icon: 'warning-outline',
-            })
-          }
-        />
-      </Grid>
+      <ToolList tools={referenceTools} />
     </ScreenContainer>
   );
 }

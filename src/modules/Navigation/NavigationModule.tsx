@@ -1,39 +1,31 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
+
+const navigationTools: ToolType[] = [
+  {
+    name: 'Map',
+    screen: 'ComingSoon',
+    icon: 'map-outline',
+    id: 'nav_map',
+  },
+  {
+    name: 'Compass',
+    screen: 'ComingSoon',
+    icon: 'compass-outline',
+    id: 'nav_compass',
+  },
+];
 
 export default function NavigationModule() {
-  const navigation = useNavigation<any>();
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Navigation</SectionHeader>
-      <Grid>
-        <CardTopic
-          title="Map"
-          icon="map-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Map',
-              icon: 'map-outline',
-            })
-          }
-        />
-        <CardTopic
-          title="Compass"
-          icon="compass-outline"
-          onPress={() =>
-            navigation.navigate('ComingSoon', {
-              title: 'Compass',
-              icon: 'compass-outline',
-            })
-          }
-        />
-      </Grid>
+      <ToolList tools={navigationTools} />
     </ScreenContainer>
   );
 }

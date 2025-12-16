@@ -139,7 +139,7 @@ Offline survival and emergency knowledge packs.
 #### **Planned Features**
 
 - **Survival Field Guide**  
-  - Fire starting, water purification, shelter building, edible plants, animal tracks
+  - ~~Fire starting, water purification, shelter building, edible plants, animal tracks~~
 
 - **First Aid Guide**  
   - ~~CPR, bleeding control, burns, hypothermia, poisoning procedures~~

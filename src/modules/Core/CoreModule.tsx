@@ -1,44 +1,50 @@
-import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import { useCoreStore } from '../../stores';
+import ToolList from '../../components/ToolList';
+import { ToolType } from '../../types/common-types';
+
+const coreTools: ToolType[] = [
+  {
+    name: 'Device Status',
+    screen: 'DeviceStatus',
+    icon: 'speedometer-outline',
+    id: 'core_device_status',
+  },
+  {
+    name: 'Flashlight',
+    screen: 'Flashlight',
+    icon: 'flashlight-outline',
+    id: 'core_flashlight',
+  },
+  {
+    name: 'Notepad',
+    screen: 'Notepad',
+    icon: 'document-text-outline',
+    id: 'core_notepad',
+  },
+  {
+    name: 'Unit Conversion',
+    screen: 'ComingSoon',
+    icon: 'swap-horizontal-outline',
+    id: 'core_unit_conversion',
+  },
+  {
+    name: 'Checklist',
+    screen: 'ComingSoon',
+    icon: 'list-outline',
+    id: 'core_checklist',
+  },
+];
 
 export default observer(function CoreModule() {
-  const navigation = useNavigation<any>();
-  const coreStore = useCoreStore();
-
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Core</SectionHeader>
-      <Grid>
-        {coreStore.tools.map(tool => (
-          <CardTopic
-            key={tool.id}
-            title={tool.name}
-            icon={tool.icon}
-            onPress={() => {
-              if (tool.id === 'flashlight') {
-                navigation.navigate('Flashlight');
-              } else if (tool.id === 'device-status') {
-                navigation.navigate('DeviceStatus');
-              } else if (tool.id === 'notepad') {
-                navigation.navigate('Notepad');
-              } else {
-                navigation.navigate('ComingSoon', {
-                  title: tool.name,
-                  icon: tool.icon,
-                });
-              }
-            }}
-          />
-        ))}
-      </Grid>
+      <ToolList tools={coreTools} />
     </ScreenContainer>
   );
 });

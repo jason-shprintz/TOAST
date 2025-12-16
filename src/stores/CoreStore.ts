@@ -36,34 +36,6 @@ export interface Note {
 }
 
 export class CoreStore {
-  tools: Tool[] = [
-    {
-      id: 'device-status',
-      name: 'Device Status',
-      icon: 'speedometer-outline',
-    },
-    {
-      id: 'flashlight',
-      name: 'Flashlight',
-      icon: 'flashlight-outline',
-    },
-    {
-      id: 'notepad',
-      name: 'Notepad',
-      icon: 'document-text-outline',
-    },
-    {
-      id: 'unit-conversion',
-      name: 'Unit Conversion',
-      icon: 'swap-horizontal-outline',
-    },
-    {
-      id: 'checklist',
-      name: 'Checklist',
-      icon: 'list-outline',
-    },
-  ];
-
   private appStateSubscription: NativeEventSubscription;
 
   constructor() {
@@ -79,10 +51,6 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
-  }
-
-  get totalTools() {
-    return this.tools.length;
   }
 
   // --------------------------------------------------------------------
