@@ -6,7 +6,15 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import { getBookmarks, BookmarkItem } from '../../stores/BookmarksStore';
+import healthData from '../../data/health.json';
+import survivalData from '../../data/survival.json';
+import weatherData from '../../data/weather.json';
+import {
+  getBookmarks,
+  BookmarkItem,
+  clearBookmarks,
+} from '../../stores/BookmarksStore';
+import ReferenceEntryType from '../../types/data-type';
 
 /**
  * Displays a list of bookmarked health entries for the user.
@@ -35,13 +43,36 @@ export default function BookmarkScreen(): JSX.Element {
   }, [navigation]);
 
   const handleOpen = (item: BookmarkItem) => {
-    navigation.navigate('HealthEntry', { id: item.id });
+    const entry: ReferenceEntryType | undefined =
+      healthData.entries.find(e => e.id === item.id) ??
+      survivalData.entries.find(e => e.id === item.id) ??
+      weatherData.entries.find(e => e.id === item.id);
+
+    if (!entry) {
+      console.warn('Bookmark entry not found for id:', item.id);
+      return;
+    }
+
+    navigation.navigate('Entry', { entry });
   };
 
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Bookmarks</SectionHeader>
+      {/* DEV ONLY */}
+      {__DEV__ && (
+        <Text
+          onPress={async () => {
+            await clearBookmarks();
+            await load();
+          }}
+          style={styles.dev}
+        >
+          Clear all bookmarks (dev)
+        </Text>
+      )}
+      {/* END DEV ONLY */}
       <ScrollView contentContainerStyle={styles.container}>
         {items.length === 0 && (
           <Text style={styles.helperText}>No bookmarks yet.</Text>
@@ -77,4 +108,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
     marginTop: 12,
   },
+  dev: { marginBottom: 8, opacity: 0.7 },
 });

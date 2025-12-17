@@ -149,3 +149,25 @@ export async function removeBookmark(id: string): Promise<void> {
     console.error('Failed to remove bookmark', e);
   }
 }
+
+/**
+ * Removes all stored bookmark records from the local database.
+ *
+ * Initializes the database connection if needed, then executes a
+ * `DELETE FROM bookmarks` statement to clear the table.
+ *
+ * @remarks
+ * If the database is not available (e.g., initialization fails), this function
+ * returns without throwing. SQL execution errors are caught and logged.
+ *
+ * @returns A promise that resolves when the operation completes.
+ */
+export async function clearBookmarks(): Promise<void> {
+  await initDb();
+  if (!db) return;
+  try {
+    await db.executeSql('DELETE FROM bookmarks');
+  } catch (e) {
+    console.error('Failed to clear bookmarks', e);
+  }
+}
