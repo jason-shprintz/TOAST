@@ -11,6 +11,6 @@ export type CategoryType = {
   id: string;
   title: string;
   icon: string;
-  category: Record<string, string>;
+  category: string;
   data: ReferenceEntryType[];
 };

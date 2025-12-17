@@ -1,12 +1,10 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
-import { ScrollView } from 'react-native';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
+import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/weather.json';
+import { CategoryType } from '../../types/common-types';
 
 const categoryMap: Record<string, string> = {
   ColdWeather: 'Cold Weather',
@@ -15,6 +13,44 @@ const categoryMap: Record<string, string> = {
   WindAndStorms: 'Wind & Storms',
   SnowAndIce: 'Snow & Ice',
 };
+
+const weatherCategories: CategoryType[] = [
+  {
+    title: 'Cold Weather',
+    icon: 'snow-outline',
+    id: 'weather_cold_weather',
+    category: categoryMap.ColdWeather,
+    data: data.entries,
+  },
+  {
+    title: 'Heat & Sun',
+    icon: 'sunny-outline',
+    id: 'weather_heat_and_sun',
+    category: categoryMap.HeatAndSun,
+    data: data.entries,
+  },
+  {
+    title: 'Rain & Flooding',
+    icon: 'rainy-outline',
+    id: 'weather_rain_and_flooding',
+    category: categoryMap.RainAndFlooding,
+    data: data.entries,
+  },
+  {
+    title: 'Wind & Storms',
+    icon: 'thunderstorm-outline',
+    id: 'weather_wind_and_storms',
+    category: categoryMap.WindAndStorms,
+    data: data.entries,
+  },
+  {
+    title: 'Snow & Ice',
+    icon: 'snow-sharp',
+    id: 'weather_snow_and_ice',
+    category: categoryMap.SnowAndIce,
+    data: data.entries,
+  },
+];
 
 /**
  * Displays the Weather screen, providing navigation to various weather-related categories.
@@ -26,71 +62,11 @@ const categoryMap: Record<string, string> = {
  * @returns {JSX.Element} The rendered WeatherScreen component.
  */
 export default function WeatherScreen(): JSX.Element {
-  const navigation = useNavigation<any>();
-
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Weather</SectionHeader>
-      <ScrollView>
-        <Grid>
-          <CardTopic
-            title="Cold Weather"
-            icon="snow-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.ColdWeather,
-                title: 'Cold Weather',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Heat & Sun"
-            icon="sunny-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.HeatAndSun,
-                title: 'Heat & Sun',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Rain & Flooding"
-            icon="rainy-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.RainAndFlooding,
-                title: 'Rain & Flooding',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Wind & Storms"
-            icon="thunderstorm-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.WindAndStorms,
-                title: 'Wind & Storms',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Snow & Ice"
-            icon="snow-sharp"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.SnowAndIce,
-                title: 'Snow & Ice',
-                data: data,
-              })
-            }
-          />
-        </Grid>
-      </ScrollView>
+      <CategoryList categories={weatherCategories} />
     </ScreenContainer>
   );
 }

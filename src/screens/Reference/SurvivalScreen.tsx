@@ -1,12 +1,10 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
-import { ScrollView } from 'react-native';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
+import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/survival.json';
+import { CategoryType } from '../../types/common-types';
 
 const categoryMap: Record<string, string> = {
   Firecraft: 'Firecraft',
@@ -16,6 +14,44 @@ const categoryMap: Record<string, string> = {
   TrackingAndAwareness: 'Tracking & Awareness',
 };
 
+const survivalCategories: CategoryType[] = [
+  {
+    title: 'Firecraft',
+    icon: 'flame-outline',
+    id: 'survival_firecraft',
+    category: categoryMap.Firecraft,
+    data: data.entries,
+  },
+  {
+    title: 'Water',
+    icon: 'water-outline',
+    id: 'survival_water',
+    category: categoryMap.Water,
+    data: data.entries,
+  },
+  {
+    title: 'Shelter',
+    icon: 'home-outline',
+    id: 'survival_shelter',
+    category: categoryMap.Shelter,
+    data: data.entries,
+  },
+  {
+    title: 'Food & Foraging',
+    icon: 'nutrition-outline',
+    id: 'survival_food_foraging',
+    category: categoryMap.FoodAndForaging,
+    data: data.entries,
+  },
+  {
+    title: 'Tracking & Awareness',
+    icon: 'map-outline',
+    id: 'survival_tracking_awareness',
+    category: categoryMap.TrackingAndAwareness,
+    data: data.entries,
+  },
+];
+
 /**
  * Renders the Survival Guide screen, providing quick access to essential survival topics.
  * Displays a header, section title, and a grid of topic cards (Fire, Water, Shelter, Food & Foraging, Tracking & Awareness).
@@ -24,71 +60,11 @@ const categoryMap: Record<string, string> = {
  * @returns {JSX.Element} The rendered Survival Guide screen component.
  */
 export default function SurvivalScreen(): JSX.Element {
-  const navigation = useNavigation<any>();
-
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Survival Guide</SectionHeader>
-      <ScrollView>
-        <Grid>
-          <CardTopic
-            title="Fire"
-            icon="flame-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.Firecraft,
-                title: 'Fire',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Water"
-            icon="water-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.Water,
-                title: 'Water',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Shelter"
-            icon="home-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.Shelter,
-                title: 'Shelter',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Food & Foraging"
-            icon="nutrition-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.FoodAndForaging,
-                title: 'Food & Foraging',
-                data: data,
-              })
-            }
-          />
-          <CardTopic
-            title="Tracking & Awareness"
-            icon="map-outline"
-            onPress={() =>
-              navigation.navigate('Category', {
-                category: categoryMap.TrackingAndAwareness,
-                title: 'Tracking & Awareness',
-                data: data,
-              })
-            }
-          />
-        </Grid>
-      </ScrollView>
+      <CategoryList categories={survivalCategories} />
     </ScreenContainer>
   );
 }
