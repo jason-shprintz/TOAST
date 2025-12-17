@@ -46,7 +46,7 @@ const survivalCategories: CategoryType[] = [
 
 /**
  * Renders the Survival Guide screen, providing quick access to essential survival topics.
- * Displays a header, section title, and a grid of topic cards (Fire, Water, Shelter, Food & Foraging, Tracking & Awareness).
+ * Displays a header, section title, and a grid of topic cards (Firecraft, Water, Shelter, Food & Foraging, Tracking & Awareness).
  * Each card navigates to a detailed category screen with relevant data when pressed.
  *
  * @returns {JSX.Element} The rendered Survival Guide screen component.
