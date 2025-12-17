@@ -6,12 +6,12 @@ import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/weather.json';
 import { CategoryType } from '../../types/common-types';
 
-const categoryMap: Record<string, Record<string, string>> = {
-  ColdWeather: { type: 'Cold Weather' },
-  HeatAndSun: { type: 'Heat & Sun' },
-  RainAndFlooding: { type: 'Rain & Flooding' },
-  WindAndStorms: { type: 'Wind & Storms' },
-  SnowAndIce: { type: 'Snow & Ice' },
+const categoryMap: Record<string, string> = {
+  ColdWeather: 'Cold Weather',
+  HeatAndSun: 'Heat & Sun',
+  RainAndFlooding: 'Rain & Flooding',
+  WindAndStorms: 'Wind & Storms',
+  SnowAndIce: 'Snow & Ice',
 };
 
 const weatherCategories: CategoryType[] = [

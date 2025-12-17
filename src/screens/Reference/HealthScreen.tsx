@@ -6,33 +6,40 @@ import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/health.json';
 import { CategoryType } from '../../types/common-types';
 
+const categoryMap: Record<string, string> = {
+  Emergency: 'Emergency',
+  Illness: 'Illness',
+  Injury: 'Injury',
+  Preventative: 'Preventive',
+};
+
 const healthCategories: CategoryType[] = [
   {
     title: 'Emergency',
     icon: 'alert-outline',
     id: 'health_emergency',
-    category: 'Emergency',
+    category: categoryMap.Emergency,
     data: data.entries,
   },
   {
     title: 'Illness',
     icon: 'medkit-outline',
     id: 'health_illness',
-    category: 'Illness',
+    category: categoryMap.Illness,
     data: data.entries,
   },
   {
     title: 'Injury',
     icon: 'bandage-outline',
     id: 'health_injury',
-    category: 'Injury',
+    category: categoryMap.Injury,
     data: data.entries,
   },
   {
     title: 'Preventive',
     icon: 'shield-checkmark-outline',
     id: 'health_preventive',
-    category: 'Preventive',
+    category: categoryMap.Preventative,
     data: data.entries,
   },
 ];
