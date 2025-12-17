@@ -33,7 +33,6 @@ export default function CategoryList({
               icon={category.icon}
               onPress={() =>
                 navigation.navigate('Category', {
-                  category: category,
                   title: category.title,
                   data: category.data,
                 })
