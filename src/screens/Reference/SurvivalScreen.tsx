@@ -6,48 +6,40 @@ import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/survival.json';
 import { CategoryType } from '../../types/common-types';
 
-const categoryMap: Record<string, Record<string, string>> = {
-  Firecraft: { type: 'Firecraft' },
-  Water: { type: 'Water' },
-  Shelter: { type: 'Shelter' },
-  FoodAndForaging: { type: 'Food & Foraging' },
-  TrackingAndAwareness: { type: 'Tracking & Awareness' },
-};
-
 const survivalCategories: CategoryType[] = [
   {
     title: 'Firecraft',
     icon: 'flame-outline',
     id: 'survival_firecraft',
-    category: categoryMap.Firecraft,
+    category: 'Firecraft',
     data: data.entries,
   },
   {
     title: 'Water',
     icon: 'water-outline',
     id: 'survival_water',
-    category: categoryMap.Water,
+    category: 'Water',
     data: data.entries,
   },
   {
     title: 'Shelter',
     icon: 'home-outline',
     id: 'survival_shelter',
-    category: categoryMap.Shelter,
+    category: 'Shelter',
     data: data.entries,
   },
   {
     title: 'Food & Foraging',
     icon: 'nutrition-outline',
     id: 'survival_food_foraging',
-    category: categoryMap.FoodAndForaging,
+    category: 'Food & Foraging',
     data: data.entries,
   },
   {
     title: 'Tracking & Awareness',
     icon: 'map-outline',
     id: 'survival_tracking_awareness',
-    category: categoryMap.TrackingAndAwareness,
+    category: 'Tracking & Awareness',
     data: data.entries,
   },
 ];
