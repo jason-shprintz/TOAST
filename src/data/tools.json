@@ -1,0 +1,647 @@
+{
+  "metadata": {
+    "name": "Tools and Knots Reference",
+    "version": "1.1.0",
+    "last_updated": "2025-12-18",
+    "disclaimer": "This information is general guidance on outdoor tools and knots and is not a substitute for professional training or supervision. Always use appropriate caution and judgment when working with sharp tools, heavy tools, ropes under tension, and improvised bushcraft tools.",
+    "categories": ["Tools (Home)", "Tools (Wilderness)", "Knots"],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
+  },
+  "entries": [
+    {
+      "id": "tools_fixed_blade_knife_basics",
+      "category": "Tools (Home)",
+      "title": "Fixed-Blade Knife (Basics)",
+      "summary": "Use and maintain a fixed-blade knife safely for cutting tasks, carving, and basic camp chores.",
+      "difficulty": "basic",
+      "tags": ["knife", "cutting", "carving", "sharpening", "safety"],
+      "steps": [
+        "Grip the knife handle firmly with your dominant hand, keeping your index finger away from the blade edge.",
+        "When cutting, position your body so the blade moves away from you, not toward your legs, torso, or other people.",
+        "For controlled cuts, brace the material against a solid surface such as a log or board instead of holding it in mid-air.",
+        "Use short, deliberate strokes rather than long, sweeping motions to maintain control.",
+        "When carving, anchor your elbows against your body or knees to reduce slips and keep cuts shallow.",
+        "Keep the knife sharp; a dull blade requires more force and is more likely to slip. If you have a sharpener, make regular light passes instead of infrequent heavy sharpening.",
+        "Clean the blade with a dry or slightly damp cloth after use and dry thoroughly to prevent rust.",
+        "Store the knife in its sheath when not in use, and secure it so it cannot fall or be stepped on.",
+        "Designate a safe \"knife zone\" around you; ensure others, especially children, are outside your arm’s reach plus blade length when cutting."
+      ],
+      "do_not": [
+        "Do not cut toward your body or between your legs.",
+        "Do not use the knife as a pry bar, screwdriver, or hammer; this can snap the blade.",
+        "Do not leave the knife on the ground, on unstable surfaces, or uncovered.",
+        "Do not hand the knife to someone blade-first; always offer the handle."
+      ],
+      "watch_for": [
+        "Cracks or looseness in the handle that may cause loss of control.",
+        "Rust, chips, or deep nicks on the blade edge.",
+        "Signs of fatigue such as shaking hands or poor focus; stop and rest before continuing."
+      ],
+      "notes": [
+        "A small, sharp knife used carefully is more effective and safer than a large dull one.",
+        "Establish a habit of sheathing the knife immediately after each use to avoid accidents."
+      ]
+    },
+    {
+      "id": "tools_multitool_usage",
+      "category": "Tools (Home)",
+      "title": "Multitool (Pliers, Blades, and Drivers)",
+      "summary": "Use a multitool for small repairs, cutting, and gear adjustments.",
+      "difficulty": "basic",
+      "tags": ["multitool", "pliers", "screwdriver", "knife", "repair"],
+      "steps": [
+        "Familiarize yourself with the multitool layout: locate pliers, blades, screwdrivers, file, and any saw or scissors.",
+        "Open only the tool you need and lock it in place if a locking mechanism is available.",
+        "Use the pliers for gripping hot objects, bending wire, and pulling tent stakes, keeping your fingers clear of the pivot.",
+        "Use screwdriver bits that best fit the screw head to avoid stripping; apply steady, straight pressure.",
+        "Use the small blade for light cutting tasks when a full knife is not needed, following knife safety practices.",
+        "After use, fold each tool back carefully, watching your fingers as you close the handles.",
+        "Wipe down the multitool after wet or dirty use and, if possible, apply a light oil to pivots.",
+        "Store the multitool in a belt pouch or designated pocket where it is accessible but secure."
+      ],
+      "do_not": [
+        "Do not use the multitool as a heavy hammer or wedge.",
+        "Do not twist or pry with small screwdrivers or knife blades.",
+        "Do not close the tool quickly without checking that fingers are clear of the hinges."
+      ],
+      "watch_for": [
+        "Loose pivots or tools that no longer lock firmly.",
+        "Rust or grit that makes opening and closing stiff or jerky.",
+        "Blades that are dull or chipped, which can slip during use."
+      ],
+      "notes": [
+        "A multitool is most valuable when kept on your person and maintained; treat it as part of your everyday kit.",
+        "Practice opening and closing the tools in daylight so you can operate them by feel in low light."
+      ]
+    },
+    {
+      "id": "tools_foldable_saw",
+      "category": "Tools (Home)",
+      "title": "Folding Saw for Firewood and Shelter",
+      "summary": "Safely use a folding saw to cut branches and small logs for firewood and shelter building.",
+      "difficulty": "basic",
+      "tags": ["saw", "wood", "firewood", "shelter", "cutting"],
+      "steps": [
+        "Open the saw fully and lock the blade in place before use.",
+        "Choose wood that is dry and sound; avoid cutting dead standing trees that may fall unpredictably.",
+        "Stabilize the branch or log on the ground or across another log so it cannot roll or bounce.",
+        "Saw with smooth, steady strokes, letting the teeth do the work instead of forcing the blade.",
+        "Keep your free hand away from the line of cut and avoid placing it on the far side of the branch where the blade may exit.",
+        "If the wood pinches the saw, adjust your angle or rotate the piece to relieve pressure.",
+        "After cutting, fold the blade back into the handle and lock it closed before moving.",
+        "Brush off sawdust and moisture from the blade and, if possible, apply a light oil to prevent rust."
+      ],
+      "do_not": [
+        "Do not use the saw to cut material thicker than it is designed to handle.",
+        "Do not twist or pry with the saw blade; it is designed for straight cutting only.",
+        "Do not walk with the saw open or carry it in your hand where it can snag on branches."
+      ],
+      "watch_for": [
+        "Folding mechanisms that do not lock fully, which can cause the blade to close unexpectedly.",
+        "Bent or missing teeth on the blade, which make cutting harder and more dangerous.",
+        "Branches under tension that may snap or spring when cut through."
+      ],
+      "notes": [
+        "A folding saw is often safer and more efficient than an axe for small to medium wood.",
+        "Cut wood to manageable lengths that you can carry safely without tripping."
+      ]
+    },
+    {
+      "id": "tools_hatchet_small_axe",
+      "category": "Tools (Home)",
+      "title": "Hatchet or Small Axe",
+      "summary": "Use a hatchet or small axe for splitting and chopping wood while minimizing risk.",
+      "difficulty": "intermediate",
+      "tags": ["axe", "hatchet", "chopping", "splitting", "wood"],
+      "steps": [
+        "Inspect the hatchet: ensure the head is firmly attached to the handle and the edge is free of large chips.",
+        "Choose a stable chopping surface such as a chopping block or large log; avoid bare ground and rocks.",
+        "Place the wood to be split upright on the chopping surface, away from your feet.",
+        "Stand with feet shoulder-width apart, slightly offset to the side of the swing so a miss will not hit your legs.",
+        "Grip the hatchet with both hands for most cuts, guiding with the top hand and powering with the rear hand.",
+        "Make controlled, moderate swings rather than full-power swings, especially with small pieces.",
+        "For small or awkward pieces, use a \"batoning\" method: place the hatchet edge on the wood and strike the back of the head with another piece of wood to drive it through.",
+        "Stop and re-position the work piece if it becomes unstable or begins to fall.",
+        "When finished, sheath the blade and place the tool in a fixed location where it will not be stepped on."
+      ],
+      "do_not": [
+        "Do not swing a hatchet when people or pets are close by or behind you.",
+        "Do not chop directly on rocks or metal, which can damage the edge and cause chips to fly.",
+        "Do not use a hatchet with a cracked handle or loose head."
+      ],
+      "watch_for": [
+        "Glancing blows where the blade slides off the wood at an angle.",
+        "Fatigue, which quickly leads to poor control when chopping.",
+        "Splinters or chips flying from the work area; consider eye protection if available."
+      ],
+      "notes": [
+        "In confined spaces or when tired, baton with a hatchet instead of swinging it to reduce risk.",
+        "Regularly touch up the edge; a sharp tool requires less force and is easier to control."
+      ]
+    },
+    {
+      "id": "tools_firestarter_ferro_rod",
+      "category": "Tools (Home)",
+      "title": "Ferro Rod Firestarter",
+      "summary": "Use a ferrocerium rod and striker to produce sparks and start a fire.",
+      "difficulty": "intermediate",
+      "tags": ["fire", "ferro rod", "firestarter", "sparks", "tinder"],
+      "steps": [
+        "Prepare tinder first: use very dry, fine material such as scraped bark, dry grass, cotton, or feathered wood shavings.",
+        "Form the tinder into a loose nest or small pile that can catch sparks and allow air flow.",
+        "Hold the ferro rod close to the tinder at a shallow angle, with the tip just touching or just above the tinder.",
+        "Grip the striker or the spine of a suitable knife in your other hand, with the sharp edge of the striker facing the rod.",
+        "Scrape firmly down the rod with the striker in short, controlled strokes, directing sparks into the center of the tinder.",
+        "Once the tinder begins to smolder or flame, gently lift or shield it from wind and add slightly larger dry material (twigs, pencil-sized sticks) gradually.",
+        "Continue to feed the new flame with progressively larger fuel until you have a stable fire."
+      ],
+      "do_not": [
+        "Do not aim sparks toward clothing, shelters, or gear that could accidentally catch fire.",
+        "Do not rely on a ferro rod without practicing beforehand; technique is important for success.",
+        "Do not scrape with the cutting edge of a knife if it will badly damage the blade; use the spine if possible."
+      ],
+      "watch_for": [
+        "Tinder that is damp or too tightly packed to catch sparks easily.",
+        "Strong wind that blows sparks away from your tinder pile.",
+        "Accidental ignition of nearby dry materials outside your fire area."
+      ],
+      "notes": [
+        "Scraping slowly and firmly often produces better sparks than fast, light strokes.",
+        "If possible, scrape some fine shavings from the ferro rod directly into the tinder to increase ignition chances."
+      ]
+    },
+    {
+      "id": "tools_basic_repair_kit",
+      "category": "Tools (Home)",
+      "title": "Basic Repair Kit (Cordage, Tape, and Needles)",
+      "summary": "Use a small repair kit to fix gear, clothing, and shelters in the field.",
+      "difficulty": "basic",
+      "tags": ["repair", "cordage", "duct tape", "needle", "thread"],
+      "steps": [
+        "Assemble a simple repair kit: strong thread, needles, safety pins, patches, duct tape, spare cord, and a small knife or scissors.",
+        "For torn fabric, align the edges and secure them with pins or temporary stitches before sewing permanently.",
+        "Use small, tight stitches when sewing to create a strong seam, especially on high-stress areas like straps or pack seams.",
+        "Reinforce worn tie-out points on tarps or shelters with patches and stitching or by adding loops of cord.",
+        "Use duct tape for quick fixes on holes, tears, and cracked items; smooth the tape firmly to improve adhesion.",
+        "Use spare cordage to replace broken zipper pulls, guy lines, and laces.",
+        "After each repair, test the item gently before trusting it under full load or stress."
+      ],
+      "do_not": [
+        "Do not ignore small damage; repair it early before it becomes a major failure.",
+        "Do not rely only on tape for high-stress repairs if sewing or lashing is possible.",
+        "Do not sew or tape over sharp edges or burrs without smoothing them first."
+      ],
+      "watch_for": [
+        "Seams or patches that begin to separate or fray quickly.",
+        "Tape that loosens in wet, cold, or very hot conditions.",
+        "Critical items such as backpacks, belts, or harnesses that show deep cracks or fiber breakage."
+      ],
+      "notes": [
+        "A small repair kit can greatly extend the life of your gear in long-term situations.",
+        "Plan to carry repair materials that match your most important gear (for example, webbing for packs, patches for inflatable items)."
+      ]
+    },
+
+    {
+      "id": "tools_wild_primitive_mallet",
+      "category": "Tools (Wilderness)",
+      "title": "Primitive Mallet (Wooden Hammer)",
+      "summary": "Carve a simple wooden mallet for pounding stakes, splitting kindling, and general camp use.",
+      "difficulty": "intermediate",
+      "tags": ["bushcraft", "mallet", "hammer", "wood", "tools"],
+      "steps": [
+        "Select a green (fresh) hardwood branch about forearm-thick with a solid, knot-free section for the head.",
+        "Cut a length roughly from your elbow to fingertips; this gives enough mass for a sturdy mallet.",
+        "Decide which end will be the head and which will be the handle.",
+        "Using a knife or small axe, carefully taper the handle end by shaving wood away until it fits comfortably in your grip.",
+        "Round off sharp corners on the head to reduce chipping and splintering during use.",
+        "If the wood is very heavy, you can slightly shorten the head to make the mallet easier to control.",
+        "Let the mallet dry slowly in the shade when not in use to harden; avoid placing it directly in fire or intense heat.",
+        "Use the mallet to pound stakes, drive wedges, and gently tap joints without damaging metal tools."
+      ],
+      "do_not": [
+        "Do not use rotten, cracked, or punky wood; it may shatter when struck.",
+        "Do not over-thin the handle; this creates a weak point that may snap.",
+        "Do not strike sharp metal edges with extreme force; this can chip both the mallet and the tool."
+      ],
+      "watch_for": [
+        "Cracks forming in the head or along the handle as the wood dries.",
+        "Chunks of wood breaking off if you hit hard knots or rocks.",
+        "The handle loosening or flexing too much during hard strikes."
+      ],
+      "notes": [
+        "Green hardwood is ideal because it is more resistant to splitting while you shape it.",
+        "A good mallet protects your knife spine and hatchet from damage when batoning or driving stakes."
+      ]
+    },
+    {
+      "id": "tools_wild_wooden_stakes_pegs",
+      "category": "Tools (Wilderness)",
+      "title": "Wooden Stakes and Pegs",
+      "summary": "Carve stakes and pegs from natural wood for shelters, traps, or gear tie-downs.",
+      "difficulty": "basic",
+      "tags": ["bushcraft", "stakes", "pegs", "shelter", "tie-down"],
+      "steps": [
+        "Choose straight, green sticks about finger-thick to thumb-thick and 15–25 cm (6–10 inches) long.",
+        "Cut the sticks to length with a saw or knife, ensuring at least one end is square and smooth.",
+        "On the ground-contact end, carve a simple point by shaving around the circumference, creating a sturdy tip for driving into soil.",
+        "On the opposite end, carve a shallow notch or groove a few centimeters from the top where cordage or guylines can sit without slipping.",
+        "Round off any sharp edges or splinters that could cut your cordage.",
+        "Drive the stake into the ground at a slight angle away from the direction of pull for better holding power.",
+        "Attach guylines or lashings into the carved notch to secure shelters, tarps, or gear."
+      ],
+      "do_not": [
+        "Do not use dead, crumbly wood; stakes made from it will snap or pull out easily.",
+        "Do not make the point too thin or needle-like; it will break when driven.",
+        "Do not carve stakes while holding them in mid-air; brace them against a log or the ground."
+      ],
+      "watch_for": [
+        "Stakes loosening in sandy or very wet soil; you may need longer or thicker stakes.",
+        "Splintering at the notch if you pull too hard or the wood is brittle.",
+        "Ropes cutting into soft wood under heavy tension."
+      ],
+      "notes": [
+        "Carry a few pre-made stakes, but know how to make more from available branches when needed.",
+        "Longer stakes and multiple angles improve holding in poor soil conditions."
+      ]
+    },
+    {
+      "id": "tools_wild_pot_hanger_and_tripod",
+      "category": "Tools (Wilderness)",
+      "title": "Pot Hanger and Cooking Tripod",
+      "summary": "Build a wooden tripod and pot hanger for cooking over a fire using found branches.",
+      "difficulty": "intermediate",
+      "tags": ["bushcraft", "tripod", "cooking", "fire", "hanger"],
+      "steps": [
+        "Cut three sturdy poles of similar length (about your height) from green wood for the tripod legs.",
+        "Lay the three poles side by side and tie them together about 20–30 cm (8–12 inches) from one end using a clove hitch followed by several tight wraps and fraps, forming a lashing.",
+        "Stand the poles upright and spread the bottoms out evenly to form a stable tripod over your fire area.",
+        "Select a shorter green branch with a natural fork or carve a notch near one end to hang a pot or kettle.",
+        "Carve a series of small notches along the hanger so you can adjust the pot height by moving where it rests on the tripod lashing or crossbar.",
+        "Suspend the hanger by hooking it over the tripod lashing or by tying a short cord from the tripod peak to the hanger.",
+        "Adjust the hanger length or notch position so the pot sits at the desired height above the coals, not in open flames."
+      ],
+      "do_not": [
+        "Do not build the tripod from dead, brittle wood that may snap under weight.",
+        "Do not place the tripod legs too close to the fire where they can burn through.",
+        "Do not overload the hanger with more weight than the poles can safely support."
+      ],
+      "watch_for": [
+        "Tripod legs shifting or sinking into soft ground; widen the stance or move to firmer soil.",
+        "Lashings loosening as wood dries or moves; retighten if needed.",
+        "Smoke and heat blowing toward shelters or gear; adjust tripod and fire placement."
+      ],
+      "notes": [
+        "A tripod and hanger keep cookware out of the flames and are more efficient for simmering than balancing pots on rocks.",
+        "You can adapt the same tripod frame for hanging clothes, drying meat, or creating a lantern stand."
+      ]
+    },
+    {
+      "id": "tools_wild_toggle_and_spreader",
+      "category": "Tools (Wilderness)",
+      "title": "Toggles and Spreaders",
+      "summary": "Carve small wooden toggles and spreader sticks to secure tarps, clothing, and gear using cordage loops.",
+      "difficulty": "basic",
+      "tags": ["bushcraft", "toggle", "spreader", "gear", "tarps"],
+      "steps": [
+        "Select small straight sticks about the thickness of your little finger and 5–10 cm (2–4 inches) long.",
+        "Trim off side branches and bark as needed to create smooth toggles that will not cut fabric.",
+        "Round the ends to prevent them from catching or tearing tarps and clothing.",
+        "To use as a toggle, thread the stick through two overlapping loops of cord or through a loop and a tarp grommet or buttonhole.",
+        "Rotate the toggle so it lies perpendicular to the opening; tension on the cord will hold it in place.",
+        "For spreaders, choose slightly longer sticks and place them inside a fabric tunnel or between two loops to distribute load across a wider area.",
+        "Use toggles to attach items quickly to a ridgeline, such as hanging gear, clothing, or lanterns."
+      ],
+      "do_not": [
+        "Do not leave sharp edges or splinters on toggles; they can damage fabric.",
+        "Do not rely on a single small toggle for very heavy loads.",
+        "Do not jam toggles into tiny eyelets where they may split the material."
+      ],
+      "watch_for": [
+        "Toggles cracking under high tension or when exposed to extreme cold.",
+        "Spreaders rolling out of position if not seated well in loops or channels.",
+        "Fabric stretching or tearing around attachment points."
+      ],
+      "notes": [
+        "Toggles are a simple way to connect and disconnect items without untying knots.",
+        "Carrying a few carved toggles adds flexibility to your tarp and gear setups."
+      ]
+    },
+    {
+      "id": "tools_wild_natural_cordage",
+      "category": "Tools (Wilderness)",
+      "title": "Natural Cordage (Plant Fibers and Bark)",
+      "summary": "Twist plant fibers and bark into serviceable cordage for lashing and light tie-downs.",
+      "difficulty": "advanced",
+      "tags": ["bushcraft", "cordage", "plant fibers", "rope", "lashing"],
+      "steps": [
+        "Identify plants with long, fibrous bark or leaves such as inner tree bark, tall grasses, or fibrous leaves (species will vary by region).",
+        "Strip thin, flexible fibers by peeling inner bark or splitting leaves into narrow strips.",
+        "Dry brittle fibers slightly, then re-dampen with a little water so they bend without breaking.",
+        "Group several fibers together to form a bundle about the thickness of a matchstick for light cordage.",
+        "Hold the bundle at the midpoint and twist one half tightly in one direction until it kinks, then fold it over the other half, allowing the twist to wrap them together (reverse-wrap technique).",
+        "Continue twisting and reverse-wrapping along the length to create an even, two-ply cord.",
+        "Add new fibers by overlapping fresh strands with the ends of old ones and twisting them into the existing cord.",
+        "Coil finished cordage loosely and allow it to dry; it will usually gain strength as it dries."
+      ],
+      "do_not": [
+        "Do not use unknown plant fibers against bare skin if you suspect they may cause irritation.",
+        "Do not rely on natural cordage alone for critical loads such as body weight unless you have tested its strength.",
+        "Do not twist fibers so tightly they snap; aim for firm, even tension."
+      ],
+      "watch_for": [
+        "Fibers that crack or crumble, indicating they are too dry or unsuitable.",
+        "Cordage unraveling where new fibers were added; re-twist and tighten weak sections.",
+        "Significant stretch under load, which can loosen lashings."
+      ],
+      "notes": [
+        "Natural cordage is excellent for lashings, light tie-downs, and repairs when commercial rope is limited.",
+        "Practice the reverse-wrap technique at home with string or yarn before relying on plant fibers in the field."
+      ]
+    },
+    {
+      "id": "tools_wild_snow_or_brush_sandals",
+      "category": "Tools (Wilderness)",
+      "title": "Improvised Snow or Brush Sandals",
+      "summary": "Create simple sandals from branches and cordage to increase footprint and reduce sinking in snow, mud, or loose sand.",
+      "difficulty": "advanced",
+      "tags": ["bushcraft", "snowshoes", "sandals", "mobility", "survival"],
+      "steps": [
+        "Gather flexible branches or green saplings about pencil to finger thickness and as long as your foot or slightly longer.",
+        "Lay several branches side by side to form a flat platform wider than your boot or foot.",
+        "Cross smaller twigs or fibers perpendicular to the main branches and lash them in place using cordage or natural fibers, forming a simple lattice.",
+        "Create at least two lashing points across the platform where straps will secure your foot or boot.",
+        "Use cordage, webbing, or strips of cloth to form loops or straps that hold your boot firmly to the platform, similar to a sandal.",
+        "Test the fit and adjust lashings so your foot stays centered and does not slide off the sides.",
+        "Walk slowly, lifting your feet a bit higher than usual and placing them flat to avoid catching the front edge."
+      ],
+      "do_not": [
+        "Do not make the platforms excessively large; very wide or long sandals are hard to walk in and easy to trip over.",
+        "Do not secure your feet so tightly that circulation is restricted.",
+        "Do not rely on flimsy branches or weak lashings in deep, crusty snow."
+      ],
+      "watch_for": [
+        "Lashings loosening as you walk; retighten regularly.",
+        "Branches cracking or breaking under your weight.",
+        "Excessive fatigue in legs and hips due to altered walking pattern."
+      ],
+      "notes": [
+        "These improvised sandals are a last-resort option to improve flotation in soft terrain, not a replacement for real snowshoes.",
+        "They can also be used to protect bare or lightly shod feet from sharp rocks and thorns in emergency scenarios."
+      ]
+    },
+
+    {
+      "id": "knots_overhand_and_stopper",
+      "category": "Knots",
+      "title": "Overhand and Stopper Knots",
+      "summary": "Tie a simple overhand knot to create a stopper in a rope or cord.",
+      "difficulty": "basic",
+      "tags": ["knot", "overhand", "stopper", "rope"],
+      "steps": [
+        "Hold the rope and form a small loop near the end by crossing the working end over the standing part.",
+        "Pass the working end of the rope through the loop you just created.",
+        "Pull both the standing part and working end to snug the knot tight.",
+        "Position the overhand knot close to the rope end if you want a stopper to prevent fraying or slipping through an opening.",
+        "For a bulkier stopper, tie a second overhand knot on top of the first or use multiple turns before passing the end through."
+      ],
+      "do_not": [
+        "Do not rely on a single small overhand knot as the only safety backup on critical life-support systems.",
+        "Do not leave very short tails; leave enough rope beyond the knot to avoid it slipping under load."
+      ],
+      "watch_for": [
+        "Knots that are not snugged down fully and may change shape under load.",
+        "Ends that are too short, especially on slippery or synthetic cordage."
+      ],
+      "notes": [
+        "The overhand knot is the foundation of many other knots; practice until you can tie it by feel.",
+        "Use stopper knots near the ends of ropes used for tie-downs to prevent knots from pulling through under tension."
+      ]
+    },
+    {
+      "id": "knots_square_reef",
+      "category": "Knots",
+      "title": "Square (Reef) Knot",
+      "summary": "Join two cords of similar size for non-critical uses such as bundling and bandages.",
+      "difficulty": "basic",
+      "tags": ["knot", "square knot", "reef knot", "joining"],
+      "steps": [
+        "Hold one rope end in each hand.",
+        "Cross the right end over the left end and tie a simple overhand: right over left, then under and pull snug.",
+        "Now cross the left end over the right end and tie another overhand: left over right, then under and pull snug.",
+        "Dress the knot by pulling all four strands so the two loops lie flat and symmetrical.",
+        "Leave adequate tail on both ends to prevent the knot from slipping when lightly loaded."
+      ],
+      "do_not": [
+        "Do not use a square knot for life safety, climbing, or where failure would be dangerous.",
+        "Do not use it to join ropes of very different thickness or very slippery material."
+      ],
+      "watch_for": [
+        "A \"granny knot\" mistake (right over left, right over left) which is less secure.",
+        "Knots that capsize or roll when pulled from alternating directions."
+      ],
+      "notes": [
+        "Remember the phrase \"right over left, left over right\" to avoid tying a granny knot.",
+        "Use the square knot for bandages, bundles, and tying packages where loads are low and steady."
+      ]
+    },
+    {
+      "id": "knots_sheet_bend",
+      "category": "Knots",
+      "title": "Sheet Bend",
+      "summary": "Join two ropes, especially of different diameters or stiffness.",
+      "difficulty": "basic",
+      "tags": ["knot", "sheet bend", "joining", "rope"],
+      "steps": [
+        "Form a U-shaped bight in the thicker or less flexible rope and hold it in one hand.",
+        "Pass the working end of the thinner rope up through the bight from below.",
+        "Wrap the working end around behind both legs of the bight.",
+        "Bring the working end back across the front of the bight and tuck it under itself, between the bight and its own standing part.",
+        "Pull all parts tight and dress the knot so the working end of the thinner rope lies along the bight, not crossing back over it."
+      ],
+      "do_not": [
+        "Do not use a loose sheet bend; always snug and dress it before loading.",
+        "Do not rely on a single sheet bend under heavy or shock load; consider a double sheet bend."
+      ],
+      "watch_for": [
+        "Working end slipping if there is very little tail or if the cord is very slick.",
+        "Uneven loading where one rope is much tighter than the other."
+      ],
+      "notes": [
+        "For extra security, make a double sheet bend by wrapping the working end twice around the bight before tucking.",
+        "Sheet bends are useful when extending ropes or tying to loops in tarps and nets."
+      ]
+    },
+    {
+      "id": "knots_bowline_fixed_loop",
+      "category": "Knots",
+      "title": "Bowline (Fixed Loop)",
+      "summary": "Tie a fixed loop that will not slip, useful for securing lines to objects or around the body.",
+      "difficulty": "intermediate",
+      "tags": ["knot", "bowline", "loop", "fixed", "rope"],
+      "steps": [
+        "Form a small loop in the standing part of the rope, with the standing part crossing over the top of the loop.",
+        "Pass the working end up through this loop from below.",
+        "Wrap the working end around the back of the standing part of the rope.",
+        "Bring the working end back down and pass it through the original loop, this time from above.",
+        "Hold the working end and the part of the loop while pulling on the standing part to snug and dress the knot."
+      ],
+      "do_not": [
+        "Do not use a bowline with a very short tail; leave a generous end, especially on slippery rope.",
+        "Do not rely on an unsecured bowline in situations with repeated loading and unloading unless you add a backup stopper knot."
+      ],
+      "watch_for": [
+        "The loop changing size if the knot is not fully dressed.",
+        "The tail working loose over time, especially in synthetic ropes with little friction."
+      ],
+      "notes": [
+        "A simple backup is to tie an overhand stopper knot in the tail around the loop part.",
+        "The bowline is easy to untie after loading, making it useful for temporary anchor points and around-the-waist loops in non-life-critical situations."
+      ]
+    },
+    {
+      "id": "knots_round_turn_two_half_hitches",
+      "category": "Knots",
+      "title": "Round Turn and Two Half Hitches",
+      "summary": "Secure a rope to a post, tree, or ring with a stable, easily adjustable knot.",
+      "difficulty": "basic",
+      "tags": ["knot", "hitch", "post", "anchor", "rope"],
+      "steps": [
+        "Pass the rope around the post or object twice, creating a full round turn plus another wrap if desired for friction.",
+        "Cross the working end over the standing part and wrap it around the post, forming a half hitch, then tighten.",
+        "Wrap the working end around the post again in the same direction, forming a second half hitch stacked next to the first.",
+        "Pull on the standing part to snug the round turn and both half hitches against the post.",
+        "Adjust the tension by sliding the knot along the post if necessary before fully tightening."
+      ],
+      "do_not": [
+        "Do not use only one half hitch; it is more likely to slip.",
+        "Do not tie the hitches loosely; dress them snugly against the post."
+      ],
+      "watch_for": [
+        "Movement of the knot under varying load if it is not properly snugged.",
+        "Rope cutting into soft wood or bark under high tension."
+      ],
+      "notes": [
+        "This knot is useful for tying off boats, hanging items from trees, or tensioning light lines.",
+        "The round turn provides extra friction and reduces strain on the hitches."
+      ]
+    },
+    {
+      "id": "knots_clove_hitch",
+      "category": "Knots",
+      "title": "Clove Hitch",
+      "summary": "Attach a rope quickly to a post or tree as a starting point for lashings or temporary anchors.",
+      "difficulty": "basic",
+      "tags": ["knot", "clove hitch", "hitch", "lashing"],
+      "steps": [
+        "Wrap the rope once around the post, crossing the working end over the standing part.",
+        "Continue around the post a second time, bringing the working end across the standing part again.",
+        "Tuck the working end under the second wrap where it crosses the standing part.",
+        "Pull both the standing part and working end to snug the wraps together.",
+        "Slide the hitch along the post to adjust position if needed before fully tightening."
+      ],
+      "do_not": [
+        "Do not rely on a clove hitch alone for critical loads or where the rope may alternately slacken and tighten; it can slip.",
+        "Do not tie with very short wraps or minimal tail."
+      ],
+      "watch_for": [
+        "The hitch rolling along the post if the load direction changes.",
+        "Slipping on smooth or narrow posts."
+      ],
+      "notes": [
+        "Clove hitches are ideal as starting or finishing knots in lashings and for temporary tie-offs.",
+        "Adding extra half hitches or a backup knot increases security for longer-term use."
+      ]
+    },
+    {
+      "id": "knots_taut_line_hitch",
+      "category": "Knots",
+      "title": "Taut-Line Hitch (Adjustable Guyline)",
+      "summary": "Create an adjustable loop that can slide to tighten or loosen tent and tarp guylines.",
+      "difficulty": "intermediate",
+      "tags": ["knot", "taut-line hitch", "adjustable", "guyline", "tarp"],
+      "steps": [
+        "Wrap the rope around a stake or anchor and bring the working end back toward the standing part.",
+        "Wrap the working end around the standing part inside the loop, making one full turn and pulling it snug.",
+        "Make a second wrap in the same direction around the standing part, again inside the loop, close to the first wrap.",
+        "Then wrap the working end once around the standing part on the outside of the loop, closer to the stake, and tuck it through to form a half hitch.",
+        "Dress the knot so both inner wraps and the outer half hitch are neat and tight.",
+        "Slide the knot along the standing part to tighten or loosen the line; tension should hold the knot in place."
+      ],
+      "do_not": [
+        "Do not leave the knot loosely dressed; a messy knot will slip.",
+        "Do not rely on the taut-line hitch in very slick cord where friction is low unless you test it first."
+      ],
+      "watch_for": [
+        "The knot creeping under strong wind loads on smooth cord.",
+        "Abrasion where the rope runs over sharp edges when tightened."
+      ],
+      "notes": [
+        "This knot is very useful for adjusting tent and tarp tension without retying.",
+        "If it slips, add an extra wrap on the standing part or switch to a different adjustable system."
+      ]
+    },
+    {
+      "id": "knots_truckers_hitch",
+      "category": "Knots",
+      "title": "Trucker’s Hitch",
+      "summary": "Create a mechanical advantage system in the rope to tighten loads and tarps.",
+      "difficulty": "advanced",
+      "tags": ["knot", "trucker's hitch", "tension", "tie-down"],
+      "steps": [
+        "Anchor one end of the rope to a fixed point using a secure knot such as a round turn and two half hitches.",
+        "Along the standing part of the rope, about halfway to the load, form a small loop by twisting a bight of rope and pulling a section of rope through to create a fixed loop (slip or figure-eight loop).",
+        "Pass the free working end of the rope around the second anchor point (such as a tree, stake, or tie-down point).",
+        "Run the working end back through the loop you created in the standing part, forming a pulley-like system.",
+        "Pull the working end to tension the rope; the loop acts as a pulley, giving you extra mechanical advantage.",
+        "When tight enough, secure the system by tying two or more half hitches around the standing part with the working end.",
+        "Dress all parts of the knot and verify that the tension holds before relying on it."
+      ],
+      "do_not": [
+        "Do not stand directly in line with a heavily tensioned rope that could snap back if something fails.",
+        "Do not use weak anchor points that may break under increased tension.",
+        "Do not leave very short tails on the finishing hitches."
+      ],
+      "watch_for": [
+        "Cords biting into soft anchors or edges and beginning to cut or fray.",
+        "Knots that creep or loosen under vibration or changing loads.",
+        "Signs of damage on the rope due to repeated high-tension use."
+      ],
+      "notes": [
+        "The trucker’s hitch is excellent for securing loads on vehicles, tightening tarps, and making ridgelines taut.",
+        "Practice the loop and finish hitches in low-stress situations before using this knot with critical loads."
+      ]
+    },
+    {
+      "id": "knots_prusik_friction_hitch",
+      "category": "Knots",
+      "title": "Prusik Knot (Friction Hitch)",
+      "summary": "Tie a friction hitch that grips a larger rope when loaded and slides when unloaded.",
+      "difficulty": "advanced",
+      "tags": ["knot", "prusik", "friction hitch", "loop"],
+      "steps": [
+        "Create a closed loop of cord by tying the ends together securely (commonly with a double fisherman’s knot).",
+        "Place the loop behind the main rope so that both strands of the loop hang down evenly.",
+        "Bring the lower part of the loop up and pass it through itself over the front of the main rope, making a wrap.",
+        "Repeat this wrap two or three times, stacking the wraps neatly side by side on the main rope.",
+        "After the final wrap, pull the loop down so the wraps tighten around the main rope.",
+        "Dress the knot so the wraps are neat and gripping evenly, with the loop hanging down for you to hold.",
+        "Test the Prusik by pulling on the loop to make sure it grips under load and slides when you push it by hand."
+      ],
+      "do_not": [
+        "Do not use cord that is the same or larger diameter than the main rope; friction will be poor.",
+        "Do not rely on a poorly dressed Prusik with sloppy or overlapping wraps.",
+        "Do not load the Prusik suddenly without testing and backup if used in critical applications."
+      ],
+      "watch_for": [
+        "Glazing or damage to the cord from heat created by rapid sliding under load.",
+        "Difficulty sliding the knot if it is over-tightened or muddy.",
+        "Uneven wraps that twist or roll when loaded."
+      ],
+      "notes": [
+        "The Prusik is useful for hauling systems, improvised backups, and attaching loops to ridgelines.",
+        "Use smaller-diameter cord (often about two-thirds the diameter of the main rope) for better grip."
+      ]
+    }
+  ]
+}

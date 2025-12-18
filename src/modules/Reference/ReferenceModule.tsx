@@ -32,7 +32,7 @@ const referenceTools: ToolType[] = [
   },
   {
     name: 'Tools & Knots',
-    screen: 'ComingSoon',
+    screen: 'ToolsAndKnots',
     icon: 'hammer-outline',
     id: 'ref_tools_knots',
   },
