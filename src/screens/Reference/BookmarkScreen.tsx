@@ -16,6 +16,15 @@ import {
 } from '../../stores/BookmarksStore';
 import ReferenceEntryType from '../../types/data-type';
 
+// Create a Map for O(1) lookup performance instead of O(n) for each find operation
+const entryMap = new Map<string, ReferenceEntryType>(
+  [
+    ...healthData.entries,
+    ...survivalData.entries,
+    ...weatherData.entries,
+  ].map(entry => [entry.id, entry])
+);
+
 /**
  * Displays a list of bookmarked health entries for the user.
  *
@@ -43,10 +52,7 @@ export default function BookmarkScreen(): JSX.Element {
   }, [navigation]);
 
   const handleOpen = (item: BookmarkItem) => {
-    const entry: ReferenceEntryType | undefined =
-      healthData.entries.find(e => e.id === item.id) ??
-      survivalData.entries.find(e => e.id === item.id) ??
-      weatherData.entries.find(e => e.id === item.id);
+    const entry = entryMap.get(item.id);
 
     if (!entry) {
       console.warn('Bookmark entry not found for id:', item.id);
