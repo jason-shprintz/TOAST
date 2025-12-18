@@ -148,7 +148,7 @@ Offline survival and emergency knowledge packs.
   - Cloud types, storm indicators, Beaufort scale, natural navigation techniques
 
 - **Tool & Knot Guides**  
-  - Rope strengths, tool usage, knot tutorials with step-by-step visuals
+  - ~~Rope strengths, tool usage, knot tutorials with step-by-step visuals~~
 
 - **Emergency Protocols**  
   - Signaling aircraft, SAR procedures, evacuation guidance, lost-person rules

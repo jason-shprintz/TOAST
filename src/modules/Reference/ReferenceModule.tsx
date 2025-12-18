@@ -38,7 +38,7 @@ const referenceTools: ToolType[] = [
   },
   {
     name: 'Emergency',
-    screen: 'ComingSoon',
+    screen: 'Emergency',
     icon: 'warning-outline',
     id: 'ref_emergency',
   },
