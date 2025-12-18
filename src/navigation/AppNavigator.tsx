@@ -18,6 +18,7 @@ import HealthScreen from '../screens/Reference/HealthScreen';
 import CategoryScreen from '../screens/Reference/Shared/CategoryScreen';
 import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
+import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
 
 const Stack = createNativeStackNavigator();
@@ -74,6 +75,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Health" component={HealthScreen} />
         <Stack.Screen name="Survival" component={SurvivalScreen} />
         <Stack.Screen name="Weather" component={WeatherScreen} />
+        <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
