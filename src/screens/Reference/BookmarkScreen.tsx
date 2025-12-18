@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
@@ -16,15 +16,6 @@ import {
 } from '../../stores/BookmarksStore';
 import ReferenceEntryType from '../../types/data-type';
 
-// Create a Map for O(1) lookup performance instead of O(n) for each find operation
-const entryMap = new Map<string, ReferenceEntryType>(
-  [
-    ...healthData.entries,
-    ...survivalData.entries,
-    ...weatherData.entries,
-  ].map(entry => [entry.id, entry])
-);
-
 /**
  * Displays a list of bookmarked health entries for the user.
  *
@@ -39,6 +30,20 @@ const entryMap = new Map<string, ReferenceEntryType>(
 export default function BookmarkScreen(): JSX.Element {
   const navigation = useNavigation<any>();
   const [items, setItems] = useState<BookmarkItem[]>([]);
+
+  // Create a Map for O(1) lookup performance instead of O(n) for each find operation
+  // Using useMemo to lazily initialize only when component mounts
+  const entryMap = useMemo(
+    () =>
+      new Map<string, ReferenceEntryType>(
+        [
+          ...healthData.entries,
+          ...survivalData.entries,
+          ...weatherData.entries,
+        ].map(entry => [entry.id, entry])
+      ),
+    []
+  );
 
   const load = async () => {
     const list = await getBookmarks();
