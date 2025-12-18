@@ -46,13 +46,13 @@ export default function BookmarkScreen(): JSX.Element {
       const uniqueIds = new Set(ids);
       if (ids.length !== uniqueIds.size) {
         console.error(
-          'Duplicate entry IDs detected across data sources. This may cause entries to be overwritten.'
+          'Duplicate entry IDs detected across data sources. This may cause entries to be overwritten.',
         );
       }
     }
 
     return new Map<string, ReferenceEntryType>(
-      allEntries.map(entry => [entry.id, entry])
+      allEntries.map(entry => [entry.id, entry]),
     );
   }, []);
 
@@ -82,7 +82,8 @@ export default function BookmarkScreen(): JSX.Element {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Bookmarks</SectionHeader>
-      {/* DEV ONLY */}
+
+      {/* DEV ONLY - Clear all bookmarks */}
       {__DEV__ && (
         <Text
           onPress={async () => {
@@ -95,6 +96,7 @@ export default function BookmarkScreen(): JSX.Element {
         </Text>
       )}
       {/* END DEV ONLY */}
+
       <ScrollView contentContainerStyle={styles.container}>
         {items.length === 0 && (
           <Text style={styles.helperText}>No bookmarks yet.</Text>
