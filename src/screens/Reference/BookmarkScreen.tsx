@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
@@ -31,6 +31,31 @@ export default function BookmarkScreen(): JSX.Element {
   const navigation = useNavigation<any>();
   const [items, setItems] = useState<BookmarkItem[]>([]);
 
+  // Create a Map for O(1) lookup performance instead of O(n) for each find operation
+  // Using useMemo to lazily initialize only when component mounts
+  const entryMap = useMemo(() => {
+    const allEntries = [
+      ...healthData.entries,
+      ...survivalData.entries,
+      ...weatherData.entries,
+    ];
+
+    // Development-time check for duplicate IDs
+    if (__DEV__) {
+      const ids = allEntries.map(entry => entry.id);
+      const uniqueIds = new Set(ids);
+      if (ids.length !== uniqueIds.size) {
+        console.error(
+          'Duplicate entry IDs detected across data sources. This may cause entries to be overwritten.'
+        );
+      }
+    }
+
+    return new Map<string, ReferenceEntryType>(
+      allEntries.map(entry => [entry.id, entry])
+    );
+  }, []);
+
   const load = async () => {
     const list = await getBookmarks();
     setItems(list);
@@ -43,10 +68,7 @@ export default function BookmarkScreen(): JSX.Element {
   }, [navigation]);
 
   const handleOpen = (item: BookmarkItem) => {
-    const entry: ReferenceEntryType | undefined =
-      healthData.entries.find(e => e.id === item.id) ??
-      survivalData.entries.find(e => e.id === item.id) ??
-      weatherData.entries.find(e => e.id === item.id);
+    const entry = entryMap.get(item.id);
 
     if (!entry) {
       console.warn('Bookmark entry not found for id:', item.id);
