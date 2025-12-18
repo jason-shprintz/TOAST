@@ -33,17 +33,28 @@ export default function BookmarkScreen(): JSX.Element {
 
   // Create a Map for O(1) lookup performance instead of O(n) for each find operation
   // Using useMemo to lazily initialize only when component mounts
-  const entryMap = useMemo(
-    () =>
-      new Map<string, ReferenceEntryType>(
-        [
-          ...healthData.entries,
-          ...survivalData.entries,
-          ...weatherData.entries,
-        ].map(entry => [entry.id, entry])
-      ),
-    []
-  );
+  const entryMap = useMemo(() => {
+    const allEntries = [
+      ...healthData.entries,
+      ...survivalData.entries,
+      ...weatherData.entries,
+    ];
+
+    // Development-time check for duplicate IDs
+    if (__DEV__) {
+      const ids = allEntries.map(entry => entry.id);
+      const uniqueIds = new Set(ids);
+      if (ids.length !== uniqueIds.size) {
+        console.error(
+          'Duplicate entry IDs detected across data sources. This may cause entries to be overwritten.'
+        );
+      }
+    }
+
+    return new Map<string, ReferenceEntryType>(
+      allEntries.map(entry => [entry.id, entry])
+    );
+  }, []);
 
   const load = async () => {
     const list = await getBookmarks();
