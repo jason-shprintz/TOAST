@@ -44,7 +44,7 @@ const toolsAndKnotsCategories: CategoryType[] = [
  *
  * @returns The Tools and Knots screen JSX layout.
  */
-export default function ToolsAndKnots(): JSX.Element {
+export default function ToolsAndKnotsScreen(): JSX.Element {
   return (
     <ScreenContainer>
       <LogoHeader />
