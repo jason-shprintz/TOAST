@@ -6,8 +6,10 @@ import Grid from '../../components/Grid';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import emergencyData from '../../data/emergency.json';
 import healthData from '../../data/health.json';
 import survivalData from '../../data/survival.json';
+import toolsData from '../../data/tools.json';
 import weatherData from '../../data/weather.json';
 import {
   getBookmarks,
@@ -35,8 +37,10 @@ export default function BookmarkScreen(): JSX.Element {
   // Using useMemo to lazily initialize only when component mounts
   const entryMap = useMemo(() => {
     const allEntries = [
+      ...emergencyData.entries,
       ...healthData.entries,
       ...survivalData.entries,
+      ...toolsData.entries,
       ...weatherData.entries,
     ];
 
