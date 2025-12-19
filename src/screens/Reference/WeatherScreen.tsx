@@ -62,7 +62,7 @@ const weatherCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered WeatherScreen component.
  */
 export default function WeatherScreen(): JSX.Element {
-  const disclaimer: string = data.metadata.disclaimer;
+  const disclaimer: string = data?.metadata?.disclaimer ?? '';
 
   return (
     <ScreenContainer>
