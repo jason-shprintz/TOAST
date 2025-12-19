@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    width: 300,
+    maxWidth: 300,
     textAlign: 'center',
     alignSelf: 'center',
     marginVertical: 4,
