@@ -54,7 +54,7 @@ const healthCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered HealthScreen component.
  */
 export default function HealthScreen(): JSX.Element {
-  const disclaimer: string = data.metadata.disclaimer;
+  const disclaimer: string = data?.metadata?.disclaimer ?? '';
 
   return (
     <ScreenContainer>
