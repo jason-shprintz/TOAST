@@ -402,7 +402,7 @@
     },
     {
       "id": "navigation_movement_rules_if_must_move",
-      "category": "Immediate Action",
+      "category": "Navigation & Movement",
       "title": "Movement Rules If You Must Travel While Lost",
       "summary": "Guidance to reduce risk while moving in uncertain terrain.",
       "difficulty": "intermediate",
@@ -428,7 +428,7 @@
     },
     {
       "id": "water_emergency_hydration_priority",
-      "category": "Immediate Action",
+      "category": "Water & Food (Emergency)",
       "title": "Emergency Water",
       "summary": "How to prioritize hydration and reduce dehydration risk while waiting or traveling.",
       "difficulty": "basic",
@@ -453,7 +453,7 @@
     },
     {
       "id": "fire_heat_management_safety",
-      "category": "Immediate Action",
+      "category": "Fire & Heat",
       "title": "Fire Use in Emergencies",
       "summary": "Use fire for warmth and signaling when it can be done safely.",
       "difficulty": "intermediate",
@@ -480,7 +480,7 @@
     },
     {
       "id": "wildlife_hazards_general_emergency_behavior",
-      "category": "Immediate Action",
+      "category": "Wildlife & Environmental Hazards",
       "title": "Wildlife and Environmental Hazards",
       "summary": "General guidance to reduce risk from common hazards while lost or awaiting rescue.",
       "difficulty": "basic",
@@ -507,7 +507,7 @@
     },
     {
       "id": "improvised_tools_signal_panels_and_flags",
-      "category": "Immediate Action",
+      "category": "Improvised Tools",
       "title": "Improvised Signal Panels and Flags",
       "summary": "Build highly visible signals using what you have and what you can gather.",
       "difficulty": "basic",
