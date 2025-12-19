@@ -60,7 +60,7 @@ const survivalCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered Survival Guide screen component.
  */
 export default function SurvivalScreen(): JSX.Element {
-  const disclaimer: string = data.metadata.disclaimer;
+  const disclaimer: string = data.metadata?.disclaimer ?? '';
 
   return (
     <ScreenContainer>
