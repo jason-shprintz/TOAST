@@ -39,7 +39,7 @@ export default function CategoryScreen(): JSX.Element {
         {entries.length === 0 && (
           <Text style={styles.helperText}>No topics found.</Text>
         )}
-        <SectionSubHeader>{disclaimer}</SectionSubHeader>
+        {disclaimer ? <SectionSubHeader>{disclaimer}</SectionSubHeader> : null}
         <Grid>
           {entries
             .slice()
