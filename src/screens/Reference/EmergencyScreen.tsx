@@ -3,6 +3,7 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/emergency.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -69,10 +70,13 @@ const emergencyCategories: CategoryType[] = [
  * @returns A React element containing the Emergency screen layout.
  */
 export default function EmergencyScreen(): JSX.Element {
+  const disclaimer: string = data.metadata.disclaimer;
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Emergency</SectionHeader>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <CategoryList categories={emergencyCategories} />
     </ScreenContainer>
   );

@@ -3,6 +3,7 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/health.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -54,10 +55,13 @@ const healthCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered HealthScreen component.
  */
 export default function HealthScreen(): JSX.Element {
+  const disclaimer: string = data.metadata.disclaimer;
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Health</SectionHeader>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <CategoryList categories={healthCategories} />
     </ScreenContainer>
   );

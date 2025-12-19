@@ -3,6 +3,7 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/weather.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -62,10 +63,13 @@ const weatherCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered WeatherScreen component.
  */
 export default function WeatherScreen(): JSX.Element {
+  const disclaimer: string = data.metadata.disclaimer;
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Weather</SectionHeader>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <CategoryList categories={weatherCategories} />
     </ScreenContainer>
   );

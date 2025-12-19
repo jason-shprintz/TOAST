@@ -3,6 +3,7 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/tools.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -45,10 +46,13 @@ const toolsAndKnotsCategories: CategoryType[] = [
  * @returns The Tools and Knots screen JSX layout.
  */
 export default function ToolsAndKnotsScreen(): JSX.Element {
+  const disclaimer: string = data.metadata.disclaimer;
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Tools and Knots</SectionHeader>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <CategoryList categories={toolsAndKnotsCategories} />
     </ScreenContainer>
   );

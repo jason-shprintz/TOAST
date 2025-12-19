@@ -3,6 +3,7 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/survival.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -60,10 +61,13 @@ const survivalCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered Survival Guide screen component.
  */
 export default function SurvivalScreen(): JSX.Element {
+  const disclaimer: string = data.metadata.disclaimer;
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Survival Guide</SectionHeader>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <CategoryList categories={survivalCategories} />
     </ScreenContainer>
   );
