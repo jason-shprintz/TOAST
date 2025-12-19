@@ -27,7 +27,9 @@ export default function CategoryList({
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <SectionSubHeader>{disclaimer}</SectionSubHeader>
+      {disclaimer.trim().length > 0 && (
+        <SectionSubHeader>{disclaimer}</SectionSubHeader>
+      )}
       <Grid>
         {categories.map(category => {
           return (
