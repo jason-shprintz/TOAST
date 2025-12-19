@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../theme';
 
 type Props = {
@@ -16,12 +17,23 @@ export default function ScreenContainer({
   style,
   children,
 }: PropsWithChildren<Props>) {
-  return <View style={[styles.base, style]}>{children}</View>;
+  return (
+    <View style={[styles.base, style]}>
+      <LinearGradient
+        colors={COLORS.BACKGROUND_GRADIENT}
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
+      {children}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   base: {
     flex: 1,
+    alignSelf: 'stretch',
     backgroundColor: COLORS.BACKGROUND,
     paddingTop: 60,
     paddingHorizontal: 20,

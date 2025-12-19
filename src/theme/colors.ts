@@ -1,10 +1,19 @@
 const COLORS = {
   TOAST_BROWN: '#C09A6B',
+  TOAST_BROWN_GRADIENT: ['#ecb16eff', '#C09A6B'],
   PRIMARY_DARK: '#1F1F1F',
   PRIMARY_LIGHT: '#F2EDE4',
   ACCENT: '#FF8B43',
   SECONDARY_ACCENT: '#8DAA9D',
   BACKGROUND: '#D9C8B0',
+  BACKGROUND_GRADIENT: [
+    '#C09A6B',
+    '#D9C8B0',
+    '#DBC6A7',
+    '#F2EDE4',
+    '#D9C8B0',
+    '#C09A6B',
+  ],
 };
 
 export default COLORS;
