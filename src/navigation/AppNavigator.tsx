@@ -14,6 +14,7 @@ import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
+import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
 import CategoryScreen from '../screens/Reference/Shared/CategoryScreen';
 import EntryScreen from '../screens/Reference/Shared/EntryScreen';
@@ -76,6 +77,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Survival" component={SurvivalScreen} />
         <Stack.Screen name="Weather" component={WeatherScreen} />
         <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
+        <Stack.Screen name="Emergency" component={EmergencyScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

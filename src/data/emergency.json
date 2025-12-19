@@ -1,0 +1,527 @@
+{
+  "metadata": {
+    "name": "Wilderness Emergency Procedures Reference",
+    "version": "1.0.0",
+    "last_updated": "2025-12-18",
+    "disclaimer": "This information is general wilderness emergency guidance and is not a substitute for professional training or real-time medical or rescue advice. Conditions vary widely; use judgment, prioritize safety, and seek professional help as soon as it becomes available. If you can contact emergency services, do so.",
+    "categories": [
+      "Immediate Action",
+      "Lost Person",
+      "Signaling",
+      "Search and Rescue",
+      "Evacuation",
+      "Shelter & Survival Priorities"
+    ],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
+  },
+  "entries": [
+    {
+      "id": "immediate_action_stop_assess_plan",
+      "category": "Immediate Action",
+      "title": "STOP: Stop, Think, Observe, Plan",
+      "summary": "A quick framework to prevent panic-driven mistakes and stabilize the situation.",
+      "difficulty": "basic",
+      "tags": ["stop", "panic", "decision making", "safety", "priorities"],
+      "steps": [
+        "Stop moving. Sit down if safe. Take 10 slow breaths to reduce panic and improve judgment.",
+        "Check immediate dangers: falling rocks, exposure, fire, unstable ice, flash flood zones, hostile wildlife, unsafe terrain.",
+        "Assess injuries: you and companions. Control bleeding, stabilize major injuries, prevent shock.",
+        "Observe: time of day, weather trend, temperature, wind, daylight remaining, water sources, terrain features, landmarks.",
+        "Plan: choose the safest near-term objective (warmth, shelter, water, signaling, staying put).",
+        "Assign tasks if in a group: shelter, water collection, signaling setup, fire prep, morale checks.",
+        "Re-check frequently: conditions change; update plan every 30–60 minutes or when something changes."
+      ],
+      "do_not": [
+        "Do not rush downhill or 'just keep walking' without a plan; this often worsens outcomes.",
+        "Do not split up unless there is a compelling reason (e.g., one person must get help and route is certain)."
+      ],
+      "watch_for": [
+        "Early hypothermia or heat illness reducing decision-making.",
+        "Escalating weather (wind shift, darkening clouds, thunder)."
+      ],
+      "notes": [
+        "In many wilderness incidents, stopping early prevents compounding errors.",
+        "A clear plan beats a fast plan."
+      ]
+    },
+    {
+      "id": "lost_person_stay_put_rule",
+      "category": "Lost Person",
+      "title": "Lost-Person Rule: When to Stay Put vs Move",
+      "summary": "A decision checklist for whether to remain in place or move deliberately when lost.",
+      "difficulty": "intermediate",
+      "tags": ["lost", "stay put", "decision", "navigation", "survival"],
+      "steps": [
+        "Default to staying put if: you are uncertain of your location, visibility is poor, night is approaching, weather is worsening, or you have any injury.",
+        "Stay put if you can make yourself findable: visible signals, audible signals, and a safe shelter location.",
+        "Consider moving only if ALL apply: you are confident of direction to a known safe point, terrain is safe, you have daylight/time margin, and moving improves rescue odds (e.g., reaching an obvious landmark visible to rescuers).",
+        "If you decide to move: do it slowly, mark your path, avoid cliffs/steep drainages, and stop well before darkness.",
+        "If a group is involved: keep everyone together unless there is a clearly defined and safe reason to separate (rare)."
+      ],
+      "do_not": [
+        "Do not wander in circles; it burns energy and reduces rescue probability.",
+        "Do not attempt risky shortcuts (steep slopes, unknown river crossings)."
+      ],
+      "watch_for": [
+        "Sunset and temperature drop timing.",
+        "Dehydration or fatigue driving bad choices."
+      ],
+      "notes": [
+        "Searchers typically start from the last known point. Staying put preserves that advantage.",
+        "If you move, leave obvious indicators of your direction of travel."
+      ]
+    },
+    {
+      "id": "lost_person_trail_backtrack_protocol",
+      "category": "Lost Person",
+      "title": "Backtrack Protocol: Return to Known Point",
+      "summary": "A cautious method to regain a known trail or landmark without worsening your situation.",
+      "difficulty": "intermediate",
+      "tags": ["lost", "backtrack", "trail", "breadcrumbs", "navigation"],
+      "steps": [
+        "Stop and confirm: are you sure you left a known point recently (last 15–60 minutes) and conditions haven’t changed?",
+        "If yes and daylight is adequate: turn around and retrace your steps slowly, scanning for your own footprints, broken vegetation, or distinctive markers.",
+        "Use deliberate markers as you move: stacked stones, broken twigs, small fabric ties, or distinctive arrangements—visible but minimal impact.",
+        "If you fail to regain the known point within a short, pre-set time (e.g., 15–30 minutes), stop and reassess. Consider staying put.",
+        "If you regain the trail: stop, hydrate, re-orient, and choose the simplest, safest route to the next known location."
+      ],
+      "do_not": [
+        "Do not backtrack into hazardous terrain to 'save time.'",
+        "Do not keep increasing your search radius without a time limit."
+      ],
+      "watch_for": [
+        "Rapidly fading light or worsening weather.",
+        "Terrain traps (cliffs, canyons, thick brush) that make reversing difficult."
+      ],
+      "notes": [
+        "Set a strict time limit before you start moving. Stopping early is often the best move."
+      ]
+    },
+    {
+      "id": "signaling_principles_make_yourself_findable",
+      "category": "Signaling",
+      "title": "Signaling Principles: Make Yourself Findable",
+      "summary": "A simple framework for maximizing the chance of detection by aircraft, ground teams, and passersby.",
+      "difficulty": "basic",
+      "tags": ["signaling", "visibility", "audible", "contrast", "movement"],
+      "steps": [
+        "Prioritize high contrast: bright colors against dark ground, dark against snow, reflective against low light.",
+        "Use motion: waving, flagging, or moving a reflective surface catches attention better than static objects.",
+        "Use patterns recognized as distress: three of anything (3 whistles, 3 fires, 3 flashes) repeated.",
+        "Choose a signaling site with visibility: ridgelines, clearings, lakeshores, open slopes (but avoid exposure hazards).",
+        "Maintain signals: keep them ready for sudden aircraft/people (mirror accessible, whistle on person)."
+      ],
+      "do_not": [
+        "Do not rely on one method. Use multiple redundant signals.",
+        "Do not put yourself at risk (lightning ridges, unstable cliffs) just to signal."
+      ],
+      "watch_for": [
+        "Wind direction for smoke signals.",
+        "Aircraft approach angle and sun position for mirrors."
+      ],
+      "notes": [
+        "Signaling is most effective when you can sustain it over time."
+      ]
+    },
+    {
+      "id": "signaling_aircraft_signal_mirror",
+      "category": "Signaling",
+      "title": "Signal Mirror to Aircraft",
+      "summary": "Use a mirror or reflective surface to flash sunlight toward aircraft or distant searchers.",
+      "difficulty": "intermediate",
+      "tags": ["aircraft", "signal mirror", "flash", "sun", "rescue"],
+      "steps": [
+        "Use a purpose-built signal mirror if available. If not, improvise with a phone screen, metal, polished container, or reflective wrapper.",
+        "Face the aircraft/search area and hold the mirror near your eye so you can aim precisely.",
+        "Make a 'sighting' reference: align the mirror so the reflected bright spot (glint) hits the target area. If you have a mirror with a sighting hole, look through it.",
+        "Sweep slowly across the aircraft’s path and horizon to create repeated flashes; flashes are easier to notice than a constant glint.",
+        "If the aircraft circles: keep flashing in bursts and maintain position in an open area where you are visible.",
+        "If no sun: switch to other signals (smoke, ground symbols, whistle)."
+      ],
+      "do_not": [
+        "Do not stare into the reflection at full intensity for extended periods.",
+        "Do not waste time if conditions prevent reflection; switch methods quickly."
+      ],
+      "watch_for": [
+        "Sun angle changes; you may need to relocate slightly.",
+        "Fatigue—take turns if in a group."
+      ],
+      "notes": [
+        "Even small reflective flashes can be seen from many miles in clear conditions."
+      ]
+    },
+    {
+      "id": "signaling_aircraft_ground_to_air_symbols",
+      "category": "Signaling",
+      "title": "Ground-to-Air Symbols",
+      "summary": "Create large, high-contrast markers in open terrain to communicate distress and direction of travel.",
+      "difficulty": "basic",
+      "tags": ["ground symbols", "SOS", "aircraft", "markers", "contrast"],
+      "steps": [
+        "Select an open, visible area: meadow, gravel bar, shoreline, open slope, ridgeline bench (avoid hazards).",
+        "Build large symbols using rocks, logs, branches, or scraped earth. Aim for big, bold lines with strong contrast.",
+        "Use 'SOS' if possible. If materials are limited, use a large 'X' to indicate distress and need of assistance.",
+        "If you are moving, add an arrow indicating direction of travel and leave a note if you can (time, destination, party size).",
+        "Maintain the symbol: keep it clear of drifting snow, blowing debris, or shadowing when possible."
+      ],
+      "do_not": [
+        "Do not build small or intricate symbols—bigger and simpler is better.",
+        "Do not choose areas prone to sudden flooding (dry streambeds) just for visibility."
+      ],
+      "watch_for": [
+        "Rising water levels, tides, or rapidly changing weather.",
+        "Vegetation fire risk if you add signal fires nearby."
+      ],
+      "notes": [
+        "Size matters. Think in terms of what is visible from far above, not from where you stand."
+      ]
+    },
+    {
+      "id": "signaling_smoke_signal_fire",
+      "category": "Signaling",
+      "title": "Signal Fire and Smoke",
+      "summary": "Use fire for visibility at night and smoke for daytime aircraft detection.",
+      "difficulty": "advanced",
+      "tags": ["signal fire", "smoke", "aircraft", "night", "day"],
+      "steps": [
+        "Build a safe fire base: clear flammables, use mineral soil or rocks, and pick a location protected from spreading fire.",
+        "Prepare fuel BEFORE lighting: dry tinder/kindling plus larger fuel; then gather smoke-making materials separately (green boughs, damp leaves) for daytime.",
+        "For daytime smoke: once a stable fire exists, add green or damp vegetation in short bursts to create thick white smoke.",
+        "For night signaling: maintain a bright flame and consider arranging multiple fires (e.g., three fires in a triangle or line) if resources allow and it is safe.",
+        "Keep an extinguisher plan: water, dirt, or sand ready. Never leave signal fires unattended.",
+        "If aircraft is spotted: add smoke immediately to increase contrast and draw attention."
+      ],
+      "do_not": [
+        "Do not start a fire in extreme wind, drought, or near heavy fuels where it could spread uncontrollably.",
+        "Do not build fires under low branches or in peat/duff that can smolder underground."
+      ],
+      "watch_for": [
+        "Shifting wind direction and ember carry.",
+        "Dehydration and fatigue while tending fire."
+      ],
+      "notes": [
+        "If fire risk is high, prioritize other signals (mirror, whistle, bright panels)."
+      ]
+    },
+    {
+      "id": "signaling_audible_whistle_rules",
+      "category": "Signaling",
+      "title": "Audible Signaling",
+      "summary": "Use standardized sound patterns to attract rescuers without exhausting yourself.",
+      "difficulty": "basic",
+      "tags": ["whistle", "audible", "signal", "three blasts", "voice"],
+      "steps": [
+        "Use a whistle if available; it carries farther and saves your voice.",
+        "Signal in groups of three: 3 sharp blasts, pause, repeat after a longer pause.",
+        "Between signal cycles, listen carefully for response; rescuers may answer with their own pattern.",
+        "Conserve energy: use periodic signaling rather than constant yelling.",
+        "If someone is searching nearby, increase frequency and add visual motion (waving bright cloth)."
+      ],
+      "do_not": [
+        "Do not scream continuously; you can lose your voice quickly and become dehydrated.",
+        "Do not ignore a reply—stop and listen to triangulate direction."
+      ],
+      "watch_for": [
+        "Echoes in canyons that make direction confusing.",
+        "Wind direction affecting sound travel."
+      ],
+      "notes": [
+        "A whistle on your person (not in your pack) is a high-value item."
+      ]
+    },
+    {
+      "id": "communications_if_you_can_call_for_help",
+      "category": "Signaling",
+      "title": "If You Can Contact Help: What to Say",
+      "summary": "A checklist for communicating critical details fast when you have brief signal or radio contact.",
+      "difficulty": "basic",
+      "tags": ["911", "satellite", "radio", "message", "coordinates"],
+      "steps": [
+        "State the emergency clearly: injury/illness/exposure/lost/vehicle issue.",
+        "Give location: GPS coordinates if possible, plus descriptive landmarks (trail name, nearest junction, elevation, mile marker).",
+        "Give party info: number of people, ages, condition of each, supplies available, shelter status.",
+        "Describe hazards: weather, terrain, water crossings, wildlife risk, avalanche/flash flood concerns.",
+        "Give plan: whether you are staying put or moving, and your intended route/destination if moving.",
+        "Conserve battery: switch to airplane mode when not actively communicating; keep phone warm in cold."
+      ],
+      "do_not": [
+        "Do not exaggerate or guess location if you are unsure; say what you know and what you don’t.",
+        "Do not drain battery attempting constant calls; schedule check-ins if possible."
+      ],
+      "watch_for": [
+        "Battery failure in cold temperatures.",
+        "Poor reception causing dropped calls—prioritize location first."
+      ],
+      "notes": [
+        "If you have a texting option, texts may go through when voice won’t."
+      ]
+    },
+    {
+      "id": "sar_when_searchers_are_likely",
+      "category": "Search and Rescue",
+      "title": "SAR Reality",
+      "summary": "Behaviors that make you easier to find and safer while SAR operations occur.",
+      "difficulty": "intermediate",
+      "tags": ["SAR", "search", "rescue", "last known point", "behavior"],
+      "steps": [
+        "Assume SAR starts from your last known point and expands outward based on terrain and probability.",
+        "Increase detectability: bright items visible from above, reflective flashes, audible signaling cycles.",
+        "Choose a safe, visible shelter location near open terrain if possible.",
+        "Make your camp obvious: laid-out gear, contrasting tarp, large ground markings.",
+        "If you must move, leave clear information: direction of travel, date/time, party size, condition, and intended destination.",
+        "If you hear aircraft or searchers: go to your prepared signal point and signal immediately.",
+        "Stay calm and conserve energy—survival and signaling outrank constant movement."
+      ],
+      "do_not": [
+        "Do not hide under dense canopy if avoidable; it blocks visibility and sound.",
+        "Do not chase aircraft; stay in your visible area and keep signaling."
+      ],
+      "watch_for": [
+        "Nighttime temperature drops and wet clothing—hypothermia risk rises during passive waiting.",
+        "Overexertion when trying to 'help SAR' by moving too much."
+      ],
+      "notes": ["Your job is to be safe, stay alive, and be detectable."]
+    },
+    {
+      "id": "sar_helicopter_approach_safety",
+      "category": "Search and Rescue",
+      "title": "Helicopter Approach Safety",
+      "summary": "Reduce risk to yourself and rescuers during rotor wash and landing operations.",
+      "difficulty": "advanced",
+      "tags": ["helicopter", "rotor wash", "SAR", "landing", "safety"],
+      "steps": [
+        "Secure loose items: hats, tarps, lightweight gear can become dangerous projectiles.",
+        "Stay low and stable; protect your eyes from dust/debris.",
+        "Approach only if clearly signaled by crew. If instructed to approach, approach from the front or as directed; never from the rear.",
+        "Keep hands visible and avoid sudden movements; follow instructions exactly.",
+        "Keep others (especially children/pets) close and controlled."
+      ],
+      "do_not": [
+        "Do not approach without being waved in by the crew.",
+        "Do not run toward the aircraft; rotor wash can knock you down and debris can blind you."
+      ],
+      "watch_for": [
+        "Flying debris and unstable footing.",
+        "Hearing protection needs; communicate with gestures if necessary."
+      ],
+      "notes": [
+        "Rotor blades can be hard to see; respect distance and instructions."
+      ]
+    },
+    {
+      "id": "evacuation_go_no_go_assessment",
+      "category": "Evacuation",
+      "title": "Evacuation Go/No-Go Assessment",
+      "summary": "A structured way to decide whether to self-evacuate or shelter and signal.",
+      "difficulty": "intermediate",
+      "tags": ["evacuation", "self rescue", "injury", "weather", "risk"],
+      "steps": [
+        "Assess medical status: can you walk safely? Is there bleeding, head injury signs, severe pain, or altered mental status?",
+        "Assess environment: weather trend, temperature, precipitation, wind, lightning, avalanche/flash flood risk.",
+        "Assess time: daylight remaining, distance to known help, terrain difficulty.",
+        "Assess resources: water, insulation, fire capability, navigation tools, calories, footwear condition.",
+        "Choose the lower-risk option: staying put and signaling is often safer than moving injured or late in the day.",
+        "If you evacuate: pick the simplest route (known trail/road), move slowly, and stop well before exhaustion.",
+        "If you stay: improve shelter, conserve heat, set up signals, and maintain a routine."
+      ],
+      "do_not": [
+        "Do not force a walk-out with a suspected serious injury or severe hypothermia/heat illness.",
+        "Do not attempt technical terrain when you are impaired or fatigued."
+      ],
+      "watch_for": [
+        "Rapid weather shifts that can trap you mid-route.",
+        "Injury worsening under load."
+      ],
+      "notes": [
+        "The safest choice is the one that prevents you from becoming harder to rescue."
+      ]
+    },
+    {
+      "id": "evacuation_improvised_litter_drag",
+      "category": "Evacuation",
+      "title": "Evacuating an Injured Person",
+      "summary": "Options for moving an injured person when staying put is more dangerous than moving.",
+      "difficulty": "advanced",
+      "tags": ["evacuation", "litter", "drag", "carry", "injury"],
+      "steps": [
+        "Decide if moving is truly necessary: exposure hazards (incoming storm, rising water, rockfall) may force relocation.",
+        "Prefer assisted walking if possible: use a stick as a cane, or two-person support (human crutch).",
+        "If non-weight-bearing: consider a drag method on durable material (tarp, jacket, poncho, sleeping pad) over smooth terrain.",
+        "If you have multiple helpers and materials: create a litter with two poles and a jacket/tarp woven between them, or a rigid pad strapped to poles.",
+        "Secure the patient: prevent rolling, pad pressure points, keep them warm and protected from wind.",
+        "Move slowly and communicate; stop often to re-check circulation, pain, and condition.",
+        "Mark your route and keep signaling ability active if SAR may be nearby."
+      ],
+      "do_not": [
+        "Do not attempt long carries over rough terrain; it exhausts rescuers and increases risk of falls.",
+        "Do not worsen spinal injury risk with rough handling if spinal injury is suspected."
+      ],
+      "watch_for": [
+        "Shock, hypothermia, pain escalation, and loss of consciousness.",
+        "Rescuer fatigue leading to accidents."
+      ],
+      "notes": [
+        "If evacuation is required, shorter moves to safer shelter can be more realistic than reaching 'help' in one push."
+      ]
+    },
+    {
+      "id": "shelter_priorities_survive_the_night",
+      "category": "Shelter & Survival Priorities",
+      "title": "Survive-the-Night Priorities (Shelter First)",
+      "summary": "A practical checklist to reduce exposure risk when rescue may take time.",
+      "difficulty": "basic",
+      "tags": ["shelter", "hypothermia prevention", "wind", "rain", "night"],
+      "steps": [
+        "Get out of wind and wet conditions: windbreak, tarp, natural barrier, or improvised lean-to.",
+        "Insulate from the ground: pile dry vegetation, use a pad, pack, rope coils, or spare clothing under your torso.",
+        "Stay dry: change into dry layers if available; wring wet items and keep them near body heat only if safe.",
+        "Create a heat strategy: fire if safe, or huddle, or heat-retaining shelter design.",
+        "Hydrate and eat if possible: dehydration and low calories accelerate cold injury.",
+        "Set signals before sleeping: visible marker, reflective item ready, whistle on person.",
+        "Establish a routine: check companions, maintain fire safely if used, and keep morale steady."
+      ],
+      "do_not": [
+        "Do not sleep directly on cold ground without insulation if you can avoid it.",
+        "Do not shelter in dry creek beds or areas with flash flood potential."
+      ],
+      "watch_for": [
+        "Shivering that becomes uncontrolled, confusion, or clumsiness (hypothermia).",
+        "Wetness creeping into insulation layers."
+      ],
+      "notes": [
+        "Warmth is often the limiting factor in wilderness emergencies."
+      ]
+    },
+    {
+      "id": "immediate_action_rules_if_must_move",
+      "category": "Immediate Action",
+      "title": "Movement Rules If You Must Travel While Lost",
+      "summary": "Guidance to reduce risk while moving in uncertain terrain.",
+      "difficulty": "intermediate",
+      "tags": ["navigation", "movement", "terrain", "risk", "marking"],
+      "steps": [
+        "Move only with a clear plan: destination, route, and turnaround time.",
+        "Avoid terrain traps: cliff bands, steep gullies, thick brush, river canyons with no exits.",
+        "Follow handrails when appropriate: ridgelines (if safe), streams (with caution), trails, roads, power lines.",
+        "Leave markers: clear directional indicators and notes with time/date if possible.",
+        "Stop early for shelter: do not push into darkness or exhaustion.",
+        "Maintain detectability: keep bright items visible; signal from open areas periodically.",
+        "Check navigation frequently: do not walk long distances without confirming direction."
+      ],
+      "do_not": [
+        "Do not descend blindly into drainages; it can commit you to hazardous terrain.",
+        "Do not cross fast-moving water if avoidable."
+      ],
+      "watch_for": [
+        "Foot hot spots and blisters—treat early to preserve mobility.",
+        "Overheating or dehydration during exertion."
+      ],
+      "notes": ["A safe, slower route is better than a fast risky one."]
+    },
+    {
+      "id": "immediate_action_hydration_priority",
+      "category": "Immediate Action",
+      "title": "Emergency Water",
+      "summary": "How to prioritize hydration and reduce dehydration risk while waiting or traveling.",
+      "difficulty": "basic",
+      "tags": ["water", "hydration", "collection", "dehydration", "emergency"],
+      "steps": [
+        "Ration effort, not water: drink when you have water; dehydration impairs judgment and thermoregulation.",
+        "Reduce loss: stay in shade when hot, reduce sweating by slowing pace, and add wind protection when cold.",
+        "Seek reliable sources: flowing streams, springs, seeps; collect rainwater when possible.",
+        "If you have treatment: filter/boil/chemical treat per your available method.",
+        "If no treatment: assess risk and decide based on survival need; avoid stagnant, algae-heavy, or animal-contaminated water if possible.",
+        "Carry water securely and prevent freezing in cold by keeping it near your body or insulated."
+      ],
+      "do_not": [
+        "Do not drink seawater or urine; these worsen dehydration.",
+        "Do not exert heavily at the hottest part of the day if low on water."
+      ],
+      "watch_for": [
+        "Dark urine, dizziness, headache, confusion.",
+        "Cramping or heat illness signs."
+      ],
+      "notes": ["Hydration helps prevent both heat and cold injury."]
+    },
+    {
+      "id": "immediate_action_management_safety",
+      "category": "Immediate Action",
+      "title": "Fire Use in Emergencies",
+      "summary": "Use fire for warmth and signaling when it can be done safely.",
+      "difficulty": "intermediate",
+      "tags": ["fire", "warmth", "signaling", "safety", "dry conditions"],
+      "steps": [
+        "Confirm fire is safe and permitted: wind, dryness, local restrictions, and fuel type matter.",
+        "Build in a safe location: clear a wide area, use mineral soil/rock base, avoid roots/duff.",
+        "Gather enough fuel first to maintain warmth through critical hours (especially after sunset).",
+        "Use reflectors: rock wall, log reflector, or space blanket behind you to bounce heat.",
+        "Keep fire modest: a small controlled fire often provides enough heat and is easier to manage.",
+        "Extinguish fully before leaving or sleeping if you cannot maintain safe control."
+      ],
+      "do_not": [
+        "Do not build fire in high wind or severe drought conditions where it could escape.",
+        "Do not use flammable fuels near shelter materials."
+      ],
+      "watch_for": [
+        "Embers drifting, ground smoldering, sudden wind gusts.",
+        "Smoke inhalation in enclosed shelters."
+      ],
+      "notes": [
+        "Warmth can be achieved without fire using insulation and wind protection; fire is optional if unsafe."
+      ]
+    },
+    {
+      "id": "immediate_action_wildlife_hazards_general",
+      "category": "Immediate Action",
+      "title": "Wildlife and Environmental Hazards",
+      "summary": "General guidance to reduce risk from common hazards while lost or awaiting rescue.",
+      "difficulty": "basic",
+      "tags": ["wildlife", "hazards", "bears", "snakes", "lightning", "flood"],
+      "steps": [
+        "Keep food and scented items secured and away from sleeping area if possible.",
+        "Avoid moving at dawn/dusk in dense brush when visibility is low, especially if stressed and tired.",
+        "Lightning: get off exposed ridges/summits; avoid isolated tall trees; adopt a low, insulated position if caught in the open.",
+        "Flash floods: stay out of dry washes and narrow canyons when storms are possible upstream.",
+        "Snakes: watch hand/foot placement; do not reach into crevices; use a stick to probe.",
+        "If you encounter aggressive wildlife: back away slowly, make yourself look larger, and do not run."
+      ],
+      "do_not": [
+        "Do not store food in your shelter or clothing pockets while sleeping if you can avoid it.",
+        "Do not cross swollen rivers if another option exists."
+      ],
+      "watch_for": [
+        "Thunder in the distance (lightning risk can extend far from storm).",
+        "Water level rising quickly or debris flow sounds."
+      ],
+      "notes": [
+        "In emergencies, avoid adding a second emergency (injury) to the first."
+      ]
+    },
+    {
+      "id": "immediate_action_signal_panels_and_flags",
+      "category": "Immediate Action",
+      "title": "Improvised Signal Panels and Flags",
+      "summary": "Build highly visible signals using what you have and what you can gather.",
+      "difficulty": "basic",
+      "tags": ["improvised", "signal panel", "flag", "contrast", "visibility"],
+      "steps": [
+        "Use the brightest available material: rain jacket, sleeping pad, tarp, bandana, emergency blanket, shirt.",
+        "Create contrast: lay bright item on dark ground; on snow, use dark logs/rocks or dirt to outline.",
+        "Add motion: tie cloth to a pole/branch and wave, or rig it to flutter in wind.",
+        "If no bright gear: scrape ground to create light/dark contrast, arrange stones/logs in bold shapes.",
+        "Place signals in the most visible safe location, then keep a path back to shelter."
+      ],
+      "do_not": [
+        "Do not sacrifice critical insulation layers if doing so risks hypothermia.",
+        "Do not place signals in hazardous exposure zones (lightning ridges, unstable slopes)."
+      ],
+      "watch_for": [
+        "Wind tearing fabric or blowing panels away—anchor securely.",
+        "Snowfall covering ground symbols—refresh as needed."
+      ],
+      "notes": [
+        "A visible panel plus a whistle plus a mirror is a strong combination."
+      ]
+    }
+  ]
+}
