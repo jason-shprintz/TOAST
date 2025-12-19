@@ -6,6 +6,7 @@ import Grid from '../../../components/Grid';
 import LogoHeader from '../../../components/LogoHeader';
 import ScreenContainer from '../../../components/ScreenContainer';
 import SectionHeader from '../../../components/SectionHeader';
+import SectionSubHeader from '../../../components/SectionSubHeader';
 import ReferenceEntryType from '../../../types/data-type';
 
 /**
@@ -24,7 +25,7 @@ import ReferenceEntryType from '../../../types/data-type';
 export default function CategoryScreen(): JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const { title, data } = route.params || {};
+  const { title, data, disclaimer } = route.params || {};
 
   const entries = useMemo(() => {
     return (data ?? []).filter((e: ReferenceEntryType) => e.category === title);
@@ -38,6 +39,7 @@ export default function CategoryScreen(): JSX.Element {
         {entries.length === 0 && (
           <Text style={styles.helperText}>No topics found.</Text>
         )}
+        <SectionSubHeader>{disclaimer}</SectionSubHeader>
         <Grid>
           {entries
             .slice()

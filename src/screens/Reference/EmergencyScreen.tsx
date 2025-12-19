@@ -3,7 +3,6 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/emergency.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -76,8 +75,7 @@ export default function EmergencyScreen(): JSX.Element {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Emergency</SectionHeader>
-      <SectionSubHeader>{disclaimer}</SectionSubHeader>
-      <CategoryList categories={emergencyCategories} />
+      <CategoryList disclaimer={disclaimer} categories={emergencyCategories} />
     </ScreenContainer>
   );
 }

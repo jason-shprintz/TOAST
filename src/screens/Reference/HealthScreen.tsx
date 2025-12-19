@@ -3,7 +3,6 @@ import CategoryList from '../../components/CategoryList';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
-import SectionSubHeader from '../../components/SectionSubHeader';
 import data from '../../data/health.json';
 import { CategoryType } from '../../types/common-types';
 
@@ -61,8 +60,7 @@ export default function HealthScreen(): JSX.Element {
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Health</SectionHeader>
-      <SectionSubHeader>{disclaimer}</SectionSubHeader>
-      <CategoryList categories={healthCategories} />
+      <CategoryList disclaimer={disclaimer} categories={healthCategories} />
     </ScreenContainer>
   );
 }

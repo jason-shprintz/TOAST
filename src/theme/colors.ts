@@ -7,12 +7,10 @@ const COLORS = {
   SECONDARY_ACCENT: '#8DAA9D',
   BACKGROUND: '#D9C8B0',
   BACKGROUND_GRADIENT: [
-    '#C09A6B',
-    '#D9C8B0',
-    '#DBC6A7',
+    '#f3dec0ff',
     '#F2EDE4',
     '#D9C8B0',
-    '#C09A6B',
+    '#f3cfa3ff',
   ],
 };
 

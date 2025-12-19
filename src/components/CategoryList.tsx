@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { CategoryType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
+import SectionSubHeader from './SectionSubHeader';
 
 type CategoryListProps = {
   categories: CategoryType[];
+  disclaimer?: string;
 };
 
 /**
@@ -19,11 +21,13 @@ type CategoryListProps = {
  */
 export default function CategoryList({
   categories,
+  disclaimer = '',
 }: CategoryListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
+      <SectionSubHeader>{disclaimer}</SectionSubHeader>
       <Grid>
         {categories.map(category => {
           return (
@@ -35,6 +39,7 @@ export default function CategoryList({
                 navigation.navigate('Category', {
                   title: category.title,
                   data: category.data,
+                  disclaimer: disclaimer,
                 })
               }
             />
@@ -44,3 +49,9 @@ export default function CategoryList({
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+});
