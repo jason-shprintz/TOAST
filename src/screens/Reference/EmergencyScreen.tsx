@@ -69,11 +69,13 @@ const emergencyCategories: CategoryType[] = [
  * @returns A React element containing the Emergency screen layout.
  */
 export default function EmergencyScreen(): JSX.Element {
+  const disclaimer: string = data.metadata?.disclaimer ?? '';
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Emergency</SectionHeader>
-      <CategoryList categories={emergencyCategories} />
+      <CategoryList disclaimer={disclaimer} categories={emergencyCategories} />
     </ScreenContainer>
   );
 }

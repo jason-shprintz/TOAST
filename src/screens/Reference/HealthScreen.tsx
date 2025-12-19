@@ -54,11 +54,13 @@ const healthCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered HealthScreen component.
  */
 export default function HealthScreen(): JSX.Element {
+  const disclaimer: string = data?.metadata?.disclaimer ?? '';
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Health</SectionHeader>
-      <CategoryList categories={healthCategories} />
+      <CategoryList disclaimer={disclaimer} categories={healthCategories} />
     </ScreenContainer>
   );
 }

@@ -45,11 +45,13 @@ const toolsAndKnotsCategories: CategoryType[] = [
  * @returns The Tools and Knots screen JSX layout.
  */
 export default function ToolsAndKnotsScreen(): JSX.Element {
+  const disclaimer: string = data.metadata?.disclaimer ?? '';
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Tools and Knots</SectionHeader>
-      <CategoryList categories={toolsAndKnotsCategories} />
+      <CategoryList disclaimer={disclaimer} categories={toolsAndKnotsCategories} />
     </ScreenContainer>
   );
 }

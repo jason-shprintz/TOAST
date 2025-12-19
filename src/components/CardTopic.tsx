@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../theme';
 
@@ -60,6 +61,12 @@ export default function CardTopic({
       <Animated.View
         style={[styles.card, { transform: [{ scale }] }, containerStyle]}
       >
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.background}
+        />
         <IconComponent
           name={icon}
           size={40}
@@ -82,9 +89,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 22,
     elevation: 2,
-    backgroundColor: COLORS.TOAST_BROWN,
+    overflow: 'hidden',
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
+  },
+  background: {
+    ...StyleSheet.absoluteFillObject,
   },
   icon: {
     marginBottom: 8,

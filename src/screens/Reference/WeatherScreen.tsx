@@ -62,11 +62,13 @@ const weatherCategories: CategoryType[] = [
  * @returns {JSX.Element} The rendered WeatherScreen component.
  */
 export default function WeatherScreen(): JSX.Element {
+  const disclaimer: string = data?.metadata?.disclaimer ?? '';
+
   return (
     <ScreenContainer>
       <LogoHeader />
       <SectionHeader>Weather</SectionHeader>
-      <CategoryList categories={weatherCategories} />
+      <CategoryList disclaimer={disclaimer} categories={weatherCategories} />
     </ScreenContainer>
   );
 }
