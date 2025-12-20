@@ -8,6 +8,24 @@ import SectionHeader from '../../components/SectionHeader';
 import { useDeviceStatus } from '../../hooks/useDeviceStatus';
 import { COLORS } from '../../theme';
 
+/**
+ * DeviceStatusScreen
+ *
+ * Displays a summary of the device’s current health/status metrics in a simple
+ * card-based UI.
+ *
+ * The screen renders:
+ * - Battery status text
+ * - Time/description of the last GPS fix
+ * - Storage usage/availability
+ * - Connectivity/offline status
+ *
+ * Data is sourced from {@link useDeviceStatus}, which provides pre-formatted
+ * strings for display. Each metric is presented in a styled card with a shared
+ * gradient background and consistent label/value typography.
+ *
+ * @returns A React element containing the Device Status screen UI.
+ */
 function DeviceStatusScreen() {
   const { storageText, batteryText, lastFixText, offlineText } =
     useDeviceStatus();
@@ -78,7 +96,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   label: {
     fontSize: 14,

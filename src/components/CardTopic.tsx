@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   background: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   icon: {
     marginBottom: 8,
