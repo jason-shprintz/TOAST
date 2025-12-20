@@ -43,9 +43,9 @@ export default function HomeScreen() {
           />
         </View>
       </TouchableWithoutFeedback>
-
       <LogoHeader />
       <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
+
       <ToolList tools={modules} />
     </ScreenContainer>
   );
