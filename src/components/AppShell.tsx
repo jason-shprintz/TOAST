@@ -44,32 +44,37 @@ export default function AppShell({ children }: Props) {
   );
 
   return (
-    <ScreenContainer style={styles.shell} {...panResponder.panHandlers}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => {
-            // Intentionally a no-op for now; this is just a persistent button.
-          }}
-          accessibilityLabel="Settings"
-          accessibilityRole="button"
-        >
-          <Ionicons
-            name="settings-outline"
-            size={26}
-            color={COLORS.PRIMARY_DARK}
-          />
-        </TouchableOpacity>
+    <View style={styles.gestureContainer} {...panResponder.panHandlers}>
+      <ScreenContainer style={styles.shell}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => {
+              // Intentionally a no-op for now; this is just a persistent button.
+            }}
+            accessibilityLabel="Settings"
+            accessibilityRole="button"
+          >
+            <Ionicons
+              name="settings-outline"
+              size={26}
+              color={COLORS.PRIMARY_DARK}
+            />
+          </TouchableOpacity>
 
-        <LogoHeader />
-      </View>
+          <LogoHeader />
+        </View>
 
-      <View style={styles.content}>{children}</View>
-    </ScreenContainer>
+        <View style={styles.content}>{children}</View>
+      </ScreenContainer>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  gestureContainer: {
+    flex: 1,
+  },
   shell: {
     paddingTop: 0,
     paddingHorizontal: 0,
