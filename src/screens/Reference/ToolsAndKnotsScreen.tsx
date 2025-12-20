@@ -1,7 +1,6 @@
 import React, { JSX } from 'react';
 import CategoryList from '../../components/CategoryList';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/tools.json';
 import { CategoryType } from '../../types/common-types';
@@ -48,10 +47,12 @@ export default function ToolsAndKnotsScreen(): JSX.Element {
   const disclaimer: string = data.metadata?.disclaimer ?? '';
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Tools and Knots</SectionHeader>
-      <CategoryList disclaimer={disclaimer} categories={toolsAndKnotsCategories} />
-    </ScreenContainer>
+      <CategoryList
+        disclaimer={disclaimer}
+        categories={toolsAndKnotsCategories}
+      />
+    </ScreenBody>
   );
 }

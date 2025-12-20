@@ -1,16 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import Grid from '../../components/Grid';
-import LogoHeader from '../../components/LogoHeader';
 import CardTopic from '../../components/CardTopic';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 
 export default function NotepadScreen() {
   const navigation = useNavigation<any>();
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Notepad</SectionHeader>
 
       <Grid>
@@ -30,6 +28,6 @@ export default function NotepadScreen() {
           onPress={() => navigation.navigate('SavedNotes')}
         />
       </Grid>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }

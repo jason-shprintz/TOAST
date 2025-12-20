@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import ToolList from '../../components/ToolList';
 import { ToolType } from '../../types/common-types';
@@ -41,10 +40,9 @@ const coreTools: ToolType[] = [
 
 export default observer(function CoreModule() {
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Core</SectionHeader>
       <ToolList tools={coreTools} />
-    </ScreenContainer>
+    </ScreenBody>
   );
 });

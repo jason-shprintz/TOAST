@@ -81,13 +81,14 @@ export default function CardTopic({
 
 const styles = StyleSheet.create({
   card: {
-    width: '48%',
+    width: '40%',
     minWidth: 150,
     height: 130,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 22,
+    marginHorizontal: 2,
     elevation: 2,
     overflow: 'hidden',
     borderColor: COLORS.SECONDARY_ACCENT,

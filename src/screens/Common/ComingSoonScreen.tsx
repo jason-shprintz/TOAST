@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import { COLORS } from '../../theme';
 
 type ComingSoonParams = {
@@ -31,8 +30,7 @@ export default function ComingSoonScreen({ route }: Props) {
     route?.params?.message ?? 'This feature is under construction.';
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <View style={styles.card}>
         <Ionicons
           name={icon}
@@ -43,7 +41,7 @@ export default function ComingSoonScreen({ route }: Props) {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }
 

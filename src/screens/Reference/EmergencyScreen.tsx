@@ -1,7 +1,6 @@
 import React, { JSX } from 'react';
 import CategoryList from '../../components/CategoryList';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/emergency.json';
 import { CategoryType } from '../../types/common-types';
@@ -72,10 +71,9 @@ export default function EmergencyScreen(): JSX.Element {
   const disclaimer: string = data.metadata?.disclaimer ?? '';
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Emergency</SectionHeader>
       <CategoryList disclaimer={disclaimer} categories={emergencyCategories} />
-    </ScreenContainer>
+    </ScreenBody>
   );
 }

@@ -1,6 +1,5 @@
 import React from 'react';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import ToolList from '../../components/ToolList';
 import { ToolType } from '../../types/common-types';
@@ -28,10 +27,9 @@ const communicationTools: ToolType[] = [
 
 export default function CommunicationsModule() {
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Communications</SectionHeader>
       <ToolList tools={communicationTools} />
-    </ScreenContainer>
+    </ScreenBody>
   );
 }

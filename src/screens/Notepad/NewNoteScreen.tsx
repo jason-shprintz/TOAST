@@ -15,8 +15,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
@@ -34,16 +33,13 @@ export default observer(function NewNoteScreen() {
   const hasText: boolean = text.trim().length > 0;
 
   return (
-    <ScreenContainer>
+    <ScreenBody>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.innerContainer}>
-            <View style={styles.logoCenter}>
-              <LogoHeader />
-            </View>
             <SectionHeader>New Note</SectionHeader>
             <View style={styles.card}>
               <View style={styles.inlineCenter}>
@@ -181,7 +177,7 @@ export default observer(function NewNoteScreen() {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </ScreenContainer>
+    </ScreenBody>
   );
 });
 
@@ -205,10 +201,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
-  },
-  logoCenter: {
-    alignItems: 'center',
-    width: '100%',
   },
   label: {
     fontSize: 14,

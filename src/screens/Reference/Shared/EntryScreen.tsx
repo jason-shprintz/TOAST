@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../../components/LogoHeader';
-import ScreenContainer from '../../../components/ScreenContainer';
+import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import {
   addBookmark,
@@ -72,21 +71,19 @@ export default function EntryScreen(): JSX.Element {
 
   if (!resolvedEntry) {
     return (
-      <ScreenContainer>
-        <LogoHeader />
+      <ScreenBody>
         <SectionHeader>Topic Not Found</SectionHeader>
         <View style={styles.missingWrap}>
           <Text style={styles.helperText}>
             No data available for this topic.
           </Text>
         </View>
-      </ScreenContainer>
+      </ScreenBody>
     );
   }
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>{resolvedEntry.title}</SectionHeader>
       <View style={styles.actions}>
         <TouchableOpacity onPress={toggleBookmark} style={styles.actionBtn}>
@@ -141,7 +138,7 @@ export default function EntryScreen(): JSX.Element {
           </View>
         )}
       </ScrollView>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }
 
