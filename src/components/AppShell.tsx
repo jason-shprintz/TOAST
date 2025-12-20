@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { PropsWithChildren, useMemo } from 'react';
+import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { canGoBack, goBack } from '../navigation/navigationRef';
 import { COLORS } from '../theme';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
@@ -8,8 +9,42 @@ import ScreenContainer from './ScreenContainer';
 type Props = PropsWithChildren<{}>;
 
 export default function AppShell({ children }: Props) {
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponderCapture: (_evt, gestureState) => {
+          // Capture a clear right-swipe anywhere in the shell.
+          // Avoid interfering with vertical scrolling/taps.
+          const { dx, dy } = gestureState;
+          const absDx = Math.abs(dx);
+          const absDy = Math.abs(dy);
+
+          if (!canGoBack()) return false;
+          if (dx <= 0) return false;
+          // Make it easier to start the gesture, but still bias against vertical scroll.
+          if (absDx < 6) return false;
+          if (absDx < absDy * 0.9) return false;
+          return true;
+        },
+        onPanResponderRelease: (_evt, gestureState) => {
+          const { dx, dy, vx } = gestureState;
+          const absDy = Math.abs(dy);
+
+          // Trigger back on a confident swipe-right (more sensitive).
+          if (dx > 35 && absDy < 60) {
+            goBack();
+            return;
+          }
+          if (dx > 25 && vx > 0.25 && absDy < 80) {
+            goBack();
+          }
+        },
+      }),
+    [],
+  );
+
   return (
-    <ScreenContainer style={styles.shell}>
+    <ScreenContainer style={styles.shell} {...panResponder.panHandlers}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.settingsButton}

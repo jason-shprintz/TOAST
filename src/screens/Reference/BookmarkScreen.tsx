@@ -125,13 +125,13 @@ export default function BookmarkScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 2,
     paddingBottom: 24,
   },
   helperText: {
     fontSize: 16,
     opacity: 0.8,
-    marginHorizontal: 6,
+    marginHorizontal: 2,
     marginTop: 12,
   },
   dev: { marginBottom: 8, opacity: 0.7 },
