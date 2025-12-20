@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import LogoHeader from '../../components/LogoHeader';
 import ScreenContainer from '../../components/ScreenContainer';
 import SectionHeader from '../../components/SectionHeader';
@@ -17,21 +18,45 @@ function DeviceStatusScreen() {
       <SectionHeader>Device Status</SectionHeader>
 
       <View style={styles.card}>
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.cardBackground}
+        />
         <Text style={styles.label}>Battery</Text>
         <Text style={styles.value}>{batteryText}</Text>
       </View>
 
       <View style={styles.card}>
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.cardBackground}
+        />
         <Text style={styles.label}>Last GPS Fix</Text>
         <Text style={styles.value}>{lastFixText}</Text>
       </View>
 
       <View style={styles.card}>
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.cardBackground}
+        />
         <Text style={styles.label}>Storage</Text>
         <Text style={styles.value}>{storageText}</Text>
       </View>
 
       <View style={styles.card}>
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.cardBackground}
+        />
         <Text style={styles.label}>Connectivity</Text>
         <Text style={styles.value}>{offlineText}</Text>
       </View>
@@ -44,13 +69,16 @@ export default observer(DeviceStatusScreen);
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    backgroundColor: COLORS.TOAST_BROWN,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
+    overflow: 'hidden',
+  },
+  cardBackground: {
+    ...StyleSheet.absoluteFillObject,
   },
   label: {
     fontSize: 14,

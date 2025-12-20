@@ -10,6 +10,21 @@ import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
 
+/**
+ * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
+ * configure strobe frequency.
+ *
+ * @remarks
+ * This component reads state from the core store (`useCoreStore`) and updates it via:
+ * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe'`)
+ * - `core.setStrobeFrequency(v)` for strobe frequency changes (in Hz)
+ *
+ * The currently selected mode is visually indicated by applying an `activeCard` style to the
+ * corresponding option card. When the mode is `'strobe'`, additional controls are rendered,
+ * including a slider constrained to integer values from 1–15 Hz.
+ *
+ * @returns A React element that renders the flashlight mode selection and optional strobe controls.
+ */
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const mode = core.flashlightMode;
