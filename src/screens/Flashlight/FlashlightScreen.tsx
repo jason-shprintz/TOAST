@@ -51,7 +51,7 @@ const FlashlightScreenImpl = () => {
           <Slider
             style={styles.slider}
             minimumValue={1}
-            maximumValue={30}
+            maximumValue={15}
             step={1}
             value={core.strobeFrequencyHz}
             onValueChange={(v: number) => core.setStrobeFrequency(v)}
