@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "clean:appledouble": "find . -type f -name '._*' -delete",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",

@@ -55,6 +55,18 @@ Tech-Offline And Survival Tools (TOAST) is a React Native app providing essentia
   npx react-native run-android
   ```
 
+## Troubleshooting
+
+### macOS `._*` files (AppleDouble)
+
+On macOS (especially when working from an external drive), Finder can create `._*` “AppleDouble” metadata files alongside real files. If these get picked up by build tooling (Metro/Xcode/Gradle) or accidentally committed, they can cause confusing build/runtime issues.
+
+This repo ignores them via `.gitignore`, and also includes a cleanup script to remove any that already exist:
+
+```sh
+npm run clean:appledouble
+```
+
 ## Future Improvements
 
 ### 🌰 Core Module (Free)
