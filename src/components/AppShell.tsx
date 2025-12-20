@@ -6,7 +6,7 @@ import { COLORS } from '../theme';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
 
-type Props = PropsWithChildren<{}>;
+type Props = PropsWithChildren;
 
 export default function AppShell({ children }: Props) {
   const panResponder = useMemo(
