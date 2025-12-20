@@ -1,7 +1,6 @@
 import React, { JSX } from 'react';
 import CategoryList from '../../components/CategoryList';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/weather.json';
 import { CategoryType } from '../../types/common-types';
@@ -65,10 +64,9 @@ export default function WeatherScreen(): JSX.Element {
   const disclaimer: string = data?.metadata?.disclaimer ?? '';
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Weather</SectionHeader>
       <CategoryList disclaimer={disclaimer} categories={weatherCategories} />
-    </ScreenContainer>
+    </ScreenBody>
   );
 }

@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import AppShell from '../components/AppShell';
 import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
@@ -45,40 +46,45 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        {/* Modules */}
-        <Stack.Screen name="CoreModule" component={CoreModule} />
-        <Stack.Screen name="NavigationModule" component={NavigationModule} />
-        <Stack.Screen name="ReferenceModule" component={ReferenceModule} />
-        <Stack.Screen
-          name="CommunicationsModule"
-          component={CommunicationsModule}
-        />
-        {/* Shared */}
-        <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
-        {/* Core Module */}
-        <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
-        <Stack.Screen name="Flashlight" component={FlashlightScreen} />
-        <Stack.Screen name="NewNote" component={NewNoteScreen} />
-        <Stack.Screen name="Notepad" component={NotepadScreen} />
-        <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
-        <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
-        {/* Reference Module */}
-        <Stack.Screen name="Bookmark" component={BookmarkScreen} />
-        <Stack.Screen name="Category" component={CategoryScreen} />
-        <Stack.Screen name="Entry" component={EntryScreen} />
-        <Stack.Screen name="Health" component={HealthScreen} />
-        <Stack.Screen name="Survival" component={SurvivalScreen} />
-        <Stack.Screen name="Weather" component={WeatherScreen} />
-        <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
-        <Stack.Screen name="Emergency" component={EmergencyScreen} />
-      </Stack.Navigator>
+      <AppShell>
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: 'transparent',
+            },
+          }}
+        >
+          <Stack.Screen name="Home" component={HomeScreen} />
+          {/* Modules */}
+          <Stack.Screen name="CoreModule" component={CoreModule} />
+          <Stack.Screen name="NavigationModule" component={NavigationModule} />
+          <Stack.Screen name="ReferenceModule" component={ReferenceModule} />
+          <Stack.Screen
+            name="CommunicationsModule"
+            component={CommunicationsModule}
+          />
+          {/* Shared */}
+          <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+          {/* Core Module */}
+          <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
+          <Stack.Screen name="Flashlight" component={FlashlightScreen} />
+          <Stack.Screen name="NewNote" component={NewNoteScreen} />
+          <Stack.Screen name="Notepad" component={NotepadScreen} />
+          <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
+          <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
+          {/* Reference Module */}
+          <Stack.Screen name="Bookmark" component={BookmarkScreen} />
+          <Stack.Screen name="Category" component={CategoryScreen} />
+          <Stack.Screen name="Entry" component={EntryScreen} />
+          <Stack.Screen name="Health" component={HealthScreen} />
+          <Stack.Screen name="Survival" component={SurvivalScreen} />
+          <Stack.Screen name="Weather" component={WeatherScreen} />
+          <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
+          <Stack.Screen name="Emergency" component={EmergencyScreen} />
+        </Stack.Navigator>
+      </AppShell>
     </NavigationContainer>
   );
 }

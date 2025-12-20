@@ -1,7 +1,6 @@
 import React, { JSX } from 'react';
 import CategoryList from '../../components/CategoryList';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/health.json';
 import { CategoryType } from '../../types/common-types';
@@ -57,10 +56,9 @@ export default function HealthScreen(): JSX.Element {
   const disclaimer: string = data?.metadata?.disclaimer ?? '';
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Health</SectionHeader>
       <CategoryList disclaimer={disclaimer} categories={healthCategories} />
-    </ScreenContainer>
+    </ScreenBody>
   );
 }

@@ -3,8 +3,7 @@ import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import emergencyData from '../../data/emergency.json';
 import healthData from '../../data/health.json';
@@ -83,8 +82,7 @@ export default function BookmarkScreen(): JSX.Element {
   };
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Bookmarks</SectionHeader>
 
       {/* DEV ONLY - Clear all bookmarks */}
@@ -121,7 +119,7 @@ export default function BookmarkScreen(): JSX.Element {
           </Grid>
         )}
       </ScrollView>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }
 

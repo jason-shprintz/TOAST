@@ -4,8 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
@@ -34,8 +33,7 @@ const FlashlightScreenImpl = () => {
   };
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Flashlight</SectionHeader>
 
       <Grid>
@@ -75,7 +73,7 @@ const FlashlightScreenImpl = () => {
           />
         </View>
       )}
-    </ScreenContainer>
+    </ScreenBody>
   );
 };
 

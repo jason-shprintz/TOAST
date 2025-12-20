@@ -3,8 +3,7 @@ import React, { JSX, useMemo } from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
-import LogoHeader from '../../../components/LogoHeader';
-import ScreenContainer from '../../../components/ScreenContainer';
+import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import SectionSubHeader from '../../../components/SectionSubHeader';
 import ReferenceEntryType from '../../../types/data-type';
@@ -32,8 +31,7 @@ export default function CategoryScreen(): JSX.Element {
   }, [title, data]);
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>{title}</SectionHeader>
       <ScrollView contentContainerStyle={styles.container}>
         {entries.length === 0 && (
@@ -56,7 +54,7 @@ export default function CategoryScreen(): JSX.Element {
             ))}
         </Grid>
       </ScrollView>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }
 

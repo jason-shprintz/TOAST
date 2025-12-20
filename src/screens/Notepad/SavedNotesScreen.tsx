@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
@@ -26,8 +25,7 @@ export default observer(function SavedNotesScreen() {
   const byCat = core.notesByCategory;
   const [expandedId, setExpandedId] = useState<string | null>(null);
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Saved Notes</SectionHeader>
       <ScrollView style={styles.container}>
         {core.categories.map(cat => (
@@ -113,7 +111,7 @@ export default observer(function SavedNotesScreen() {
           </View>
         ))}
       </ScrollView>
-    </ScreenContainer>
+    </ScreenBody>
   );
 });
 

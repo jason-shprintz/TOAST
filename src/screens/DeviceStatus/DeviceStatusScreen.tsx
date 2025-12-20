@@ -2,8 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useDeviceStatus } from '../../hooks/useDeviceStatus';
 import { COLORS } from '../../theme';
@@ -31,8 +30,7 @@ function DeviceStatusScreen() {
     useDeviceStatus();
 
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Device Status</SectionHeader>
 
       <View style={styles.card}>
@@ -78,7 +76,7 @@ function DeviceStatusScreen() {
         <Text style={styles.label}>Connectivity</Text>
         <Text style={styles.value}>{offlineText}</Text>
       </View>
-    </ScreenContainer>
+    </ScreenBody>
   );
 }
 

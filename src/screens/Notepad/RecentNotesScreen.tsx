@@ -9,8 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LogoHeader from '../../components/LogoHeader';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
@@ -22,8 +21,7 @@ export default observer(function RecentNotesScreen() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const data = useMemo(() => core.recentNotesTop20, [core.recentNotesTop20]);
   return (
-    <ScreenContainer>
-      <LogoHeader />
+    <ScreenBody>
       <SectionHeader>Recent Notes</SectionHeader>
       <View style={styles.card}>
         <FlatList
@@ -106,7 +104,7 @@ export default observer(function RecentNotesScreen() {
           ListEmptyComponent={<Text style={shared.value}>No notes yet.</Text>}
         />
       </View>
-    </ScreenContainer>
+    </ScreenBody>
   );
 });
 
