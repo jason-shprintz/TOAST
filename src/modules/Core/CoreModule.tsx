@@ -1,4 +1,3 @@
-import { observer } from 'mobx-react-lite';
 import React from 'react';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -38,11 +37,19 @@ const coreTools: ToolType[] = [
   },
 ];
 
-export default observer(function CoreModule() {
+/**
+ * Renders the Core tools screen.
+ *
+ * Displays a section header labeled "Core" and a list of tools sourced from
+ * {@link coreTools}, wrapped within the standard {@link ScreenBody} layout.
+ *
+ * @returns A React element representing the Core module screen.
+ */
+export default function CoreModule() {
   return (
     <ScreenBody>
       <SectionHeader>Core</SectionHeader>
       <ToolList tools={coreTools} />
     </ScreenBody>
   );
-});
+}

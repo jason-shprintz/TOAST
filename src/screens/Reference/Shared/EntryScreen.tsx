@@ -55,6 +55,20 @@ export default function EntryScreen(): JSX.Element {
     check();
   }, [resolvedEntry?.id]);
 
+  /**
+   * Toggles the bookmark state for the currently resolved entry.
+   *
+   * If there is no resolved entry, this function returns early without making changes.
+   * When the entry is already bookmarked, it removes the bookmark and updates local state.
+   * Otherwise, it adds a bookmark using the entry's id/title and the route category (or an empty string)
+   * and updates local state.
+   *
+   * @remarks
+   * This function performs asynchronous persistence operations and then synchronizes the `bookmarked`
+   * React state accordingly.
+   *
+   * @returns A promise that resolves when the add/remove operation completes and local state is updated.
+   */
   const toggleBookmark = async () => {
     if (!resolvedEntry) return;
     if (bookmarked) {
@@ -96,6 +110,7 @@ export default function EntryScreen(): JSX.Element {
         </TouchableOpacity>
       </View>
       <HorizontalRule />
+      {/* Summary */}
       <ScrollView contentContainerStyle={styles.container}>
         {!!resolvedEntry.summary && (
           <View style={styles.card}>
@@ -103,7 +118,7 @@ export default function EntryScreen(): JSX.Element {
             <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
           </View>
         )}
-
+        {/* Steps */}
         {!!resolvedEntry.steps?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Steps</Text>
@@ -112,7 +127,7 @@ export default function EntryScreen(): JSX.Element {
             ))}
           </View>
         )}
-
+        {/* Do Not */}
         {!!resolvedEntry.do_not?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Do Not</Text>
@@ -121,7 +136,7 @@ export default function EntryScreen(): JSX.Element {
             ))}
           </View>
         )}
-
+        {/* Watch For */}
         {!!resolvedEntry.watch_for?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Watch For</Text>
@@ -130,7 +145,7 @@ export default function EntryScreen(): JSX.Element {
             ))}
           </View>
         )}
-
+        {/* Notes */}
         {!!resolvedEntry.notes?.length && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Notes</Text>

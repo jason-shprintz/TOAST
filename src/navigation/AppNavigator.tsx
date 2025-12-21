@@ -22,6 +22,7 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import { onNavigationStateChange } from './navigationHistory';
 import { navigationRef } from './navigationRef';
 
 const Stack = createNativeStackNavigator();
@@ -46,7 +47,10 @@ const Stack = createNativeStackNavigator();
  */
 export default function AppNavigator() {
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onStateChange={onNavigationStateChange}
+    >
       <AppShell>
         <Stack.Navigator
           initialRouteName="Home"

@@ -71,6 +71,15 @@ export default function BookmarkScreen(): JSX.Element {
     return unsubscribe;
   }, [navigation]);
 
+  /**
+   * Opens the bookmarked entry associated with the given bookmark item.
+   *
+   * Looks up the corresponding entry in {@link entryMap} using the bookmark's `id`.
+   * If no entry is found, logs a warning and exits without navigating.
+   * Otherwise, navigates to the `Entry` screen, passing the resolved entry as a route param.
+   *
+   * @param item - The bookmark item whose associated entry should be opened.
+   */
   const handleOpen = (item: BookmarkItem) => {
     const entry = entryMap.get(item.id);
 

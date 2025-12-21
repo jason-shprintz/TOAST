@@ -17,6 +17,26 @@ import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
+/**
+ * Displays all saved notes grouped by category, with expandable previews and per-note deletion.
+ *
+ * @remarks
+ * - Reads categories and notes via `useCoreStore()`:
+ *   - `core.categories` drives the list of category cards.
+ *   - `core.notesByCategory` provides notes for each category.
+ * - Maintains local UI state `expandedId` to toggle whether a note shows its full text
+ *   or a truncated preview. Only one note can be expanded at a time.
+ * - For collapsed notes:
+ *   - Title is derived from the first `MAX_TITLE_LENGTH` characters of `n.text` (or `"(Untitled)"`).
+ *   - Body preview is limited to 3 lines and may show a “Show more…” hint.
+ * - For expanded notes:
+ *   - Renders the full note text using the expanded body style.
+ * - Deletion uses a confirmation `Alert`; tapping the trash icon stops propagation so it
+ *   does not toggle expansion.
+ *
+ * @returns A screen body containing a scrollable list of categorized notes with expand/collapse
+ * and delete interactions.
+ */
 export default observer(function SavedNotesScreen() {
   const core = useCoreStore();
   const byCat = core.notesByCategory;

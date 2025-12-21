@@ -25,6 +25,14 @@ const communicationTools: ToolType[] = [
   },
 ];
 
+/**
+ * Renders the Communications screen module.
+ *
+ * Displays a section header labeled "Communications" and a list of available
+ * communication-related tools within a standard screen layout.
+ *
+ * @returns A React element containing the Communications module UI.
+ */
 export default function CommunicationsModule() {
   return (
     <ScreenBody>

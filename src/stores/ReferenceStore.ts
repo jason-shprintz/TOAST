@@ -18,6 +18,7 @@ export class ReferenceStore {
     makeAutoObservable(this);
   }
 
+  // TODO: Is this needed?
   addReference(reference: Omit<ReferenceItem, 'id' | 'bookmarked'>) {
     this.references.push({
       ...reference,
@@ -26,6 +27,7 @@ export class ReferenceStore {
     });
   }
 
+  // TODO: Is this needed?
   toggleBookmark(referenceId: string) {
     const reference = this.references.find(r => r.id === referenceId);
     if (reference) {
@@ -33,6 +35,7 @@ export class ReferenceStore {
     }
   }
 
+  // TODO: Implement search filtering in ReferenceStore
   setSearchQuery(query: string) {
     this.searchQuery = query;
   }

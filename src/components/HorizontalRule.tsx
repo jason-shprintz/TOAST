@@ -1,6 +1,14 @@
 import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../theme';
 
+/**
+ * Renders a simple horizontal divider for separating content sections.
+ *
+ * @remarks
+ * This component currently returns a single `View` styled via `styles.ScreenContainer`.
+ *
+ * @returns A React element representing the horizontal rule.
+ */
 export function HorizontalRule() {
   return <View style={styles.ScreenContainer} />;
 }

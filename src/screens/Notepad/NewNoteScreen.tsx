@@ -21,6 +21,33 @@ import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 
+/**
+ * Screen for composing and saving a new note.
+ *
+ * Provides UI to:
+ * - Select a note category from `core.categories`.
+ * - Select a note type (`'text'` or `'sketch'`).
+ * - Enter note content via a multiline `TextInput` (currently used for both types).
+ * - Save the note to the core store and return to the previous screen.
+ * - Clear the current draft.
+ *
+ * Keyboard handling:
+ * - Wraps content in `KeyboardAvoidingView` (iOS uses `padding`) and dismisses the keyboard
+ *   when tapping outside inputs.
+ * - Adapts input height based on `useKeyboardStatus().isVisible`.
+ *
+ * Validation:
+ * - Save/Clear actions are disabled until the trimmed text is non-empty.
+ *
+ * Accessibility:
+ * - Dropdown triggers and the attach-photo icon button include accessibility labels/hints/roles.
+ *
+ * Notes:
+ * - The “Attach photo” action is a placeholder (no-op).
+ * - Navigation uses `goBack()` when available to avoid hard-coded route names.
+ *
+ * @returns A React element rendering the “New Note” creation screen.
+ */
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation();
