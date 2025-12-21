@@ -100,6 +100,7 @@ export default function BookmarkScreen(): JSX.Element {
       )}
       {/* END DEV ONLY */}
 
+      <HorizontalRule />
       <ScrollView contentContainerStyle={styles.container}>
         {items.length === 0 && (
           <Text style={styles.helperText}>No bookmarks yet.</Text>

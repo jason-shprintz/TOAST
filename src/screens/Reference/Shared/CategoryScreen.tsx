@@ -1,8 +1,9 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, ScrollView } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
+import { HorizontalRule } from '../../../components/HorizontalRule';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import SectionSubHeader from '../../../components/SectionSubHeader';
@@ -33,7 +34,8 @@ export default function CategoryScreen(): JSX.Element {
   return (
     <ScreenBody>
       <SectionHeader>{title}</SectionHeader>
-      <View style={styles.container}>
+      <HorizontalRule />
+      <ScrollView contentContainerStyle={styles.container}>
         {entries.length === 0 && (
           <Text style={styles.helperText}>No topics found.</Text>
         )}
@@ -53,13 +55,15 @@ export default function CategoryScreen(): JSX.Element {
               />
             ))}
         </Grid>
-      </View>
+      </ScrollView>
+      <HorizontalRule />
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     paddingBottom: 24,
   },
   helperText: {
