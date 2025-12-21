@@ -1,6 +1,6 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
@@ -33,7 +33,7 @@ export default function CategoryScreen(): JSX.Element {
   return (
     <ScreenBody>
       <SectionHeader>{title}</SectionHeader>
-      <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
         {entries.length === 0 && (
           <Text style={styles.helperText}>No topics found.</Text>
         )}
@@ -53,7 +53,7 @@ export default function CategoryScreen(): JSX.Element {
               />
             ))}
         </Grid>
-      </ScrollView>
+      </View>
     </ScreenBody>
   );
 }

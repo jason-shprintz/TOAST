@@ -3,6 +3,7 @@ import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import emergencyData from '../../data/emergency.json';
@@ -119,6 +120,7 @@ export default function BookmarkScreen(): JSX.Element {
           </Grid>
         )}
       </ScrollView>
+      <HorizontalRule />
     </ScreenBody>
   );
 }
@@ -127,6 +129,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 2,
     paddingBottom: 24,
+    width: '100%',
   },
   helperText: {
     fontSize: 16,

@@ -14,7 +14,7 @@ export default function ScreenBody({
 
 const styles = StyleSheet.create({
   base: {
-    flex: 1,
+    height: '80%',
     width: '100%',
     alignItems: 'center',
     backgroundColor: 'transparent',

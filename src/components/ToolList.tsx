@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { ToolType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
@@ -23,7 +23,7 @@ export default function ToolList({ tools }: ToolListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
   return (
-    <ScrollView>
+    <View>
       <Grid>
         {tools.map(tool => {
           if (tool.screen === 'ComingSoon') {
@@ -52,6 +52,6 @@ export default function ToolList({ tools }: ToolListProps): JSX.Element {
           );
         })}
       </Grid>
-    </ScrollView>
+    </View>
   );
 }

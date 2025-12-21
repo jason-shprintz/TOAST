@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../../components/HorizontalRule';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import {
@@ -94,6 +95,7 @@ export default function EntryScreen(): JSX.Element {
           />
         </TouchableOpacity>
       </View>
+      <HorizontalRule />
       <ScrollView contentContainerStyle={styles.container}>
         {!!resolvedEntry.summary && (
           <View style={styles.card}>
@@ -138,6 +140,7 @@ export default function EntryScreen(): JSX.Element {
           </View>
         )}
       </ScrollView>
+      <HorizontalRule />
     </ScreenBody>
   );
 }
