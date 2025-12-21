@@ -11,6 +11,7 @@ export const noteListSharedStyles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomColor: COLORS.SECONDARY_ACCENT,
     borderBottomWidth: 1,
+    borderRadius: 12,
   },
   itemTitle: {
     fontSize: 16,
