@@ -22,34 +22,29 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
-import { onNavigationStateChange } from './navigationHistory';
+import {
+  NavigationHistoryProvider,
+  useNavigationHistory,
+} from './NavigationHistoryContext';
 import { navigationRef } from './navigationRef';
 
 const Stack = createNativeStackNavigator();
 
 /**
- * AppNavigator is the root navigation component for the application.
+ * NavigatorContent is the internal component that uses the NavigationHistory context.
  *
- * It sets up the main navigation stack using React Navigation, defining all the primary screens and modules
- * available in the app. The navigator is wrapped in a `NavigationContainer` and uses a stack-based navigation pattern.
+ * This component is separated from AppNavigator to allow it to access the NavigationHistory
+ * context that is provided by NavigationHistoryProvider.
  *
  * @returns {JSX.Element} The navigation container with the configured stack navigator.
- *
- * @remarks
- * - The initial route is set to "Home".
- * - The header is hidden for all screens by default.
- * - Screens are grouped by modules (Core, Navigation, Reference, Communications) and shared screens.
- *
- * @example
- * ```tsx
- * <AppNavigator />
- * ```
  */
-export default function AppNavigator() {
+function NavigatorContent() {
+  const navigationHistory = useNavigationHistory();
+
   return (
     <NavigationContainer
       ref={navigationRef}
-      onStateChange={onNavigationStateChange}
+      onStateChange={() => navigationHistory.onNavigationStateChange()}
     >
       <AppShell>
         <Stack.Navigator
@@ -91,5 +86,32 @@ export default function AppNavigator() {
         </Stack.Navigator>
       </AppShell>
     </NavigationContainer>
+  );
+}
+
+/**
+ * AppNavigator is the root navigation component for the application.
+ *
+ * It sets up the main navigation stack using React Navigation, defining all the primary screens and modules
+ * available in the app. The navigator is wrapped in a `NavigationContainer` and uses a stack-based navigation pattern.
+ *
+ * @returns {JSX.Element} The navigation container with the configured stack navigator.
+ *
+ * @remarks
+ * - The initial route is set to "Home".
+ * - The header is hidden for all screens by default.
+ * - Screens are grouped by modules (Core, Navigation, Reference, Communications) and shared screens.
+ * - NavigationHistory is provided via context for proper state management.
+ *
+ * @example
+ * ```tsx
+ * <AppNavigator />
+ * ```
+ */
+export default function AppNavigator() {
+  return (
+    <NavigationHistoryProvider>
+      <NavigatorContent />
+    </NavigationHistoryProvider>
   );
 }

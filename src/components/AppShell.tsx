@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useMemo } from 'react';
 import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { canGoForward, goForward } from '../navigation/navigationHistory';
+import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS } from '../theme';
 import LogoHeader from './LogoHeader';
@@ -16,7 +16,7 @@ type Props = PropsWithChildren;
  * - A consistent shell layout with a persistent header (settings button + logo) and a content area.
  * - Global horizontal swipe navigation using a `PanResponder` attached to the outer container:
  *   - Right swipe triggers {@link goBack} when {@link canGoBack} is true.
- *   - Left swipe triggers {@link goForward} when {@link canGoForward} is true.
+ *   - Left swipe triggers `goForward` when forward navigation is available.
  *
  * Gesture behavior:
  * - Attempts to avoid interfering with vertical scrolling and taps by requiring a minimum horizontal
@@ -32,6 +32,8 @@ type Props = PropsWithChildren;
  * @returns The composed app shell containing the header, content, and gesture handlers.
  */
 export default function AppShell({ children }: Props) {
+  const navigationHistory = useNavigationHistory();
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -46,7 +48,7 @@ export default function AppShell({ children }: Props) {
           const wantsForward = dx < 0;
 
           if (wantsBack && !canGoBack()) return false;
-          if (wantsForward && !canGoForward()) return false;
+          if (wantsForward && !navigationHistory.canGoForward()) return false;
           if (!wantsBack && !wantsForward) return false;
 
           // Make it easier to start the gesture, but still bias against vertical scroll.
@@ -69,15 +71,15 @@ export default function AppShell({ children }: Props) {
           }
 
           if (dx < -35 && absDy < 60) {
-            goForward();
+            navigationHistory.goForward();
             return;
           }
           if (dx < -25 && vx < -0.25 && absDy < 80) {
-            goForward();
+            navigationHistory.goForward();
           }
         },
       }),
-    [],
+    [navigationHistory],
   );
 
   return (
