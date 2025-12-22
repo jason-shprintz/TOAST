@@ -39,8 +39,12 @@ export class NavigationHistory {
    * Creates a new NavigationHistory instance.
    *
    * @param navigationRef - Reference to the NavigationContainer
+   * @throws Error if navigationRef is null or undefined
    */
   constructor(navigationRef: NavigationContainerRefWithCurrent<ParamListBase>) {
+    if (!navigationRef) {
+      throw new Error('NavigationHistory requires a valid navigationRef');
+    }
     this.navigationRef = navigationRef;
   }
 

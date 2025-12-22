@@ -27,6 +27,10 @@ type NavigationHistoryProviderProps = {
  * @param props - Component props
  * @param props.children - Child components to render
  * @returns Provider component
+ *
+ * @remarks
+ * The navigationRef is a module-level constant imported from navigationRef.ts,
+ * so it's stable and doesn't need to be included in the dependency array.
  */
 export function NavigationHistoryProvider({
   children,

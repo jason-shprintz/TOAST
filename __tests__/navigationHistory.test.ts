@@ -7,11 +7,9 @@ import { NavigationHistory } from '../src/navigation/navigationHistory';
 // Mock the @react-navigation/native module
 jest.mock('@react-navigation/native', () => ({
   CommonActions: {
-    navigate: jest.fn((params) => ({ type: 'NAVIGATE', payload: params })),
+    navigate: (params: any) => ({ type: 'NAVIGATE', payload: params }),
   },
 }));
-
-const { CommonActions } = require('@react-navigation/native');
 
 // Mock navigation ref with minimal required interface
 const createMockNavigationRef = () => {
@@ -43,6 +41,20 @@ describe('NavigationHistory', () => {
     jest.clearAllMocks();
     navigationRef = createMockNavigationRef();
     navigationHistory = new NavigationHistory(navigationRef as any);
+  });
+
+  describe('constructor', () => {
+    it('should throw error if navigationRef is null', () => {
+      expect(() => new NavigationHistory(null as any)).toThrow(
+        'NavigationHistory requires a valid navigationRef',
+      );
+    });
+
+    it('should throw error if navigationRef is undefined', () => {
+      expect(() => new NavigationHistory(undefined as any)).toThrow(
+        'NavigationHistory requires a valid navigationRef',
+      );
+    });
   });
 
   describe('canGoForward', () => {
