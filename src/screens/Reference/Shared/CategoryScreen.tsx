@@ -6,6 +6,7 @@ import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import SectionSubHeader from '../../../components/SectionSubHeader';
+import { FOOTER_HEIGHT } from '../../../theme';
 import ReferenceEntryType from '../../../types/data-type';
 
 /**
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignSelf: 'stretch',
-    paddingBottom: 100,
+    paddingBottom: FOOTER_HEIGHT,
   },
   scrollView: {
     flex: 1,

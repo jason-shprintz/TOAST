@@ -44,7 +44,6 @@ export default observer(function SavedNotesScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Saved Notes</SectionHeader>
-      <HorizontalRule />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}

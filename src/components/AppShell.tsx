@@ -3,7 +3,7 @@ import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
-import { COLORS } from '../theme';
+import { COLORS, FOOTER_HEIGHT } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
@@ -107,7 +107,7 @@ export default function AppShell({ children }: Props) {
 
         <View style={styles.content}>{children}</View>
       </ScreenContainer>
-      
+
       <View style={styles.bottomRule}>
         <HorizontalRule />
       </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   bottomRule: {
     position: 'absolute',
-    bottom: 100,
+    bottom: FOOTER_HEIGHT,
     width: '90%',
     left: '5%',
   },

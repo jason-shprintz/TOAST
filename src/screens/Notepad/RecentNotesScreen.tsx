@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
-    marginBottom: 16,
+    marginBottom: 112,
     flex: 1,
   },
   list: {

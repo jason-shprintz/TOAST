@@ -16,7 +16,7 @@ import {
   removeBookmark,
   isBookmarked,
 } from '../../../stores/BookmarksStore';
-import { COLORS } from '../../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../../theme';
 import ReferenceEntryType from '../../../types/data-type';
 
 type EntryScreenRouteProp = RouteProp<
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignSelf: 'stretch',
-    paddingBottom: 100,
+    paddingBottom: FOOTER_HEIGHT,
   },
   scrollView: {
     flex: 1,

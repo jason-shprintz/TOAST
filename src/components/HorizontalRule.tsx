@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   horizontalLine: {
     width: '100%',
     backgroundColor: COLORS.SECONDARY_ACCENT,
-    paddingTop: 2,
+    height: 2,
     alignItems: 'center',
   },
 });
