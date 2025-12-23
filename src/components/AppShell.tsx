@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useMemo } from 'react';
 import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
-import canGoBack, { goBack } from '../navigation/navigationRef';
+import { canGoBack, goBack } from '../navigation/navigationRef';
 import { COLORS } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
