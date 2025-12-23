@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
+import SectionHeader from '../../components/SectionHeader';
 import { COLORS } from '../../theme';
 
 type ComingSoonParams = {
@@ -31,6 +32,7 @@ export default function ComingSoonScreen({ route }: Props) {
 
   return (
     <ScreenBody>
+      <SectionHeader>{title}</SectionHeader>
       <View style={styles.card}>
         <Ionicons
           name={icon}
@@ -55,6 +57,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
     paddingVertical: 40,
     paddingHorizontal: 16,
+    marginTop: 20,
   },
   icon: {
     marginBottom: 10,

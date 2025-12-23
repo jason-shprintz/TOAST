@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS } from '../theme';
+import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
 
@@ -106,6 +107,10 @@ export default function AppShell({ children }: Props) {
 
         <View style={styles.content}>{children}</View>
       </ScreenContainer>
+      
+      <View style={styles.bottomRule}>
+        <HorizontalRule />
+      </View>
     </View>
   );
 }
@@ -115,6 +120,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   shell: {
+    flex: 1,
     paddingTop: 0,
     paddingHorizontal: 0,
     alignItems: 'stretch',
@@ -136,5 +142,11 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     alignItems: 'stretch',
+  },
+  bottomRule: {
+    position: 'absolute',
+    bottom: 100,
+    width: '90%',
+    left: '5%',
   },
 });

@@ -110,58 +110,72 @@ export default function EntryScreen(): JSX.Element {
         </TouchableOpacity>
       </View>
       <HorizontalRule />
-      {/* Summary */}
-      <ScrollView contentContainerStyle={styles.container}>
-        {!!resolvedEntry.summary && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Summary</Text>
-            <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
-          </View>
-        )}
-        {/* Steps */}
-        {!!resolvedEntry.steps?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Steps</Text>
-            {resolvedEntry.steps.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-        {/* Do Not */}
-        {!!resolvedEntry.do_not?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Do Not</Text>
-            {resolvedEntry.do_not.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-        {/* Watch For */}
-        {!!resolvedEntry.watch_for?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Watch For</Text>
-            {resolvedEntry.watch_for.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-        {/* Notes */}
-        {!!resolvedEntry.notes?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Notes</Text>
-            {resolvedEntry.notes.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-      </ScrollView>
-      <HorizontalRule />
+      <View style={styles.container}>
+        {/* Summary */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {!!resolvedEntry.summary && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Summary</Text>
+              <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
+            </View>
+          )}
+          {/* Steps */}
+          {!!resolvedEntry.steps?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Steps</Text>
+              {resolvedEntry.steps.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Do Not */}
+          {!!resolvedEntry.do_not?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Do Not</Text>
+              {resolvedEntry.do_not.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Watch For */}
+          {!!resolvedEntry.watch_for?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Watch For</Text>
+              {resolvedEntry.watch_for.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Notes */}
+          {!!resolvedEntry.notes?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Notes</Text>
+              {resolvedEntry.notes.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: 100,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
     paddingTop: 8,
     paddingHorizontal: 14,
     paddingBottom: 24,
@@ -170,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingHorizontal: 14,
-    marginBottom: 8,
+    paddingVertical: 8,
   },
   actionBtn: {
     borderWidth: 1,

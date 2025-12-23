@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingTop: 2,
-    marginVertical: 2,
     alignItems: 'center',
   },
 });

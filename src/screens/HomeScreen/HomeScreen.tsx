@@ -37,7 +37,7 @@ const modules: ToolType[] = [
 export default function HomeScreen() {
   return (
     <ScreenBody>
-      <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
+      <SectionHeader>TOAST</SectionHeader>
       <ToolList tools={modules} />
     </ScreenBody>
   );

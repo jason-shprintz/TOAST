@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, TextProps } from 'react-native';
 import { COLORS } from '../theme';
+import { HorizontalRule } from './HorizontalRule';
 
 type Props = TextProps & { title?: string };
 
@@ -22,9 +23,12 @@ export default function SectionHeader({
   ...rest
 }: Props) {
   return (
-    <Text {...rest} style={[styles.header, style]}>
-      {title ?? children}
-    </Text>
+    <>
+      <Text {...rest} style={[styles.header, style]}>
+        {title ?? children}
+      </Text>
+      <HorizontalRule />
+    </>
   );
 }
 

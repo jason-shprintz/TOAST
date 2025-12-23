@@ -4,7 +4,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { CategoryType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
-import { HorizontalRule } from './HorizontalRule';
 import SectionSubHeader from './SectionSubHeader';
 
 type CategoryListProps = {
@@ -28,7 +27,6 @@ export default function CategoryList({
 
   return (
     <View style={styles.container}>
-      <HorizontalRule />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -55,24 +53,24 @@ export default function CategoryList({
           })}
         </Grid>
       </ScrollView>
-      <HorizontalRule />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '100%',
     alignItems: 'center',
-    flex: 1,
+    paddingBottom: 102,
   },
   scrollView: {
     flex: 1,
     width: '100%',
   },
   scrollContent: {
-    paddingBottom: 24,
     width: '100%',
     alignItems: 'center',
+    paddingBottom: 24,
   },
 });

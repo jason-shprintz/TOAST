@@ -32,7 +32,6 @@ function DeviceStatusScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Device Status</SectionHeader>
-
       <View style={styles.card}>
         <LinearGradient
           colors={COLORS.TOAST_BROWN_GRADIENT}
@@ -84,7 +83,7 @@ export default observer(DeviceStatusScreen);
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    width: '90%',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
