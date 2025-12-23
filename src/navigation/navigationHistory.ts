@@ -109,7 +109,7 @@ export class NavigationHistory {
 
     const routesLength = state.routes.length;
 
-    if (this.lastRoutesLength != null && this.lastRoute) {
+    if (this.lastRoutesLength !== null && this.lastRoute) {
       const wentBack = routesLength < this.lastRoutesLength;
       const movedToDifferentRoute = current.name !== this.lastRoute.name;
 
