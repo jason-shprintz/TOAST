@@ -107,7 +107,6 @@ export default function AppShell({ children }: Props) {
 
         <View style={styles.content}>{children}</View>
       </ScreenContainer>
-      
       <View style={styles.bottomRule}>
         <HorizontalRule />
       </View>
