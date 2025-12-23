@@ -1,9 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Text } from 'react-native';
+import { StyleSheet, ScrollView, Text, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
-import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import emergencyData from '../../data/emergency.json';
@@ -16,6 +15,7 @@ import {
   BookmarkItem,
   clearBookmarks,
 } from '../../stores/BookmarksStore';
+import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 
 /**
@@ -109,36 +109,51 @@ export default function BookmarkScreen(): JSX.Element {
       )}
       {/* END DEV ONLY */}
 
-      <ScrollView contentContainerStyle={styles.container}>
-        {items.length === 0 && (
-          <Text style={styles.helperText}>No bookmarks yet.</Text>
-        )}
-        {items.length > 0 && (
-          <Grid>
-            {items
-              .slice()
-              .sort((a, b) => a.title.localeCompare(b.title))
-              .map(item => (
-                <CardTopic
-                  key={item.id}
-                  title={item.title}
-                  icon="document-text-outline"
-                  onPress={() => handleOpen(item)}
-                />
-              ))}
-          </Grid>
-        )}
-      </ScrollView>
-      <HorizontalRule />
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {items.length === 0 && (
+            <Text style={styles.helperText}>No bookmarks yet.</Text>
+          )}
+          {items.length > 0 && (
+            <Grid>
+              {items
+                .slice()
+                .sort((a, b) => a.title.localeCompare(b.title))
+                .map(item => (
+                  <CardTopic
+                    key={item.id}
+                    title={item.title}
+                    icon="document-text-outline"
+                    onPress={() => handleOpen(item)}
+                  />
+                ))}
+            </Grid>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
     paddingHorizontal: 2,
     paddingBottom: 24,
     width: '100%',
+    alignItems: 'center',
   },
   helperText: {
     fontSize: 16,
