@@ -8,8 +8,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
@@ -17,9 +17,26 @@ import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const CONTAINER_WIDTH = SCREEN_WIDTH * 0.9;
-
+/**
+ * Displays all saved notes grouped by category, with expandable previews and per-note deletion.
+ *
+ * @remarks
+ * - Reads categories and notes via `useCoreStore()`:
+ *   - `core.categories` drives the list of category cards.
+ *   - `core.notesByCategory` provides notes for each category.
+ * - Maintains local UI state `expandedId` to toggle whether a note shows its full text
+ *   or a truncated preview. Only one note can be expanded at a time.
+ * - For collapsed notes:
+ *   - Title is derived from the first `MAX_TITLE_LENGTH` characters of `n.text` (or `"(Untitled)"`).
+ *   - Body preview is limited to 3 lines and may show a “Show more…” hint.
+ * - For expanded notes:
+ *   - Renders the full note text using the expanded body style.
+ * - Deletion uses a confirmation `Alert`; tapping the trash icon stops propagation so it
+ *   does not toggle expansion.
+ *
+ * @returns A screen body containing a scrollable list of categorized notes with expand/collapse
+ * and delete interactions.
+ */
 export default observer(function SavedNotesScreen() {
   const core = useCoreStore();
   const byCat = core.notesByCategory;
@@ -27,7 +44,10 @@ export default observer(function SavedNotesScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Saved Notes</SectionHeader>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         {core.categories.map(cat => (
           <View key={cat} style={styles.card}>
             <Text style={styles.label}>{cat}</Text>
@@ -111,14 +131,20 @@ export default observer(function SavedNotesScreen() {
           </View>
         ))}
       </ScrollView>
+      <HorizontalRule />
     </ScreenBody>
   );
 });
 
 const styles = StyleSheet.create({
-  container: {
-    width: CONTAINER_WIDTH,
+  scrollView: {
     flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  scrollContent: {
+    width: '100%',
+    paddingBottom: 24,
   },
   card: {
     width: '100%',

@@ -26,10 +26,18 @@ const modules: ToolType[] = [
   },
 ];
 
+/**
+ * Home screen for the app.
+ *
+ * Renders the primary landing content including the app title and the list of
+ * available tool modules.
+ *
+ * @returns A React element containing a section header and a tool list.
+ */
 export default function HomeScreen() {
   return (
     <ScreenBody>
-      <SectionHeader>Tech-Offline And Survival Tools</SectionHeader>
+      <SectionHeader>TOAST</SectionHeader>
       <ToolList tools={modules} />
     </ScreenBody>
   );

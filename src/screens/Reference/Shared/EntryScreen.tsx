@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../../components/HorizontalRule';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import {
@@ -15,7 +16,7 @@ import {
   removeBookmark,
   isBookmarked,
 } from '../../../stores/BookmarksStore';
-import { COLORS } from '../../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../../theme';
 import ReferenceEntryType from '../../../types/data-type';
 
 type EntryScreenRouteProp = RouteProp<
@@ -54,6 +55,20 @@ export default function EntryScreen(): JSX.Element {
     check();
   }, [resolvedEntry?.id]);
 
+  /**
+   * Toggles the bookmark state for the currently resolved entry.
+   *
+   * If there is no resolved entry, this function returns early without making changes.
+   * When the entry is already bookmarked, it removes the bookmark and updates local state.
+   * Otherwise, it adds a bookmark using the entry's id/title and the route category (or an empty string)
+   * and updates local state.
+   *
+   * @remarks
+   * This function performs asynchronous persistence operations and then synchronizes the `bookmarked`
+   * React state accordingly.
+   *
+   * @returns A promise that resolves when the add/remove operation completes and local state is updated.
+   */
   const toggleBookmark = async () => {
     if (!resolvedEntry) return;
     if (bookmarked) {
@@ -94,56 +109,73 @@ export default function EntryScreen(): JSX.Element {
           />
         </TouchableOpacity>
       </View>
-      <ScrollView contentContainerStyle={styles.container}>
-        {!!resolvedEntry.summary && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Summary</Text>
-            <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
-          </View>
-        )}
-
-        {!!resolvedEntry.steps?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Steps</Text>
-            {resolvedEntry.steps.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-
-        {!!resolvedEntry.do_not?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Do Not</Text>
-            {resolvedEntry.do_not.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-
-        {!!resolvedEntry.watch_for?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Watch For</Text>
-            {resolvedEntry.watch_for.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-
-        {!!resolvedEntry.notes?.length && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Notes</Text>
-            {resolvedEntry.notes.map((s: string, idx: number) => (
-              <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+      <HorizontalRule />
+      <View style={styles.container}>
+        {/* Summary */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {!!resolvedEntry.summary && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Summary</Text>
+              <Text style={styles.cardBody}>{resolvedEntry.summary}</Text>
+            </View>
+          )}
+          {/* Steps */}
+          {!!resolvedEntry.steps?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Steps</Text>
+              {resolvedEntry.steps.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Do Not */}
+          {!!resolvedEntry.do_not?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Do Not</Text>
+              {resolvedEntry.do_not.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Watch For */}
+          {!!resolvedEntry.watch_for?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Watch For</Text>
+              {resolvedEntry.watch_for.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+          {/* Notes */}
+          {!!resolvedEntry.notes?.length && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Notes</Text>
+              {resolvedEntry.notes.map((s: string, idx: number) => (
+                <Text key={idx} style={styles.listItem}>{`• ${s}`}</Text>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
     paddingTop: 8,
     paddingHorizontal: 14,
     paddingBottom: 24,
@@ -152,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingHorizontal: 14,
-    marginBottom: 8,
+    paddingVertical: 8,
   },
   actionBtn: {
     borderWidth: 1,

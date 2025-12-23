@@ -1,11 +1,12 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import React, { JSX, useMemo } from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
+import { Text, StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import SectionSubHeader from '../../../components/SectionSubHeader';
+import { FOOTER_HEIGHT } from '../../../theme';
 import ReferenceEntryType from '../../../types/data-type';
 
 /**
@@ -33,34 +34,53 @@ export default function CategoryScreen(): JSX.Element {
   return (
     <ScreenBody>
       <SectionHeader>{title}</SectionHeader>
-      <ScrollView contentContainerStyle={styles.container}>
-        {entries.length === 0 && (
-          <Text style={styles.helperText}>No topics found.</Text>
-        )}
-        {disclaimer ? <SectionSubHeader>{disclaimer}</SectionSubHeader> : null}
-        <Grid>
-          {entries
-            .slice()
-            .sort((a: ReferenceEntryType, b: ReferenceEntryType) =>
-              a.title.localeCompare(b.title),
-            )
-            .map((item: ReferenceEntryType) => (
-              <CardTopic
-                key={item.id}
-                title={item.title}
-                icon="document-text-outline"
-                onPress={() => navigation.navigate('Entry', { entry: item })}
-              />
-            ))}
-        </Grid>
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {entries.length === 0 && (
+            <Text style={styles.helperText}>No topics found.</Text>
+          )}
+          {disclaimer ? (
+            <SectionSubHeader>{disclaimer}</SectionSubHeader>
+          ) : null}
+          <Grid>
+            {entries
+              .slice()
+              .sort((a: ReferenceEntryType, b: ReferenceEntryType) =>
+                a.title.localeCompare(b.title),
+              )
+              .map((item: ReferenceEntryType) => (
+                <CardTopic
+                  key={item.id}
+                  title={item.title}
+                  icon="document-text-outline"
+                  onPress={() => navigation.navigate('Entry', { entry: item })}
+                />
+              ))}
+          </Grid>
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    width: '100%',
     paddingBottom: 24,
+    alignItems: 'center',
   },
   helperText: {
     fontSize: 16,

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { ToolType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
@@ -23,35 +23,59 @@ export default function ToolList({ tools }: ToolListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
   return (
-    <ScrollView>
-      <Grid>
-        {tools.map(tool => {
-          if (tool.screen === 'ComingSoon') {
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <Grid>
+          {tools.map(tool => {
+            if (tool.screen === 'ComingSoon') {
+              return (
+                <CardTopic
+                  key={tool.id}
+                  title={tool.name}
+                  icon={tool.icon}
+                  onPress={() =>
+                    navigation.navigate('ComingSoon', {
+                      title: tool.name,
+                      icon: tool.icon,
+                    })
+                  }
+                />
+              );
+            }
+
             return (
               <CardTopic
                 key={tool.id}
                 title={tool.name}
                 icon={tool.icon}
-                onPress={() =>
-                  navigation.navigate('ComingSoon', {
-                    title: tool.name,
-                    icon: tool.icon,
-                  })
-                }
+                onPress={() => navigation.navigate(tool.screen)}
               />
             );
-          }
-
-          return (
-            <CardTopic
-              key={tool.id}
-              title={tool.name}
-              icon={tool.icon}
-              onPress={() => navigation.navigate(tool.screen)}
-            />
-          );
-        })}
-      </Grid>
-    </ScrollView>
+          })}
+        </Grid>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 100,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  scrollContent: {
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 24,
+  },
+});

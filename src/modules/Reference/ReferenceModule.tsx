@@ -43,6 +43,13 @@ const referenceTools: ToolType[] = [
   },
 ];
 
+/**
+ * Renders the Reference screen.
+ *
+ * Displays a section header labeled "Reference" and a list of available reference tools.
+ *
+ * @returns A React element containing the Reference screen layout.
+ */
 export default function ReferenceModule() {
   return (
     <ScreenBody>

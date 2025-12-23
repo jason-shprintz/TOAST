@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { JSX } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { FOOTER_HEIGHT } from '../theme';
 import { CategoryType } from '../types/common-types';
 import CardTopic from './CardTopic';
 import Grid from './Grid';
@@ -26,34 +27,51 @@ export default function CategoryList({
   const navigation = useNavigation<any>();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {disclaimer.trim().length > 0 && (
-        <SectionSubHeader>{disclaimer}</SectionSubHeader>
-      )}
-      <Grid>
-        {categories.map(category => {
-          return (
-            <CardTopic
-              key={category.id}
-              title={category.title}
-              icon={category.icon}
-              onPress={() =>
-                navigation.navigate('Category', {
-                  title: category.title,
-                  data: category.data,
-                  disclaimer: disclaimer,
-                })
-              }
-            />
-          );
-        })}
-      </Grid>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {disclaimer.trim().length > 0 && (
+          <SectionSubHeader>{disclaimer}</SectionSubHeader>
+        )}
+        <Grid>
+          {categories.map(category => {
+            return (
+              <CardTopic
+                key={category.id}
+                title={category.title}
+                icon={category.icon}
+                onPress={() =>
+                  navigation.navigate('Category', {
+                    title: category.title,
+                    data: category.data,
+                    disclaimer: disclaimer,
+                  })
+                }
+              />
+            );
+          })}
+        </Grid>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '100%',
+    alignItems: 'center',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 24,
   },
 });

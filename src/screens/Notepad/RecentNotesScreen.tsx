@@ -16,6 +16,24 @@ import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
+/**
+ * Displays the 20 most recently created notes in a scrollable list with expand/collapse behavior.
+ *
+ * @remarks
+ * Notes are sourced from the core store (`core.recentNotesTop20`). Each list item shows:
+ * - A single-line title derived from the note text (truncated to `MAX_TITLE_LENGTH`) or `(Untitled)`.
+ * - A preview body truncated to 3 lines when collapsed, or the full text when expanded.
+ * - A “Show more…” hint when collapsed and the note has text.
+ * - Metadata including the localized creation timestamp and the note category.
+ *
+ * Tapping an item toggles its expanded state; only one note is expanded at a time (`expandedId`).
+ * A trash action is provided per item, which stops event propagation to avoid toggling expansion,
+ * then confirms deletion via an alert before calling `core.deleteNote`.
+ *
+ * When there are no notes, an empty state message is rendered.
+ *
+ * @returns The Recent Notes screen content.
+ */
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -118,7 +136,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
-    marginBottom: 16,
+    marginBottom: 112,
     flex: 1,
   },
   list: {

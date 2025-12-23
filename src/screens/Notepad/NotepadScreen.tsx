@@ -1,10 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import Grid from '../../components/Grid';
 import CardTopic from '../../components/CardTopic';
+import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 
+/**
+ * Notepad landing screen.
+ *
+ * @remarks
+ * Presents a simple dashboard of note-related actions and routes:
+ * - **New Note** → navigates to the `NewNote` screen
+ * - **Recent Notes** → navigates to the `RecentNotes` screen
+ * - **Saved Notes** → navigates to the `SavedNotes` screen
+ *
+ * Uses React Navigation to perform screen transitions from card taps.
+ *
+ * @returns A screen layout containing a header and a grid of navigation cards.
+ */
 export default function NotepadScreen() {
   const navigation = useNavigation<any>();
   return (

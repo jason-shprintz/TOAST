@@ -19,6 +19,14 @@ const navigationTools: ToolType[] = [
   },
 ];
 
+/**
+ * Renders the Navigation screen module.
+ *
+ * Displays a section header and a list of navigation-related tools within the
+ * standard screen layout.
+ *
+ * @returns The Navigation module UI.
+ */
 export default function NavigationModule() {
   return (
     <ScreenBody>

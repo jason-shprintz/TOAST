@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 22,
-    marginHorizontal: 2,
     elevation: 2,
     overflow: 'hidden',
     borderColor: COLORS.SECONDARY_ACCENT,
