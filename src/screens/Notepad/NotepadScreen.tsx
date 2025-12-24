@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,23 +8,33 @@ import Grid from '../../components/Grid';
 import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 
 /**
  * Notepad landing screen.
  *
  * @remarks
- * Presents a simple dashboard of note-related actions and routes:
+ * Presents a dashboard of note-related actions and routes:
  * - **New Note** → navigates to the `NewNote` screen
  * - **Recent Notes** → navigates to the `RecentNotes` screen
  * - **Saved Notes** → navigates to the `SavedNotes` screen
+ * - **Note Categories** → mapped as CardTopic cards that navigate to category-specific screens
  *
  * Uses React Navigation to perform screen transitions from card taps.
  *
- * @returns A screen layout containing a header and a grid of navigation cards.
+ * @returns A screen layout containing a header, action buttons, and a grid of navigation cards.
  */
-export default function NotepadScreen() {
+export default observer(function NotepadScreen() {
   const navigation = useNavigation<any>();
+  const core = useCoreStore();
+
+  const categoryIcons: Record<string, string> = {
+    General: 'folder-outline',
+    Work: 'briefcase-outline',
+    Personal: 'heart-outline',
+    Ideas: 'lightbulb-outline',
+  };
   return (
     <ScreenBody>
       <SectionHeader>Notepad</SectionHeader>
@@ -52,15 +63,20 @@ export default function NotepadScreen() {
       <HorizontalRule />
 
       <Grid>
-        <CardTopic
-          title="Saved Notes"
-          icon="save-outline"
-          onPress={() => navigation.navigate('SavedNotes')}
-        />
+        {core.categories.map(cat => (
+          <CardTopic
+            key={cat}
+            title={cat}
+            icon={categoryIcons[cat] || 'folder-outline'}
+            onPress={() =>
+              navigation.navigate('NoteCategory', { category: cat })
+            }
+          />
+        ))}
       </Grid>
     </ScreenBody>
   );
-}
+});
 
 const styles = StyleSheet.create({
   noteHeader: {

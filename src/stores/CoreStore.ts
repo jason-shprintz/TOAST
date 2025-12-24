@@ -30,6 +30,7 @@ export interface Note {
   longitude?: number;
   category: NoteCategory;
   type: NoteInputType; // text or sketch
+  title?: string;
   text?: string;
   sketchDataUri?: string; // placeholder for sketch image
   photoUris: string[]; // attached photos (uris)
@@ -565,6 +566,7 @@ export class CoreStore {
   async createNote(params: {
     category?: NoteCategory;
     type: NoteInputType;
+    title?: string;
     text?: string;
     sketchDataUri?: string;
   }) {
@@ -597,6 +599,7 @@ export class CoreStore {
         longitude !== undefined && { latitude, longitude }),
       category: params.category ?? 'General',
       type: params.type,
+      title: params.title,
       text: params.text,
       sketchDataUri: params.sketchDataUri,
       photoUris: [],
@@ -753,11 +756,23 @@ export class CoreStore {
           'longitude REAL,' +
           'category TEXT NOT NULL,' +
           "type TEXT NOT NULL CHECK(type IN ('text','sketch'))," +
+          'title TEXT,' +
           'text TEXT,' +
           'sketchDataUri TEXT,' +
           'photoUris TEXT' +
           ')',
       );
+      // Migration: Add title column if it doesn't exist
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN title TEXT',
+        );
+      } catch (error: any) {
+        // Column already exists, ignore error
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
     } catch (error) {
       console.error('Failed to initialize notes database:', error);
       this.notesDb = null;
@@ -792,6 +807,7 @@ export class CoreStore {
         longitude: r.longitude ?? undefined,
         category: r.category,
         type: r.type,
+        title: r.title ?? undefined,
         text: r.text ?? undefined,
         sketchDataUri: r.sketchDataUri ?? undefined,
         photoUris: (() => {
@@ -822,7 +838,7 @@ export class CoreStore {
       await this.initNotesDb();
       if (!this.notesDb) return;
       await this.notesDb.executeSql(
-        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?,?)',
         [
           note.id,
           note.createdAt,
@@ -830,6 +846,7 @@ export class CoreStore {
           note.longitude ?? null,
           note.category,
           note.type,
+          note.title ?? null,
           note.text ?? null,
           note.sketchDataUri ?? null,
           JSON.stringify(note.photoUris ?? []),
