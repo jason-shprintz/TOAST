@@ -11,10 +11,11 @@ import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
-import NoteCategoryScreen from '../screens/Notepad/NoteCategoryScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
+import NoteCategoryScreen from '../screens/Notepad/Shared/NoteCategoryScreen';
+import NoteEntryScreen from '../screens/Notepad/Shared/NoteEntryScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -74,6 +75,7 @@ function NavigatorContent() {
           <Stack.Screen name="NewNote" component={NewNoteScreen} />
           <Stack.Screen name="Notepad" component={NotepadScreen} />
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />
+          <Stack.Screen name="NoteEntry" component={NoteEntryScreen} />
           <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
           <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
           {/* Reference Module */}

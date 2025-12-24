@@ -2,13 +2,13 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
 import { Text, StyleSheet, ScrollView, View } from 'react-native';
-import CardTopic from '../../components/CardTopic';
-import Grid from '../../components/Grid';
-import ScreenBody from '../../components/ScreenBody';
-import SectionHeader from '../../components/SectionHeader';
-import { useCoreStore } from '../../stores';
-import { NoteCategory } from '../../stores/CoreStore';
-import { FOOTER_HEIGHT } from '../../theme';
+import CardTopic from '../../../components/CardTopic';
+import Grid from '../../../components/Grid';
+import ScreenBody from '../../../components/ScreenBody';
+import SectionHeader from '../../../components/SectionHeader';
+import { useCoreStore } from '../../../stores';
+import { NoteCategory } from '../../../stores/CoreStore';
+import { FOOTER_HEIGHT } from '../../../theme';
 
 /**
  * Displays all notes for a specific category.
@@ -65,8 +65,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
                   title={titleText}
                   icon="document-text-outline"
                   onPress={() => {
-                    // For now, just go back. In the future, could navigate to an edit screen
-                    navigation.goBack();
+                    navigation.navigate('NoteEntry', { note });
                   }}
                 />
               );

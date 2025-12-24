@@ -70,6 +70,6 @@ export const noteListSharedStyles = StyleSheet.create({
     marginTop: 8,
   },
   trashButton: {
-    padding: 4,
+    paddingVertical: 6,
   },
 });
