@@ -110,8 +110,6 @@ Fundamental offline tools available to all users.
 - **Local Notes / Field Logs**  
   - Notes needs a complete retooling. Instead of Saved Notes, I want all of the categories displayed. When the user selects the category, it should list out the notes similar to how it lists out the reference material. The only difference is the it should show some preview of the note the way it does now.
   - The user should have the ability to sort the notes based on time, alpha, or manually. They should also be able to favorite the notes.
-  - The New Note button should be smaller and more of an action bar item than a whole category.
-  - The Recent Note button should be smaller and more of an action bar item.
   - The Favorite Note button should be smaller and more of an action bar item.
   - Need to develop sketch.
   - The user should have the ability to add and/or delete categories. This should be an action bar item.

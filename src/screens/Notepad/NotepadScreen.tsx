@@ -1,9 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { COLORS } from '../../theme';
 
 /**
  * Notepad landing screen.
@@ -23,18 +27,31 @@ export default function NotepadScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Notepad</SectionHeader>
+      <View style={styles.noteHeader}>
+        <TouchableOpacity
+          style={styles.noteButton}
+          onPress={() => navigation.navigate('NewNote')}
+          accessibilityLabel="New Note"
+          accessibilityRole="button"
+        >
+          <Ionicons
+            name="create-outline"
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.noteButton}
+          onPress={() => navigation.navigate('RecentNotes')}
+          accessibilityLabel="Recent Notes"
+          accessibilityRole="button"
+        >
+          <Ionicons name="time-outline" size={30} color={COLORS.PRIMARY_DARK} />
+        </TouchableOpacity>
+      </View>
+      <HorizontalRule />
 
       <Grid>
-        <CardTopic
-          title="New Note"
-          icon="create-outline"
-          onPress={() => navigation.navigate('NewNote')}
-        />
-        <CardTopic
-          title="Recent Notes"
-          icon="time-outline"
-          onPress={() => navigation.navigate('RecentNotes')}
-        />
         <CardTopic
           title="Saved Notes"
           icon="save-outline"
@@ -44,3 +61,16 @@ export default function NotepadScreen() {
     </ScreenBody>
   );
 }
+
+const styles = StyleSheet.create({
+  noteHeader: {
+    width: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  noteButton: {
+    paddingVertical: 6,
+  },
+});
