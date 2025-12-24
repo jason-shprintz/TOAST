@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
