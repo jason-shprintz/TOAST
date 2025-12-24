@@ -69,6 +69,34 @@ npm run clean:appledouble
 
 ## Future Improvements
 
+### Everything
+
+Improvements that encompass the entire app ecosystem
+
+- **Settings button implementation**
+  - Font size
+  - Dark mode
+- **Help button implementation**
+  - What is TOAST
+  - How to use
+  - Migration assistant
+  - Privacy Policy
+  - Terms of Use
+  - Contact
+- **Footer actions**
+  - Current active item
+  - Notifications
+  - SOS shortcut
+- **Horizontal Scrolling**
+  - Implement a more robust horizontal scrolling inside of ScrollView
+- **Splash Screen**
+  - Update image
+  - Update branding
+- **Website**
+  - Update website with better branding
+- **Android Testing**
+- **Tablet Testing**
+
 ### 🌰 Core Module (Free)
 
 Fundamental offline tools available to all users.
@@ -76,19 +104,35 @@ Fundamental offline tools available to all users.
 #### **Planned Core Features**
 
 - **Flashlight & Screen Beacon Tools**  
-  - ~~Flashlight toggle, strobe modes,~~ colored screen beacon, ~~SOS pattern~~
+  - Colored screen beacon (RED LIGHT)
+  - SOS should have an option to have tone.
 
 - **Local Notes / Field Logs**  
-  - Offline notes with optional timestamp + last known GPS position
+  - Notes needs a complete retooling. Instead of Saved Notes, I want all of the categories displayed. When the user selects the category, it should list out the notes similar to how it lists out the reference material. The only difference is the it should show some preview of the note the way it does now.
+  - The user should have the ability to sort the notes based on time, alpha, or manually. They should also be able to favorite the notes.
+  - The New Note button should be smaller and more of an action bar item than a whole category.
+  - The Recent Note button should be smaller and more of an action bar item.
+  - The Favorite Note button should be smaller and more of an action bar item.
+  - Need to develop sketch.
+  - The user should have the ability to add and/or delete categories. This should be an action bar item.
 
 - **Offline Checklists**  
-  - Emergency checklists (bug-out bag, first aid, evacuation), fully editable
+  - Bug-out bag
+  - First-aid kit
+  - Evacuation kit
+  - The user should have the ability to add their own checklist items
+  - The checklist should be fully editable
 
 - **Device Status Dashboard**  
-  - Battery estimate (enhance), ~~storage usage, last GPS fix, offline connectivity status~~
+  - Battery estimate (enhance)
+    - Needs to be instant. Faster is better than accurate.
 
 - **Unit Conversion Tools**  
-  - Length, weight, temperature, wind speed, pressure conversions
+  - Length
+  - Weight
+  - Temperature
+  - Wind speed
+  - Pressure conversions
 
 ---
 
@@ -115,6 +159,7 @@ Offline navigation and orientation tools.
 
 - **Downloadable Trail Packs**  
   - Trails, markers, stats all stored for offline use
+  - Research trail APIs that can be stored
 
 ---
 
@@ -127,11 +172,11 @@ Offline communication, signaling, and emergency tools.
 - **Morse Code Tools**  
   - Text-to-flashlight, text-to-screen blink, tone keying trainer
 
-- **SOS Signaling Modes**  
-  - Flashlight SOS, screen SOS, tone/beeping SOS
-
 - **Radio Frequency Reference**  
-  - Offline AM/FM emergency stations, NOAA channels, HAM emergency bands
+  - Offline AM/FM emergency stations
+  - NOAA channels
+  - HAM emergency bands
+    - Research creating an API for this to be stored locally
 
 - **Digital Whistle**  
   - High-frequency whistle simulator (device-limited)
@@ -150,23 +195,20 @@ Offline survival and emergency knowledge packs.
 
 #### **Planned Features**
 
-- **Survival Field Guide**  
-  - ~~Fire starting, water purification, shelter building, edible plants, animal tracks~~
-
-- **First Aid Guide**  
-  - ~~CPR, bleeding control, burns, hypothermia, poisoning procedures~~
-
-- **Weather Interpretation Guide**  
-  - Cloud types, storm indicators, Beaufort scale, natural navigation techniques
-
-- **Tool & Knot Guides**  
-  - ~~Rope strengths, tool usage, knot tutorials with step-by-step visuals~~
-
-- **Emergency Protocols**  
-  - Signaling aircraft, SAR procedures, evacuation guidance, lost-person rules
-
-- **Offline Article Caching (Optional)**  
-  - Save any web article for offline reading (stored in Markdown/HTML)
+- Update categories
+  - **Survival Field Guide**  
+    - Need pictures
+  - **First Aid Guide**  
+    - Need pictures
+  - **Weather Interpretation Guide**  
+    - Need pictures
+  - **Tool & Knot Guides**  
+    - Need pictures
+  - **Emergency Protocols**  
+    - Need pictures
+- Update icons
+- Research technical illustrations
+- Research local references based on location
 
 ---
 
