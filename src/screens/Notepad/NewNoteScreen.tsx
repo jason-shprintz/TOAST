@@ -20,6 +20,7 @@ import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
+import { MAX_TITLE_LENGTH } from './constants';
 
 /**
  * Screen for composing and saving a new note.
@@ -201,7 +202,7 @@ export default observer(function NewNoteScreen() {
                 placeholder="Title (optional)"
                 value={title}
                 onChangeText={setTitle}
-                maxLength={30}
+                maxLength={MAX_TITLE_LENGTH}
               />
 
               <Text style={styles.label}>

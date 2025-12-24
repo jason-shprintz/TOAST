@@ -48,6 +48,7 @@ export default observer(function RecentNotesScreen() {
           keyExtractor={item => item.id}
           renderItem={({ item }) => {
             const isExpanded = expandedId === item.id;
+            const previewTitle = item.title || '(Untitled)';
             const previewText = item.text || '';
             return (
               <TouchableOpacity
@@ -62,8 +63,8 @@ export default observer(function RecentNotesScreen() {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
-                    {previewText
-                      ? previewText.slice(0, MAX_TITLE_LENGTH)
+                    {previewTitle
+                      ? previewTitle.slice(0, MAX_TITLE_LENGTH)
                       : '(Untitled)'}
                   </Text>
 
@@ -88,6 +89,7 @@ export default observer(function RecentNotesScreen() {
                       {new Date(item.createdAt).toLocaleString()} •{' '}
                       {item.category}
                     </Text>
+                    {/* DELETE */}
                     <TouchableOpacity
                       accessibilityLabel="Delete note"
                       accessibilityRole="button"
