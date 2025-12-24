@@ -117,7 +117,7 @@ Fundamental offline tools available to all users.
   - The user should have the ability to add and/or delete categories. This should be an action bar item.
 
 - **Offline Checklists**  
-  - Bug-bag
+  - Bug-out bag
   - First-aid kit
   - Evacuation kit
   - The user should have the ability to add their own checklist items
