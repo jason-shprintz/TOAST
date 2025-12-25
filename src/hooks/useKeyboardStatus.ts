@@ -20,30 +20,20 @@ export type KeyboardStatus = {
 export function useKeyboardStatus(): KeyboardStatus {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const keyboardHeightOffset = 2;
 
   useEffect(() => {
     const showListener = Keyboard.addListener('keyboardDidShow', event => {
-      setKeyboardHeight(event.endCoordinates.height / 2);
+      setIsKeyboardVisible(true);
+      setKeyboardHeight(event.endCoordinates.height / keyboardHeightOffset);
     });
     const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
       setKeyboardHeight(0);
     });
     return () => {
       showListener.remove();
       hideListener.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () =>
-      setIsKeyboardVisible(true),
-    );
-    const hideSub = Keyboard.addListener('keyboardDidHide', () =>
-      setIsKeyboardVisible(false),
-    );
-    return () => {
-      showSub.remove();
-      hideSub.remove();
     };
   }, []);
 
