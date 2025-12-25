@@ -42,17 +42,17 @@ type Props = PropsWithChildren;
  */
 export default function AppShell({ children }: Props) {
   const navigationHistory = useNavigationHistory();
-  const { isKeyboardVisible } = useKeyboardStatus();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardStatus();
   const translateYRef = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(translateYRef, {
-      toValue: isKeyboardVisible ? -100 : 0,
+      toValue: isKeyboardVisible ? -keyboardHeight : 0,
       duration: 300,
       easing: Easing.inOut(Easing.ease),
       useNativeDriver: false,
     }).start();
-  }, [isKeyboardVisible, translateYRef]);
+  }, [isKeyboardVisible, keyboardHeight, translateYRef]);
 
   const panResponder = useMemo(
     () =>

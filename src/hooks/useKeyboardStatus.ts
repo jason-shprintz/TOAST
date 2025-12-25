@@ -3,18 +3,36 @@ import { Keyboard } from 'react-native';
 
 export type KeyboardStatus = {
   isKeyboardVisible: boolean;
+  keyboardHeight: number;
 };
 
 /**
- * Custom React hook that tracks the visibility status of the keyboard.
+ * React Native hook that tracks whether the on-screen keyboard is visible and what its current height is.
  *
- * Listens for keyboard show and hide events, updating the `isVisible` state accordingly.
- * Useful for adapting UI components when the keyboard appears or disappears.
+ * Listens to `keyboardDidShow` and `keyboardDidHide` events and updates:
+ * - `isKeyboardVisible` to reflect visibility state
+ * - `keyboardHeight` to `event.endCoordinates.height` when shown and `0` when hidden
  *
- * @returns {KeyboardStatus} An object containing the `isVisible` boolean indicating whether the keyboard is currently visible.
+ * @returns An object containing:
+ * - `isKeyboardVisible` - `true` when the keyboard is visible, otherwise `false`.
+ * - `keyboardHeight` - The keyboard height in pixels when visible, otherwise `0`.
  */
 export function useKeyboardStatus(): KeyboardStatus {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showListener = Keyboard.addListener('keyboardDidShow', event => {
+      setKeyboardHeight(event.endCoordinates.height / 2);
+    });
+    const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+    return () => {
+      showListener.remove();
+      hideListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const showSub = Keyboard.addListener('keyboardDidShow', () =>
@@ -29,5 +47,5 @@ export function useKeyboardStatus(): KeyboardStatus {
     };
   }, []);
 
-  return { isKeyboardVisible };
+  return { isKeyboardVisible, keyboardHeight };
 }
