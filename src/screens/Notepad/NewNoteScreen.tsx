@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -13,13 +13,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Animated,
+  Easing,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 
 /**
@@ -58,8 +60,18 @@ export default observer(function NewNoteScreen() {
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
-  const { isVisible } = useKeyboardStatus();
+  const { isKeyboardVisible } = useKeyboardStatus();
   const hasText: boolean = text.trim().length > 0;
+  const animatedHeight = useMemo(() => new Animated.Value(250), []);
+
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: isKeyboardVisible ? 100 : 250,
+      duration: 300,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isKeyboardVisible, animatedHeight]);
 
   return (
     <ScreenBody>
@@ -116,7 +128,7 @@ export default observer(function NewNoteScreen() {
                     accessibilityRole="button"
                   >
                     <Text style={styles.dropdownHeaderText}>
-                      {noteType === 'text' ? 'Type Text' : 'Sketch'}
+                      {noteType === 'text' ? 'Text' : 'Sketch'}
                     </Text>
                     <Icon
                       name="chevron-down-outline"
@@ -136,7 +148,7 @@ export default observer(function NewNoteScreen() {
                           }}
                         >
                           <Text style={styles.dropdownItemText}>
-                            {t === 'text' ? 'Type Text' : 'Sketch'}
+                            {t === 'text' ? 'Text' : 'Sketch'}
                           </Text>
                         </TouchableOpacity>
                       ))}
@@ -163,7 +175,7 @@ export default observer(function NewNoteScreen() {
 
               <View style={styles.inline}>
                 <Button
-                  title="Save Note"
+                  title="Save"
                   disabled={!hasText}
                   onPress={async () => {
                     try {
@@ -189,7 +201,7 @@ export default observer(function NewNoteScreen() {
                   }}
                 />
                 <Button
-                  title="Clear Note"
+                  title="Clear"
                   disabled={!hasText}
                   onPress={() => {
                     setText('');
@@ -200,21 +212,30 @@ export default observer(function NewNoteScreen() {
               <TextInput
                 style={styles.titleInput}
                 placeholder="Title (optional)"
+                placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}
                 maxLength={MAX_TITLE_LENGTH}
               />
 
               <Text style={styles.label}>
-                {noteType === 'text' ? 'Type Text' : 'Sketch'}
+                {noteType === 'text' ? 'Text' : 'Sketch'}
               </Text>
-              <TextInput
-                style={isVisible ? styles.inputSmall : styles.inputLarge}
-                placeholder="Type your note..."
-                multiline
-                value={text}
-                onChangeText={setText}
-              />
+              <Animated.View
+                style={[
+                  styles.animatedInputContainer,
+                  { height: animatedHeight },
+                ]}
+              >
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Type your note..."
+                  placeholderTextColor={COLORS.PRIMARY_DARK}
+                  multiline
+                  value={text}
+                  onChangeText={setText}
+                />
+              </Animated.View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -235,6 +256,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
+    flex: 1 - FOOTER_HEIGHT,
     width: '100%',
     backgroundColor: COLORS.TOAST_BROWN,
     borderRadius: 12,
@@ -242,7 +264,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SECONDARY_ACCENT,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    marginTop: 12,
+    marginTop: 6,
+    marginBottom: FOOTER_HEIGHT + 6,
   },
   label: {
     fontSize: 14,
@@ -277,24 +300,17 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
-  inputSmall: {
-    height: 100,
+  animatedInputContainer: {
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,
     marginBottom: 12,
-    color: COLORS.PRIMARY_DARK,
+    overflow: 'hidden',
   },
-  inputLarge: {
-    height: 250,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
+  textInput: {
+    flex: 1,
     color: COLORS.PRIMARY_DARK,
   },
   dropdown: {
@@ -305,7 +321,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
@@ -322,7 +338,7 @@ const styles = StyleSheet.create({
     top: 40,
     left: 0,
     right: 0,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,

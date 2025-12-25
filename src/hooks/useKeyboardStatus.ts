@@ -2,32 +2,40 @@ import { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
 
 export type KeyboardStatus = {
-  isVisible: boolean;
+  isKeyboardVisible: boolean;
+  keyboardHeight: number;
 };
 
 /**
- * Custom React hook that tracks the visibility status of the keyboard.
+ * React Native hook that tracks whether the on-screen keyboard is visible and what its current height is.
  *
- * Listens for keyboard show and hide events, updating the `isVisible` state accordingly.
- * Useful for adapting UI components when the keyboard appears or disappears.
+ * Listens to `keyboardDidShow` and `keyboardDidHide` events and updates:
+ * - `isKeyboardVisible` to reflect visibility state
+ * - `keyboardHeight` to `event.endCoordinates.height` when shown and `0` when hidden
  *
- * @returns {KeyboardStatus} An object containing the `isVisible` boolean indicating whether the keyboard is currently visible.
+ * @returns An object containing:
+ * - `isKeyboardVisible` - `true` when the keyboard is visible, otherwise `false`.
+ * - `keyboardHeight` - The keyboard height in pixels when visible, otherwise `0`.
  */
 export function useKeyboardStatus(): KeyboardStatus {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const keyboardHeightOffset = 2;
 
   useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () =>
-      setIsVisible(true),
-    );
-    const hideSub = Keyboard.addListener('keyboardDidHide', () =>
-      setIsVisible(false),
-    );
+    const showListener = Keyboard.addListener('keyboardDidShow', event => {
+      setIsKeyboardVisible(true);
+      setKeyboardHeight(event.endCoordinates.height / keyboardHeightOffset);
+    });
+    const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
     return () => {
-      showSub.remove();
-      hideSub.remove();
+      showListener.remove();
+      hideListener.remove();
     };
   }, []);
 
-  return { isVisible };
+  return { isKeyboardVisible, keyboardHeight };
 }

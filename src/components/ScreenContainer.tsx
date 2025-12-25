@@ -33,10 +33,11 @@ export default function ScreenContainer({
 const styles = StyleSheet.create({
   base: {
     flex: 1,
+    width: '100%',
     alignSelf: 'stretch',
     backgroundColor: COLORS.BACKGROUND,
-    paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingHorizontal: 10,
     alignItems: 'center',
   },
 });
