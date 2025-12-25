@@ -20,6 +20,7 @@ import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
+import { MAX_TITLE_LENGTH } from './constants';
 
 /**
  * Screen for composing and saving a new note.
@@ -51,6 +52,7 @@ import { COLORS } from '../../theme';
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation();
+  const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [category, setCategory] = useState(core.categories[0]);
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
@@ -165,7 +167,12 @@ export default observer(function NewNoteScreen() {
                   disabled={!hasText}
                   onPress={async () => {
                     try {
-                      await core.createNote({ type: noteType, text, category });
+                      await core.createNote({
+                        type: noteType,
+                        title,
+                        text,
+                        category,
+                      });
                       // Return to previous screen (Notepad)
                       // Prefer goBack to avoid hard-coding route names
                       if (navigation && 'goBack' in navigation) {
@@ -189,6 +196,14 @@ export default observer(function NewNoteScreen() {
                   }}
                 />
               </View>
+
+              <TextInput
+                style={styles.titleInput}
+                placeholder="Title (optional)"
+                value={title}
+                onChangeText={setTitle}
+                maxLength={MAX_TITLE_LENGTH}
+              />
 
               <Text style={styles.label}>
                 {noteType === 'text' ? 'Type Text' : 'Sketch'}
@@ -239,6 +254,16 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
+  },
+  titleInput: {
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+    color: COLORS.PRIMARY_DARK,
+    fontSize: 14,
   },
   inline: {
     flexDirection: 'row',

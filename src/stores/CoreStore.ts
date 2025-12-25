@@ -30,7 +30,9 @@ export interface Note {
   longitude?: number;
   category: NoteCategory;
   type: NoteInputType; // text or sketch
+  title?: string;
   text?: string;
+  bookmarked?: boolean;
   sketchDataUri?: string; // placeholder for sketch image
   photoUris: string[]; // attached photos (uris)
 }
@@ -565,6 +567,7 @@ export class CoreStore {
   async createNote(params: {
     category?: NoteCategory;
     type: NoteInputType;
+    title?: string;
     text?: string;
     sketchDataUri?: string;
   }) {
@@ -597,7 +600,9 @@ export class CoreStore {
         longitude !== undefined && { latitude, longitude }),
       category: params.category ?? 'General',
       type: params.type,
+      title: params.title,
       text: params.text,
+      bookmarked: false,
       sketchDataUri: params.sketchDataUri,
       photoUris: [],
     };
@@ -609,7 +614,25 @@ export class CoreStore {
   }
 
   /**
-   * Updates the category of a note with the specified ID.
+   * Toggles the bookmarked state of a note with the specified ID.
+   *
+   * Finds the note in the `notes` array by its `noteId` and toggles its `bookmarked` property.
+   * After updating the bookmarked state, it calls `persistNote` to persist the change to the database.
+   *
+   * @param noteId - The unique identifier of the note to toggle.
+   */
+  async toggleNoteBookmark(noteId: string) {
+    const note = this.notes.find(n => n.id === noteId);
+    if (note) {
+      runInAction(() => {
+        note.bookmarked = !note.bookmarked;
+      });
+      await this.persistNote(note);
+    }
+  }
+
+  /**
+   * Sets the note category with the specified ID.
    *
    * Finds the note in the `notes` array by its `noteId` and sets its `category` property
    * to the provided `category` value. After updating the category, it calls `updateNote`
@@ -707,6 +730,18 @@ export class CoreStore {
   }
 
   /**
+   * Returns all bookmarked notes from the notes array.
+   *
+   * @remarks
+   * This getter provides a quick way to access all notes that have been bookmarked.
+   *
+   * @returns An array of all bookmarked `Note` objects.
+   */
+  get bookmarkedNotes(): Note[] {
+    return this.notes.filter(n => n.bookmarked === true);
+  }
+
+  /**
    * Groups notes by their category and returns a mapping from each category to an array of notes belonging to that category.
    *
    * @returns {Record<NoteCategory, Note[]>} An object where each key is a note category and the value is an array of notes in that category.
@@ -753,11 +788,35 @@ export class CoreStore {
           'longitude REAL,' +
           'category TEXT NOT NULL,' +
           "type TEXT NOT NULL CHECK(type IN ('text','sketch'))," +
+          'title TEXT,' +
           'text TEXT,' +
+          'bookmarked INTEGER DEFAULT 0,' +
           'sketchDataUri TEXT,' +
           'photoUris TEXT' +
           ')',
       );
+      // Migration: Add title column if it doesn't exist
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN title TEXT',
+        );
+      } catch (error: any) {
+        // Column already exists, ignore error
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
+      // Migration: Add bookmarked column if it doesn't exist
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN bookmarked INTEGER DEFAULT 0',
+        );
+      } catch (error: any) {
+        // Column already exists, ignore error
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
     } catch (error) {
       console.error('Failed to initialize notes database:', error);
       this.notesDb = null;
@@ -792,7 +851,9 @@ export class CoreStore {
         longitude: r.longitude ?? undefined,
         category: r.category,
         type: r.type,
+        title: r.title ?? undefined,
         text: r.text ?? undefined,
+        bookmarked: r.bookmarked === 1 ? true : false,
         sketchDataUri: r.sketchDataUri ?? undefined,
         photoUris: (() => {
           if (!r.photoUris) return [];
@@ -822,7 +883,7 @@ export class CoreStore {
       await this.initNotesDb();
       if (!this.notesDb) return;
       await this.notesDb.executeSql(
-        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, text, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
         [
           note.id,
           note.createdAt,
@@ -830,7 +891,9 @@ export class CoreStore {
           note.longitude ?? null,
           note.category,
           note.type,
+          note.title ?? null,
           note.text ?? null,
+          note.bookmarked ? 1 : 0,
           note.sketchDataUri ?? null,
           JSON.stringify(note.photoUris ?? []),
         ],
