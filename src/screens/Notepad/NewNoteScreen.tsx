@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -13,6 +13,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Animated,
+  Easing,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
@@ -60,6 +62,16 @@ export default observer(function NewNoteScreen() {
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
   const hasText: boolean = text.trim().length > 0;
+  const animatedHeight = useMemo(() => new Animated.Value(250), []);
+
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: isKeyboardVisible ? 100 : 250,
+      duration: 300,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isKeyboardVisible, animatedHeight]);
 
   return (
     <ScreenBody>
@@ -209,16 +221,21 @@ export default observer(function NewNoteScreen() {
               <Text style={styles.label}>
                 {noteType === 'text' ? 'Text' : 'Sketch'}
               </Text>
-              <TextInput
-                style={
-                  isKeyboardVisible ? styles.inputSmall : styles.inputLarge
-                }
-                placeholder="Type your note..."
-                placeholderTextColor={COLORS.PRIMARY_DARK}
-                multiline
-                value={text}
-                onChangeText={setText}
-              />
+              <Animated.View
+                style={[
+                  styles.animatedInputContainer,
+                  { height: animatedHeight },
+                ]}
+              >
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Type your note..."
+                  placeholderTextColor={COLORS.PRIMARY_DARK}
+                  multiline
+                  value={text}
+                  onChangeText={setText}
+                />
+              </Animated.View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -283,24 +300,17 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
-  inputSmall: {
-    height: 100,
+  animatedInputContainer: {
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,
     marginBottom: 12,
-    color: COLORS.PRIMARY_DARK,
+    overflow: 'hidden',
   },
-  inputLarge: {
-    height: 250,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
+  textInput: {
+    flex: 1,
     color: COLORS.PRIMARY_DARK,
   },
   dropdown: {
