@@ -17,7 +17,7 @@ import { COLORS } from '../../theme';
  * @property itemBodyExpanded - Expanded note body style with a fixed height to reveal more content.
  * @property moreHint - Subtle hint text indicating additional content (smaller, more transparent).
  * @property actionsRow - Horizontal row for action controls spaced apart.
- * @property trashButton - Hit area padding for a trash/delete action button.
+ * @property noteButton - Hit area padding for a trash/delete action button.
  */
 export const noteListSharedStyles = StyleSheet.create({
   value: {
@@ -69,7 +69,7 @@ export const noteListSharedStyles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  trashButton: {
+  noteButton: {
     paddingVertical: 6,
   },
 });

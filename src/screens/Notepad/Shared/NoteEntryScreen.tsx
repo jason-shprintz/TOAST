@@ -1,5 +1,6 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
-import React from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -20,7 +21,8 @@ import { noteListSharedStyles as shared } from '../noteListStyles';
  * Displays a single note in fully expanded state.
  *
  * This screen retrieves a note from the navigation route parameters and displays
- * it with its full title and body text. It includes delete functionality and navigation options.
+ * it with its full title and body text. It includes bookmark and delete functionality
+ * and navigation options.
  *
  * @returns {JSX.Element} The rendered note entry screen component.
  *
@@ -28,12 +30,15 @@ import { noteListSharedStyles as shared } from '../noteListStyles';
  * - Receives `note` parameter from the route params
  * - Displays the note title as the section header
  * - Shows the full note text in expanded view
- * - Includes delete button with confirmation
+ * - Includes bookmark and delete buttons
  */
-export default function NoteEntryScreen(): React.JSX.Element {
+export default observer(function NoteEntryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(
+    route.params?.note?.bookmarked ?? false,
+  );
 
   const { note } = route.params || {};
 
@@ -53,38 +58,31 @@ export default function NoteEntryScreen(): React.JSX.Element {
   const noteTitle = note.title || '(Untitled)';
   const noteText = note.text || '';
 
+  const handleBookmarkPress = async () => {
+    await core.toggleNoteBookmark(note.id);
+    setIsBookmarked(!isBookmarked);
+  };
+
   return (
     <ScreenBody>
       <SectionHeader>{noteTitle}</SectionHeader>
       <View style={styles.noteHeader}>
         <TouchableOpacity
-          accessibilityLabel="Delete note"
+          accessibilityLabel="Bookmark note"
           accessibilityRole="button"
-          style={shared.trashButton}
-          onPress={() => {
-            Alert.alert(
-              'Delete Note',
-              'Are you sure you want to delete this note?',
-              [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                  text: 'Delete',
-                  style: 'destructive',
-                  onPress: async () => {
-                    await core.deleteNote(note.id);
-                    navigation.goBack();
-                  },
-                },
-              ],
-            );
-          }}
+          style={shared.noteButton}
+          onPress={handleBookmarkPress}
         >
-          <Icon name="trash-outline" size={30} color={COLORS.PRIMARY_DARK} />
+          <Icon
+            name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="Delete note"
           accessibilityRole="button"
-          style={shared.trashButton}
+          style={shared.noteButton}
           onPress={() => {
             Alert.alert(
               'Delete Note',
@@ -117,14 +115,15 @@ export default function NoteEntryScreen(): React.JSX.Element {
               {new Date(note.createdAt).toLocaleString()} • {note.category}
             </Text>
           </View>
-          <View style={shared.itemRow}>
+
+          <View>
             <Text style={shared.itemBodyExpanded}>{noteText}</Text>
           </View>
         </ScrollView>
       </View>
     </ScreenBody>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

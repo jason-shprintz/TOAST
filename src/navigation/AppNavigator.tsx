@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { JSX } from 'react';
 import AppShell from '../components/AppShell';
 import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
@@ -10,10 +10,10 @@ import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
-import SavedNotesScreen from '../screens/Notepad/SavedNotesScreen';
 import NoteCategoryScreen from '../screens/Notepad/Shared/NoteCategoryScreen';
 import NoteEntryScreen from '../screens/Notepad/Shared/NoteEntryScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
@@ -40,7 +40,7 @@ const Stack = createNativeStackNavigator();
  *
  * @returns {JSX.Element} The navigation container with the configured stack navigator.
  */
-function NavigatorContent() {
+function NavigatorContent(): JSX.Element {
   const navigationHistory = useNavigationHistory();
 
   return (
@@ -77,7 +77,10 @@ function NavigatorContent() {
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />
           <Stack.Screen name="NoteEntry" component={NoteEntryScreen} />
           <Stack.Screen name="RecentNotes" component={RecentNotesScreen} />
-          <Stack.Screen name="SavedNotes" component={SavedNotesScreen} />
+          <Stack.Screen
+            name="BookmarkedNotes"
+            component={BookmarkedNotesScreen}
+          />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
           <Stack.Screen name="Category" component={CategoryScreen} />
@@ -112,7 +115,7 @@ function NavigatorContent() {
  * <AppNavigator />
  * ```
  */
-export default function AppNavigator() {
+export default function AppNavigator(): JSX.Element {
   return (
     <NavigationHistoryProvider>
       <NavigatorContent />

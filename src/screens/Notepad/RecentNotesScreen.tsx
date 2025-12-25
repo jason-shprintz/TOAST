@@ -93,7 +93,7 @@ export default observer(function RecentNotesScreen() {
                     <TouchableOpacity
                       accessibilityLabel="Delete note"
                       accessibilityRole="button"
-                      style={shared.trashButton}
+                      style={shared.noteButton}
                       onPress={e => {
                         e.stopPropagation();
                         Alert.alert(

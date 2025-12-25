@@ -59,6 +59,18 @@ export default observer(function NotepadScreen() {
         >
           <Ionicons name="time-outline" size={30} color={COLORS.PRIMARY_DARK} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.noteButton}
+          onPress={() => navigation.navigate('BookmarkedNotes')}
+          accessibilityLabel="Bookmarked Notes"
+          accessibilityRole="button"
+        >
+          <Ionicons
+            name="bookmark-outline"
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
       </View>
       <HorizontalRule />
 
@@ -80,11 +92,10 @@ export default observer(function NotepadScreen() {
 
 const styles = StyleSheet.create({
   noteHeader: {
-    width: '50%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
+    justifyContent: 'space-evenly',
   },
   noteButton: {
     paddingVertical: 6,
