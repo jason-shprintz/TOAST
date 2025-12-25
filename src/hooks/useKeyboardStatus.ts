@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
 
 export type KeyboardStatus = {
-  isVisible: boolean;
+  isKeyboardVisible: boolean;
 };
 
 /**
@@ -14,14 +14,14 @@ export type KeyboardStatus = {
  * @returns {KeyboardStatus} An object containing the `isVisible` boolean indicating whether the keyboard is currently visible.
  */
 export function useKeyboardStatus(): KeyboardStatus {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   useEffect(() => {
     const showSub = Keyboard.addListener('keyboardDidShow', () =>
-      setIsVisible(true),
+      setIsKeyboardVisible(true),
     );
     const hideSub = Keyboard.addListener('keyboardDidHide', () =>
-      setIsVisible(false),
+      setIsKeyboardVisible(false),
     );
     return () => {
       showSub.remove();
@@ -29,5 +29,5 @@ export function useKeyboardStatus(): KeyboardStatus {
     };
   }, []);
 
-  return { isVisible };
+  return { isKeyboardVisible };
 }

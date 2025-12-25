@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useMemo } from 'react';
 import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
 import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS, FOOTER_HEIGHT } from '../theme';
@@ -34,6 +35,7 @@ type Props = PropsWithChildren;
  */
 export default function AppShell({ children }: Props) {
   const navigationHistory = useNavigationHistory();
+  const { isKeyboardVisible } = useKeyboardStatus();
 
   const panResponder = useMemo(
     () =>
@@ -85,7 +87,12 @@ export default function AppShell({ children }: Props) {
 
   return (
     <View style={styles.gestureContainer} {...panResponder.panHandlers}>
-      <ScreenContainer style={styles.shell}>
+      <ScreenContainer
+        style={[
+          styles.shell,
+          { transform: [{ translateY: isKeyboardVisible ? -100 : 0 }] },
+        ]}
+      >
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.settingsButton}

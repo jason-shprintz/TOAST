@@ -19,7 +19,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 
 /**
@@ -58,7 +58,7 @@ export default observer(function NewNoteScreen() {
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
-  const { isVisible } = useKeyboardStatus();
+  const { isKeyboardVisible } = useKeyboardStatus();
   const hasText: boolean = text.trim().length > 0;
 
   return (
@@ -116,7 +116,7 @@ export default observer(function NewNoteScreen() {
                     accessibilityRole="button"
                   >
                     <Text style={styles.dropdownHeaderText}>
-                      {noteType === 'text' ? 'Type Text' : 'Sketch'}
+                      {noteType === 'text' ? 'Text' : 'Sketch'}
                     </Text>
                     <Icon
                       name="chevron-down-outline"
@@ -136,7 +136,7 @@ export default observer(function NewNoteScreen() {
                           }}
                         >
                           <Text style={styles.dropdownItemText}>
-                            {t === 'text' ? 'Type Text' : 'Sketch'}
+                            {t === 'text' ? 'Text' : 'Sketch'}
                           </Text>
                         </TouchableOpacity>
                       ))}
@@ -163,7 +163,7 @@ export default observer(function NewNoteScreen() {
 
               <View style={styles.inline}>
                 <Button
-                  title="Save Note"
+                  title="Save"
                   disabled={!hasText}
                   onPress={async () => {
                     try {
@@ -189,7 +189,7 @@ export default observer(function NewNoteScreen() {
                   }}
                 />
                 <Button
-                  title="Clear Note"
+                  title="Clear"
                   disabled={!hasText}
                   onPress={() => {
                     setText('');
@@ -200,17 +200,21 @@ export default observer(function NewNoteScreen() {
               <TextInput
                 style={styles.titleInput}
                 placeholder="Title (optional)"
+                placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}
                 maxLength={MAX_TITLE_LENGTH}
               />
 
               <Text style={styles.label}>
-                {noteType === 'text' ? 'Type Text' : 'Sketch'}
+                {noteType === 'text' ? 'Text' : 'Sketch'}
               </Text>
               <TextInput
-                style={isVisible ? styles.inputSmall : styles.inputLarge}
+                style={
+                  isKeyboardVisible ? styles.inputSmall : styles.inputLarge
+                }
                 placeholder="Type your note..."
+                placeholderTextColor={COLORS.PRIMARY_DARK}
                 multiline
                 value={text}
                 onChangeText={setText}
@@ -235,6 +239,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
+    flex: 1 - FOOTER_HEIGHT,
     width: '100%',
     backgroundColor: COLORS.TOAST_BROWN,
     borderRadius: 12,
@@ -242,7 +247,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SECONDARY_ACCENT,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    marginTop: 12,
+    marginTop: 6,
+    marginBottom: FOOTER_HEIGHT + 6,
   },
   label: {
     fontSize: 14,
@@ -305,7 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
@@ -322,7 +328,7 @@ const styles = StyleSheet.create({
     top: 40,
     left: 0,
     right: 0,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
