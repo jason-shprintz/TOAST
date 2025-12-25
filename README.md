@@ -46,7 +46,7 @@ Tech-Offline And Survival Tools (TOAST) is a React Native app providing essentia
 - **iOS:**
 
   ```sh
-  npx react-native run-ios --scheme TOAST
+  npx react-native run-ios
   ```
 
 Optional: --mode Debug
