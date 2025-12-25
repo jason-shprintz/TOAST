@@ -1,5 +1,12 @@
-import React, { PropsWithChildren, useMemo } from 'react';
-import { PanResponder, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { PropsWithChildren, useMemo, useEffect, useRef } from 'react';
+import {
+  Animated,
+  PanResponder,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Easing,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
 import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
@@ -36,6 +43,16 @@ type Props = PropsWithChildren;
 export default function AppShell({ children }: Props) {
   const navigationHistory = useNavigationHistory();
   const { isKeyboardVisible } = useKeyboardStatus();
+  const translateYRef = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(translateYRef, {
+      toValue: isKeyboardVisible ? -100 : 0,
+      duration: 300,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isKeyboardVisible, translateYRef]);
 
   const panResponder = useMemo(
     () =>
@@ -86,45 +103,45 @@ export default function AppShell({ children }: Props) {
   );
 
   return (
-    <View style={styles.gestureContainer} {...panResponder.panHandlers}>
-      <ScreenContainer
-        style={[
-          styles.shell,
-          { transform: [{ translateY: isKeyboardVisible ? -100 : 0 }] },
-        ]}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => {
-              // Intentionally a no-op for now; this is just a persistent button.
-            }}
-            accessibilityLabel="Settings"
-            accessibilityRole="button"
-          >
-            <Ionicons
-              name="settings-outline"
-              size={26}
-              color={COLORS.PRIMARY_DARK}
-            />
-          </TouchableOpacity>
+    <ScreenContainer>
+      <View style={styles.gestureContainer} {...panResponder.panHandlers}>
+        <Animated.View
+          style={[styles.shell, { transform: [{ translateY: translateYRef }] }]}
+        >
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.settingsButton}
+              onPress={() => {
+                // Intentionally a no-op for now; this is just a persistent button.
+              }}
+              accessibilityLabel="Settings"
+              accessibilityRole="button"
+            >
+              <Ionicons
+                name="settings-outline"
+                size={26}
+                color={COLORS.PRIMARY_DARK}
+              />
+            </TouchableOpacity>
 
-          <LogoHeader />
+            <LogoHeader />
+          </View>
+
+          <View style={styles.content}>{children}</View>
+        </Animated.View>
+
+        <View style={styles.bottomRule}>
+          <HorizontalRule />
         </View>
-
-        <View style={styles.content}>{children}</View>
-      </ScreenContainer>
-
-      <View style={styles.bottomRule}>
-        <HorizontalRule />
       </View>
-    </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   gestureContainer: {
     flex: 1,
+    width: '100%',
   },
   shell: {
     flex: 1,
@@ -145,9 +162,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    flexDirection: 'row',
     alignSelf: 'stretch',
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 2,
     alignItems: 'stretch',
   },
   bottomRule: {
