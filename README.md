@@ -108,8 +108,7 @@ Fundamental offline tools available to all users.
   - SOS should have an option to have tone.
 
 - **Local Notes / Field Logs**  
-  - The user should have the ability to sort the notes based on time, alpha, or manually. They should also be able to favorite the notes.
-  - The Favorite Note button should be smaller and more of an action bar item.
+  - The user should have the ability to sort the notes based on time, alpha, or manually.
   - Need to develop sketch.
   - The user should have the ability to add and/or delete categories. This should be an action bar item.
 
