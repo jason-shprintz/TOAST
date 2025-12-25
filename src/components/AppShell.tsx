@@ -50,7 +50,7 @@ export default function AppShell({ children }: Props) {
       toValue: isKeyboardVisible ? -keyboardHeight : 0,
       duration: 300,
       easing: Easing.inOut(Easing.ease),
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
   }, [isKeyboardVisible, keyboardHeight, translateYRef]);
 
