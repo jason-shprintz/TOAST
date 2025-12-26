@@ -1,4 +1,5 @@
 import Slider from '@react-native-community/slider';
+import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
@@ -7,32 +8,37 @@ import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { COLORS } from '../../theme';
 
 /**
  * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
- * configure strobe frequency, nightvision brightness, and SOS tone.
+ * configure strobe frequency and SOS tone.
  *
  * @remarks
  * This component reads state from the core store (`useCoreStore`) and updates it via:
- * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe' | 'nightvision'`)
+ * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe'`)
  * - `core.setStrobeFrequency(v)` for strobe frequency changes (in Hz)
- * - `core.setNightvisionBrightness(v)` for nightvision brightness changes (0-1)
  * - `core.setSosWithTone(v)` for enabling/disabling SOS tone
  *
  * The currently selected mode is visually indicated by applying an `activeCard` style to the
  * corresponding option card. When the mode is `'strobe'`, additional controls for frequency are rendered.
- * When the mode is `'nightvision'`, a full-screen red overlay with brightness controls is rendered.
  * When the mode is `'sos'`, a toggle for enabling/disabling the SOS tone is rendered.
+ * Nightvision mode navigates to a dedicated full-screen NightvisionScreen.
  *
  * @returns A React element that renders the flashlight mode selection and optional mode-specific controls.
  */
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
+  const navigation = useNavigation();
   const mode = core.flashlightMode;
 
-  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision') => {
+  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe') => {
     core.setFlashlightMode(next);
+  };
+
+  const openNightvision = () => {
+    // @ts-ignore - navigation types
+    navigation.navigate('Nightvision');
   };
 
   return (
@@ -61,8 +67,7 @@ const FlashlightScreenImpl = () => {
         <CardTopic
           title="Nightvision"
           icon="moon-outline"
-          onPress={() => selectMode('nightvision')}
-          containerStyle={mode === 'nightvision' ? styles.activeCard : undefined}
+          onPress={openNightvision}
         />
       </Grid>
 
@@ -97,35 +102,6 @@ const FlashlightScreenImpl = () => {
           </View>
         </View>
       )}
-
-      {mode === 'nightvision' && (
-        <View style={styles.controlsContainer}>
-          <SectionHeader>Nightvision Brightness</SectionHeader>
-          <Text style={styles.label}>
-            {core.nightvisionBrightnessPercent}%
-          </Text>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={1}
-            step={0.01}
-            value={core.nightvisionBrightness}
-            onValueChange={(v: number) => core.setNightvisionBrightness(v)}
-            minimumTrackTintColor={COLORS.ACCENT}
-            maximumTrackTintColor={COLORS.SECONDARY_ACCENT}
-          />
-        </View>
-      )}
-
-      {/* Full-screen nightvision red overlay */}
-      {mode === 'nightvision' && (
-        <View
-          style={[
-            styles.nightvisionOverlay,
-            { opacity: core.nightvisionBrightness },
-          ]}
-        />
-      )}
     </ScreenBody>
   );
 };
@@ -158,14 +134,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 10,
-  },
-  nightvisionOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: FOOTER_HEIGHT, // Buffer from bottom for footer
-    backgroundColor: '#8B0000', // Night-friendly dark red
-    pointerEvents: 'none', // Allow touches to pass through
   },
 });
