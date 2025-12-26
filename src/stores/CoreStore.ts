@@ -2,11 +2,11 @@ import NetInfo, {
   NetInfoState,
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
-import { Audio } from 'expo-av';
 import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
 import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
+import Sound from 'react-native-sound';
 import Torch from 'react-native-torch';
 let SQLite: any;
 try {
@@ -40,8 +40,8 @@ export interface Note {
 
 export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
-  private dotSound: Audio.Sound | null = null;
-  private dashSound: Audio.Sound | null = null;
+  private dotSound: Sound | null = null;
+  private dashSound: Sound | null = null;
 
   constructor() {
     makeAutoObservable(
@@ -64,25 +64,21 @@ export class CoreStore {
    * Loads the SOS audio files (dot and dash beeps).
    * @private
    */
-  private async loadSosAudio() {
-    try {
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
-      });
-      
-      const { sound: dot } = await Audio.Sound.createAsync(
-        require('../../assets/sos_dot.wav')
-      );
-      this.dotSound = dot;
+  private loadSosAudio() {
+    // Enable playback in silent mode
+    Sound.setCategory('Playback');
+    
+    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.error('Failed to load dot sound:', error);
+      }
+    });
 
-      const { sound: dash } = await Audio.Sound.createAsync(
-        require('../../assets/sos_dash.wav')
-      );
-      this.dashSound = dash;
-    } catch (error) {
-      console.error('Failed to load SOS audio files:', error);
-    }
+    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.error('Failed to load dash sound:', error);
+      }
+    });
   }
 
   // --------------------------------------------------------------------
@@ -260,16 +256,14 @@ export class CoreStore {
    * @param type - The type of tone to play ('dot' or 'dash')
    * @private
    */
-  private async playSosTone(type: 'dot' | 'dash' | null) {
+  private playSosTone(type: 'dot' | 'dash' | null) {
     if (!type) return;
     
-    try {
-      const sound = type === 'dot' ? this.dotSound : this.dashSound;
-      if (sound) {
-        await sound.replayAsync();
-      }
-    } catch (error) {
-      console.error('Failed to play SOS tone:', error);
+    const sound = type === 'dot' ? this.dotSound : this.dashSound;
+    if (sound) {
+      sound.stop(() => {
+        sound.play();
+      });
     }
   }
 
@@ -279,21 +273,17 @@ export class CoreStore {
    *
    * @private
    */
-  private async stopSOS() {
+  private stopSOS() {
     if (this.sosTimer) {
       clearTimeout(this.sosTimer);
       this.sosTimer = null;
     }
     // Stop any playing audio
-    try {
-      if (this.dotSound) {
-        await this.dotSound.stopAsync();
-      }
-      if (this.dashSound) {
-        await this.dashSound.stopAsync();
-      }
-    } catch {
-      // Ignore errors when stopping audio
+    if (this.dotSound) {
+      this.dotSound.stop();
+    }
+    if (this.dashSound) {
+      this.dashSound.stop();
     }
   }
 
@@ -1023,24 +1013,20 @@ export class CoreStore {
   // --------------------------------------------------------------------
   // ==== Cleanup on store disposal ====
   // --------------------------------------------------------------------
-  async dispose() {
+  dispose() {
     this.stopSOS();
     this.stopStrobe();
     this.appStateSubscription?.remove();
     this.stopDeviceStatusMonitoring();
     
-    // Unload audio resources
-    try {
-      if (this.dotSound) {
-        await this.dotSound.unloadAsync();
-        this.dotSound = null;
-      }
-      if (this.dashSound) {
-        await this.dashSound.unloadAsync();
-        this.dashSound = null;
-      }
-    } catch (error) {
-      console.error('Failed to unload audio resources:', error);
+    // Release audio resources
+    if (this.dotSound) {
+      this.dotSound.release();
+      this.dotSound = null;
+    }
+    if (this.dashSound) {
+      this.dashSound.release();
+      this.dashSound = null;
     }
   }
 }
