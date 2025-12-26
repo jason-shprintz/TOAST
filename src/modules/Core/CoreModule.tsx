@@ -31,7 +31,7 @@ const coreTools: ToolType[] = [
   },
   {
     name: 'Checklist',
-    screen: 'ComingSoon',
+    screen: 'Checklist',
     icon: 'list-outline',
     id: 'core_checklist',
   },

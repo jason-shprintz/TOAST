@@ -40,6 +40,21 @@ export interface Note {
   photoUris: string[]; // attached photos (uris)
 }
 
+export interface ChecklistItem {
+  id: string;
+  checklistId: string;
+  text: string;
+  checked: boolean;
+  order: number;
+}
+
+export interface Checklist {
+  id: string;
+  name: string;
+  createdAt: number;
+  isDefault: boolean;
+}
+
 export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
   private dotSound: Sound | null = null;
@@ -1035,6 +1050,349 @@ export class CoreStore {
       console.error('Failed to update note:', error);
       throw error;
     }
+  }
+
+  // --------------------------------------------------------------------
+  // ===== Checklists =====
+  // --------------------------------------------------------------------
+  checklists: Checklist[] = [];
+  checklistItems: ChecklistItem[] = [];
+
+  /**
+   * Initializes the checklists database tables if they don't exist.
+   * Creates tables for checklists and checklist_items.
+   */
+  async initChecklistsDb(): Promise<void> {
+    await this.initNotesDb(); // Reuse the same database
+    if (!this.notesDb) return;
+    try {
+      // Create checklists table
+      await this.notesDb.executeSql(
+        'CREATE TABLE IF NOT EXISTS checklists (' +
+          'id TEXT PRIMARY KEY NOT NULL,' +
+          'name TEXT NOT NULL,' +
+          'createdAt INTEGER NOT NULL,' +
+          'isDefault INTEGER DEFAULT 0' +
+          ')',
+      );
+      // Create checklist_items table
+      await this.notesDb.executeSql(
+        'CREATE TABLE IF NOT EXISTS checklist_items (' +
+          'id TEXT PRIMARY KEY NOT NULL,' +
+          'checklistId TEXT NOT NULL,' +
+          'text TEXT NOT NULL,' +
+          'checked INTEGER DEFAULT 0,' +
+          '"order" INTEGER NOT NULL,' +
+          'FOREIGN KEY(checklistId) REFERENCES checklists(id) ON DELETE CASCADE' +
+          ')',
+      );
+    } catch (error) {
+      console.error('Failed to initialize checklists database:', error);
+    }
+  }
+
+  /**
+   * Loads checklists and checklist items from the database.
+   * If no checklists exist, creates default checklists with default items.
+   */
+  async loadChecklists(): Promise<void> {
+    await this.initChecklistsDb();
+    if (!this.notesDb) return;
+
+    try {
+      // Load checklists
+      const checklistsRes = await this.notesDb.executeSql(
+        'SELECT * FROM checklists ORDER BY createdAt ASC',
+      );
+      const checklistRows = checklistsRes[0].rows;
+      const loadedChecklists: Checklist[] = [];
+      for (let i = 0; i < checklistRows.length; i++) {
+        const r = checklistRows.item(i);
+        loadedChecklists.push({
+          id: r.id,
+          name: r.name,
+          createdAt: r.createdAt,
+          isDefault: r.isDefault === 1,
+        });
+      }
+
+      // Load checklist items
+      const itemsRes = await this.notesDb.executeSql(
+        'SELECT * FROM checklist_items ORDER BY checklistId, "order" ASC',
+      );
+      const itemRows = itemsRes[0].rows;
+      const loadedItems: ChecklistItem[] = [];
+      for (let i = 0; i < itemRows.length; i++) {
+        const r = itemRows.item(i);
+        loadedItems.push({
+          id: r.id,
+          checklistId: r.checklistId,
+          text: r.text,
+          checked: r.checked === 1,
+          order: r.order,
+        });
+      }
+
+      runInAction(() => {
+        this.checklists = loadedChecklists;
+        this.checklistItems = loadedItems;
+      });
+
+      // If no checklists exist, create defaults
+      if (loadedChecklists.length === 0) {
+        await this.createDefaultChecklists();
+      }
+    } catch (error) {
+      console.error('Failed to load checklists:', error);
+    }
+  }
+
+  /**
+   * Creates default checklists with default items.
+   */
+  async createDefaultChecklists(): Promise<void> {
+    const defaultChecklists = [
+      {
+        name: 'Bug-out bag',
+        items: [
+          'Water (1 gallon per person per day)',
+          'Non-perishable food (3-day supply)',
+          'First aid kit',
+          'Flashlight and extra batteries',
+          'Emergency radio',
+          'Multi-tool or knife',
+          'Local maps',
+          'Cell phone with chargers',
+          'Whistle to signal for help',
+          'Dust mask or cloth',
+          'Plastic sheeting and duct tape',
+          'Moist towelettes and garbage bags',
+          'Wrench or pliers',
+          'Can opener',
+          'Matches in waterproof container',
+        ],
+      },
+      {
+        name: 'First-aid kit',
+        items: [
+          'Adhesive bandages (various sizes)',
+          'Gauze pads and rolls',
+          'Adhesive tape',
+          'Antiseptic wipes',
+          'Antibiotic ointment',
+          'Pain relievers (aspirin, ibuprofen)',
+          'Tweezers',
+          'Scissors',
+          'Thermometer',
+          'Elastic bandage',
+          'CPR face shield',
+          'Disposable gloves',
+          'Emergency blanket',
+          'Cotton balls and swabs',
+          'Prescription medications',
+        ],
+      },
+      {
+        name: 'Evacuation kit',
+        items: [
+          'Important documents (copies)',
+          'Cash and credit cards',
+          'Emergency contact list',
+          'Spare keys',
+          'Change of clothes',
+          'Sturdy shoes',
+          'Sleeping bag or blanket',
+          'Personal hygiene items',
+          'Medications (7-day supply)',
+          'Eyeglasses/contacts',
+          'Baby supplies (if needed)',
+          'Pet supplies (if needed)',
+          'Books or games',
+          'Phone charger and battery pack',
+          'Copies of insurance policies',
+        ],
+      },
+    ];
+
+    for (const defaultChecklist of defaultChecklists) {
+      await this.createChecklist(defaultChecklist.name, true, defaultChecklist.items);
+    }
+  }
+
+  /**
+   * Creates a new checklist with optional default items.
+   */
+  async createChecklist(
+    name: string,
+    isDefault: boolean = false,
+    defaultItems: string[] = [],
+  ): Promise<void> {
+    const checklist: Checklist = {
+      id: this.generateId(),
+      name,
+      createdAt: Date.now(),
+      isDefault,
+    };
+
+    runInAction(() => {
+      this.checklists.push(checklist);
+    });
+
+    await this.persistChecklist(checklist);
+
+    // Add default items if provided
+    for (let i = 0; i < defaultItems.length; i++) {
+      await this.addChecklistItem(checklist.id, defaultItems[i]);
+    }
+  }
+
+  /**
+   * Deletes a checklist and all its items.
+   */
+  async deleteChecklist(checklistId: string): Promise<void> {
+    try {
+      await this.initChecklistsDb();
+      if (!this.notesDb) {
+        runInAction(() => {
+          this.checklists = this.checklists.filter(c => c.id !== checklistId);
+          this.checklistItems = this.checklistItems.filter(
+            i => i.checklistId !== checklistId,
+          );
+        });
+        return;
+      }
+
+      // Delete checklist items first
+      await this.notesDb.executeSql(
+        'DELETE FROM checklist_items WHERE checklistId = ?',
+        [checklistId],
+      );
+      // Delete checklist
+      await this.notesDb.executeSql('DELETE FROM checklists WHERE id = ?', [
+        checklistId,
+      ]);
+
+      runInAction(() => {
+        this.checklists = this.checklists.filter(c => c.id !== checklistId);
+        this.checklistItems = this.checklistItems.filter(
+          i => i.checklistId !== checklistId,
+        );
+      });
+    } catch (error) {
+      console.error('Failed to delete checklist:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Adds a new item to a checklist.
+   */
+  async addChecklistItem(checklistId: string, text: string): Promise<void> {
+    const existingItems = this.checklistItems.filter(
+      i => i.checklistId === checklistId,
+    );
+    const order = existingItems.length;
+
+    const item: ChecklistItem = {
+      id: this.generateId(),
+      checklistId,
+      text,
+      checked: false,
+      order,
+    };
+
+    runInAction(() => {
+      this.checklistItems.push(item);
+    });
+
+    await this.persistChecklistItem(item);
+  }
+
+  /**
+   * Toggles the checked state of a checklist item.
+   */
+  async toggleChecklistItem(itemId: string): Promise<void> {
+    const item = this.checklistItems.find(i => i.id === itemId);
+    if (item) {
+      runInAction(() => {
+        item.checked = !item.checked;
+      });
+      await this.persistChecklistItem(item);
+    }
+  }
+
+  /**
+   * Deletes a checklist item.
+   */
+  async deleteChecklistItem(itemId: string): Promise<void> {
+    try {
+      await this.initChecklistsDb();
+      if (!this.notesDb) {
+        runInAction(() => {
+          this.checklistItems = this.checklistItems.filter(i => i.id !== itemId);
+        });
+        return;
+      }
+
+      await this.notesDb.executeSql('DELETE FROM checklist_items WHERE id = ?', [
+        itemId,
+      ]);
+
+      runInAction(() => {
+        this.checklistItems = this.checklistItems.filter(i => i.id !== itemId);
+      });
+    } catch (error) {
+      console.error('Failed to delete checklist item:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Persists a checklist to the database.
+   */
+  async persistChecklist(checklist: Checklist): Promise<void> {
+    try {
+      await this.initChecklistsDb();
+      if (!this.notesDb) return;
+      await this.notesDb.executeSql(
+        'INSERT OR REPLACE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)',
+        [
+          checklist.id,
+          checklist.name,
+          checklist.createdAt,
+          checklist.isDefault ? 1 : 0,
+        ],
+      );
+    } catch (error) {
+      console.error('Failed to persist checklist:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Persists a checklist item to the database.
+   */
+  async persistChecklistItem(item: ChecklistItem): Promise<void> {
+    try {
+      await this.initChecklistsDb();
+      if (!this.notesDb) return;
+      await this.notesDb.executeSql(
+        'INSERT OR REPLACE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)',
+        [item.id, item.checklistId, item.text, item.checked ? 1 : 0, item.order],
+      );
+    } catch (error) {
+      console.error('Failed to persist checklist item:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all items for a specific checklist.
+   */
+  getChecklistItems(checklistId: string): ChecklistItem[] {
+    return this.checklistItems
+      .filter(item => item.checklistId === checklistId)
+      .sort((a, b) => a.order - b.order);
   }
 
   // --------------------------------------------------------------------

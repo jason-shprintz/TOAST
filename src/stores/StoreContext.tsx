@@ -11,6 +11,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     (async () => {
       try {
         await rootStore.coreStore.loadNotes();
+        await rootStore.coreStore.loadChecklists();
       } catch (e) {
         console.warn('Failed to load notes on startup:', e);
       }
