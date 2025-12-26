@@ -7,7 +7,7 @@ import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: FOOTER_HEIGHT, // Buffer from bottom for footer
     backgroundColor: '#8B0000', // Night-friendly dark red
     pointerEvents: 'none', // Allow touches to pass through
   },

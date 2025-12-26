@@ -2,8 +2,9 @@ import NetInfo, {
   NetInfoState,
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
+import { Audio } from 'expo-av';
 import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
-import { AppState, NativeEventSubscription, Vibration } from 'react-native';
+import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 import Torch from 'react-native-torch';
@@ -39,6 +40,8 @@ export interface Note {
 
 export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
+  private dotSound: Audio.Sound | null = null;
+  private dashSound: Audio.Sound | null = null;
 
   constructor() {
     makeAutoObservable(
@@ -53,6 +56,33 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
+    // Load SOS audio files
+    this.loadSosAudio();
+  }
+
+  /**
+   * Loads the SOS audio files (dot and dash beeps).
+   * @private
+   */
+  private async loadSosAudio() {
+    try {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+      });
+      
+      const { sound: dot } = await Audio.Sound.createAsync(
+        require('../../assets/sos_dot.wav')
+      );
+      this.dotSound = dot;
+
+      const { sound: dash } = await Audio.Sound.createAsync(
+        require('../../assets/sos_dash.wav')
+      );
+      this.dashSound = dash;
+    } catch (error) {
+      console.error('Failed to load SOS audio files:', error);
+    }
   }
 
   // --------------------------------------------------------------------
@@ -161,7 +191,7 @@ export class CoreStore {
    * three short flashes (dots), three long flashes (dashes), and three short flashes (dots), with appropriate
    * timing gaps between signals and letters. The sequence repeats with a pause between cycles.
    *
-   * If sosWithTone is enabled, vibration patterns accompany the light flashes.
+   * If sosWithTone is enabled, audible beep tones accompany the light flashes.
    *
    * If the flashlight mode is changed from 'sos', the sequence stops and the torch is turned off.
    * Any existing SOS pattern is stopped before starting a new one.
@@ -170,23 +200,23 @@ export class CoreStore {
    */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
-    // Sequence builder: returns array of {on:boolean, ms:number}
+    // Sequence builder: returns array of {on:boolean, ms:number, type:'dot'|'dash'|null}
     const unit = this.sosUnitMs;
     const dot = [
-      { on: true, ms: unit },
-      { on: false, ms: unit },
+      { on: true, ms: unit, type: 'dot' as const },
+      { on: false, ms: unit, type: null },
     ];
     const dash = [
-      { on: true, ms: 3 * unit },
-      { on: false, ms: unit },
+      { on: true, ms: 3 * unit, type: 'dash' as const },
+      { on: false, ms: unit, type: null },
     ];
-    const letterGap = [{ on: false, ms: 3 * unit }];
+    const letterGap = [{ on: false, ms: 3 * unit, type: null }];
 
     const S = [...dot, ...dot, ...dot, ...letterGap];
     const O = [...dash, ...dash, ...dash, ...letterGap];
     const sequence = [...S, ...O, ...S];
 
-    const repeatPause = [{ on: false, ms: 1000 }];
+    const repeatPause = [{ on: false, ms: 1000, type: null }];
 
     const runOnce = (index: number) => {
       if (this.flashlightMode !== 'sos') {
@@ -198,10 +228,9 @@ export class CoreStore {
       const nextOn = step ? step.on : false;
       this.setTorch(nextOn);
       
-      // Add vibration if sosWithTone is enabled and torch is on
-      // When on=true, step.ms is the duration to vibrate (dot=unit, dash=3*unit)
-      if (this.sosWithTone && nextOn) {
-        Vibration.vibrate(step.ms);
+      // Play audio tone if sosWithTone is enabled and torch is on
+      if (this.sosWithTone && nextOn && step) {
+        this.playSosTone(step.type);
       }
       
       const nextIndex = step
@@ -227,18 +256,45 @@ export class CoreStore {
   }
 
   /**
+   * Plays an SOS tone (dot or dash beep).
+   * @param type - The type of tone to play ('dot' or 'dash')
+   * @private
+   */
+  private async playSosTone(type: 'dot' | 'dash' | null) {
+    if (!type) return;
+    
+    try {
+      const sound = type === 'dot' ? this.dotSound : this.dashSound;
+      if (sound) {
+        await sound.replayAsync();
+      }
+    } catch (error) {
+      console.error('Failed to play SOS tone:', error);
+    }
+  }
+
+  /**
    * Stops the SOS timer if it is currently active.
-   * Clears the timeout, resets the `sosTimer` property to `null`, and cancels any ongoing vibrations.
+   * Clears the timeout, resets the `sosTimer` property to `null`, and stops any playing audio.
    *
    * @private
    */
-  private stopSOS() {
+  private async stopSOS() {
     if (this.sosTimer) {
       clearTimeout(this.sosTimer);
       this.sosTimer = null;
     }
-    // Cancel any ongoing vibrations
-    Vibration.cancel();
+    // Stop any playing audio
+    try {
+      if (this.dotSound) {
+        await this.dotSound.stopAsync();
+      }
+      if (this.dashSound) {
+        await this.dashSound.stopAsync();
+      }
+    } catch {
+      // Ignore errors when stopping audio
+    }
   }
 
   // Strobe implementation: toggle torch at `strobeFrequencyHz`
@@ -967,10 +1023,24 @@ export class CoreStore {
   // --------------------------------------------------------------------
   // ==== Cleanup on store disposal ====
   // --------------------------------------------------------------------
-  dispose() {
+  async dispose() {
     this.stopSOS();
     this.stopStrobe();
     this.appStateSubscription?.remove();
     this.stopDeviceStatusMonitoring();
+    
+    // Unload audio resources
+    try {
+      if (this.dotSound) {
+        await this.dotSound.unloadAsync();
+        this.dotSound = null;
+      }
+      if (this.dashSound) {
+        await this.dashSound.unloadAsync();
+        this.dashSound = null;
+      }
+    } catch (error) {
+      console.error('Failed to unload audio resources:', error);
+    }
   }
 }
