@@ -14,7 +14,7 @@ import { COLORS } from '../../theme';
  * @property itemTitle - Note title text style (semibold, horizontally padded).
  * @property itemMeta - Metadata text style (smaller, slightly transparent, spaced from title).
  * @property itemBody - Note body preview text style (medium size with wider horizontal padding).
- * @property itemBodyExpanded - Expanded note body style with a fixed height to reveal more content.
+ * @property itemBodyExpanded - Expanded note body style that displays the full content without height constraints.
  * @property moreHint - Subtle hint text indicating additional content (smaller, more transparent).
  * @property actionsRow - Horizontal row for action controls spaced apart.
  * @property noteButton - Hit area padding for a trash/delete action button.
