@@ -199,12 +199,9 @@ export class CoreStore {
       this.setTorch(nextOn);
       
       // Add vibration if sosWithTone is enabled and torch is on
-      // Vibrate for the actual "on" duration (dot = 1 unit, dash = 3 units)
+      // When on=true, step.ms is the duration to vibrate (dot=unit, dash=3*unit)
       if (this.sosWithTone && nextOn) {
-        // Calculate vibration duration: dots are 1 unit, dashes are 3 units
-        const isShort = step.ms === unit; // dot
-        const vibrationDuration = isShort ? unit : 3 * unit;
-        Vibration.vibrate(vibrationDuration);
+        Vibration.vibrate(step.ms);
       }
       
       const nextIndex = step
