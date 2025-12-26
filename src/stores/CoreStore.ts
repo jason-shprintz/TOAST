@@ -6,6 +6,7 @@ import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
 import { AppState, NativeEventSubscription } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
+import Sound from 'react-native-sound';
 import Torch from 'react-native-torch';
 let SQLite: any;
 try {
@@ -39,6 +40,9 @@ export interface Note {
 
 export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
+  private dotSound: Sound | null = null;
+  private dashSound: Sound | null = null;
+  private audioLoaded: boolean = false;
 
   constructor() {
     makeAutoObservable(
@@ -53,26 +57,66 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
+    // Load SOS audio files
+    this.loadSosAudio();
+  }
+
+  /**
+   * Loads the SOS audio files (dot and dash beeps).
+   * @private
+   */
+  private loadSosAudio() {
+    // Enable playback in silent mode
+    Sound.setCategory('Playback');
+
+    let dotLoaded = false;
+    let dashLoaded = false;
+
+    const checkBothLoaded = () => {
+      if (dotLoaded && dashLoaded) {
+        this.audioLoaded = true;
+      }
+    };
+
+    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.error('Failed to load dot sound:', error);
+        return;
+      }
+      dotLoaded = true;
+      checkBothLoaded();
+    });
+
+    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.error('Failed to load dash sound:', error);
+        return;
+      }
+      dashLoaded = true;
+      checkBothLoaded();
+    });
   }
 
   // --------------------------------------------------------------------
   // ===== Flashlight =====
   // --------------------------------------------------------------------
   // Flashlight state management
-  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' = 'off';
+  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision' = 'off';
   private sosTimer: ReturnType<typeof setTimeout> | null = null;
   private isTorchOn: boolean = false;
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
+  nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
+  sosWithTone: boolean = true; // whether SOS should play an accompanying tone
 
   /**
    * Sets the flashlight mode to the specified value.
    * If the selected mode is already active, toggles the flashlight off.
    * Otherwise, activates the selected mode.
    *
-   * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', or 'strobe'.
+   * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', 'strobe', or 'nightvision'.
    */
-  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe') {
+  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision') {
     // Exclusive selection: tapping active mode turns it off
     const next = this.flashlightMode === mode ? 'off' : mode;
     this.flashlightMode = next;
@@ -83,6 +127,10 @@ export class CoreStore {
     return this.flashlightMode === 'on';
   }
 
+  get nightvisionBrightnessPercent(): number {
+    return Math.round(this.nightvisionBrightness * 100);
+  }
+
   /**
    * Applies the current flashlight state based on the `flashlightMode` property.
    * Stops any running SOS or strobe patterns before setting the new state.
@@ -90,6 +138,7 @@ export class CoreStore {
    * - If `flashlightMode` is `'on'`, turns the torch on.
    * - If `flashlightMode` is `'sos'`, starts the SOS pattern.
    * - If `flashlightMode` is `'strobe'`, starts the strobe pattern.
+   * - If `flashlightMode` is `'nightvision'`, torch is turned off (nightvision uses screen only).
    * - For any other value, turns the torch off.
    *
    * @private
@@ -109,6 +158,11 @@ export class CoreStore {
     }
     if (this.flashlightMode === 'strobe') {
       this.startStrobe();
+      return;
+    }
+    if (this.flashlightMode === 'nightvision') {
+      // Nightvision mode uses screen only, torch is off
+      this.setTorch(false);
       return;
     }
     // Default: off
@@ -149,6 +203,8 @@ export class CoreStore {
    * three short flashes (dots), three long flashes (dashes), and three short flashes (dots), with appropriate
    * timing gaps between signals and letters. The sequence repeats with a pause between cycles.
    *
+   * If sosWithTone is enabled, audible beep tones accompany the light flashes.
+   *
    * If the flashlight mode is changed from 'sos', the sequence stops and the torch is turned off.
    * Any existing SOS pattern is stopped before starting a new one.
    *
@@ -156,23 +212,23 @@ export class CoreStore {
    */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
-    // Sequence builder: returns array of {on:boolean, ms:number}
+    // Sequence builder: returns array of {on:boolean, ms:number, type:'dot'|'dash'|null}
     const unit = this.sosUnitMs;
     const dot = [
-      { on: true, ms: unit },
-      { on: false, ms: unit },
+      { on: true, ms: unit, type: 'dot' as const },
+      { on: false, ms: unit, type: null },
     ];
     const dash = [
-      { on: true, ms: 3 * unit },
-      { on: false, ms: unit },
+      { on: true, ms: 3 * unit, type: 'dash' as const },
+      { on: false, ms: unit, type: null },
     ];
-    const letterGap = [{ on: false, ms: 3 * unit }];
+    const letterGap = [{ on: false, ms: 3 * unit, type: null }];
 
     const S = [...dot, ...dot, ...dot, ...letterGap];
     const O = [...dash, ...dash, ...dash, ...letterGap];
     const sequence = [...S, ...O, ...S];
 
-    const repeatPause = [{ on: false, ms: 1000 }];
+    const repeatPause = [{ on: false, ms: 1000, type: null }];
 
     const runOnce = (index: number) => {
       if (this.flashlightMode !== 'sos') {
@@ -183,6 +239,12 @@ export class CoreStore {
       const nextDelay = step ? step.ms : repeatPause[0].ms;
       const nextOn = step ? step.on : false;
       this.setTorch(nextOn);
+
+      // Play audio tone if sosWithTone is enabled and torch is on
+      if (this.sosWithTone && nextOn && step) {
+        this.playSosTone(step.type);
+      }
+
       const nextIndex = step
         ? index + 1 < sequence.length
           ? index + 1
@@ -206,8 +268,32 @@ export class CoreStore {
   }
 
   /**
+   * Plays an SOS tone (dot or dash beep).
+   * @param type - The type of tone to play ('dot' or 'dash')
+   * @private
+   */
+  private playSosTone(type: 'dot' | 'dash' | null) {
+    if (!type || !this.audioLoaded) return;
+
+    const sound = type === 'dot' ? this.dotSound : this.dashSound;
+    if (sound) {
+      try {
+        sound.stop(() => {
+          sound.play(success => {
+            if (!success) {
+              console.error('Failed to play SOS tone');
+            }
+          });
+        });
+      } catch (error) {
+        console.error('Error playing SOS tone:', error);
+      }
+    }
+  }
+
+  /**
    * Stops the SOS timer if it is currently active.
-   * Clears the timeout and resets the `sosTimer` property to `null`.
+   * Clears the timeout, resets the `sosTimer` property to `null`, and stops any playing audio.
    *
    * @private
    */
@@ -215,6 +301,13 @@ export class CoreStore {
     if (this.sosTimer) {
       clearTimeout(this.sosTimer);
       this.sosTimer = null;
+    }
+    // Stop any playing audio
+    if (this.dotSound) {
+      this.dotSound.stop();
+    }
+    if (this.dashSound) {
+      this.dashSound.stop();
     }
   }
 
@@ -265,6 +358,27 @@ export class CoreStore {
     if (this.flashlightMode !== 'on') {
       this.setTorch(false);
     }
+  }
+
+  // Nightvision implementation: adjustable brightness for red screen mode
+  /**
+   * Sets the brightness level for nightvision mode.
+   *
+   * @param brightness - A value between 0 and 1 representing the brightness level.
+   */
+  setNightvisionBrightness(brightness: number) {
+    const clamped = Math.max(0, Math.min(1, brightness));
+    this.nightvisionBrightness = clamped;
+  }
+
+  // SOS tone toggle
+  /**
+   * Toggles the SOS tone on or off.
+   *
+   * @param enabled - Whether the SOS tone should be enabled.
+   */
+  setSosWithTone(enabled: boolean) {
+    this.sosWithTone = enabled;
   }
 
   // --------------------------------------------------------------------
@@ -928,5 +1042,15 @@ export class CoreStore {
     this.stopStrobe();
     this.appStateSubscription?.remove();
     this.stopDeviceStatusMonitoring();
+
+    // Release audio resources
+    if (this.dotSound) {
+      this.dotSound.release();
+      this.dotSound = null;
+    }
+    if (this.dashSound) {
+      this.dashSound.release();
+      this.dashSound = null;
+    }
   }
 }
