@@ -3,13 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
+import { FlashlightModes } from '../../../constants';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
-
+import { FlashlightModeType } from '../../types/common-types';
 
 /**
  * Flashlight screen implementation that lets the user select a flashlight mode and adjust
@@ -31,7 +32,7 @@ const FlashlightScreenImpl = () => {
   const navigation = useNavigation();
   const mode = core.flashlightMode;
 
-  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe') => {
+  const selectMode = (next: FlashlightModeType[keyof FlashlightModeType]) => {
     core.setFlashlightMode(next);
   };
 
@@ -48,20 +49,26 @@ const FlashlightScreenImpl = () => {
         <CardTopic
           title="Flashlight On"
           icon="flashlight-outline"
-          onPress={() => selectMode('on')}
-          containerStyle={mode === 'on' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.ON)}
+          containerStyle={
+            mode === FlashlightModes.ON ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="SOS"
           icon="alert-outline"
-          onPress={() => selectMode('sos')}
-          containerStyle={mode === 'sos' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.SOS)}
+          containerStyle={
+            mode === FlashlightModes.SOS ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="Strobe"
           icon="flash-outline"
-          onPress={() => selectMode('strobe')}
-          containerStyle={mode === 'strobe' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.STROBE)}
+          containerStyle={
+            mode === FlashlightModes.STROBE ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="Nightvision"

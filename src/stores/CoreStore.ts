@@ -8,6 +8,8 @@ import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 import Sound from 'react-native-sound';
 import Torch from 'react-native-torch';
+import { FlashlightModes } from '../../constants';
+import { FlashlightModeType } from '../types/common-types';
 let SQLite: any;
 try {
   SQLite = require('react-native-sqlite-storage');
@@ -101,13 +103,14 @@ export class CoreStore {
   // ===== Flashlight =====
   // --------------------------------------------------------------------
   // Flashlight state management
-  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision' = 'off';
+  flashlightMode: FlashlightModeType[keyof FlashlightModeType] =
+    FlashlightModes.OFF;
   private sosTimer: ReturnType<typeof setTimeout> | null = null;
   private isTorchOn: boolean = false;
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
   nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
-  sosWithTone: boolean = true; // whether SOS should play an accompanying tone
+  sosWithTone: boolean = true; // whether SOS should play an accompanying tone (DEFAULT true)
 
   /**
    * Sets the flashlight mode to the specified value.
@@ -116,15 +119,15 @@ export class CoreStore {
    *
    * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', 'strobe', or 'nightvision'.
    */
-  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision') {
+  setFlashlightMode(mode: FlashlightModeType[keyof FlashlightModeType]) {
     // Exclusive selection: tapping active mode turns it off
-    const next = this.flashlightMode === mode ? 'off' : mode;
+    const next = this.flashlightMode === mode ? FlashlightModes.OFF : mode;
     this.flashlightMode = next;
     this.applyFlashlightState();
   }
 
   get isFlashlightOn() {
-    return this.flashlightMode === 'on';
+    return this.flashlightMode === FlashlightModes.ON;
   }
 
   get nightvisionBrightnessPercent(): number {
@@ -148,19 +151,19 @@ export class CoreStore {
     this.stopSOS();
     this.stopStrobe();
     // Apply steady on/off
-    if (this.flashlightMode === 'on') {
+    if (this.flashlightMode === FlashlightModes.ON) {
       this.setTorch(true);
       return;
     }
-    if (this.flashlightMode === 'sos') {
+    if (this.flashlightMode === FlashlightModes.SOS) {
       this.startSOS();
       return;
     }
-    if (this.flashlightMode === 'strobe') {
+    if (this.flashlightMode === FlashlightModes.STROBE) {
       this.startStrobe();
       return;
     }
-    if (this.flashlightMode === 'nightvision') {
+    if (this.flashlightMode === FlashlightModes.NIGHTVISION) {
       // Nightvision mode uses screen only, torch is off
       this.setTorch(false);
       return;
@@ -313,7 +316,7 @@ export class CoreStore {
 
   // Strobe implementation: toggle torch at `strobeFrequencyHz`
   setStrobeFrequency(hz: number) {
-    const clamped = Math.max(1, Math.min(30, Math.round(hz)));
+    const clamped = Math.max(1, Math.min(15, Math.round(hz)));
     this.strobeFrequencyHz = clamped;
     if (this.flashlightMode === 'strobe') {
       // restart strobe at new frequency
@@ -336,7 +339,7 @@ export class CoreStore {
     let on = false;
     this.setTorch(on); // Set initial state immediately
     this.strobeInterval = setInterval(() => {
-      if (this.flashlightMode !== 'strobe') {
+      if (this.flashlightMode !== FlashlightModes.STROBE) {
         this.stopStrobe();
         return;
       }
@@ -355,7 +358,7 @@ export class CoreStore {
       this.strobeInterval = null;
     }
     // Ensure torch off when stopping strobe unless steady on is selected
-    if (this.flashlightMode !== 'on') {
+    if (this.flashlightMode !== FlashlightModes.ON) {
       this.setTorch(false);
     }
   }
