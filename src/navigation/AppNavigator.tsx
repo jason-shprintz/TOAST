@@ -9,6 +9,7 @@ import ReferenceModule from '../modules/Reference/ReferenceModule';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
+import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
@@ -72,6 +73,11 @@ function NavigatorContent(): JSX.Element {
           {/* Core Module */}
           <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
           <Stack.Screen name="Flashlight" component={FlashlightScreen} />
+          <Stack.Screen
+            name="Nightvision"
+            component={NightvisionScreen}
+            options={{ presentation: 'modal' }}
+          />
           <Stack.Screen name="NewNote" component={NewNoteScreen} />
           <Stack.Screen name="Notepad" component={NotepadScreen} />
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />

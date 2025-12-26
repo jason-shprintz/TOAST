@@ -63,6 +63,21 @@ Optional: --mode Debug
 
 ## Troubleshooting
 
+### Missing Scheme in Xcode
+
+If you encounter an error about a missing scheme when building for iOS, ensure that the TOAST scheme is shared in Xcode:
+
+  ```sh
+  mkdir -p ios/TOAST.xcodeproj/xcshareddata/xcschemes
+  
+  # copy the real scheme (ignore the ._ file)
+  cp -f ios/TOAST.xcworkspace/xcshareddata/xcschemes/TOAST.xcscheme \
+        ios/TOAST.xcodeproj/xcshareddata/xcschemes/TOAST.xcscheme
+  
+  # sanity check: project should now list TOAST scheme
+  xcodebuild -list -project ios/TOAST.xcodeproj | sed -n '1,80p'
+  ```
+
 ### macOS `._*` files (AppleDouble)
 
 On macOS (especially when working from an external drive), Finder can create `._*` “AppleDouble” metadata files alongside real files. If these get picked up by build tooling (Metro/Xcode/Gradle) or accidentally committed, they can cause confusing build/runtime issues.
