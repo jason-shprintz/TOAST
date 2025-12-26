@@ -85,6 +85,10 @@ export class CoreStore {
     return this.flashlightMode === 'on';
   }
 
+  get nightvisionBrightnessPercent(): number {
+    return Math.round(this.nightvisionBrightness * 100);
+  }
+
   /**
    * Applies the current flashlight state based on the `flashlightMode` property.
    * Stops any running SOS or strobe patterns before setting the new state.
@@ -195,8 +199,12 @@ export class CoreStore {
       this.setTorch(nextOn);
       
       // Add vibration if sosWithTone is enabled and torch is on
+      // Vibrate for the actual "on" duration (dot = 1 unit, dash = 3 units)
       if (this.sosWithTone && nextOn) {
-        Vibration.vibrate(step.ms);
+        // Calculate vibration duration: dots are 1 unit, dashes are 3 units
+        const isShort = step.ms === unit; // dot
+        const vibrationDuration = isShort ? unit : 3 * unit;
+        Vibration.vibrate(vibrationDuration);
       }
       
       const nextIndex = step

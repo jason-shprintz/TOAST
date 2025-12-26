@@ -102,7 +102,7 @@ const FlashlightScreenImpl = () => {
         <View style={styles.controlsContainer}>
           <SectionHeader>Nightvision Brightness</SectionHeader>
           <Text style={styles.label}>
-            {Math.round(core.nightvisionBrightness * 100)}%
+            {core.nightvisionBrightnessPercent}%
           </Text>
           <Slider
             style={styles.slider}
