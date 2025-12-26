@@ -23,7 +23,7 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
  * This screen retrieves a checklist from the navigation route parameters and displays
  * it with all its items. Users can check/uncheck items, add new items, and delete items.
  *
- * @returns {JSX.Element} The rendered checklist entry screen component.
+ * @returns {React.JSX.Element} The rendered checklist entry screen component.
  */
 export default observer(function ChecklistEntryScreen(): React.JSX.Element {
   const route = useRoute<any>();
