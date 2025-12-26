@@ -6,6 +6,8 @@ import CommunicationsModule from '../modules/Communications/CommunicationsModule
 import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
+import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
+import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
@@ -87,6 +89,8 @@ function NavigatorContent(): JSX.Element {
             name="BookmarkedNotes"
             component={BookmarkedNotesScreen}
           />
+          <Stack.Screen name="Checklist" component={ChecklistScreen} />
+          <Stack.Screen name="ChecklistEntry" component={ChecklistEntryScreen} />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
           <Stack.Screen name="Category" component={CategoryScreen} />
