@@ -1,7 +1,7 @@
 import Slider from '@react-native-community/slider';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
@@ -59,8 +59,9 @@ const FlashlightScreenImpl = () => {
 
       {mode === 'strobe' && (
         <View style={styles.strobeControls}>
-          <SectionHeader>Strobe Frequency</SectionHeader>
-          <Text style={styles.strobeLabel}>{core.strobeFrequencyHz} Hz</Text>
+          <SectionHeader>
+            Strobe Frequency {core.strobeFrequencyHz} Hz
+          </SectionHeader>
           <Slider
             style={styles.slider}
             minimumValue={1}
@@ -86,14 +87,7 @@ const styles = StyleSheet.create({
   },
   strobeControls: {
     width: '100%',
-    marginTop: 20,
     paddingHorizontal: 10,
-  },
-  strobeLabel: {
-    color: COLORS.TOAST_BROWN,
-    fontSize: 16,
-    marginBottom: 8,
-    textAlign: 'center',
   },
   slider: {
     width: '100%',
