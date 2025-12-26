@@ -77,7 +77,7 @@ const FlashlightScreenImpl = () => {
         />
       </Grid>
 
-      {mode === 'strobe' && (
+      {mode === FlashlightModes.STROBE && (
         <View style={styles.controlsContainer}>
           <SectionHeader isShowHr={false}>
             Strobe Frequency {core.strobeFrequencyHz} Hz
@@ -95,7 +95,7 @@ const FlashlightScreenImpl = () => {
         </View>
       )}
 
-      {mode === 'sos' && (
+      {mode === FlashlightModes.SOS && (
         <View style={styles.controlsContainer}>
           <SectionHeader isShowHr={false}>
             <View style={styles.sectionContainer}>
