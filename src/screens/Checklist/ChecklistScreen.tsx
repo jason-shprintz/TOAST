@@ -28,7 +28,7 @@ export default observer(function ChecklistScreen() {
   const core = useCoreStore();
 
   const checklistIcons: Record<string, string> = {
-    'Bug-out bag': 'backpack-outline',
+    'Bug-out bag': 'bag-outline',
     'First-aid kit': 'medical-outline',
     'Evacuation kit': 'exit-outline',
   };

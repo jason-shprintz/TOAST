@@ -1286,26 +1286,37 @@ export class CoreStore {
 
   /**
    * Adds a new item to a checklist.
+   * New items are added to the top of the list (order = 0).
    */
   async addChecklistItem(checklistId: string, text: string): Promise<void> {
     const existingItems = this.checklistItems.filter(
       i => i.checklistId === checklistId,
     );
-    const order = existingItems.length;
+
+    // Increment order of all existing items to make room at the top
+    for (const existingItem of existingItems) {
+      existingItem.order += 1;
+    }
 
     const item: ChecklistItem = {
       id: this.generateId(),
       checklistId,
       text,
       checked: false,
-      order,
+      order: 0, // Add to top
     };
 
     runInAction(() => {
       this.checklistItems.push(item);
     });
 
+    // Persist the new item
     await this.persistChecklistItem(item);
+
+    // Persist updated order for existing items
+    for (const existingItem of existingItems) {
+      await this.persistChecklistItem(existingItem);
+    }
   }
 
   /**
