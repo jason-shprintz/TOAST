@@ -3,7 +3,7 @@ import NetInfo, {
   NetInfoSubscription,
 } from '@react-native-community/netinfo';
 import { makeAutoObservable, runInAction, computed, comparer } from 'mobx';
-import { AppState, NativeEventSubscription } from 'react-native';
+import { AppState, NativeEventSubscription, Vibration } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 import Torch from 'react-native-torch';
@@ -59,20 +59,22 @@ export class CoreStore {
   // ===== Flashlight =====
   // --------------------------------------------------------------------
   // Flashlight state management
-  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' = 'off';
+  flashlightMode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision' = 'off';
   private sosTimer: ReturnType<typeof setTimeout> | null = null;
   private isTorchOn: boolean = false;
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
+  nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
+  sosWithTone: boolean = false; // whether SOS should play an accompanying tone
 
   /**
    * Sets the flashlight mode to the specified value.
    * If the selected mode is already active, toggles the flashlight off.
    * Otherwise, activates the selected mode.
    *
-   * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', or 'strobe'.
+   * @param mode - The desired flashlight mode. Can be 'off', 'on', 'sos', 'strobe', or 'nightvision'.
    */
-  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe') {
+  setFlashlightMode(mode: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision') {
     // Exclusive selection: tapping active mode turns it off
     const next = this.flashlightMode === mode ? 'off' : mode;
     this.flashlightMode = next;
@@ -90,6 +92,7 @@ export class CoreStore {
    * - If `flashlightMode` is `'on'`, turns the torch on.
    * - If `flashlightMode` is `'sos'`, starts the SOS pattern.
    * - If `flashlightMode` is `'strobe'`, starts the strobe pattern.
+   * - If `flashlightMode` is `'nightvision'`, torch is turned off (nightvision uses screen only).
    * - For any other value, turns the torch off.
    *
    * @private
@@ -109,6 +112,11 @@ export class CoreStore {
     }
     if (this.flashlightMode === 'strobe') {
       this.startStrobe();
+      return;
+    }
+    if (this.flashlightMode === 'nightvision') {
+      // Nightvision mode uses screen only, torch is off
+      this.setTorch(false);
       return;
     }
     // Default: off
@@ -149,6 +157,8 @@ export class CoreStore {
    * three short flashes (dots), three long flashes (dashes), and three short flashes (dots), with appropriate
    * timing gaps between signals and letters. The sequence repeats with a pause between cycles.
    *
+   * If sosWithTone is enabled, vibration patterns accompany the light flashes.
+   *
    * If the flashlight mode is changed from 'sos', the sequence stops and the torch is turned off.
    * Any existing SOS pattern is stopped before starting a new one.
    *
@@ -183,6 +193,12 @@ export class CoreStore {
       const nextDelay = step ? step.ms : repeatPause[0].ms;
       const nextOn = step ? step.on : false;
       this.setTorch(nextOn);
+      
+      // Add vibration if sosWithTone is enabled and torch is on
+      if (this.sosWithTone && nextOn) {
+        Vibration.vibrate(step.ms);
+      }
+      
       const nextIndex = step
         ? index + 1 < sequence.length
           ? index + 1
@@ -207,7 +223,7 @@ export class CoreStore {
 
   /**
    * Stops the SOS timer if it is currently active.
-   * Clears the timeout and resets the `sosTimer` property to `null`.
+   * Clears the timeout, resets the `sosTimer` property to `null`, and cancels any ongoing vibrations.
    *
    * @private
    */
@@ -216,6 +232,8 @@ export class CoreStore {
       clearTimeout(this.sosTimer);
       this.sosTimer = null;
     }
+    // Cancel any ongoing vibrations
+    Vibration.cancel();
   }
 
   // Strobe implementation: toggle torch at `strobeFrequencyHz`
@@ -265,6 +283,27 @@ export class CoreStore {
     if (this.flashlightMode !== 'on') {
       this.setTorch(false);
     }
+  }
+
+  // Nightvision implementation: adjustable brightness for red screen mode
+  /**
+   * Sets the brightness level for nightvision mode.
+   *
+   * @param brightness - A value between 0 and 1 representing the brightness level.
+   */
+  setNightvisionBrightness(brightness: number) {
+    const clamped = Math.max(0, Math.min(1, brightness));
+    this.nightvisionBrightness = clamped;
+  }
+
+  // SOS tone toggle
+  /**
+   * Toggles the SOS tone on or off.
+   *
+   * @param enabled - Whether the SOS tone should be enabled.
+   */
+  setSosWithTone(enabled: boolean) {
+    this.sosWithTone = enabled;
   }
 
   // --------------------------------------------------------------------

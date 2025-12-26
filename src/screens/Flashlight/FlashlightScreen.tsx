@@ -1,7 +1,7 @@
 import Slider from '@react-native-community/slider';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Switch } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
@@ -11,24 +11,27 @@ import { COLORS } from '../../theme';
 
 /**
  * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
- * configure strobe frequency.
+ * configure strobe frequency, nightvision brightness, and SOS tone.
  *
  * @remarks
  * This component reads state from the core store (`useCoreStore`) and updates it via:
- * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe'`)
+ * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe' | 'nightvision'`)
  * - `core.setStrobeFrequency(v)` for strobe frequency changes (in Hz)
+ * - `core.setNightvisionBrightness(v)` for nightvision brightness changes (0-1)
+ * - `core.setSosWithTone(v)` for enabling/disabling SOS tone
  *
  * The currently selected mode is visually indicated by applying an `activeCard` style to the
- * corresponding option card. When the mode is `'strobe'`, additional controls are rendered,
- * including a slider constrained to integer values from 1–15 Hz.
+ * corresponding option card. When the mode is `'strobe'`, additional controls for frequency are rendered.
+ * When the mode is `'nightvision'`, a full-screen red overlay with brightness controls is rendered.
+ * When the mode is `'sos'`, a toggle for enabling/disabling the SOS tone is rendered.
  *
- * @returns A React element that renders the flashlight mode selection and optional strobe controls.
+ * @returns A React element that renders the flashlight mode selection and optional mode-specific controls.
  */
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const mode = core.flashlightMode;
 
-  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe') => {
+  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe' | 'nightvision') => {
     core.setFlashlightMode(next);
   };
 
@@ -55,12 +58,18 @@ const FlashlightScreenImpl = () => {
           onPress={() => selectMode('strobe')}
           containerStyle={mode === 'strobe' ? styles.activeCard : undefined}
         />
+        <CardTopic
+          title="Nightvision"
+          icon="moon-outline"
+          onPress={() => selectMode('nightvision')}
+          containerStyle={mode === 'nightvision' ? styles.activeCard : undefined}
+        />
       </Grid>
 
       {mode === 'strobe' && (
-        <View style={styles.strobeControls}>
+        <View style={styles.controlsContainer}>
           <SectionHeader>Strobe Frequency</SectionHeader>
-          <Text style={styles.strobeLabel}>{core.strobeFrequencyHz} Hz</Text>
+          <Text style={styles.label}>{core.strobeFrequencyHz} Hz</Text>
           <Slider
             style={styles.slider}
             minimumValue={1}
@@ -73,6 +82,50 @@ const FlashlightScreenImpl = () => {
           />
         </View>
       )}
+
+      {mode === 'sos' && (
+        <View style={styles.controlsContainer}>
+          <SectionHeader>SOS Options</SectionHeader>
+          <View style={styles.switchContainer}>
+            <Text style={styles.label}>SOS Tone</Text>
+            <Switch
+              value={core.sosWithTone}
+              onValueChange={(v: boolean) => core.setSosWithTone(v)}
+              trackColor={{ false: COLORS.SECONDARY_ACCENT, true: COLORS.ACCENT }}
+              thumbColor={core.sosWithTone ? COLORS.PRIMARY_LIGHT : COLORS.TOAST_BROWN}
+            />
+          </View>
+        </View>
+      )}
+
+      {mode === 'nightvision' && (
+        <View style={styles.controlsContainer}>
+          <SectionHeader>Nightvision Brightness</SectionHeader>
+          <Text style={styles.label}>
+            {Math.round(core.nightvisionBrightness * 100)}%
+          </Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={0}
+            maximumValue={1}
+            step={0.01}
+            value={core.nightvisionBrightness}
+            onValueChange={(v: number) => core.setNightvisionBrightness(v)}
+            minimumTrackTintColor={COLORS.ACCENT}
+            maximumTrackTintColor={COLORS.SECONDARY_ACCENT}
+          />
+        </View>
+      )}
+
+      {/* Full-screen nightvision red overlay */}
+      {mode === 'nightvision' && (
+        <View
+          style={[
+            styles.nightvisionOverlay,
+            { opacity: core.nightvisionBrightness },
+          ]}
+        />
+      )}
     </ScreenBody>
   );
 };
@@ -84,12 +137,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.ACCENT,
     borderWidth: 3,
   },
-  strobeControls: {
+  controlsContainer: {
     width: '100%',
     marginTop: 20,
     paddingHorizontal: 10,
   },
-  strobeLabel: {
+  label: {
     color: COLORS.TOAST_BROWN,
     fontSize: 16,
     marginBottom: 8,
@@ -98,5 +151,21 @@ const styles = StyleSheet.create({
   slider: {
     width: '100%',
     height: 40,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  nightvisionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#8B0000', // Night-friendly dark red
+    pointerEvents: 'none', // Allow touches to pass through
   },
 });
