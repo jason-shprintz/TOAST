@@ -10,22 +10,21 @@ import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
 
+
 /**
- * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
- * configure strobe frequency and SOS tone.
+ * Flashlight screen implementation that lets the user select a flashlight mode and adjust
+ * mode-specific settings.
  *
  * @remarks
- * This component reads state from the core store (`useCoreStore`) and updates it via:
- * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe'`)
- * - `core.setStrobeFrequency(v)` for strobe frequency changes (in Hz)
- * - `core.setSosWithTone(v)` for enabling/disabling SOS tone
+ * - Reads the current mode and settings from the core store (`useCoreStore`).
+ * - Updates flashlight mode via `core.setFlashlightMode`.
+ * - Provides navigation to the Nightvision screen.
+ * - Conditionally renders:
+ *   - **Strobe controls**: frequency slider (1–15 Hz) bound to `core.strobeFrequencyHz` and `core.setStrobeFrequency`.
+ *   - **SOS controls**: tone toggle switch bound to `core.sosWithTone` and `core.setSosWithTone`.
+ * - Highlights the active mode card using `styles.activeCard`.
  *
- * The currently selected mode is visually indicated by applying an `activeCard` style to the
- * corresponding option card. When the mode is `'strobe'`, additional controls for frequency are rendered.
- * When the mode is `'sos'`, a toggle for enabling/disabling the SOS tone is rendered.
- * Nightvision mode navigates to a dedicated full-screen NightvisionScreen.
- *
- * @returns A React element that renders the flashlight mode selection and optional mode-specific controls.
+ * @returns A React element rendering the flashlight mode grid and any applicable controls.
  */
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
@@ -72,8 +71,8 @@ const FlashlightScreenImpl = () => {
       </Grid>
 
       {mode === 'strobe' && (
-        <View style={styles.strobeControls}>
-          <SectionHeader>
+        <View style={styles.controlsContainer}>
+          <SectionHeader isShowHr={false}>
             Strobe Frequency {core.strobeFrequencyHz} Hz
           </SectionHeader>
           <Slider
@@ -124,12 +123,6 @@ const styles = StyleSheet.create({
   controlsContainer: {
     width: '100%',
     paddingHorizontal: 10,
-  },
-  label: {
-    color: COLORS.TOAST_BROWN,
-    fontSize: 16,
-    marginBottom: 8,
-    textAlign: 'center',
   },
   slider: {
     width: '100%',
