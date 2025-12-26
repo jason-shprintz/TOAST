@@ -14,3 +14,11 @@ export type CategoryType = {
   category: string;
   data: ReferenceEntryType[];
 };
+
+export type FlashlightModeType = {
+  OFF: string;
+  ON: string;
+  STROBE: string;
+  SOS: string;
+  NIGHTVISION?: string;
+};

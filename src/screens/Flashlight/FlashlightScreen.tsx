@@ -3,36 +3,36 @@ import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
+import { FlashlightModes } from '../../../constants';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
+import { FlashlightModeType } from '../../types/common-types';
 
 /**
- * Flashlight screen UI that lets the user choose a flashlight mode and, when applicable,
- * configure strobe frequency and SOS tone.
+ * Flashlight screen implementation that lets the user select a flashlight mode and adjust
+ * mode-specific settings.
  *
  * @remarks
- * This component reads state from the core store (`useCoreStore`) and updates it via:
- * - `core.setFlashlightMode(next)` for mode changes (`'off' | 'on' | 'sos' | 'strobe'`)
- * - `core.setStrobeFrequency(v)` for strobe frequency changes (in Hz)
- * - `core.setSosWithTone(v)` for enabling/disabling SOS tone
+ * - Reads the current mode and settings from the core store (`useCoreStore`).
+ * - Updates flashlight mode via `core.setFlashlightMode`.
+ * - Provides navigation to the Nightvision screen.
+ * - Conditionally renders:
+ *   - **Strobe controls**: frequency slider (1–15 Hz) bound to `core.strobeFrequencyHz` and `core.setStrobeFrequency`.
+ *   - **SOS controls**: tone toggle switch bound to `core.sosWithTone` and `core.setSosWithTone`.
+ * - Highlights the active mode card using `styles.activeCard`.
  *
- * The currently selected mode is visually indicated by applying an `activeCard` style to the
- * corresponding option card. When the mode is `'strobe'`, additional controls for frequency are rendered.
- * When the mode is `'sos'`, a toggle for enabling/disabling the SOS tone is rendered.
- * Nightvision mode navigates to a dedicated full-screen NightvisionScreen.
- *
- * @returns A React element that renders the flashlight mode selection and optional mode-specific controls.
+ * @returns A React element rendering the flashlight mode grid and any applicable controls.
  */
 const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const navigation = useNavigation();
   const mode = core.flashlightMode;
 
-  const selectMode = (next: 'off' | 'on' | 'sos' | 'strobe') => {
+  const selectMode = (next: FlashlightModeType[keyof FlashlightModeType]) => {
     core.setFlashlightMode(next);
   };
 
@@ -49,20 +49,26 @@ const FlashlightScreenImpl = () => {
         <CardTopic
           title="Flashlight On"
           icon="flashlight-outline"
-          onPress={() => selectMode('on')}
-          containerStyle={mode === 'on' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.ON)}
+          containerStyle={
+            mode === FlashlightModes.ON ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="SOS"
           icon="alert-outline"
-          onPress={() => selectMode('sos')}
-          containerStyle={mode === 'sos' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.SOS)}
+          containerStyle={
+            mode === FlashlightModes.SOS ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="Strobe"
           icon="flash-outline"
-          onPress={() => selectMode('strobe')}
-          containerStyle={mode === 'strobe' ? styles.activeCard : undefined}
+          onPress={() => selectMode(FlashlightModes.STROBE)}
+          containerStyle={
+            mode === FlashlightModes.STROBE ? styles.activeCard : undefined
+          }
         />
         <CardTopic
           title="Nightvision"
@@ -71,10 +77,11 @@ const FlashlightScreenImpl = () => {
         />
       </Grid>
 
-      {mode === 'strobe' && (
+      {mode === FlashlightModes.STROBE && (
         <View style={styles.controlsContainer}>
-          <SectionHeader>Strobe Frequency</SectionHeader>
-          <Text style={styles.label}>{core.strobeFrequencyHz} Hz</Text>
+          <SectionHeader isShowHr={false}>
+            Strobe Frequency {core.strobeFrequencyHz} Hz
+          </SectionHeader>
           <Slider
             style={styles.slider}
             minimumValue={1}
@@ -88,7 +95,7 @@ const FlashlightScreenImpl = () => {
         </View>
       )}
 
-      {mode === 'sos' && (
+      {mode === FlashlightModes.SOS && (
         <View style={styles.controlsContainer}>
           <SectionHeader isShowHr={false}>
             <View style={styles.sectionContainer}>
@@ -122,14 +129,7 @@ const styles = StyleSheet.create({
   },
   controlsContainer: {
     width: '100%',
-    marginTop: 20,
     paddingHorizontal: 10,
-  },
-  label: {
-    color: COLORS.TOAST_BROWN,
-    fontSize: 16,
-    marginBottom: 8,
-    textAlign: 'center',
   },
   slider: {
     width: '100%',
