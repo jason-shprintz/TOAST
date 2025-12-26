@@ -33,7 +33,7 @@ export default observer(function NotepadScreen() {
     General: 'folder-outline',
     Work: 'briefcase-outline',
     Personal: 'heart-outline',
-    Ideas: 'lightbulb-outline',
+    Ideas: 'bulb-outline',
   };
   return (
     <ScreenBody>
