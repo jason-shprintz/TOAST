@@ -138,45 +138,6 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
             </View>
           )}
 
-          {items.map(item => (
-            <View key={item.id} style={styles.itemRow}>
-              <TouchableOpacity
-                style={styles.checkbox}
-                onPress={() => core.toggleChecklistItem(item.id)}
-                accessibilityLabel={item.checked ? 'Uncheck item' : 'Check item'}
-                accessibilityRole="checkbox"
-              >
-                <Icon
-                  name={
-                    item.checked ? 'checkbox-outline' : 'square-outline'
-                  }
-                  size={28}
-                  color={COLORS.PRIMARY_DARK}
-                />
-              </TouchableOpacity>
-              <Text
-                style={[
-                  styles.itemText,
-                  item.checked && styles.itemTextChecked,
-                ]}
-              >
-                {item.text}
-              </Text>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDeleteItem(item.id)}
-                accessibilityLabel="Delete item"
-                accessibilityRole="button"
-              >
-                <Icon
-                  name="close-circle-outline"
-                  size={24}
-                  color={COLORS.PRIMARY_DARK}
-                />
-              </TouchableOpacity>
-            </View>
-          ))}
-
           {isAddingItem && (
             <View style={styles.addItemRow}>
               <TextInput
@@ -217,6 +178,45 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
               </TouchableOpacity>
             </View>
           )}
+
+          {items.map(item => (
+            <View key={item.id} style={styles.itemRow}>
+              <TouchableOpacity
+                style={styles.checkbox}
+                onPress={() => core.toggleChecklistItem(item.id)}
+                accessibilityLabel={item.checked ? 'Uncheck item' : 'Check item'}
+                accessibilityRole="checkbox"
+              >
+                <Icon
+                  name={
+                    item.checked ? 'checkbox-outline' : 'square-outline'
+                  }
+                  size={28}
+                  color={COLORS.PRIMARY_DARK}
+                />
+              </TouchableOpacity>
+              <Text
+                style={[
+                  styles.itemText,
+                  item.checked && styles.itemTextChecked,
+                ]}
+              >
+                {item.text}
+              </Text>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteItem(item.id)}
+                accessibilityLabel="Delete item"
+                accessibilityRole="button"
+              >
+                <Icon
+                  name="close-circle-outline"
+                  size={24}
+                  color={COLORS.PRIMARY_DARK}
+                />
+              </TouchableOpacity>
+            </View>
+          ))}
         </ScrollView>
       </View>
     </ScreenBody>
