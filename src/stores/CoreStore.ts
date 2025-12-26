@@ -42,6 +42,7 @@ export class CoreStore {
   private appStateSubscription: NativeEventSubscription;
   private dotSound: Sound | null = null;
   private dashSound: Sound | null = null;
+  private audioLoaded: boolean = false;
 
   constructor() {
     makeAutoObservable(
@@ -68,16 +69,31 @@ export class CoreStore {
     // Enable playback in silent mode
     Sound.setCategory('Playback');
     
+    let dotLoaded = false;
+    let dashLoaded = false;
+    
+    const checkBothLoaded = () => {
+      if (dotLoaded && dashLoaded) {
+        this.audioLoaded = true;
+      }
+    };
+    
     this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dot sound:', error);
+        return;
       }
+      dotLoaded = true;
+      checkBothLoaded();
     });
 
     this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dash sound:', error);
+        return;
       }
+      dashLoaded = true;
+      checkBothLoaded();
     });
   }
 
@@ -257,13 +273,21 @@ export class CoreStore {
    * @private
    */
   private playSosTone(type: 'dot' | 'dash' | null) {
-    if (!type) return;
+    if (!type || !this.audioLoaded) return;
     
     const sound = type === 'dot' ? this.dotSound : this.dashSound;
     if (sound) {
-      sound.stop(() => {
-        sound.play();
-      });
+      try {
+        sound.stop(() => {
+          sound.play((success) => {
+            if (!success) {
+              console.error('Failed to play SOS tone');
+            }
+          });
+        });
+      } catch (error) {
+        console.error('Error playing SOS tone:', error);
+      }
     }
   }
 
