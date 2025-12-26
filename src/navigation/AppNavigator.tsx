@@ -73,7 +73,11 @@ function NavigatorContent(): JSX.Element {
           {/* Core Module */}
           <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
           <Stack.Screen name="Flashlight" component={FlashlightScreen} />
-          <Stack.Screen name="Nightvision" component={NightvisionScreen} />
+          <Stack.Screen
+            name="Nightvision"
+            component={NightvisionScreen}
+            options={{ presentation: 'modal' }}
+          />
           <Stack.Screen name="NewNote" component={NewNoteScreen} />
           <Stack.Screen name="Notepad" component={NotepadScreen} />
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />

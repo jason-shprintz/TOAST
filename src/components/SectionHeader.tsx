@@ -3,7 +3,7 @@ import { Text, StyleSheet, TextProps } from 'react-native';
 import { COLORS } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 
-type Props = TextProps & { title?: string };
+type Props = TextProps & { title?: string; isShowHr?: boolean };
 
 /**
  * Renders a section header using a `Text` component.
@@ -20,6 +20,7 @@ export default function SectionHeader({
   title,
   children,
   style,
+  isShowHr = true,
   ...rest
 }: Props) {
   return (
@@ -27,7 +28,7 @@ export default function SectionHeader({
       <Text {...rest} style={[styles.header, style]}>
         {title ?? children}
       </Text>
-      <HorizontalRule />
+      {isShowHr && <HorizontalRule />}
     </>
   );
 }
@@ -46,6 +47,8 @@ const styles = StyleSheet.create({
     width: '80%',
     textAlign: 'center',
     alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 12,
   },
 });

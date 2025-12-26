@@ -90,16 +90,23 @@ const FlashlightScreenImpl = () => {
 
       {mode === 'sos' && (
         <View style={styles.controlsContainer}>
-          <SectionHeader>SOS Options</SectionHeader>
-          <View style={styles.switchContainer}>
-            <Text style={styles.label}>SOS Tone</Text>
-            <Switch
-              value={core.sosWithTone}
-              onValueChange={(v: boolean) => core.setSosWithTone(v)}
-              trackColor={{ false: COLORS.SECONDARY_ACCENT, true: COLORS.ACCENT }}
-              thumbColor={core.sosWithTone ? COLORS.PRIMARY_LIGHT : COLORS.TOAST_BROWN}
-            />
-          </View>
+          <SectionHeader isShowHr={false}>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionText}>SOS Tone</Text>
+              <Switch
+                value={core.sosWithTone}
+                onValueChange={(v: boolean) => core.setSosWithTone(v)}
+                trackColor={{
+                  false: COLORS.SECONDARY_ACCENT,
+                  true: COLORS.ACCENT,
+                }}
+                thumbColor={
+                  core.sosWithTone ? COLORS.PRIMARY_LIGHT : COLORS.TOAST_BROWN
+                }
+                style={styles.switchContainer}
+              />
+            </View>
+          </SectionHeader>
         </View>
       )}
     </ScreenBody>
@@ -128,11 +135,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
   },
-  switchContainer: {
+  sectionContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  sectionText: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: COLORS.PRIMARY_DARK,
+  },
+  switchContainer: {
+    paddingHorizontal: 20,
   },
 });

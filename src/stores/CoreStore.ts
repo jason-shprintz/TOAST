@@ -68,17 +68,17 @@ export class CoreStore {
   private loadSosAudio() {
     // Enable playback in silent mode
     Sound.setCategory('Playback');
-    
+
     let dotLoaded = false;
     let dashLoaded = false;
-    
+
     const checkBothLoaded = () => {
       if (dotLoaded && dashLoaded) {
         this.audioLoaded = true;
       }
     };
-    
-    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
+
+    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dot sound:', error);
         return;
@@ -87,7 +87,7 @@ export class CoreStore {
       checkBothLoaded();
     });
 
-    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
+    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dash sound:', error);
         return;
@@ -107,7 +107,7 @@ export class CoreStore {
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
   nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
-  sosWithTone: boolean = false; // whether SOS should play an accompanying tone
+  sosWithTone: boolean = true; // whether SOS should play an accompanying tone
 
   /**
    * Sets the flashlight mode to the specified value.
@@ -239,12 +239,12 @@ export class CoreStore {
       const nextDelay = step ? step.ms : repeatPause[0].ms;
       const nextOn = step ? step.on : false;
       this.setTorch(nextOn);
-      
+
       // Play audio tone if sosWithTone is enabled and torch is on
       if (this.sosWithTone && nextOn && step) {
         this.playSosTone(step.type);
       }
-      
+
       const nextIndex = step
         ? index + 1 < sequence.length
           ? index + 1
@@ -274,12 +274,12 @@ export class CoreStore {
    */
   private playSosTone(type: 'dot' | 'dash' | null) {
     if (!type || !this.audioLoaded) return;
-    
+
     const sound = type === 'dot' ? this.dotSound : this.dashSound;
     if (sound) {
       try {
         sound.stop(() => {
-          sound.play((success) => {
+          sound.play(success => {
             if (!success) {
               console.error('Failed to play SOS tone');
             }
@@ -1042,7 +1042,7 @@ export class CoreStore {
     this.stopStrobe();
     this.appStateSubscription?.remove();
     this.stopDeviceStatusMonitoring();
-    
+
     // Release audio resources
     if (this.dotSound) {
       this.dotSound.release();

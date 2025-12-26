@@ -7,15 +7,15 @@ import { COLORS } from '../../theme';
 
 /**
  * Full-screen Nightvision mode with adjustable red light brightness.
- * 
+ *
  * @remarks
  * This screen displays a full-screen black background with a red overlay
  * whose opacity can be controlled by the user via a slider. The slider
  * is overlaid on top of the red light for easy access.
- * 
+ *
  * Users can navigate back using the standard swipe-back gesture to turn off
  * Nightvision mode.
- * 
+ *
  * @returns A React element that renders the full-screen nightvision mode.
  */
 const NightvisionScreenImpl = () => {
@@ -25,15 +25,12 @@ const NightvisionScreenImpl = () => {
     <View style={styles.container}>
       {/* Black background */}
       <View style={styles.blackBackground} />
-      
+
       {/* Red overlay with adjustable opacity */}
       <View
-        style={[
-          styles.redOverlay,
-          { opacity: core.nightvisionBrightness },
-        ]}
+        style={[styles.redOverlay, { opacity: core.nightvisionBrightness }]}
       />
-      
+
       {/* Controls overlaid on top */}
       <View style={styles.controlsOverlay}>
         <View style={styles.controlsContainer}>
@@ -61,18 +58,19 @@ export default observer(NightvisionScreenImpl);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    width: '100%',
+    alignSelf: 'stretch',
   },
   blackBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: '#000000',
   },
   redOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#8B0000', // Night-friendly dark red
+    ...StyleSheet.absoluteFill,
+    backgroundColor: '#ff0000', // Night-friendly dark red
   },
   controlsOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
     pointerEvents: 'box-none', // Allow touches to pass through except for children
