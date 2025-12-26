@@ -55,7 +55,6 @@ export const noteListSharedStyles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
     marginTop: 6,
     paddingHorizontal: 20,
-    height: 150,
   },
   moreHint: {
     fontSize: 12,
