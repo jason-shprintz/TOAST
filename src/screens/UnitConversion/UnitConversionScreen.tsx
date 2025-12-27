@@ -16,10 +16,9 @@ import { conversionCategories } from '../../utils/unitConversions';
  * @returns A React element rendering the unit conversion categories grid.
  */
 export default function UnitConversionScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const openCategory = (categoryId: string) => {
-    // @ts-ignore - navigation types
     navigation.navigate('ConversionCategory', { categoryId });
   };
 

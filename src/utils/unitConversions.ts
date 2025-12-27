@@ -399,6 +399,10 @@ const fuelConversions: ConversionUnit[] = [
   },
 ];
 
+// Light conversion constants
+// Approximate lumens per watt for incandescent bulbs (typically 12-18 lumens/watt)
+const LUMENS_PER_WATT_INCANDESCENT = 15;
+
 // Light conversions
 const lightConversions: ConversionUnit[] = [
   {
@@ -411,11 +415,13 @@ const lightConversions: ConversionUnit[] = [
   },
   {
     id: 'lumens_watts',
-    name: 'Lumens ↔ Watts (approx)',
+    name: 'Lumens ↔ Watts (incandescent)',
     fromName: 'Lumens',
     toName: 'Watts',
-    convert: (lm: number) => lm / 15, // Approximate for incandescent
-    reverseConvert: (w: number) => w * 15,
+    // Note: This approximation is for traditional incandescent bulbs only.
+    // LED bulbs have much higher efficiency (80-100 lumens/watt).
+    convert: (lm: number) => lm / LUMENS_PER_WATT_INCANDESCENT,
+    reverseConvert: (w: number) => w * LUMENS_PER_WATT_INCANDESCENT,
   },
 ];
 

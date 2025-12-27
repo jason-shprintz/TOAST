@@ -22,6 +22,11 @@ type RouteParams = {
   };
 };
 
+// Formatting constants
+const MIN_VALUE_FOR_EXPONENTIAL = 0.0001;
+const EXPONENTIAL_SIGNIFICANT_DIGITS = 4;
+const DECIMAL_PLACES = 6;
+
 /**
  * ConversionCategoryScreen displays unit conversions for a specific category.
  *
@@ -95,11 +100,11 @@ export default function ConversionCategoryScreen() {
       ? selectedUnit.reverseConvert(numValue)
       : selectedUnit.convert(numValue);
 
-    // Format to 6 significant digits max
-    if (Math.abs(result) < 0.0001 && result !== 0) {
-      return result.toExponential(4);
+    // Format to significant digits, use exponential notation for very small numbers
+    if (Math.abs(result) < MIN_VALUE_FOR_EXPONENTIAL && result !== 0) {
+      return result.toExponential(EXPONENTIAL_SIGNIFICANT_DIGITS);
     }
-    return result.toFixed(6).replace(/\.?0+$/, '');
+    return result.toFixed(DECIMAL_PLACES).replace(/\.?0+$/, '');
   };
 
   const fromUnit = isReversed ? selectedUnit.toName : selectedUnit.fromName;
