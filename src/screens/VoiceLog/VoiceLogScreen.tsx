@@ -36,7 +36,6 @@ export default observer(function VoiceLogScreen() {
   const navigation = useNavigation();
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [audioPath, setAudioPath] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
@@ -115,19 +114,14 @@ export default observer(function VoiceLogScreen() {
         transcription: undefined, // MVP: No transcription
       });
 
-      // Show success message
+      // Show success message and navigate back
       Alert.alert(
         'Saved',
         'Voice log saved successfully',
         [
           {
             text: 'OK',
-            onPress: () => {
-              if (navigation && 'goBack' in navigation) {
-                // @ts-ignore
-                navigation.goBack();
-              }
-            },
+            onPress: () => navigation.goBack(),
           },
         ],
       );
