@@ -23,8 +23,8 @@ export interface Tool {
   icon: string;
 }
 
-export type NoteInputType = 'text' | 'sketch';
-export type NoteCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
+export type NoteInputType = 'text' | 'sketch' | 'voice';
+export type NoteCategory = 'General' | 'Work' | 'Personal' | 'Ideas' | 'Voice Logs';
 
 export interface Note {
   id: string;
@@ -32,12 +32,15 @@ export interface Note {
   latitude?: number;
   longitude?: number;
   category: NoteCategory;
-  type: NoteInputType; // text or sketch
+  type: NoteInputType; // text, sketch, or voice
   title?: string;
   text?: string;
   bookmarked?: boolean;
   sketchDataUri?: string; // placeholder for sketch image
   photoUris: string[]; // attached photos (uris)
+  audioUri?: string; // for voice logs
+  transcription?: string; // for voice logs
+  duration?: number; // recording duration in seconds for voice logs
 }
 
 export interface ChecklistItem {
@@ -674,7 +677,7 @@ export class CoreStore {
   // ===== Notepad =====
   // --------------------------------------------------------------------
   notes: Note[] = [];
-  categories: NoteCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
+  categories: NoteCategory[] = ['General', 'Work', 'Personal', 'Ideas', 'Voice Logs'];
   private notesDb: any | null = null;
 
   private generateId() {
@@ -737,6 +740,78 @@ export class CoreStore {
       bookmarked: false,
       sketchDataUri: params.sketchDataUri,
       photoUris: [],
+    };
+
+    runInAction(() => {
+      this.notes.unshift(note);
+    });
+    await this.persistNote(note);
+  }
+
+  /**
+   * Creates a voice log note with audio recording.
+   *
+   * Attempts to capture current location and creates a note entry with the provided
+   * audio file URI. The note is categorized as "Voice Logs" and includes metadata
+   * such as timestamp, location (if available), and audio duration.
+   *
+   * @param params - The parameters for creating the voice log.
+   * @param params.audioUri - The file URI of the recorded audio.
+   * @param params.duration - The duration of the recording in seconds.
+   * @param params.transcription - Optional transcription text (if available).
+   *
+   * @returns A promise that resolves when the voice log has been created and persisted.
+   */
+  async createVoiceLog(params: {
+    audioUri: string;
+    duration: number;
+    transcription?: string;
+  }) {
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+
+    // Try to get current location with a shorter timeout for voice logs
+    try {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        await new Promise<void>(resolve => {
+          Geolocation.getCurrentPosition(
+            pos => {
+              latitude = pos.coords.latitude;
+              longitude = pos.coords.longitude;
+              resolve();
+            },
+            () => resolve(),
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 },
+          );
+        });
+      }
+    } catch {
+      // Location unavailable, proceed without it
+    }
+
+    const now = Date.now();
+    const timeStr = new Date(now).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+
+    const note: Note = {
+      id: this.generateId(),
+      createdAt: now,
+      ...(latitude !== undefined &&
+        longitude !== undefined && { latitude, longitude }),
+      category: 'Voice Logs',
+      type: 'voice',
+      title: `Voice Log – ${timeStr}`,
+      text: params.transcription ?? 'Audio only',
+      bookmarked: false,
+      sketchDataUri: undefined,
+      photoUris: [],
+      audioUri: params.audioUri,
+      transcription: params.transcription,
+      duration: params.duration,
     };
 
     runInAction(() => {
@@ -884,6 +959,7 @@ export class CoreStore {
       Work: [],
       Personal: [],
       Ideas: [],
+      'Voice Logs': [],
     };
     for (const n of this.notes) {
       map[n.category].push(n);
@@ -919,7 +995,7 @@ export class CoreStore {
           'latitude REAL,' +
           'longitude REAL,' +
           'category TEXT NOT NULL,' +
-          "type TEXT NOT NULL CHECK(type IN ('text','sketch'))," +
+          "type TEXT NOT NULL CHECK(type IN ('text','sketch','voice'))," +
           'title TEXT,' +
           'text TEXT,' +
           'bookmarked INTEGER DEFAULT 0,' +
@@ -945,6 +1021,34 @@ export class CoreStore {
         );
       } catch (error: any) {
         // Column already exists, ignore error
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
+      // Migration: Add voice log columns if they don't exist
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN audioUri TEXT',
+        );
+      } catch (error: any) {
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN transcription TEXT',
+        );
+      } catch (error: any) {
+        if (!error.message?.includes('duplicate column name')) {
+          console.warn('Migration warning:', error.message);
+        }
+      }
+      try {
+        await this.notesDb.executeSql(
+          'ALTER TABLE notes ADD COLUMN duration REAL',
+        );
+      } catch (error: any) {
         if (!error.message?.includes('duplicate column name')) {
           console.warn('Migration warning:', error.message);
         }
@@ -996,6 +1100,9 @@ export class CoreStore {
             return [];
           }
         })(),
+        audioUri: r.audioUri ?? undefined,
+        transcription: r.transcription ?? undefined,
+        duration: r.duration ?? undefined,
       });
     }
     runInAction(() => {
@@ -1015,7 +1122,7 @@ export class CoreStore {
       await this.initNotesDb();
       if (!this.notesDb) return;
       await this.notesDb.executeSql(
-        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         [
           note.id,
           note.createdAt,
@@ -1028,6 +1135,9 @@ export class CoreStore {
           note.bookmarked ? 1 : 0,
           note.sketchDataUri ?? null,
           JSON.stringify(note.photoUris ?? []),
+          note.audioUri ?? null,
+          note.transcription ?? null,
+          note.duration ?? null,
         ],
       );
     } catch (error) {

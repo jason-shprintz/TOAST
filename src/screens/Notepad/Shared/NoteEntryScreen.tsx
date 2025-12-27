@@ -116,6 +116,33 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
             </Text>
           </View>
 
+          {note.type === 'voice' && note.audioUri && (
+            <View style={styles.voiceLogContainer}>
+              <View style={styles.voiceLogHeader}>
+                <Icon name="mic-circle" size={40} color={COLORS.SECONDARY_ACCENT} />
+                <View style={styles.voiceLogInfo}>
+                  <Text style={styles.voiceLogTitle}>Voice Log</Text>
+                  {note.duration && (
+                    <Text style={styles.voiceLogDuration}>
+                      Duration: {Math.round(note.duration)}s
+                    </Text>
+                  )}
+                </View>
+              </View>
+              {note.latitude && note.longitude && (
+                <Text style={styles.locationText}>
+                  <Icon name="location-outline" size={14} color={COLORS.PRIMARY_DARK} />
+                  {' '}Location: {note.latitude.toFixed(6)}, {note.longitude.toFixed(6)}
+                </Text>
+              )}
+              <HorizontalRule />
+              <Text style={styles.audioNote}>
+                <Icon name="information-circle-outline" size={14} color={COLORS.PRIMARY_DARK} />
+                {' '}Audio playback will be available in future release
+              </Text>
+            </View>
+          )}
+
           <View>
             <Text style={shared.itemBodyExpanded}>{noteText}</Text>
           </View>
@@ -151,5 +178,45 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     paddingBottom: 24,
+  },
+  voiceLogContainer: {
+    backgroundColor: COLORS.TOAST_BROWN,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    padding: 12,
+    marginVertical: 12,
+  },
+  voiceLogHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  voiceLogInfo: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  voiceLogTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.PRIMARY_DARK,
+  },
+  voiceLogDuration: {
+    fontSize: 14,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.8,
+  },
+  locationText: {
+    fontSize: 12,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.7,
+    marginTop: 4,
+  },
+  audioNote: {
+    fontSize: 12,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.7,
+    fontStyle: 'italic',
+    marginTop: 4,
   },
 });

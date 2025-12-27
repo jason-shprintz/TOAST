@@ -34,6 +34,7 @@ export default observer(function NotepadScreen() {
     Work: 'briefcase-outline',
     Personal: 'heart-outline',
     Ideas: 'bulb-outline',
+    'Voice Logs': 'mic-outline',
   };
   return (
     <ScreenBody>
