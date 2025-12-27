@@ -27,6 +27,8 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
+import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
 import {
   NavigationHistoryProvider,
   useNavigationHistory,
@@ -91,6 +93,12 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="Checklist" component={ChecklistScreen} />
           <Stack.Screen name="ChecklistEntry" component={ChecklistEntryScreen} />
+          {/* Unit Conversion */}
+          <Stack.Screen name="UnitConversion" component={UnitConversionScreen} />
+          <Stack.Screen
+            name="ConversionCategory"
+            component={ConversionCategoryScreen}
+          />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
           <Stack.Screen name="Category" component={CategoryScreen} />
