@@ -1,5 +1,5 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { RouteProp, useRoute, useFocusEffect } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { COLORS } from '../../theme';
 import {
   conversionCategories,
@@ -40,12 +42,21 @@ const DECIMAL_PLACES = 6;
  */
 export default function ConversionCategoryScreen() {
   const route = useRoute<RouteProp<RouteParams, 'ConversionCategory'>>();
+  const { setDisableGestureNavigation } = useGestureNavigation();
   const { categoryId } = route.params;
 
-  const category = conversionCategories.find((cat) => cat.id === categoryId);
+  const category = conversionCategories.find(cat => cat.id === categoryId);
   const [selectedUnitIndex, setSelectedUnitIndex] = useState(0);
   const [inputValue, setInputValue] = useState('0');
   const [isReversed, setIsReversed] = useState(false);
+
+  // Disable gesture navigation when this screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      setDisableGestureNavigation(true);
+      return () => setDisableGestureNavigation(false);
+    }, [setDisableGestureNavigation]),
+  );
 
   if (!category) {
     return (
@@ -59,7 +70,7 @@ export default function ConversionCategoryScreen() {
   const selectedUnit: ConversionUnit = category.units[selectedUnitIndex];
 
   const handleNumberPress = (num: string) => {
-    setInputValue((prev) => {
+    setInputValue(prev => {
       if (prev === '0') {
         return num;
       }
@@ -69,7 +80,7 @@ export default function ConversionCategoryScreen() {
 
   const handleDecimalPress = () => {
     if (!inputValue.includes('.')) {
-      setInputValue((prev) => prev + '.');
+      setInputValue(prev => prev + '.');
     }
   };
 
@@ -78,7 +89,7 @@ export default function ConversionCategoryScreen() {
   };
 
   const handleBackspace = () => {
-    setInputValue((prev) => {
+    setInputValue(prev => {
       if (prev.length === 1) {
         return '0';
       }
@@ -87,7 +98,7 @@ export default function ConversionCategoryScreen() {
   };
 
   const handleSwap = () => {
-    setIsReversed((prev) => !prev);
+    setIsReversed(prev => !prev);
   };
 
   const getConvertedValue = (): string => {
@@ -111,164 +122,190 @@ export default function ConversionCategoryScreen() {
   const toUnit = isReversed ? selectedUnit.fromName : selectedUnit.toName;
 
   return (
-    <ScreenBody>
-      <SectionHeader>{category.name}</SectionHeader>
-
-      {/* Unit Selection */}
-      <ScrollView horizontal style={styles.unitSelector}>
-        {category.units.map((unit, index) => (
-          <TouchableOpacity
-            key={unit.id}
-            style={[
-              styles.unitButton,
-              selectedUnitIndex === index && styles.unitButtonActive,
-            ]}
-            onPress={() => setSelectedUnitIndex(index)}
-          >
-            <Text
-              style={[
-                styles.unitButtonText,
-                selectedUnitIndex === index && styles.unitButtonTextActive,
-              ]}
-            >
-              {unit.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Conversion Display */}
-      <View style={styles.conversionContainer}>
-        <View style={styles.valueContainer}>
-          <Text style={styles.valueLabel}>{fromUnit}</Text>
-          <Text style={styles.valueText}>{inputValue}</Text>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={COLORS.BACKGROUND_GRADIENT}
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <ScreenBody>
+        <View style={styles.headerContainer}>
+          <SectionHeader isShowHr={false}>{category.name}</SectionHeader>
         </View>
 
-        <TouchableOpacity style={styles.swapButton} onPress={handleSwap}>
-          <Ionicons
-            name="swap-vertical-outline"
-            size={32}
-            color={COLORS.ACCENT}
-          />
-        </TouchableOpacity>
+        {/* Unit Selection */}
+        <View style={styles.unitSelectorContainer} pointerEvents="box-only">
+          <ScrollView horizontal style={styles.unitSelector}>
+            {category.units.map((unit, index) => (
+              <TouchableOpacity
+                key={unit.id}
+                style={[
+                  styles.unitButton,
+                  selectedUnitIndex === index && styles.unitButtonActive,
+                ]}
+                onPress={() => setSelectedUnitIndex(index)}
+              >
+                <Text
+                  style={[
+                    styles.unitButtonText,
+                    selectedUnitIndex === index && styles.unitButtonTextActive,
+                  ]}
+                >
+                  {unit.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-        <View style={styles.valueContainer}>
-          <Text style={styles.valueLabel}>{toUnit}</Text>
-          <Text style={styles.valueText}>{getConvertedValue()}</Text>
-        </View>
-      </View>
+        {/* Conversion Display */}
+        <View style={styles.conversionContainer}>
+          <View style={styles.valueContainer}>
+            <Text style={styles.valueLabel}>{fromUnit}</Text>
+            <Text style={styles.valueText}>{inputValue}</Text>
+          </View>
 
-      {/* Numeric Keypad */}
-      <View style={styles.keypad}>
-        <View style={styles.keypadRow}>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('7')}
-          >
-            <Text style={styles.keypadButtonText}>7</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('8')}
-          >
-            <Text style={styles.keypadButtonText}>8</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('9')}
-          >
-            <Text style={styles.keypadButtonText}>9</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.keypadRow}>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('4')}
-          >
-            <Text style={styles.keypadButtonText}>4</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('5')}
-          >
-            <Text style={styles.keypadButtonText}>5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('6')}
-          >
-            <Text style={styles.keypadButtonText}>6</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.keypadRow}>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('1')}
-          >
-            <Text style={styles.keypadButtonText}>1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('2')}
-          >
-            <Text style={styles.keypadButtonText}>2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('3')}
-          >
-            <Text style={styles.keypadButtonText}>3</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.keypadRow}>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={handleDecimalPress}
-          >
-            <Text style={styles.keypadButtonText}>.</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={() => handleNumberPress('0')}
-          >
-            <Text style={styles.keypadButtonText}>0</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.keypadButton}
-            onPress={handleBackspace}
-          >
+          <TouchableOpacity style={styles.swapButton} onPress={handleSwap}>
             <Ionicons
-              name="backspace-outline"
-              size={28}
-              color={COLORS.PRIMARY_DARK}
+              name="swap-vertical-outline"
+              size={32}
+              color={COLORS.ACCENT}
             />
           </TouchableOpacity>
+
+          <View style={styles.valueContainer}>
+            <Text style={styles.valueLabel}>{toUnit}</Text>
+            <Text style={styles.valueText}>{getConvertedValue()}</Text>
+          </View>
         </View>
-        <View style={styles.keypadRow}>
-          <TouchableOpacity
-            style={[styles.keypadButton, styles.clearButton]}
-            onPress={handleClear}
-          >
-            <Text style={styles.clearButtonText}>Clear</Text>
-          </TouchableOpacity>
+
+        {/* Numeric Keypad */}
+        <View style={styles.keypad}>
+          <View style={styles.keypadRow}>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('7')}
+            >
+              <Text style={styles.keypadButtonText}>7</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('8')}
+            >
+              <Text style={styles.keypadButtonText}>8</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('9')}
+            >
+              <Text style={styles.keypadButtonText}>9</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.keypadRow}>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('4')}
+            >
+              <Text style={styles.keypadButtonText}>4</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('5')}
+            >
+              <Text style={styles.keypadButtonText}>5</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('6')}
+            >
+              <Text style={styles.keypadButtonText}>6</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.keypadRow}>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('1')}
+            >
+              <Text style={styles.keypadButtonText}>1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('2')}
+            >
+              <Text style={styles.keypadButtonText}>2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('3')}
+            >
+              <Text style={styles.keypadButtonText}>3</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.keypadRow}>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={handleDecimalPress}
+            >
+              <Text style={styles.keypadButtonText}>.</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={() => handleNumberPress('0')}
+            >
+              <Text style={styles.keypadButtonText}>0</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.keypadButton}
+              onPress={handleBackspace}
+            >
+              <Ionicons
+                name="backspace-outline"
+                size={28}
+                color={COLORS.PRIMARY_DARK}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.keypadRow}>
+            <TouchableOpacity
+              style={[styles.keypadButton, styles.clearButton]}
+              onPress={handleClear}
+            >
+              <Text style={styles.clearButtonText}>Clear</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScreenBody>
+      </ScreenBody>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: COLORS.BACKGROUND,
+  },
   errorText: {
     fontSize: 16,
     color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
     marginTop: 20,
   },
+  headerContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    position: 'relative',
+  },
+  unitSelectorContainer: {
+    width: '100%',
+  },
   unitSelector: {
     width: '100%',
     maxHeight: 50,
-    marginTop: 10,
-    marginBottom: 10,
   },
   unitButton: {
     paddingHorizontal: 16,
@@ -281,10 +318,10 @@ const styles = StyleSheet.create({
   },
   unitButtonActive: {
     backgroundColor: COLORS.ACCENT,
-    borderColor: COLORS.ACCENT,
+    borderColor: COLORS.SECONDARY_ACCENT,
   },
   unitButtonText: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
   },
@@ -293,7 +330,7 @@ const styles = StyleSheet.create({
   },
   conversionContainer: {
     width: '90%',
-    marginVertical: 20,
+    marginVertical: 5,
   },
   valueContainer: {
     width: '100%',
@@ -301,9 +338,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     backgroundColor: COLORS.PRIMARY_LIGHT,
-    paddingVertical: 16,
+    paddingVertical: 5,
     paddingHorizontal: 16,
-    marginVertical: 8,
+    marginVertical: 2,
   },
   valueLabel: {
     fontSize: 14,
@@ -328,7 +365,7 @@ const styles = StyleSheet.create({
   keypadRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginBottom: 12,
+    marginBottom: 5,
   },
   keypadButton: {
     width: '30%',
@@ -346,9 +383,9 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
   },
   clearButton: {
-    width: '96%',
+    width: '30%',
     backgroundColor: COLORS.ACCENT,
-    borderColor: COLORS.ACCENT,
+    borderColor: COLORS.SECONDARY_ACCENT,
   },
   clearButtonText: {
     fontSize: 20,

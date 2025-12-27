@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { FOOTER_HEIGHT } from '../../theme';
 import { conversionCategories } from '../../utils/unitConversions';
 
 /**
@@ -25,16 +27,38 @@ export default function UnitConversionScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Unit Conversion</SectionHeader>
-      <Grid>
-        {conversionCategories.map((category) => (
-          <CardTopic
-            key={category.id}
-            title={category.name}
-            icon={category.icon}
-            onPress={() => openCategory(category.id)}
-          />
-        ))}
-      </Grid>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <View style={styles.gridWrapper}>
+          <Grid>
+            {conversionCategories.map(category => (
+              <CardTopic
+                key={category.id}
+                title={category.name}
+                icon={category.icon}
+                onPress={() => openCategory(category.id)}
+              />
+            ))}
+          </Grid>
+        </View>
+      </ScrollView>
     </ScreenBody>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    marginBottom: FOOTER_HEIGHT,
+  },
+  contentContainer: {
+    alignItems: 'center',
+  },
+  gridWrapper: {
+    alignItems: 'center',
+  },
+});

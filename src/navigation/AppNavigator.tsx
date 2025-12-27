@@ -92,12 +92,23 @@ function NavigatorContent(): JSX.Element {
             component={BookmarkedNotesScreen}
           />
           <Stack.Screen name="Checklist" component={ChecklistScreen} />
-          <Stack.Screen name="ChecklistEntry" component={ChecklistEntryScreen} />
+          <Stack.Screen
+            name="ChecklistEntry"
+            component={ChecklistEntryScreen}
+          />
           {/* Unit Conversion */}
-          <Stack.Screen name="UnitConversion" component={UnitConversionScreen} />
+          <Stack.Screen
+            name="UnitConversion"
+            component={UnitConversionScreen}
+          />
           <Stack.Screen
             name="ConversionCategory"
             component={ConversionCategoryScreen}
+            options={{
+              presentation: 'modal',
+              gestureEnabled: true,
+              gestureDirection: 'vertical',
+            }}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
