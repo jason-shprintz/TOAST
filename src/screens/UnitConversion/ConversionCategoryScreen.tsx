@@ -412,6 +412,7 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     width: '63%',
+    aspectRatio: 3,
     backgroundColor: COLORS.ACCENT,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
@@ -421,7 +422,7 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_LIGHT,
   },
   backspaceButton: {
-    width: '30%',
+    width: '32%',
     backgroundColor: COLORS.SECONDARY_ACCENT,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
