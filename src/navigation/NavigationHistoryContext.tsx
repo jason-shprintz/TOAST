@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { NavigationHistory } from './navigationHistory';
 import { navigationRef } from './navigationRef';
 
@@ -10,6 +16,19 @@ import { navigationRef } from './navigationRef';
  * supporting multiple navigation containers if needed.
  */
 const NavigationHistoryContext = createContext<NavigationHistory | null>(null);
+
+/**
+ * Context for disabling gesture-based navigation (e.g., swipe back).
+ * Used by modals and other screens that need to prevent the app-wide
+ * swipe-back gesture from being triggered.
+ */
+const GestureNavigationContext = createContext<{
+  disableGestureNavigation: boolean;
+  setDisableGestureNavigation: (disable: boolean) => void;
+}>({
+  disableGestureNavigation: false,
+  setDisableGestureNavigation: () => {},
+});
 
 /**
  * Props for NavigationHistoryProvider component.
@@ -39,10 +58,16 @@ export function NavigationHistoryProvider({
     () => new NavigationHistory(navigationRef),
     [],
   );
+  const [disableGestureNavigation, setDisableGestureNavigation] =
+    useState(false);
 
   return (
     <NavigationHistoryContext.Provider value={navigationHistory}>
-      {children}
+      <GestureNavigationContext.Provider
+        value={{ disableGestureNavigation, setDisableGestureNavigation }}
+      >
+        {children}
+      </GestureNavigationContext.Provider>
     </NavigationHistoryContext.Provider>
   );
 }
@@ -67,6 +92,33 @@ export function useNavigationHistory(): NavigationHistory {
   if (!context) {
     throw new Error(
       'useNavigationHistory must be used within NavigationHistoryProvider',
+    );
+  }
+  return context;
+}
+
+/**
+ * Hook to control gesture-based navigation (e.g., swipe back).
+ * Use this to disable swipe gestures in modals or other screens.
+ *
+ * @example
+ * ```tsx
+ * function MyModal() {
+ *   const { setDisableGestureNavigation } = useGestureNavigation();
+ *
+ *   useEffect(() => {
+ *     setDisableGestureNavigation(true);
+ *     return () => setDisableGestureNavigation(false);
+ *   }, [setDisableGestureNavigation]);
+ *   // ...
+ * }
+ * ```
+ */
+export function useGestureNavigation() {
+  const context = useContext(GestureNavigationContext);
+  if (!context) {
+    throw new Error(
+      'useGestureNavigation must be used within NavigationHistoryProvider',
     );
   }
   return context;

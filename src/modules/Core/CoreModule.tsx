@@ -25,7 +25,7 @@ const coreTools: ToolType[] = [
   },
   {
     name: 'Unit Conversion',
-    screen: 'ComingSoon',
+    screen: 'UnitConversion',
     icon: 'swap-horizontal-outline',
     id: 'core_unit_conversion',
   },

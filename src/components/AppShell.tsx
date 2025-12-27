@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
-import { useNavigationHistory } from '../navigation/NavigationHistoryContext';
+import {
+  useNavigationHistory,
+  useGestureNavigation,
+} from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS, FOOTER_HEIGHT } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
@@ -42,6 +45,7 @@ type Props = PropsWithChildren;
  */
 export default function AppShell({ children }: Props) {
   const navigationHistory = useNavigationHistory();
+  const { disableGestureNavigation } = useGestureNavigation();
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStatus();
   const translateYRef = useRef(new Animated.Value(0)).current;
 
@@ -58,6 +62,9 @@ export default function AppShell({ children }: Props) {
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponderCapture: (_evt, gestureState) => {
+          // If gesture navigation is disabled, don't capture any gestures
+          if (disableGestureNavigation) return false;
+
           // Capture a clear right-swipe anywhere in the shell.
           // Avoid interfering with vertical scrolling/taps.
           const { dx, dy } = gestureState;
@@ -99,7 +106,7 @@ export default function AppShell({ children }: Props) {
           }
         },
       }),
-    [navigationHistory],
+    [navigationHistory, disableGestureNavigation],
   );
 
   return (
