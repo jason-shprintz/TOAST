@@ -144,7 +144,11 @@ export default function ConversionCategoryScreen() {
                   styles.unitButton,
                   selectedUnitIndex === index && styles.unitButtonActive,
                 ]}
-                onPress={() => setSelectedUnitIndex(index)}
+                onPress={() => {
+                  setSelectedUnitIndex(index);
+                  setInputValue('0');
+                  setIsReversed(false);
+                }}
               >
                 <Text
                   style={[
