@@ -71,8 +71,9 @@ export default function ConversionCategoryScreen() {
 
   const handleNumberPress = (num: string) => {
     setInputValue(prev => {
-      if (prev === '0') {
-        return num;
+      // Handle leading zero - replace '0' with the number, but not '0.' or '-0'
+      if (prev === '0' || prev === '-0') {
+        return prev.startsWith('-') ? '-' + num : num;
       }
       return prev + num;
     });
@@ -90,10 +91,22 @@ export default function ConversionCategoryScreen() {
 
   const handleBackspace = () => {
     setInputValue(prev => {
-      if (prev.length === 1) {
+      if (prev.length === 1 || (prev.length === 2 && prev.startsWith('-'))) {
         return '0';
       }
       return prev.slice(0, -1);
+    });
+  };
+
+  const handleToggleSign = () => {
+    setInputValue(prev => {
+      if (prev === '0') {
+        return '0';
+      }
+      if (prev.startsWith('-')) {
+        return prev.slice(1);
+      }
+      return '-' + prev;
     });
   };
 
@@ -110,6 +123,11 @@ export default function ConversionCategoryScreen() {
     const result = isReversed
       ? selectedUnit.reverseConvert(numValue)
       : selectedUnit.convert(numValue);
+
+    // Handle invalid results (Infinity, NaN)
+    if (!isFinite(result)) {
+      return 'Invalid';
+    }
 
     // Format to significant digits, use exponential notation for very small numbers
     if (Math.abs(result) < MIN_VALUE_FOR_EXPONENTIAL && result !== 0) {
@@ -249,9 +267,9 @@ export default function ConversionCategoryScreen() {
           <View style={styles.keypadRow}>
             <TouchableOpacity
               style={styles.keypadButton}
-              onPress={handleDecimalPress}
+              onPress={handleToggleSign}
             >
-              <Text style={styles.keypadButtonText}>.</Text>
+              <Text style={styles.keypadButtonText}>+/−</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.keypadButton}
@@ -261,13 +279,9 @@ export default function ConversionCategoryScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.keypadButton}
-              onPress={handleBackspace}
+              onPress={handleDecimalPress}
             >
-              <Ionicons
-                name="backspace-outline"
-                size={28}
-                color={COLORS.PRIMARY_DARK}
-              />
+              <Text style={styles.keypadButtonText}>.</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.keypadRow}>
@@ -276,6 +290,16 @@ export default function ConversionCategoryScreen() {
               onPress={handleClear}
             >
               <Text style={styles.clearButtonText}>Clear</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.keypadButton, styles.backspaceButton]}
+              onPress={handleBackspace}
+            >
+              <Ionicons
+                name="backspace-outline"
+                size={28}
+                color={COLORS.PRIMARY_LIGHT}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -387,7 +411,7 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
   },
   clearButton: {
-    width: '30%',
+    width: '63%',
     backgroundColor: COLORS.ACCENT,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
@@ -395,5 +419,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: COLORS.PRIMARY_LIGHT,
+  },
+  backspaceButton: {
+    width: '30%',
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    borderColor: COLORS.SECONDARY_ACCENT,
   },
 });
