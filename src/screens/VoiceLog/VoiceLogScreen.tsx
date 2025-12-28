@@ -20,6 +20,13 @@ import { COLORS } from '../../theme';
 
 const MAX_DURATION_SECONDS = 12;
 
+// Audio recording configuration optimized for speech
+const AUDIO_CONFIG = {
+  audioEncoder: Platform.OS === 'android' ? AudioEncoderAndroidType.AAC : undefined,
+  audioSampleRate: 16000, // Optimized for speech
+  audioChannels: 1, // Mono
+} as const;
+
 /**
  * Voice Log Screen
  *
@@ -102,13 +109,7 @@ export default observer(function VoiceLogScreen() {
       setRecordingTime(0);
 
       // Start recording with optimized settings for speech
-      const path = await startRecorder({
-        audioEncoder: Platform.OS === 'android' 
-          ? AudioEncoderAndroidType.AAC 
-          : undefined,
-        audioSampleRate: 16000, // Optimized for speech
-        audioChannels: 1, // Mono
-      });
+      const path = await startRecorder(AUDIO_CONFIG);
       
       setAudioPath(path);
     } catch (error) {
@@ -131,7 +132,15 @@ export default observer(function VoiceLogScreen() {
       Vibration.vibrate(200);
 
       const duration = recordingTime;
-      const audioUri = result || audioPath || '';
+      const audioUri = result || audioPath;
+
+      // Validate audio path before saving
+      if (!audioUri) {
+        Alert.alert('Error', 'Failed to record audio. Please try again.');
+        setRecordingTime(0);
+        setAudioPath(null);
+        return;
+      }
 
       // Save voice log
       await core.createVoiceLog({

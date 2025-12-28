@@ -46,9 +46,10 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
 
   const { note } = route.params || {};
 
-  // Initialize sound player for voice logs
-  const { play, pause, stop, sound } = useSound({
-    url: note?.audioUri || '',
+  // Initialize sound player only for voice logs with audio URIs
+  const isVoiceLog = note?.type === 'voice' && note?.audioUri;
+  const soundHook = useSound({
+    url: isVoiceLog ? note.audioUri : '',
     autoPlay: false,
     onPlaybackStatusUpdate: (status) => {
       if (status.ended) {
@@ -58,15 +59,15 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
   });
 
   const handlePlayPause = async () => {
-    if (!note?.audioUri) return;
+    if (!isVoiceLog) return;
 
     try {
       setIsLoading(true);
       if (isPlaying) {
-        await pause();
+        await soundHook.pause();
         setIsPlaying(false);
       } else {
-        await play();
+        await soundHook.play();
         setIsPlaying(true);
       }
     } catch (error) {
@@ -79,7 +80,7 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
 
   const handleStop = async () => {
     try {
-      await stop();
+      await soundHook.stop();
       setIsPlaying(false);
     } catch (error) {
       console.error('Stop error:', error);
