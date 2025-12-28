@@ -9,8 +9,10 @@ import {
   Alert,
   Vibration,
   Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSoundRecorder, AudioEncoderAndroidType } from 'react-native-nitro-sound';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
@@ -36,46 +38,79 @@ export default observer(function VoiceLogScreen() {
   const navigation = useNavigation();
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [audioPath, setAudioPath] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef<number>(0);
+  
+  // Initialize sound recorder
+  const { startRecorder, stopRecorder, sound } = useSoundRecorder({
+    onRecord: (e) => {
+      const currentTime = Math.floor(e.currentPosition / 1000);
+      setRecordingTime(currentTime);
+      
+      // Auto-stop at max duration
+      if (currentTime >= MAX_DURATION_SECONDS) {
+        handleStopRecording();
+      }
+    },
+  });
 
-  // Cleanup timer on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
+      if (isRecording) {
+        stopRecorder();
+      }
     };
-  }, []);
+  }, [isRecording, stopRecorder]);
 
-  const startRecording = async () => {
+  const requestAudioPermission = async (): Promise<boolean> => {
+    if (Platform.OS === 'ios') {
+      return true; // iOS permissions handled by Info.plist
+    }
+
     try {
-      // NOTE: In a real implementation, you would use a library like
-      // react-native-audio-recorder-player here. For MVP, we're creating
-      // a mock implementation that demonstrates the UX flow.
-      
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          title: 'Audio Recording Permission',
+          message: 'This app needs access to your microphone to record voice logs.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (error) {
+      console.error('Permission request error:', error);
+      return false;
+    }
+  };
+
+  const handleStartRecording = async () => {
+    try {
+      // Request permission on Android
+      const hasPermission = await requestAudioPermission();
+      if (!hasPermission) {
+        Alert.alert('Permission Required', 'Microphone permission is required to record audio.');
+        return;
+      }
+
       setIsRecording(true);
-      startTimeRef.current = Date.now();
       setRecordingTime(0);
 
-      // Start timer
-      timerRef.current = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
-        setRecordingTime(elapsed);
-
-        // Auto-stop at max duration
-        if (elapsed >= MAX_DURATION_SECONDS) {
-          stopRecording();
-        }
-      }, 100);
-
-      // In real implementation: Start actual audio recording
-      // const path = await AudioRecorderPlayer.startRecorder({
-      //   audioEncoder: AudioEncoderAndroidType.AAC,
-      //   audioSamplingRate: 16000,
-      //   audioChannels: 1,
-      // });
-      // setAudioPath(path);
+      // Start recording with optimized settings for speech
+      const path = await startRecorder({
+        audioEncoder: Platform.OS === 'android' 
+          ? AudioEncoderAndroidType.AAC 
+          : undefined,
+        audioSampleRate: 16000, // Optimized for speech
+        audioChannels: 1, // Mono
+      });
+      
+      setAudioPath(path);
     } catch (error) {
       console.error('Failed to start recording:', error);
       Alert.alert('Error', 'Failed to start recording. Please try again.');
@@ -83,35 +118,26 @@ export default observer(function VoiceLogScreen() {
     }
   };
 
-  const stopRecording = async () => {
+  const handleStopRecording = async () => {
     if (!isRecording) return;
 
     try {
-      // Stop timer
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-
       setIsRecording(false);
 
+      // Stop recording
+      const result = await stopRecorder();
+      
       // Haptic feedback
       Vibration.vibrate(200);
 
       const duration = recordingTime;
-
-      // In real implementation: Stop actual audio recording
-      // const result = await AudioRecorderPlayer.stopRecorder();
-      // const audioUri = result;
-
-      // For MVP demo: Create a mock audio URI
-      const mockAudioUri = `file://voice-log-${Date.now()}.m4a`;
+      const audioUri = result || audioPath || '';
 
       // Save voice log
       await core.createVoiceLog({
-        audioUri: mockAudioUri,
+        audioUri: audioUri,
         duration: duration,
-        transcription: undefined, // MVP: No transcription
+        transcription: undefined, // Transcription not implemented yet
       });
 
       // Show success message and navigate back
@@ -127,6 +153,7 @@ export default observer(function VoiceLogScreen() {
       );
 
       setRecordingTime(0);
+      setAudioPath(null);
     } catch (error) {
       console.error('Failed to save voice log:', error);
       Alert.alert('Error', 'Failed to save voice log. Please try again.');
@@ -167,7 +194,7 @@ export default observer(function VoiceLogScreen() {
               styles.recordButton,
               isRecording && styles.recordButtonActive,
             ]}
-            onPress={isRecording ? stopRecording : startRecording}
+            onPress={isRecording ? handleStopRecording : handleStartRecording}
             accessibilityLabel={isRecording ? 'Stop Recording' : 'Start Recording'}
             accessibilityRole="button"
           >

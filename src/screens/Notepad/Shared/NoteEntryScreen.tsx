@@ -8,8 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSound } from 'react-native-nitro-sound';
 import { HorizontalRule } from '../../../components/HorizontalRule';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
@@ -39,8 +41,50 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(
     route.params?.note?.bookmarked ?? false,
   );
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { note } = route.params || {};
+
+  // Initialize sound player for voice logs
+  const { play, pause, stop, sound } = useSound({
+    url: note?.audioUri || '',
+    autoPlay: false,
+    onPlaybackStatusUpdate: (status) => {
+      if (status.ended) {
+        setIsPlaying(false);
+      }
+    },
+  });
+
+  const handlePlayPause = async () => {
+    if (!note?.audioUri) return;
+
+    try {
+      setIsLoading(true);
+      if (isPlaying) {
+        await pause();
+        setIsPlaying(false);
+      } else {
+        await play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('Playback error:', error);
+      Alert.alert('Error', 'Failed to play audio. The file may not be available.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStop = async () => {
+    try {
+      await stop();
+      setIsPlaying(false);
+    } catch (error) {
+      console.error('Stop error:', error);
+    }
+  };
 
   if (!note) {
     return (
@@ -136,10 +180,35 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
                 </Text>
               )}
               <HorizontalRule />
-              <Text style={styles.audioNote}>
-                <Icon name="information-circle-outline" size={14} color={COLORS.PRIMARY_DARK} />
-                {' '}Audio playback will be available in future release
-              </Text>
+              <View style={styles.playbackControls}>
+                <TouchableOpacity
+                  style={styles.playButton}
+                  onPress={handlePlayPause}
+                  disabled={isLoading}
+                  accessibilityLabel={isPlaying ? 'Pause audio' : 'Play audio'}
+                  accessibilityRole="button"
+                >
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color={COLORS.PRIMARY_LIGHT} />
+                  ) : (
+                    <Icon
+                      name={isPlaying ? 'pause' : 'play'}
+                      size={30}
+                      color={COLORS.PRIMARY_LIGHT}
+                    />
+                  )}
+                </TouchableOpacity>
+                {isPlaying && (
+                  <TouchableOpacity
+                    style={styles.stopButton}
+                    onPress={handleStop}
+                    accessibilityLabel="Stop audio"
+                    accessibilityRole="button"
+                  >
+                    <Icon name="stop" size={24} color={COLORS.PRIMARY_DARK} />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           )}
 
@@ -212,11 +281,34 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginTop: 4,
   },
-  audioNote: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    fontStyle: 'italic',
-    marginTop: 4,
+  playbackControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    gap: 12,
+  },
+  playButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  stopButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderWidth: 1,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
