@@ -24,7 +24,12 @@ export interface Tool {
 }
 
 export type NoteInputType = 'text' | 'sketch' | 'voice';
-export type NoteCategory = 'General' | 'Work' | 'Personal' | 'Ideas' | 'Voice Logs';
+export type NoteCategory =
+  | 'General'
+  | 'Work'
+  | 'Personal'
+  | 'Ideas'
+  | 'Voice Logs';
 
 export interface Note {
   id: string;
@@ -677,7 +682,13 @@ export class CoreStore {
   // ===== Notepad =====
   // --------------------------------------------------------------------
   notes: Note[] = [];
-  categories: NoteCategory[] = ['General', 'Work', 'Personal', 'Ideas', 'Voice Logs'];
+  categories: NoteCategory[] = [
+    'General',
+    'Work',
+    'Personal',
+    'Ideas',
+    'Voice Logs',
+  ];
   private notesDb: any | null = null;
 
   private generateId() {
@@ -1053,6 +1064,62 @@ export class CoreStore {
           console.warn('Migration warning:', error.message);
         }
       }
+      // Migration: Update CHECK constraint to allow 'voice' type
+      // Since SQLite doesn't support modifying CHECK constraints directly,
+      // we recreate the table if it doesn't have the proper constraint
+      try {
+        // Test if we can insert a 'voice' type - if this fails, we need to recreate
+        await this.notesDb.executeSql(
+          "INSERT INTO notes (id, createdAt, category, type) VALUES ('_test_voice_type', 0, 'Voice Logs', 'voice')",
+        );
+        // If successful, delete the test row
+        await this.notesDb.executeSql(
+          "DELETE FROM notes WHERE id = '_test_voice_type'",
+        );
+      } catch (error: any) {
+        // If we get a CHECK constraint error, we need to recreate the table
+        if (error.message?.includes('CHECK constraint failed')) {
+          console.log('Migrating notes table to support voice type...');
+          try {
+            await this.notesDb.executeSql('BEGIN TRANSACTION');
+            // Rename old table
+            await this.notesDb.executeSql(
+              'ALTER TABLE notes RENAME TO notes_old',
+            );
+            // Create new table with correct constraint
+            await this.notesDb.executeSql(
+              'CREATE TABLE notes (' +
+                'id TEXT PRIMARY KEY NOT NULL,' +
+                'createdAt INTEGER NOT NULL,' +
+                'latitude REAL,' +
+                'longitude REAL,' +
+                'category TEXT NOT NULL,' +
+                "type TEXT NOT NULL CHECK(type IN ('text','sketch','voice'))," +
+                'title TEXT,' +
+                'text TEXT,' +
+                'bookmarked INTEGER DEFAULT 0,' +
+                'sketchDataUri TEXT,' +
+                'photoUris TEXT,' +
+                'audioUri TEXT,' +
+                'transcription TEXT,' +
+                'duration REAL' +
+                ')',
+            );
+            // Copy data from old table
+            await this.notesDb.executeSql(
+              'INSERT INTO notes SELECT * FROM notes_old',
+            );
+            // Drop old table
+            await this.notesDb.executeSql('DROP TABLE notes_old');
+            await this.notesDb.executeSql('COMMIT');
+            console.log('Migration completed successfully');
+          } catch (migrationError) {
+            console.error('Migration failed:', migrationError);
+            await this.notesDb.executeSql('ROLLBACK');
+            throw migrationError;
+          }
+        }
+      }
     } catch (error) {
       console.error('Failed to initialize notes database:', error);
       this.notesDb = null;
@@ -1325,7 +1392,11 @@ export class CoreStore {
     ];
 
     for (const defaultChecklist of defaultChecklists) {
-      await this.createChecklist(defaultChecklist.name, true, defaultChecklist.items);
+      await this.createChecklist(
+        defaultChecklist.name,
+        true,
+        defaultChecklist.items,
+      );
     }
   }
 
@@ -1450,14 +1521,17 @@ export class CoreStore {
       await this.initChecklistsDb();
       if (!this.notesDb) {
         runInAction(() => {
-          this.checklistItems = this.checklistItems.filter(i => i.id !== itemId);
+          this.checklistItems = this.checklistItems.filter(
+            i => i.id !== itemId,
+          );
         });
         return;
       }
 
-      await this.notesDb.executeSql('DELETE FROM checklist_items WHERE id = ?', [
-        itemId,
-      ]);
+      await this.notesDb.executeSql(
+        'DELETE FROM checklist_items WHERE id = ?',
+        [itemId],
+      );
 
       runInAction(() => {
         this.checklistItems = this.checklistItems.filter(i => i.id !== itemId);
@@ -1499,7 +1573,13 @@ export class CoreStore {
       if (!this.notesDb) return;
       await this.notesDb.executeSql(
         'INSERT OR REPLACE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)',
-        [item.id, item.checklistId, item.text, item.checked ? 1 : 0, item.order],
+        [
+          item.id,
+          item.checklistId,
+          item.text,
+          item.checked ? 1 : 0,
+          item.order,
+        ],
       );
     } catch (error) {
       console.error('Failed to persist checklist item:', error);
