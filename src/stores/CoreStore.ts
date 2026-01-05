@@ -1107,7 +1107,38 @@ export class CoreStore {
             );
             // Copy data from old table
             await this.notesDb.executeSql(
-              'INSERT INTO notes SELECT * FROM notes_old',
+              'INSERT INTO notes (' +
+                'id,' +
+                'createdAt,' +
+                'latitude,' +
+                'longitude,' +
+                'category,' +
+                'type,' +
+                'title,' +
+                'text,' +
+                'bookmarked,' +
+                'sketchDataUri,' +
+                'photoUris,' +
+                'audioUri,' +
+                'transcription,' +
+                'duration' +
+              ') ' +
+              'SELECT ' +
+                'id,' +
+                'createdAt,' +
+                'latitude,' +
+                'longitude,' +
+                'category,' +
+                'type,' +
+                'title,' +
+                'text,' +
+                'bookmarked,' +
+                'sketchDataUri,' +
+                'photoUris,' +
+                'NULL AS audioUri,' +
+                'NULL AS transcription,' +
+                'NULL AS duration ' +
+              'FROM notes_old',
             );
             // Drop old table
             await this.notesDb.executeSql('DROP TABLE notes_old');
