@@ -72,22 +72,23 @@ export default observer(function VoiceLogScreen() {
         result = audioPath || undefined;
       }
 
-      // Update state after stopping recorder
-      setIsRecording(false);
-
-      // Haptic feedback
-      Vibration.vibrate(200);
-
       const duration = recordingTime;
       const audioUri = result || audioPath;
 
-      // Validate audio path before saving
+      // Validate audio path before changing state
       if (!audioUri) {
         Alert.alert('Error', 'Failed to record audio. Please try again.');
+        setIsRecording(false);
         setRecordingTime(0);
         setAudioPath(null);
         return;
       }
+
+      // Update state after successful recording stop
+      setIsRecording(false);
+
+      // Haptic feedback
+      Vibration.vibrate(200);
 
       // Save voice log
       await core.createVoiceLog({
@@ -110,7 +111,6 @@ export default observer(function VoiceLogScreen() {
       console.error('Failed to save voice log:', error);
       Alert.alert('Error', 'Failed to save voice log. Please try again.');
       // Ensure recording state is reset even when saving fails
-      setIsRecording(false);
       setRecordingTime(0);
       setAudioPath(null);
     }
