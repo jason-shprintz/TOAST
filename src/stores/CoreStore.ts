@@ -1089,19 +1089,19 @@ export class CoreStore {
             // Create new table with correct constraint
             await this.notesDb.executeSql(
               'CREATE TABLE notes (' +
-                'id TEXT PRIMARY KEY NOT NULL,' +
-                'createdAt INTEGER NOT NULL,' +
-                'latitude REAL,' +
-                'longitude REAL,' +
-                'category TEXT NOT NULL,' +
-                "type TEXT NOT NULL CHECK(type IN ('text','sketch','voice'))," +
-                'title TEXT,' +
-                'text TEXT,' +
-                'bookmarked INTEGER DEFAULT 0,' +
-                'sketchDataUri TEXT,' +
-                'photoUris TEXT,' +
-                'audioUri TEXT,' +
-                'transcription TEXT,' +
+                'id TEXT PRIMARY KEY NOT NULL, ' +
+                'createdAt INTEGER NOT NULL, ' +
+                'latitude REAL, ' +
+                'longitude REAL, ' +
+                'category TEXT NOT NULL, ' +
+                "type TEXT NOT NULL CHECK(type IN ('text','sketch','voice')), " +
+                'title TEXT, ' +
+                'text TEXT, ' +
+                'bookmarked INTEGER DEFAULT 0, ' +
+                'sketchDataUri TEXT, ' +
+                'photoUris TEXT, ' +
+                'audioUri TEXT, ' +
+                'transcription TEXT, ' +
                 'duration REAL' +
                 ')',
             );

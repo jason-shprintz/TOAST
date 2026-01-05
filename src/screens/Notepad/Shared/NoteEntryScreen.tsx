@@ -46,10 +46,12 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
 
   const { note } = route.params || {};
 
-  // Initialize sound player only for voice logs with audio URIs
-  const isVoiceLog = note?.type === 'voice' && note?.audioUri;
+  // Check if this is a voice log with audio - but always call hooks unconditionally
+  const isVoiceLog = note?.type === 'voice' && !!note?.audioUri;
+  
+  // Initialize sound player - always called (React hooks rule), but with safe URL
   const soundHook = useSound({
-    url: isVoiceLog ? note.audioUri : '',
+    url: (note?.type === 'voice' && note?.audioUri) ? note.audioUri : '',
     autoPlay: false,
     onPlaybackStatusUpdate: (status) => {
       if (status.ended) {

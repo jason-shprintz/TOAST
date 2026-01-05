@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -49,7 +49,65 @@ export default observer(function VoiceLogScreen() {
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const soundRef = useRef<Sound | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stopRecorderRef = useRef<(() => Promise<string | undefined>) | null>(null);
+
+  // Stabilize handleStopRecording function reference using useCallback
+  const handleStopRecording = useCallback(async () => {
+    if (!isRecording) return;
+
+    try {
+      // Stop recording first - wrap in try/catch in case recorder isn't active
+      let result: string | undefined;
+      try {
+        result = await stopRecorderRef.current?.();
+      } catch (error) {
+        console.warn('Error stopping recorder:', error);
+        result = audioPath || undefined;
+      }
+
+      // Update state after stopping recorder
+      setIsRecording(false);
+
+      // Haptic feedback
+      Vibration.vibrate(200);
+
+      const duration = recordingTime;
+      const audioUri = result || audioPath;
+
+      // Validate audio path before saving
+      if (!audioUri) {
+        Alert.alert('Error', 'Failed to record audio. Please try again.');
+        setRecordingTime(0);
+        setAudioPath(null);
+        return;
+      }
+
+      // Save voice log
+      await core.createVoiceLog({
+        audioUri: audioUri,
+        duration: duration,
+        transcription: undefined, // Transcription not implemented yet
+      });
+
+      // Show success message and navigate back
+      Alert.alert('Saved', 'Voice log saved successfully', [
+        {
+          text: 'OK',
+          onPress: () => navigation.goBack(),
+        },
+      ]);
+
+      setRecordingTime(0);
+      setAudioPath(null);
+    } catch (error) {
+      console.error('Failed to save voice log:', error);
+      Alert.alert('Error', 'Failed to save voice log. Please try again.');
+      // Ensure recording state is reset even when saving fails
+      setIsRecording(false);
+      setRecordingTime(0);
+      setAudioPath(null);
+    }
+  }, [isRecording, audioPath, recordingTime, core, navigation]);
 
   // Initialize sound recorder
   const { startRecorder, stopRecorder } = useSoundRecorder({
@@ -64,12 +122,21 @@ export default observer(function VoiceLogScreen() {
     },
   });
 
+  // Store stopRecorder in ref for cleanup
+  useEffect(() => {
+    stopRecorderRef.current = stopRecorder;
+  }, [stopRecorder]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
+      // Stop active recording if component unmounts
+      if (isRecording && stopRecorderRef.current) {
+        stopRecorderRef.current().catch(err => {
+          console.warn('Error stopping recorder on unmount:', err);
+        });
       }
+      
       // Stop playback when unmounting
       if (soundRef.current) {
         soundRef.current.stop(() => {
@@ -78,7 +145,7 @@ export default observer(function VoiceLogScreen() {
         });
       }
     };
-  }, []);
+  }, [isRecording]);
 
   const requestAudioPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'ios') {
@@ -127,67 +194,6 @@ export default observer(function VoiceLogScreen() {
       console.error('Failed to start recording:', error);
       Alert.alert('Error', 'Failed to start recording. Please try again.');
       setIsRecording(false);
-    }
-  };
-
-  const handleStopRecording = async () => {
-    if (!isRecording) return;
-
-    try {
-      setIsRecording(false);
-
-      // Clear timer if running
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-
-      // Stop recording - wrap in try/catch in case recorder isn't active
-      let result: string | undefined;
-      try {
-        result = await stopRecorder();
-      } catch (error) {
-        console.warn('Error stopping recorder:', error);
-        result = audioPath || undefined;
-      }
-
-      // Haptic feedback
-      Vibration.vibrate(200);
-
-      const duration = recordingTime;
-      const audioUri = result || audioPath;
-
-      // Validate audio path before saving
-      if (!audioUri) {
-        Alert.alert('Error', 'Failed to record audio. Please try again.');
-        setRecordingTime(0);
-        setAudioPath(null);
-        return;
-      }
-
-      // Save voice log
-      await core.createVoiceLog({
-        audioUri: audioUri,
-        duration: duration,
-        transcription: undefined, // Transcription not implemented yet
-      });
-
-      // Show success message and navigate back
-      Alert.alert('Saved', 'Voice log saved successfully', [
-        {
-          text: 'OK',
-          onPress: () => navigation.goBack(),
-        },
-      ]);
-
-      setRecordingTime(0);
-      setAudioPath(null);
-    } catch (error) {
-      console.error('Failed to save voice log:', error);
-      Alert.alert('Error', 'Failed to save voice log. Please try again.');
-      // Ensure recording state is reset even when saving fails
-      setRecordingTime(0);
-      setAudioPath(null);
     }
   };
 
