@@ -50,10 +50,17 @@ export default observer(function VoiceLogScreen() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const soundRef = useRef<Sound | null>(null);
   const stopRecorderRef = useRef<(() => Promise<string | undefined>) | null>(null);
+  const isRecordingRef = useRef(false);
+  const handleStopRecordingRef = useRef<(() => Promise<void>) | null>(null);
+
+  // Update ref when recording state changes
+  useEffect(() => {
+    isRecordingRef.current = isRecording;
+  }, [isRecording]);
 
   // Stabilize handleStopRecording function reference using useCallback
   const handleStopRecording = useCallback(async () => {
-    if (!isRecording) return;
+    if (!isRecordingRef.current) return;
 
     try {
       // Stop recording first - wrap in try/catch in case recorder isn't active
@@ -107,7 +114,12 @@ export default observer(function VoiceLogScreen() {
       setRecordingTime(0);
       setAudioPath(null);
     }
-  }, [isRecording, audioPath, recordingTime, core, navigation]);
+  }, [audioPath, recordingTime, core, navigation]);
+
+  // Store handleStopRecording in ref for use in callback
+  useEffect(() => {
+    handleStopRecordingRef.current = handleStopRecording;
+  }, [handleStopRecording]);
 
   // Initialize sound recorder
   const { startRecorder, stopRecorder } = useSoundRecorder({
@@ -115,9 +127,9 @@ export default observer(function VoiceLogScreen() {
       const currentTime = Math.floor(e.currentPosition / 1000);
       setRecordingTime(currentTime);
 
-      // Auto-stop at max duration
-      if (currentTime >= MAX_DURATION_SECONDS) {
-        handleStopRecording();
+      // Auto-stop at max duration - use ref to avoid stale closure
+      if (currentTime >= MAX_DURATION_SECONDS && handleStopRecordingRef.current) {
+        handleStopRecordingRef.current();
       }
     },
   });
@@ -127,11 +139,11 @@ export default observer(function VoiceLogScreen() {
     stopRecorderRef.current = stopRecorder;
   }, [stopRecorder]);
 
-  // Cleanup on unmount
+  // Cleanup on unmount only (empty dependency array)
   useEffect(() => {
     return () => {
       // Stop active recording if component unmounts
-      if (isRecording && stopRecorderRef.current) {
+      if (isRecordingRef.current && stopRecorderRef.current) {
         stopRecorderRef.current().catch(err => {
           console.warn('Error stopping recorder on unmount:', err);
         });
@@ -145,7 +157,7 @@ export default observer(function VoiceLogScreen() {
         });
       }
     };
-  }, [isRecording]);
+  }, []); // Empty dependency array for unmount-only cleanup
 
   const requestAudioPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'ios') {
