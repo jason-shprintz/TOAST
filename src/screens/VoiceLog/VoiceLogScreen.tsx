@@ -226,6 +226,7 @@ export default observer(function VoiceLogScreen() {
         if (error) {
           console.error('Failed to load sound:', error);
           Alert.alert('Error', 'Failed to load audio file.');
+          sound.release();
           setPlayingId(null);
           return;
         }
