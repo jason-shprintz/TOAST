@@ -240,6 +240,12 @@ export default observer(function VoiceLogScreen() {
             Alert.alert('Error', 'Failed to play audio.');
             setPlayingId(null);
           }
+
+          // Release sound resources after playback completes
+          sound.release();
+          if (soundRef.current === sound) {
+            soundRef.current = null;
+          }
         });
 
         soundRef.current = sound;
