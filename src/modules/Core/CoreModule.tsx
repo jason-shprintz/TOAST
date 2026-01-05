@@ -18,6 +18,12 @@ const coreTools: ToolType[] = [
     id: 'core_flashlight',
   },
   {
+    name: 'Voice Log',
+    screen: 'VoiceLog',
+    icon: 'mic-outline',
+    id: 'core_voice_log',
+  },
+  {
     name: 'Notepad',
     screen: 'Notepad',
     icon: 'document-text-outline',

@@ -37,6 +37,8 @@
 		<string>We use your location to show the last GPS fix on the Device Status screen.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>This app uses the camera flash for the flashlight.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>We need microphone access to record voice logs for emergency documentation.</string>
 		<key>RCTNewArchEnabled</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>

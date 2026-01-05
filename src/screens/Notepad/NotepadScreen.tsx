@@ -34,6 +34,7 @@ export default observer(function NotepadScreen() {
     Work: 'briefcase-outline',
     Personal: 'heart-outline',
     Ideas: 'bulb-outline',
+    'Voice Logs': 'mic-outline',
   };
   return (
     <ScreenBody>
@@ -75,16 +76,18 @@ export default observer(function NotepadScreen() {
       <HorizontalRule />
 
       <Grid>
-        {core.categories.map(cat => (
-          <CardTopic
-            key={cat}
-            title={cat}
-            icon={categoryIcons[cat] || 'folder-outline'}
-            onPress={() =>
-              navigation.navigate('NoteCategory', { category: cat })
-            }
-          />
-        ))}
+        {core.categories
+          .filter(cat => cat !== 'Voice Logs')
+          .map(cat => (
+            <CardTopic
+              key={cat}
+              title={cat}
+              icon={categoryIcons[cat] || 'folder-outline'}
+              onPress={() =>
+                navigation.navigate('NoteCategory', { category: cat })
+              }
+            />
+          ))}
       </Grid>
     </ScreenBody>
   );

@@ -29,6 +29,7 @@ import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
+import VoiceLogScreen from '../screens/VoiceLog/VoiceLogScreen';
 import {
   NavigationHistoryProvider,
   useNavigationHistory,
@@ -82,6 +83,7 @@ function NavigatorContent(): JSX.Element {
             component={NightvisionScreen}
             options={{ presentation: 'modal' }}
           />
+          <Stack.Screen name="VoiceLog" component={VoiceLogScreen} />
           <Stack.Screen name="NewNote" component={NewNoteScreen} />
           <Stack.Screen name="Notepad" component={NotepadScreen} />
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />
