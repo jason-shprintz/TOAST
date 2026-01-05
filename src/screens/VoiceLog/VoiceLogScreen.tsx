@@ -24,14 +24,6 @@ import { COLORS } from '../../theme';
 
 const MAX_DURATION_SECONDS = 12;
 
-// Audio recording configuration optimized for speech
-// const AUDIO_CONFIG = {
-//   audioEncoder:
-//     Platform.OS === 'android' ? AudioEncoderAndroidType.AAC : undefined,
-//   audioSampleRate: 16000, // Optimized for speech
-//   audioChannels: 1, // Mono
-// } as const;
-
 /**
  * Voice Log Screen
  *
