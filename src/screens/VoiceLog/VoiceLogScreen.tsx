@@ -193,6 +193,9 @@ export default observer(function VoiceLogScreen() {
     } catch (error) {
       console.error('Failed to save voice log:', error);
       Alert.alert('Error', 'Failed to save voice log. Please try again.');
+      // Ensure recording state is reset even when saving fails
+      setRecordingTime(0);
+      setAudioPath(null);
     }
   };
 
