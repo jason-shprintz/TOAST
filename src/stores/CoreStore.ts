@@ -793,7 +793,7 @@ export class CoreStore {
               resolve();
             },
             () => resolve(),
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
           );
         });
       }
