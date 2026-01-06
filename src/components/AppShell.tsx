@@ -15,11 +15,11 @@ import {
 } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS, FOOTER_HEIGHT } from '../theme';
+import { HelpModal } from './HelpModal';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
 import { SettingsModal } from './SettingsModal';
-import { HelpModal } from './HelpModal';
 
 type Props = PropsWithChildren;
 
