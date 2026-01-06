@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   Alert,
@@ -11,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';

@@ -1,11 +1,12 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
-import { Text, StyleSheet, ScrollView, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
+import { Text } from '../../../components/ScaledText';
 import { useCoreStore } from '../../../stores';
 import { Note, isNotePadCategory } from '../../../stores/CoreStore';
 import { FOOTER_HEIGHT } from '../../../theme';

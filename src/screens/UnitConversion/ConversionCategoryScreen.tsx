@@ -2,7 +2,6 @@ import { RouteProp, useRoute, useFocusEffect } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   ScrollView,
@@ -11,6 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { COLORS } from '../../theme';
 import {

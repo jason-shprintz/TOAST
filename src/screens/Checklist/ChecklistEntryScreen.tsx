@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   ScrollView,
   TouchableOpacity,
   Alert,
@@ -14,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
 

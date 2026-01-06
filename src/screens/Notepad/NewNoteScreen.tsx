@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   TextInput,
   Button,
   TouchableOpacity,
@@ -19,6 +18,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';

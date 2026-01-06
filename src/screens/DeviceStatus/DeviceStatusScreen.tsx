@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useDeviceStatus } from '../../hooks/useDeviceStatus';
 import { COLORS } from '../../theme';
 

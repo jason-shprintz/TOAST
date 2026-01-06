@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   TouchableOpacity,
   Alert,
   Vibration,
@@ -19,6 +18,7 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 

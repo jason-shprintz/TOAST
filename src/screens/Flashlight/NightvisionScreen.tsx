@@ -1,7 +1,8 @@
 import Slider from '@react-native-community/slider';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS } from '../../theme';
 
