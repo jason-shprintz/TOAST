@@ -12,15 +12,37 @@ export const Text = observer((props: TextProps) => {
   const settingsStore = useSettingsStore();
   const { style, ...otherProps } = props;
 
-  // Apply font scaling to any fontSize in the style
-  let scaledStyle = style;
-  if (style) {
-    const flatStyle = StyleSheet.flatten(style);
-    if (flatStyle && typeof flatStyle.fontSize === 'number') {
-      scaledStyle = {
-        ...flatStyle,
-        fontSize: flatStyle.fontSize * settingsStore.fontScale,
-      };
+  // Apply font scaling to any numeric fontSize in the style (supports objects and arrays)
+  let scaledStyle: TextProps['style'] = style;
+  if (style != null) {
+    const scale = settingsStore.fontScale;
+
+    const scaleFontInStyleObject = (styleObj: any) => {
+      if (!styleObj || typeof styleObj !== 'object') {
+        return styleObj;
+      }
+      if (typeof styleObj.fontSize === 'number') {
+        return {
+          ...styleObj,
+          fontSize: styleObj.fontSize * scale,
+        };
+      }
+      return styleObj;
+    };
+
+    if (Array.isArray(style)) {
+      scaledStyle = style.map((item) => {
+        // Preserve registered style IDs (numbers) and non-object entries
+        if (typeof item === 'number' || item == null) {
+          return item;
+        }
+        return scaleFontInStyleObject(item);
+      }) as TextProps['style'];
+    } else if (typeof style === 'number') {
+      // Registered style ID; cannot safely inspect or modify
+      scaledStyle = style;
+    } else {
+      scaledStyle = scaleFontInStyleObject(style);
     }
   }
 
