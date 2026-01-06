@@ -33,14 +33,14 @@ const createMockDatabase = () => {
         // Extract key from query like "SELECT value FROM settings WHERE key = 'fontSize'"
         const match = query.match(/key = '([^']+)'/);
         const key = match?.[1];
-        
+
         if (key && storage[key] !== undefined) {
           const value = storage[key];
           return Promise.resolve([
             {
               rows: {
                 length: 1,
-                item: (index: number) => ({ value }),
+                item: (_index: number) => ({ value }),
               },
             },
           ]);
@@ -297,13 +297,12 @@ describe('SettingsStore', () => {
   });
 
   describe('MobX reactivity', () => {
-    it('should trigger reactions when fontSize changes', (done) => {
+    it('should trigger reactions when fontSize changes', done => {
       let reactionCount = 0;
       const { autorun } = require('mobx');
 
       const dispose = autorun(() => {
         // Access fontSize to make it observed
-        const _ = settingsStore.fontSize;
         reactionCount++;
       });
 
@@ -319,13 +318,12 @@ describe('SettingsStore', () => {
       });
     });
 
-    it('should trigger reactions when themeMode changes', (done) => {
+    it('should trigger reactions when themeMode changes', done => {
       let reactionCount = 0;
       const { autorun } = require('mobx');
 
       const dispose = autorun(() => {
         // Access themeMode to make it observed
-        const _ = settingsStore.themeMode;
         reactionCount++;
       });
 
@@ -341,7 +339,7 @@ describe('SettingsStore', () => {
       });
     });
 
-    it('should trigger reactions when fontScale changes due to fontSize', (done) => {
+    it('should trigger reactions when fontScale changes due to fontSize', done => {
       let observedScale = 1.0;
       const { autorun } = require('mobx');
 
