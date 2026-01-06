@@ -7,7 +7,7 @@ import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import { useCoreStore } from '../../../stores';
-import { Note, NotePadCategory } from '../../../stores/CoreStore';
+import { Note, isNotePadCategory } from '../../../stores/CoreStore';
 import { FOOTER_HEIGHT } from '../../../theme';
 
 /**
@@ -30,11 +30,8 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const core = useCoreStore();
 
   const { category } = route.params || {};
-  // Filter out Voice Logs category from NotePad screens
-  const isValidNotePadCategory = (cat: string): cat is NotePadCategory => {
-    return cat === 'General' || cat === 'Work' || cat === 'Personal' || cat === 'Ideas';
-  };
-  const notepadCategory = isValidNotePadCategory(category) ? category : undefined;
+  // Filter out Voice Logs and other invalid categories from NotePad screens
+  const notepadCategory = isNotePadCategory(category) ? category : undefined;
   const notes = useMemo(
     () => notepadCategory ? (core.notesByCategory[notepadCategory] ?? []) : [],
     [notepadCategory, core.notesByCategory],

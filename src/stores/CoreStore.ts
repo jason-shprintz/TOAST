@@ -34,6 +34,13 @@ export type NoteCategory =
 // NotePad categories (subset of NoteCategory)
 export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
 
+// Helper to validate NotePad categories
+export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'] as const;
+
+export function isNotePadCategory(category: string): category is NotePadCategory {
+  return NOTEPAD_CATEGORIES.includes(category as NotePadCategory);
+}
+
 export interface Note {
   id: string;
   createdAt: number; // epoch ms
@@ -1023,11 +1030,8 @@ export class CoreStore {
     };
     for (const n of this.notes) {
       // Only include notes that are in NotePad categories
-      if (n.category !== 'Voice Logs') {
-        const notepadCategory = n.category as NotePadCategory;
-        if (map[notepadCategory]) {
-          map[notepadCategory].push(n);
-        }
+      if (isNotePadCategory(n.category)) {
+        map[n.category].push(n);
       }
     }
     return map;
