@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, StyleSheet, TextProps } from 'react-native';
+import { StyleSheet, TextProps } from 'react-native';
 import { COLORS } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
+import { Text } from './ScaledText';
 
 type Props = TextProps & { title?: string; isShowHr?: boolean };
 

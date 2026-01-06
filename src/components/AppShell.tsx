@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, useMemo, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   PanResponder,
@@ -18,6 +18,7 @@ import { COLORS, FOOTER_HEIGHT } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
+import { SettingsModal } from './SettingsModal';
 
 type Props = PropsWithChildren;
 
@@ -37,7 +38,7 @@ type Props = PropsWithChildren;
  *   and vertical displacement (`dy`) thresholds.
  *
  * @remarks
- * The settings button is currently a no-op and exists as a persistent UI affordance.
+ * The settings button opens a modal overlay that allows users to configure app settings.
  *
  * @param props - Component props.
  * @param props.children - Screen content to render inside the shell.
@@ -48,6 +49,7 @@ export default function AppShell({ children }: Props) {
   const { disableGestureNavigation } = useGestureNavigation();
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStatus();
   const translateYRef = useRef(new Animated.Value(0)).current;
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   useEffect(() => {
     Animated.timing(translateYRef, {
@@ -118,9 +120,7 @@ export default function AppShell({ children }: Props) {
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.settingsButton}
-              onPress={() => {
-                // Intentionally a no-op for now; this is just a persistent button.
-              }}
+              onPress={() => setIsSettingsVisible(true)}
               accessibilityLabel="Settings"
               accessibilityRole="button"
             >
@@ -141,6 +141,11 @@ export default function AppShell({ children }: Props) {
           <HorizontalRule />
         </View>
       </View>
+
+      <SettingsModal
+        visible={isSettingsVisible}
+        onClose={() => setIsSettingsVisible(false)}
+      />
     </ScreenContainer>
   );
 }
