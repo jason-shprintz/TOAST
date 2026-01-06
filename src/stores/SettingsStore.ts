@@ -26,7 +26,9 @@ export class SettingsStore {
    * @param size - The desired font size ('small', 'medium', or 'large')
    */
   async setFontSize(size: FontSize) {
-    this.fontSize = size;
+    runInAction(() => {
+      this.fontSize = size;
+    });
     await this.persistSettings();
   }
 
@@ -35,7 +37,9 @@ export class SettingsStore {
    * @param mode - The desired theme mode ('light', 'dark', or 'system')
    */
   async setThemeMode(mode: ThemeMode) {
-    this.themeMode = mode;
+    runInAction(() => {
+      this.themeMode = mode;
+    });
     await this.persistSettings();
   }
 
@@ -66,7 +70,7 @@ export class SettingsStore {
     try {
       await this.settingsDb.executeSql(
         'CREATE TABLE IF NOT EXISTS settings (' +
-          'key TEXT PRIMARY KEY NOT NULL,' +
+          'key TEXT PRIMARY KEY NOT NULL, ' +
           'value TEXT NOT NULL' +
           ')',
       );
