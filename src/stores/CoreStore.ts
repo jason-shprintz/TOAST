@@ -478,10 +478,18 @@ export class CoreStore {
           }
         } else if (charging) {
           // Charging but no increase yet - provide instant fallback
-          // Baseline: 2 hours to charge from current level to 100%
-          runInAction(() => {
-            this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
-          });
+          if (level >= 0.99) {
+            // Battery is full or nearly full while charging
+            // Show maximum runtime estimate (8 hours at 100%)
+            runInAction(() => {
+              this.batteryEstimateMinutes = 480;
+            });
+          } else {
+            // Baseline: 2 hours to charge from current level to 100%
+            runInAction(() => {
+              this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
+            });
+          }
         } else if (dLevel < 0) {
           // Battery increased but not charging - clear estimate
           runInAction(() => {
@@ -491,10 +499,18 @@ export class CoreStore {
       } else {
         // First sample - provide instant fallback estimate
         if (charging) {
-          // Baseline: 2 hours to charge from current level to 100%
-          runInAction(() => {
-            this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
-          });
+          if (level >= 0.99) {
+            // Battery is full or nearly full while charging
+            // Show maximum runtime estimate (8 hours at 100%)
+            runInAction(() => {
+              this.batteryEstimateMinutes = 480;
+            });
+          } else {
+            // Baseline: 2 hours to charge from current level to 100%
+            runInAction(() => {
+              this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
+            });
+          }
         } else if (level > 0) {
           // Baseline: 8 hours at 100% battery
           runInAction(() => {
