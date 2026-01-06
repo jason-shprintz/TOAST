@@ -467,7 +467,7 @@ export class CoreStore {
               this.batteryEstimateMinutes = minutesLeft;
             });
           }
-        } else if (charging && dLevel < 0) {
+        } else if (dtMin > 0 && charging && dLevel < 0) {
           // Device is charging and battery is increasing
           const ratePerMin = Math.abs(dLevel) / dtMin;
           if (ratePerMin > 0) {
