@@ -7,16 +7,22 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
   const rootStore = React.useMemo(() => new RootStore(), []);
 
   // Initialize and load persisted notes and checklists from SQLite on app start
+  // Also start device status monitoring for instant battery estimate
   useEffect(() => {
     (async () => {
       try {
         await rootStore.coreStore.loadNotes();
         await rootStore.coreStore.loadChecklists();
+        // Start device status monitoring when app opens
+        rootStore.coreStore.startDeviceStatusMonitoring();
       } catch (e) {
         console.warn('Failed to load data on startup:', e);
       }
     })();
-    // No cleanup required for DB load
+    // Cleanup device status monitoring on unmount
+    return () => {
+      rootStore.coreStore.stopDeviceStatusMonitoring();
+    };
   }, [rootStore]);
 
   return (

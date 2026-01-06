@@ -435,8 +435,8 @@ export class CoreStore {
   /**
    * Samples the current battery level and charging state using DeviceInfo.
    * Updates the store's battery level and charging status.
-   * If a previous battery sample exists, estimates the remaining battery time in minutes
-   * based on the rate of battery consumption.
+   * Provides instant fallback estimates on first sample for both charging and discharging.
+   * If a previous battery sample exists, calculates more accurate estimates based on battery drain/charge rate.
    * Handles errors silently.
    *
    * @private
@@ -459,7 +459,7 @@ export class CoreStore {
         const now = Date.now();
         const dtMin = (now - this.lastBatterySample.at) / 60000;
         const dLevel = this.lastBatterySample.level - level; // positive on drop
-        if (dtMin > 0 && dLevel > 0) {
+        if (dtMin > 0 && dLevel > 0 && !charging) {
           const ratePerMin = dLevel / dtMin;
           if (ratePerMin > 0) {
             const minutesLeft = level / ratePerMin;
@@ -467,9 +467,38 @@ export class CoreStore {
               this.batteryEstimateMinutes = minutesLeft;
             });
           }
-        } else if (charging || dLevel < 0) {
+        } else if (charging && dLevel < 0) {
+          // Device is charging and battery is increasing
+          const ratePerMin = Math.abs(dLevel) / dtMin;
+          if (ratePerMin > 0) {
+            const minutesToFull = (1.0 - level) / ratePerMin;
+            runInAction(() => {
+              this.batteryEstimateMinutes = minutesToFull;
+            });
+          }
+        } else if (charging) {
+          // Charging but no increase yet - provide instant fallback
+          // Baseline: 2 hours to charge from current level to 100%
           runInAction(() => {
-            this.batteryEstimateMinutes = null; // Clear estimate when charging or level increases
+            this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
+          });
+        } else if (dLevel < 0) {
+          // Battery increased but not charging - clear estimate
+          runInAction(() => {
+            this.batteryEstimateMinutes = null;
+          });
+        }
+      } else {
+        // First sample - provide instant fallback estimate
+        if (charging) {
+          // Baseline: 2 hours to charge from current level to 100%
+          runInAction(() => {
+            this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
+          });
+        } else if (level > 0) {
+          // Baseline: 8 hours at 100% battery
+          runInAction(() => {
+            this.batteryEstimateMinutes = Math.round(level * 480);
           });
         }
       }
