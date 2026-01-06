@@ -40,7 +40,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const sortedNotes = useMemo(
     () =>
       notes.slice().sort(
-        (a: Note, b: Note) => b.createdAt - a.createdAt, // Most recent first
+        (a, b) => b.createdAt - a.createdAt, // Most recent first
       ),
     [notes],
   );
