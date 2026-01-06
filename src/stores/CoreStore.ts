@@ -1023,8 +1023,11 @@ export class CoreStore {
     };
     for (const n of this.notes) {
       // Only include notes that are in NotePad categories
-      if (n.category !== 'Voice Logs' && map[n.category]) {
-        map[n.category].push(n);
+      if (n.category !== 'Voice Logs') {
+        const notepadCategory = n.category as NotePadCategory;
+        if (map[notepadCategory]) {
+          map[notepadCategory].push(n);
+        }
       }
     }
     return map;

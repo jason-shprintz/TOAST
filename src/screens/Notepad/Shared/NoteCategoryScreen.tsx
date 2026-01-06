@@ -31,7 +31,10 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
 
   const { category } = route.params || {};
   // Filter out Voice Logs category from NotePad screens
-  const notepadCategory = category === 'Voice Logs' ? undefined : (category as NotePadCategory);
+  const isValidNotePadCategory = (cat: string): cat is NotePadCategory => {
+    return cat === 'General' || cat === 'Work' || cat === 'Personal' || cat === 'Ideas';
+  };
+  const notepadCategory = isValidNotePadCategory(category) ? category : undefined;
   const notes = useMemo(
     () => notepadCategory ? (core.notesByCategory[notepadCategory] ?? []) : [],
     [notepadCategory, core.notesByCategory],
