@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useCoreStore } from '../stores/StoreContext';
 import formatBytes from '../utils/formatBytes';
 import formatPercent from '../utils/formatPercent';
@@ -41,10 +41,9 @@ import formatPercent from '../utils/formatPercent';
 export function useDeviceStatus() {
   const core = useCoreStore();
 
-  useEffect(() => {
-    core.startDeviceStatusMonitoring();
-    return () => core.stopDeviceStatusMonitoring();
-  }, [core]);
+  // Device status monitoring is now started globally in StoreProvider,
+  // so we don't need to start/stop it here anymore.
+  // This ensures the battery estimate is available instantly when this screen loads.
 
   /**
    * A memoized string representing the device's storage usage.
