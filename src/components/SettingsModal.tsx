@@ -26,6 +26,10 @@ interface SettingsModalProps {
  * 
  * Note: Uses React Native's Text directly to avoid scaling issues in the settings UI.
  */
+
+// No-op handler to prevent backdrop touch from propagating
+const preventClose = () => {};
+
 export const SettingsModal = observer(
   ({ visible, onClose }: SettingsModalProps) => {
     const settingsStore = useSettingsStore();
@@ -56,7 +60,7 @@ export const SettingsModal = observer(
           accessibilityHint="Tap to dismiss the settings"
         >
           <View style={styles.overlay}>
-            <TouchableWithoutFeedback onPress={() => {}}>
+            <TouchableWithoutFeedback onPress={preventClose}>
               <View style={styles.modalContainer}>
             <View style={styles.header}>
               <RNText style={styles.headerText}>Settings</RNText>
