@@ -13,18 +13,16 @@ export const Text = observer((props: TextProps) => {
   const { style, ...otherProps } = props;
 
   // Apply font scaling to any fontSize in the style
-  const scaledStyle = React.useMemo(() => {
-    if (!style) return style;
-
+  let scaledStyle = style;
+  if (style) {
     const flatStyle = StyleSheet.flatten(style);
     if (flatStyle && typeof flatStyle.fontSize === 'number') {
-      return {
+      scaledStyle = {
         ...flatStyle,
         fontSize: flatStyle.fontSize * settingsStore.fontScale,
       };
     }
-    return style;
-  }, [style, settingsStore.fontScale]);
+  }
 
   return <RNText {...otherProps} style={scaledStyle} />;
 });
