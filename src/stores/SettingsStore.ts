@@ -83,14 +83,14 @@ export class SettingsStore {
    * Validates if a value is a valid FontSize
    */
   private isValidFontSize(value: any): value is FontSize {
-    return value === 'small' || value === 'medium' || value === 'large';
+    return ['small', 'medium', 'large'].includes(value);
   }
 
   /**
    * Validates if a value is a valid ThemeMode
    */
   private isValidThemeMode(value: any): value is ThemeMode {
-    return value === 'light' || value === 'dark' || value === 'system';
+    return ['light', 'dark', 'system'].includes(value);
   }
 
   /**
