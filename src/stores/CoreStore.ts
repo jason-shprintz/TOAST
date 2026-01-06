@@ -29,7 +29,7 @@ export type NoteCategory =
   | 'Work'
   | 'Personal'
   | 'Ideas'
-  | 'Voice Logs';
+  | 'Voice Logs'; // Still supported for Voice Log feature, but not shown in NotePad
 
 export interface Note {
   id: string;
@@ -728,12 +728,12 @@ export class CoreStore {
   // ===== Notepad =====
   // --------------------------------------------------------------------
   notes: Note[] = [];
+  // NotePad categories - Voice Logs is separate and managed by Voice Log feature
   categories: NoteCategory[] = [
     'General',
     'Work',
     'Personal',
     'Ideas',
-    'Voice Logs',
   ];
   private notesDb: any | null = null;
 
@@ -1007,19 +1007,22 @@ export class CoreStore {
 
   /**
    * Groups notes by their category and returns a mapping from each category to an array of notes belonging to that category.
+   * Only includes NotePad categories (excludes Voice Logs which is managed separately).
    *
-   * @returns {Record<NoteCategory, Note[]>} An object where each key is a note category and the value is an array of notes in that category.
+   * @returns An object where each key is a NotePad category and the value is an array of notes in that category.
    */
-  get notesByCategory(): Record<NoteCategory, Note[]> {
-    const map: Record<NoteCategory, Note[]> = {
+  get notesByCategory(): Record<'General' | 'Work' | 'Personal' | 'Ideas', Note[]> {
+    const map: Record<'General' | 'Work' | 'Personal' | 'Ideas', Note[]> = {
       General: [],
       Work: [],
       Personal: [],
       Ideas: [],
-      'Voice Logs': [],
     };
     for (const n of this.notes) {
-      map[n.category].push(n);
+      // Only include notes that are in NotePad categories
+      if (n.category !== 'Voice Logs' && map[n.category]) {
+        map[n.category].push(n);
+      }
     }
     return map;
   }

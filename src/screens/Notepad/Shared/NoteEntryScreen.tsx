@@ -8,10 +8,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useSound } from 'react-native-nitro-sound';
 import { HorizontalRule } from '../../../components/HorizontalRule';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
@@ -33,6 +31,7 @@ import { noteListSharedStyles as shared } from '../noteListStyles';
  * - Displays the note title as the section header
  * - Shows the full note text in expanded view
  * - Includes bookmark and delete buttons
+ * - Voice logs should be accessed through the Voice Log feature instead
  */
 export default observer(function NoteEntryScreen(): React.JSX.Element {
   const route = useRoute<any>();
@@ -41,53 +40,8 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(
     route.params?.note?.bookmarked ?? false,
   );
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const { note } = route.params || {};
-
-  // Check if this is a voice log with audio - but always call hooks unconditionally
-  const isVoiceLog = note?.type === 'voice' && !!note?.audioUri;
-  
-  // Initialize sound player - always called (React hooks rule), but with safe URL
-  const soundHook = useSound({
-    url: (note?.type === 'voice' && note?.audioUri) ? note.audioUri : '',
-    autoPlay: false,
-    onPlaybackStatusUpdate: (status) => {
-      if (status.ended) {
-        setIsPlaying(false);
-      }
-    },
-  });
-
-  const handlePlayPause = async () => {
-    if (!isVoiceLog) return;
-
-    try {
-      setIsLoading(true);
-      if (isPlaying) {
-        await soundHook.pause();
-        setIsPlaying(false);
-      } else {
-        await soundHook.play();
-        setIsPlaying(true);
-      }
-    } catch (error) {
-      console.error('Playback error:', error);
-      Alert.alert('Error', 'Failed to play audio. The file may not be available.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStop = async () => {
-    try {
-      await soundHook.stop();
-      setIsPlaying(false);
-    } catch (error) {
-      console.error('Stop error:', error);
-    }
-  };
 
   if (!note) {
     return (
@@ -163,58 +117,6 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
             </Text>
           </View>
 
-          {note.type === 'voice' && note.audioUri && (
-            <View style={styles.voiceLogContainer}>
-              <View style={styles.voiceLogHeader}>
-                <Icon name="mic-circle" size={40} color={COLORS.SECONDARY_ACCENT} />
-                <View style={styles.voiceLogInfo}>
-                  <Text style={styles.voiceLogTitle}>Voice Log</Text>
-                  {note.duration && (
-                    <Text style={styles.voiceLogDuration}>
-                      Duration: {Math.round(note.duration)}s
-                    </Text>
-                  )}
-                </View>
-              </View>
-              {note.latitude && note.longitude && (
-                <Text style={styles.locationText}>
-                  <Icon name="location-outline" size={14} color={COLORS.PRIMARY_DARK} />
-                  {' '}Location: {note.latitude.toFixed(6)}, {note.longitude.toFixed(6)}
-                </Text>
-              )}
-              <HorizontalRule />
-              <View style={styles.playbackControls}>
-                <TouchableOpacity
-                  style={styles.playButton}
-                  onPress={handlePlayPause}
-                  disabled={isLoading}
-                  accessibilityLabel={isPlaying ? 'Pause audio' : 'Play audio'}
-                  accessibilityRole="button"
-                >
-                  {isLoading ? (
-                    <ActivityIndicator size="small" color={COLORS.PRIMARY_LIGHT} />
-                  ) : (
-                    <Icon
-                      name={isPlaying ? 'pause' : 'play'}
-                      size={30}
-                      color={COLORS.PRIMARY_LIGHT}
-                    />
-                  )}
-                </TouchableOpacity>
-                {isPlaying && (
-                  <TouchableOpacity
-                    style={styles.stopButton}
-                    onPress={handleStop}
-                    accessibilityLabel="Stop audio"
-                    accessibilityRole="button"
-                  >
-                    <Icon name="stop" size={24} color={COLORS.PRIMARY_DARK} />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          )}
-
           <View>
             <Text style={shared.itemBodyExpanded}>{noteText}</Text>
           </View>
@@ -250,68 +152,5 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     paddingBottom: 24,
-  },
-  voiceLogContainer: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 12,
-    marginVertical: 12,
-  },
-  voiceLogHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  voiceLogInfo: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  voiceLogTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.PRIMARY_DARK,
-  },
-  voiceLogDuration: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.8,
-  },
-  locationText: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginTop: 4,
-  },
-  playbackControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-    gap: 12,
-  },
-  playButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  stopButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

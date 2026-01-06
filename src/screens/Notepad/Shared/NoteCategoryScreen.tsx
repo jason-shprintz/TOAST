@@ -30,15 +30,17 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const core = useCoreStore();
 
   const { category } = route.params || {};
+  // Filter out Voice Logs category from NotePad screens
+  const notepadCategory = category === 'Voice Logs' ? undefined : (category as 'General' | 'Work' | 'Personal' | 'Ideas');
   const notes = useMemo(
-    () => core.notesByCategory[category as NoteCategory] ?? [],
-    [category, core.notesByCategory],
+    () => notepadCategory ? (core.notesByCategory[notepadCategory] ?? []) : [],
+    [notepadCategory, core.notesByCategory],
   );
 
   const sortedNotes = useMemo(
     () =>
       notes.slice().sort(
-        (a, b) => b.createdAt - a.createdAt, // Most recent first
+        (a: { createdAt: number }, b: { createdAt: number }) => b.createdAt - a.createdAt, // Most recent first
       ),
     [notes],
   );
@@ -57,7 +59,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map(note => {
+            {sortedNotes.map((note: any) => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic
