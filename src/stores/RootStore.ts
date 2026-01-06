@@ -49,5 +49,6 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.isOfflineMode = true;
+    this.initializeSettings();
   }
 }
