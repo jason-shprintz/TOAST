@@ -59,7 +59,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map((note: Note) => {
+            {sortedNotes.map((note) => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic
