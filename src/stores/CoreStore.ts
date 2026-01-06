@@ -35,9 +35,16 @@ export type NoteCategory =
 export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
 
 // Helper to validate NotePad categories
-export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'] as const;
+export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = [
+  'General',
+  'Work',
+  'Personal',
+  'Ideas',
+] as const;
 
-export function isNotePadCategory(category: string): category is NotePadCategory {
+export function isNotePadCategory(
+  category: string,
+): category is NotePadCategory {
   return NOTEPAD_CATEGORIES.includes(category as NotePadCategory);
 }
 
@@ -739,12 +746,7 @@ export class CoreStore {
   // --------------------------------------------------------------------
   notes: Note[] = [];
   // NotePad categories - Voice Logs is separate and managed by Voice Log feature
-  categories: NotePadCategory[] = [
-    'General',
-    'Work',
-    'Personal',
-    'Ideas',
-  ];
+  categories: NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
   private notesDb: any | null = null;
 
   private generateId() {
@@ -1181,8 +1183,8 @@ export class CoreStore {
                 'audioUri,' +
                 'transcription,' +
                 'duration' +
-              ') ' +
-              'SELECT ' +
+                ') ' +
+                'SELECT ' +
                 'id,' +
                 'createdAt,' +
                 'latitude,' +
@@ -1197,7 +1199,7 @@ export class CoreStore {
                 'NULL AS audioUri,' +
                 'NULL AS transcription,' +
                 'NULL AS duration ' +
-              'FROM notes_old',
+                'FROM notes_old',
             );
             // Drop old table
             await this.notesDb.executeSql('DROP TABLE notes_old');
