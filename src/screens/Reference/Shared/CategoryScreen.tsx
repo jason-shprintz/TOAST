@@ -3,10 +3,10 @@ import React, { JSX, useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
+import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import SectionSubHeader from '../../../components/SectionSubHeader';
-import { Text } from '../../../components/ScaledText';
 import { FOOTER_HEIGHT } from '../../../theme';
 import ReferenceEntryType from '../../../types/data-type';
 

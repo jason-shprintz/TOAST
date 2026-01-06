@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSettingsStore } from '../stores';
-import { COLORS } from '../theme';
 import { FontSize, ThemeMode } from '../stores/SettingsStore';
+import { COLORS } from '../theme';
 
 interface SettingsModalProps {
   visible: boolean;

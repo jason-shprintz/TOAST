@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { Text } from '../../components/ScaledText';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { COLORS } from '../../theme';
 import {

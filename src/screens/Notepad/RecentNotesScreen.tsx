@@ -8,9 +8,9 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';

@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HorizontalRule } from '../../../components/HorizontalRule';
+import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
-import { Text } from '../../../components/ScaledText';
 import {
   addBookmark,
   removeBookmark,

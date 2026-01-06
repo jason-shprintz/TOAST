@@ -16,9 +16,9 @@ import {
   Easing,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { Text } from '../../components/ScaledText';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';

@@ -16,9 +16,9 @@ import {
 } from 'react-native-nitro-sound';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { Text } from '../../components/ScaledText';
 import { useCoreStore } from '../../stores';
 import { COLORS } from '../../theme';
 
