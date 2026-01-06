@@ -10,6 +10,8 @@ import Sound from 'react-native-sound';
 import Torch from 'react-native-torch';
 import { FlashlightModes } from '../../constants';
 import { FlashlightModeType } from '../types/common-types';
+import { SQLiteDatabase } from '../types/database-types';
+
 let SQLite: any;
 try {
   SQLite = require('react-native-sqlite-storage');
@@ -747,7 +749,7 @@ export class CoreStore {
   notes: Note[] = [];
   // NotePad categories - Voice Logs is separate and managed by Voice Log feature
   categories: NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
-  private notesDb: any | null = null;
+  notesDb: SQLiteDatabase | null = null;
 
   private generateId() {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -1056,11 +1058,13 @@ export class CoreStore {
     if (!SQLite) return;
     try {
       SQLite.enablePromise?.(true);
-      this.notesDb = await SQLite.openDatabase({
+      const db = await SQLite.openDatabase({
         name: 'toast.db',
         location: 'default',
       });
-      await this.notesDb.executeSql(
+      this.notesDb = db;
+
+      await db.executeSql(
         'CREATE TABLE IF NOT EXISTS notes (' +
           'id TEXT PRIMARY KEY NOT NULL,' +
           'createdAt INTEGER NOT NULL,' +
@@ -1077,9 +1081,7 @@ export class CoreStore {
       );
       // Migration: Add title column if it doesn't exist
       try {
-        await this.notesDb.executeSql(
-          'ALTER TABLE notes ADD COLUMN title TEXT',
-        );
+        await db.executeSql('ALTER TABLE notes ADD COLUMN title TEXT');
       } catch (error: any) {
         // Column already exists, ignore error
         if (!error.message?.includes('duplicate column name')) {
@@ -1088,7 +1090,7 @@ export class CoreStore {
       }
       // Migration: Add bookmarked column if it doesn't exist
       try {
-        await this.notesDb.executeSql(
+        await db.executeSql(
           'ALTER TABLE notes ADD COLUMN bookmarked INTEGER DEFAULT 0',
         );
       } catch (error: any) {
@@ -1099,27 +1101,21 @@ export class CoreStore {
       }
       // Migration: Add voice log columns if they don't exist
       try {
-        await this.notesDb.executeSql(
-          'ALTER TABLE notes ADD COLUMN audioUri TEXT',
-        );
+        await db.executeSql('ALTER TABLE notes ADD COLUMN audioUri TEXT');
       } catch (error: any) {
         if (!error.message?.includes('duplicate column name')) {
           console.warn('Migration warning:', error.message);
         }
       }
       try {
-        await this.notesDb.executeSql(
-          'ALTER TABLE notes ADD COLUMN transcription TEXT',
-        );
+        await db.executeSql('ALTER TABLE notes ADD COLUMN transcription TEXT');
       } catch (error: any) {
         if (!error.message?.includes('duplicate column name')) {
           console.warn('Migration warning:', error.message);
         }
       }
       try {
-        await this.notesDb.executeSql(
-          'ALTER TABLE notes ADD COLUMN duration REAL',
-        );
+        await db.executeSql('ALTER TABLE notes ADD COLUMN duration REAL');
       } catch (error: any) {
         if (!error.message?.includes('duplicate column name')) {
           console.warn('Migration warning:', error.message);
@@ -1130,25 +1126,21 @@ export class CoreStore {
       // we recreate the table if it doesn't have the proper constraint
       try {
         // Test if we can insert a 'voice' type - if this fails, we need to recreate
-        await this.notesDb.executeSql(
+        await db.executeSql(
           "INSERT INTO notes (id, createdAt, category, type) VALUES ('_test_voice_type', 0, 'Voice Logs', 'voice')",
         );
         // If successful, delete the test row
-        await this.notesDb.executeSql(
-          "DELETE FROM notes WHERE id = '_test_voice_type'",
-        );
+        await db.executeSql("DELETE FROM notes WHERE id = '_test_voice_type'");
       } catch (error: any) {
         // If we get a CHECK constraint error, we need to recreate the table
         if (error.message?.includes('CHECK constraint failed')) {
           console.log('Migrating notes table to support voice type...');
           try {
-            await this.notesDb.executeSql('BEGIN TRANSACTION');
+            await db.executeSql('BEGIN TRANSACTION');
             // Rename old table
-            await this.notesDb.executeSql(
-              'ALTER TABLE notes RENAME TO notes_old',
-            );
+            await db.executeSql('ALTER TABLE notes RENAME TO notes_old');
             // Create new table with correct constraint
-            await this.notesDb.executeSql(
+            await db.executeSql(
               'CREATE TABLE notes (' +
                 'id TEXT PRIMARY KEY NOT NULL, ' +
                 'createdAt INTEGER NOT NULL, ' +
@@ -1167,7 +1159,7 @@ export class CoreStore {
                 ')',
             );
             // Copy data from old table
-            await this.notesDb.executeSql(
+            await db.executeSql(
               'INSERT INTO notes (' +
                 'id,' +
                 'createdAt,' +
@@ -1202,12 +1194,12 @@ export class CoreStore {
                 'FROM notes_old',
             );
             // Drop old table
-            await this.notesDb.executeSql('DROP TABLE notes_old');
-            await this.notesDb.executeSql('COMMIT');
+            await db.executeSql('DROP TABLE notes_old');
+            await db.executeSql('COMMIT');
             console.log('Migration completed successfully');
           } catch (migrationError) {
             console.error('Migration failed:', migrationError);
-            await this.notesDb.executeSql('ROLLBACK');
+            await db.executeSql('ROLLBACK');
             throw migrationError;
           }
         }

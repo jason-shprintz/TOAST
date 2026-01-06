@@ -28,9 +28,8 @@ export class RootStore {
   private async initializeSettings() {
     // Wait for CoreStore to initialize the database, then load settings
     await this.coreStore.initNotesDb();
-    const notesDb = (this.coreStore as { notesDb?: unknown }).notesDb;
-    if (notesDb) {
-      await this.settingsStore.loadSettings(notesDb);
+    if (this.coreStore.notesDb) {
+      await this.settingsStore.loadSettings(this.coreStore.notesDb);
     }
   }
 
