@@ -7,7 +7,7 @@ import Grid from '../../../components/Grid';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import { useCoreStore } from '../../../stores';
-import { NoteCategory } from '../../../stores/CoreStore';
+import { Note, isNotePadCategory } from '../../../stores/CoreStore';
 import { FOOTER_HEIGHT } from '../../../theme';
 
 /**
@@ -30,9 +30,11 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const core = useCoreStore();
 
   const { category } = route.params || {};
+  // Filter out Voice Logs and other invalid categories from NotePad screens
+  const notepadCategory = isNotePadCategory(category) ? category : undefined;
   const notes = useMemo(
-    () => core.notesByCategory[category as NoteCategory] ?? [],
-    [category, core.notesByCategory],
+    () => notepadCategory ? (core.notesByCategory[notepadCategory] ?? []) : [],
+    [notepadCategory, core.notesByCategory],
   );
 
   const sortedNotes = useMemo(
@@ -57,7 +59,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map(note => {
+            {sortedNotes.map((note) => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic

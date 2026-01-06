@@ -29,7 +29,24 @@ export type NoteCategory =
   | 'Work'
   | 'Personal'
   | 'Ideas'
-  | 'Voice Logs';
+  | 'Voice Logs'; // Still supported for Voice Log feature, but not shown in NotePad
+
+// NotePad categories (subset of NoteCategory)
+export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
+
+// Helper to validate NotePad categories
+export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = [
+  'General',
+  'Work',
+  'Personal',
+  'Ideas',
+] as const;
+
+export function isNotePadCategory(
+  category: string,
+): category is NotePadCategory {
+  return NOTEPAD_CATEGORIES.includes(category as NotePadCategory);
+}
 
 export interface Note {
   id: string;
@@ -728,13 +745,8 @@ export class CoreStore {
   // ===== Notepad =====
   // --------------------------------------------------------------------
   notes: Note[] = [];
-  categories: NoteCategory[] = [
-    'General',
-    'Work',
-    'Personal',
-    'Ideas',
-    'Voice Logs',
-  ];
+  // NotePad categories - Voice Logs is separate and managed by Voice Log feature
+  categories: NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
   private notesDb: any | null = null;
 
   private generateId() {
@@ -1007,19 +1019,22 @@ export class CoreStore {
 
   /**
    * Groups notes by their category and returns a mapping from each category to an array of notes belonging to that category.
+   * Only includes NotePad categories (excludes Voice Logs which is managed separately).
    *
-   * @returns {Record<NoteCategory, Note[]>} An object where each key is a note category and the value is an array of notes in that category.
+   * @returns An object where each key is a NotePad category and the value is an array of notes in that category.
    */
-  get notesByCategory(): Record<NoteCategory, Note[]> {
-    const map: Record<NoteCategory, Note[]> = {
+  get notesByCategory(): Record<NotePadCategory, Note[]> {
+    const map: Record<NotePadCategory, Note[]> = {
       General: [],
       Work: [],
       Personal: [],
       Ideas: [],
-      'Voice Logs': [],
     };
     for (const n of this.notes) {
-      map[n.category].push(n);
+      // Only include notes that are in NotePad categories
+      if (isNotePadCategory(n.category)) {
+        map[n.category].push(n);
+      }
     }
     return map;
   }
@@ -1168,8 +1183,8 @@ export class CoreStore {
                 'audioUri,' +
                 'transcription,' +
                 'duration' +
-              ') ' +
-              'SELECT ' +
+                ') ' +
+                'SELECT ' +
                 'id,' +
                 'createdAt,' +
                 'latitude,' +
@@ -1184,7 +1199,7 @@ export class CoreStore {
                 'NULL AS audioUri,' +
                 'NULL AS transcription,' +
                 'NULL AS duration ' +
-              'FROM notes_old',
+                'FROM notes_old',
             );
             // Drop old table
             await this.notesDb.executeSql('DROP TABLE notes_old');
