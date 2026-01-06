@@ -31,6 +31,9 @@ export type NoteCategory =
   | 'Ideas'
   | 'Voice Logs'; // Still supported for Voice Log feature, but not shown in NotePad
 
+// NotePad categories (subset of NoteCategory)
+export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
+
 export interface Note {
   id: string;
   createdAt: number; // epoch ms
@@ -729,7 +732,7 @@ export class CoreStore {
   // --------------------------------------------------------------------
   notes: Note[] = [];
   // NotePad categories - Voice Logs is separate and managed by Voice Log feature
-  categories: NoteCategory[] = [
+  categories: NotePadCategory[] = [
     'General',
     'Work',
     'Personal',
@@ -1011,8 +1014,8 @@ export class CoreStore {
    *
    * @returns An object where each key is a NotePad category and the value is an array of notes in that category.
    */
-  get notesByCategory(): Record<'General' | 'Work' | 'Personal' | 'Ideas', Note[]> {
-    const map: Record<'General' | 'Work' | 'Personal' | 'Ideas', Note[]> = {
+  get notesByCategory(): Record<NotePadCategory, Note[]> {
+    const map: Record<NotePadCategory, Note[]> = {
       General: [],
       Work: [],
       Personal: [],
