@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import emergencyData from '../../data/emergency.json';

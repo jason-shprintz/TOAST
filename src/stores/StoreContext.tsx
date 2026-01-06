@@ -45,4 +45,5 @@ export const useStores = (): RootStore => {
 export const useCoreStore = () => useStores().coreStore;
 export const useNavigationStore = () => useStores().navigationStore;
 export const useReferenceStore = () => useStores().referenceStore;
+export const useSettingsStore = () => useStores().settingsStore;
 export const useSignalsStore = () => useStores().signalsStore;

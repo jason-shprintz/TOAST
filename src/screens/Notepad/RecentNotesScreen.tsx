@@ -3,12 +3,12 @@ import React, { useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';

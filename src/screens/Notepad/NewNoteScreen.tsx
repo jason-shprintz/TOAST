@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   TextInput,
   Button,
   TouchableOpacity,
@@ -17,6 +16,7 @@ import {
   Easing,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';

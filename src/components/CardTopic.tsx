@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import {
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   Animated,
   ViewStyle,
@@ -10,6 +9,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../theme';
+import { Text } from './ScaledText';
 
 export type CardTopicProps = {
   title: string;
