@@ -62,91 +62,91 @@ export const SettingsModal = observer(
           <View style={styles.overlay}>
             <TouchableWithoutFeedback onPress={preventClose}>
               <View style={styles.modalContainer}>
-            <View style={styles.header}>
-              <RNText style={styles.headerText}>Settings</RNText>
-              <TouchableOpacity
-                onPress={onClose}
-                style={styles.closeButton}
-                accessibilityLabel="Close settings"
-                accessibilityRole="button"
-              >
-                <Ionicons
-                  name="close-outline"
-                  size={28}
-                  color={COLORS.PRIMARY_DARK}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.content}>
-              {/* Font Size Section */}
-              <View style={styles.section}>
-                <RNText style={styles.sectionTitle}>Font Size</RNText>
-                <View style={styles.optionsContainer}>
-                  {fontSizeOptions.map(option => (
-                    <TouchableOpacity
-                      key={option.value}
-                      style={[
-                        styles.optionButton,
-                        settingsStore.fontSize === option.value &&
-                          styles.optionButtonSelected,
-                      ]}
-                      onPress={() => settingsStore.setFontSize(option.value)}
-                      accessibilityLabel={`Set font size to ${option.label}`}
-                      accessibilityRole="button"
-                    >
-                      <RNText
-                        style={[
-                          styles.optionText,
-                          settingsStore.fontSize === option.value &&
-                            styles.optionTextSelected,
-                        ]}
-                      >
-                        {option.label}
-                      </RNText>
-                    </TouchableOpacity>
-                  ))}
+                <View style={styles.header}>
+                  <RNText style={styles.headerText}>Settings</RNText>
+                  <TouchableOpacity
+                    onPress={onClose}
+                    style={styles.closeButton}
+                    accessibilityLabel="Close settings"
+                    accessibilityRole="button"
+                  >
+                    <Ionicons
+                      name="close-outline"
+                      size={28}
+                      color={COLORS.PRIMARY_DARK}
+                    />
+                  </TouchableOpacity>
                 </View>
-              </View>
 
-              {/* Theme Mode Section */}
-              <View style={styles.section}>
-                <RNText style={styles.sectionTitle}>Theme</RNText>
-                <RNText style={styles.placeholderNote}>
-                  (Placeholder - not yet implemented)
-                </RNText>
-                <View style={styles.optionsContainer}>
-                  {themeModeOptions.map(option => (
-                    <TouchableOpacity
-                      key={option.value}
-                      style={[
-                        styles.optionButton,
-                        settingsStore.themeMode === option.value &&
-                          styles.optionButtonSelected,
-                      ]}
-                      onPress={() => settingsStore.setThemeMode(option.value)}
-                      accessibilityLabel={`Set theme to ${option.label}`}
-                      accessibilityRole="button"
-                    >
-                      <RNText
-                        style={[
-                          styles.optionText,
-                          settingsStore.themeMode === option.value &&
-                            styles.optionTextSelected,
-                        ]}
-                      >
-                        {option.label}
-                      </RNText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                <ScrollView style={styles.content}>
+                  {/* Font Size Section */}
+                  <View style={styles.section}>
+                    <RNText style={styles.sectionTitle}>Font Size</RNText>
+                    <View style={styles.optionsContainer}>
+                      {fontSizeOptions.map(option => (
+                        <TouchableOpacity
+                          key={option.value}
+                          style={[
+                            styles.optionButton,
+                            settingsStore.fontSize === option.value &&
+                              styles.optionButtonSelected,
+                          ]}
+                          onPress={() => settingsStore.setFontSize(option.value)}
+                          accessibilityLabel={`Set font size to ${option.label}`}
+                          accessibilityRole="button"
+                        >
+                          <RNText
+                            style={[
+                              styles.optionText,
+                              settingsStore.fontSize === option.value &&
+                                styles.optionTextSelected,
+                            ]}
+                          >
+                            {option.label}
+                          </RNText>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Theme Mode Section */}
+                  <View style={styles.section}>
+                    <RNText style={styles.sectionTitle}>Theme</RNText>
+                    <RNText style={styles.placeholderNote}>
+                      (Placeholder - not yet implemented)
+                    </RNText>
+                    <View style={styles.optionsContainer}>
+                      {themeModeOptions.map(option => (
+                        <TouchableOpacity
+                          key={option.value}
+                          style={[
+                            styles.optionButton,
+                            settingsStore.themeMode === option.value &&
+                              styles.optionButtonSelected,
+                          ]}
+                          onPress={() => settingsStore.setThemeMode(option.value)}
+                          accessibilityLabel={`Set theme to ${option.label}`}
+                          accessibilityRole="button"
+                        >
+                          <RNText
+                            style={[
+                              styles.optionText,
+                              settingsStore.themeMode === option.value &&
+                                styles.optionTextSelected,
+                            ]}
+                          >
+                            {option.label}
+                          </RNText>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </ScrollView>
               </View>
-            </ScrollView>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
-      </View>
-    </TouchableWithoutFeedback>
-  </Modal>
+      </Modal>
     );
   },
 );

@@ -49,6 +49,8 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.isOfflineMode = true;
+    // initializeSettings is intentionally not awaited - settings have sensible
+    // defaults and components will re-render when settings finish loading from DB
     this.initializeSettings();
   }
 }

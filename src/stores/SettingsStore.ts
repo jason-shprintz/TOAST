@@ -80,6 +80,20 @@ export class SettingsStore {
   }
 
   /**
+   * Validates if a value is a valid FontSize
+   */
+  private isValidFontSize(value: any): value is FontSize {
+    return value === 'small' || value === 'medium' || value === 'large';
+  }
+
+  /**
+   * Validates if a value is a valid ThemeMode
+   */
+  private isValidThemeMode(value: any): value is ThemeMode {
+    return value === 'light' || value === 'dark' || value === 'system';
+  }
+
+  /**
    * Loads settings from the database.
    */
   async loadSettings(db: any): Promise<void> {
@@ -93,9 +107,15 @@ export class SettingsStore {
       );
       if (fontSizeRes[0].rows.length > 0) {
         const value = fontSizeRes[0].rows.item(0).value;
-        runInAction(() => {
-          this.fontSize = value as FontSize;
-        });
+        if (this.isValidFontSize(value)) {
+          runInAction(() => {
+            this.fontSize = value;
+          });
+        } else {
+          console.warn(
+            `Invalid fontSize value in database: ${value}, using default 'small'`,
+          );
+        }
       }
 
       // Load theme mode
@@ -104,9 +124,15 @@ export class SettingsStore {
       );
       if (themeModeRes[0].rows.length > 0) {
         const value = themeModeRes[0].rows.item(0).value;
-        runInAction(() => {
-          this.themeMode = value as ThemeMode;
-        });
+        if (this.isValidThemeMode(value)) {
+          runInAction(() => {
+            this.themeMode = value;
+          });
+        } else {
+          console.warn(
+            `Invalid themeMode value in database: ${value}, using default 'light'`,
+          );
+        }
       }
     } catch (error) {
       console.error('Failed to load settings:', error);
