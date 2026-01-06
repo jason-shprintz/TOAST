@@ -4,6 +4,7 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   ScrollView,
   Text as RNText,
@@ -48,19 +49,15 @@ export const SettingsModal = observer(
         transparent
         onRequestClose={onClose}
       >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
+        <TouchableWithoutFeedback
           onPress={onClose}
           accessibilityLabel="Close settings modal"
           accessibilityRole="button"
           accessibilityHint="Tap to dismiss the settings"
         >
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={(e) => e.stopPropagation()}
-          >
-            <View style={styles.modalContainer}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.modalContainer}>
             <View style={styles.header}>
               <RNText style={styles.headerText}>Settings</RNText>
               <TouchableOpacity
@@ -142,9 +139,10 @@ export const SettingsModal = observer(
               </View>
             </ScrollView>
           </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Modal>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  </Modal>
     );
   },
 );
