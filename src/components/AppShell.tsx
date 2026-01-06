@@ -19,6 +19,7 @@ import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
 import ScreenContainer from './ScreenContainer';
 import { SettingsModal } from './SettingsModal';
+import { HelpModal } from './HelpModal';
 
 type Props = PropsWithChildren;
 
@@ -50,6 +51,7 @@ export default function AppShell({ children }: Props) {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStatus();
   const translateYRef = useRef(new Animated.Value(0)).current;
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   useEffect(() => {
     Animated.timing(translateYRef, {
@@ -119,6 +121,19 @@ export default function AppShell({ children }: Props) {
         >
           <View style={styles.header}>
             <TouchableOpacity
+              style={styles.helpButton}
+              onPress={() => setIsHelpVisible(true)}
+              accessibilityLabel="Help"
+              accessibilityRole="button"
+            >
+              <Ionicons
+                name="help-circle-outline"
+                size={26}
+                color={COLORS.PRIMARY_DARK}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
               style={styles.settingsButton}
               onPress={() => setIsSettingsVisible(true)}
               accessibilityLabel="Settings"
@@ -146,6 +161,11 @@ export default function AppShell({ children }: Props) {
         visible={isSettingsVisible}
         onClose={() => setIsSettingsVisible(false)}
       />
+
+      <HelpModal
+        visible={isHelpVisible}
+        onClose={() => setIsHelpVisible(false)}
+      />
     </ScreenContainer>
   );
 }
@@ -164,6 +184,13 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingTop: 80,
+  },
+  helpButton: {
+    position: 'absolute',
+    top: 50,
+    left: 30,
+    zIndex: 10,
+    padding: 6,
   },
   settingsButton: {
     position: 'absolute',
