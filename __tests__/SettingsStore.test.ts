@@ -30,13 +30,9 @@ const createMockDatabase = () => {
 
       // Handle SELECT - parse the key from the WHERE clause
       if (query.includes('SELECT')) {
-        let key: string | null = null;
-        
         // Extract key from query like "SELECT value FROM settings WHERE key = 'fontSize'"
         const match = query.match(/key = '([^']+)'/);
-        if (match) {
-          key = match[1];
-        }
+        const key = match?.[1];
         
         if (key && storage[key] !== undefined) {
           const value = storage[key];
