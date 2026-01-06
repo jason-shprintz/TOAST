@@ -433,6 +433,25 @@ export class CoreStore {
   private gpsIv: ReturnType<typeof setInterval> | null = null;
 
   /**
+   * Sets a fallback battery estimate for charging devices.
+   * If battery is at or near 100%, shows maximum runtime (8 hours).
+   * Otherwise, shows estimated time to reach 100% (2 hours baseline).
+   *
+   * @private
+   * @param level - Current battery level (0-1)
+   */
+  private setChargingFallbackEstimate(level: number): void {
+    if (level >= 0.99) {
+      // Battery is full or nearly full while charging
+      // Show maximum runtime estimate (8 hours at 100%)
+      this.batteryEstimateMinutes = 480;
+    } else {
+      // Baseline: 2 hours to charge from current level to 100%
+      this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
+    }
+  }
+
+  /**
    * Samples the current battery level and charging state using DeviceInfo.
    * Updates the store's battery level and charging status.
    * Provides instant fallback estimates on first sample for both charging and discharging.
@@ -478,18 +497,9 @@ export class CoreStore {
           }
         } else if (charging) {
           // Charging but no increase yet - provide instant fallback
-          if (level >= 0.99) {
-            // Battery is full or nearly full while charging
-            // Show maximum runtime estimate (8 hours at 100%)
-            runInAction(() => {
-              this.batteryEstimateMinutes = 480;
-            });
-          } else {
-            // Baseline: 2 hours to charge from current level to 100%
-            runInAction(() => {
-              this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
-            });
-          }
+          runInAction(() => {
+            this.setChargingFallbackEstimate(level);
+          });
         } else if (dLevel < 0) {
           // Battery increased but not charging - clear estimate
           runInAction(() => {
@@ -499,18 +509,9 @@ export class CoreStore {
       } else {
         // First sample - provide instant fallback estimate
         if (charging) {
-          if (level >= 0.99) {
-            // Battery is full or nearly full while charging
-            // Show maximum runtime estimate (8 hours at 100%)
-            runInAction(() => {
-              this.batteryEstimateMinutes = 480;
-            });
-          } else {
-            // Baseline: 2 hours to charge from current level to 100%
-            runInAction(() => {
-              this.batteryEstimateMinutes = Math.round((1.0 - level) * 120);
-            });
-          }
+          runInAction(() => {
+            this.setChargingFallbackEstimate(level);
+          });
         } else if (level > 0) {
           // Baseline: 8 hours at 100% battery
           runInAction(() => {
