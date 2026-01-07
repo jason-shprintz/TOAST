@@ -7,8 +7,8 @@ import { COLORS } from '../../../theme';
 
 type VoiceLogCardProps = {
   id: string;
-  title: string;
-  createdAt: string;
+  title?: string;
+  createdAt: number;
   duration?: number;
   audioUri?: string;
   isPlaying: boolean;
@@ -39,7 +39,7 @@ export default function VoiceLogCard({
       />
       <View style={styles.content}>
         <View style={styles.info}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{title || 'Voice Log'}</Text>
           <Text style={styles.time}>{new Date(createdAt).toLocaleString()}</Text>
           {duration && <Text style={styles.duration}>Duration: {duration}s</Text>}
           {isPlaying && (
