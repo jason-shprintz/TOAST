@@ -70,7 +70,7 @@ export default function VoiceLogCard({
             accessibilityLabel="Delete voice log"
             accessibilityRole="button"
           >
-            <Icon name="trash-outline" size={24} color="#d32f2f" />
+            <Icon name="trash-outline" size={24} color={COLORS.ERROR} />
           </TouchableOpacity>
         </View>
       </View>

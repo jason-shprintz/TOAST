@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   recordButtonActive: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: COLORS.ERROR,
   },
   instruction: {
     fontSize: 16,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   recordingText: {
     fontSize: 16,
-    color: '#d32f2f',
+    color: COLORS.ERROR,
     fontWeight: 'bold',
   },
 });

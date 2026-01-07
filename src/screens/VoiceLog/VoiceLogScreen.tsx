@@ -28,6 +28,7 @@ import VoiceLogCard from './components/VoiceLogCard';
 import VoiceLogModeButton from './components/VoiceLogModeButton';
 
 const MAX_DURATION_SECONDS = 12;
+const SCROLL_PADDING = 20;
 
 /**
  * Voice Log Screen
@@ -424,9 +425,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingTop: 20,
+    paddingTop: SCROLL_PADDING,
     paddingHorizontal: 16,
-    paddingBottom: FOOTER_HEIGHT + 20,
+    paddingBottom: FOOTER_HEIGHT + SCROLL_PADDING,
   },
   modeSelectionTitle: {
     fontSize: 18,

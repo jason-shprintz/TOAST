@@ -12,6 +12,7 @@ const COLORS = {
     '#D9C8B0',
     '#f3cfa3ff',
   ],
+  ERROR: '#d32f2f',
 };
 
 export default COLORS;
