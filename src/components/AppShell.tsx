@@ -1,4 +1,10 @@
-import React, { PropsWithChildren, useMemo, useEffect, useRef, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   PanResponder,
@@ -128,7 +134,7 @@ export default function AppShell({ children }: Props) {
             >
               <Ionicons
                 name="help-circle-outline"
-                size={26}
+                size={32}
                 color={COLORS.PRIMARY_DARK}
               />
             </TouchableOpacity>

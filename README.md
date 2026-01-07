@@ -1,6 +1,6 @@
 # TOAST
 
-Tech-Offline And Survival Tools (TOAST) is a React Native app providing essential offline utilities and reference modules for survival, navigation, and more.
+Tactical Operations And Survival Toolkit (TOAST) is a React Native app providing essential offline utilities and reference modules for survival, navigation, and more.
 
 ## Features
 
