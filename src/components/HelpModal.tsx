@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 3,
     borderColor: COLORS.TOAST_BROWN,
-    overflow: 'scroll',
+    overflow: 'hidden',
     flexDirection: 'column',
   },
   header: {
