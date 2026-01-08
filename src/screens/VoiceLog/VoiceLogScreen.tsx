@@ -20,7 +20,7 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { COLORS, FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
 import EmptyState from './components/EmptyState';
 import InfoBox from './components/InfoBox';
 import RecordingControls from './components/RecordingControls';
@@ -28,7 +28,6 @@ import VoiceLogCard from './components/VoiceLogCard';
 import VoiceLogModeButton from './components/VoiceLogModeButton';
 
 const MAX_DURATION_SECONDS = 12;
-const SCROLL_PADDING = 20;
 
 /**
  * Voice Log Screen
@@ -401,7 +400,6 @@ export default observer(function VoiceLogScreen() {
             {voiceLogs.map(log => (
               <VoiceLogCard
                 key={log.id}
-                id={log.id}
                 title={log.title}
                 createdAt={log.createdAt}
                 duration={log.duration}

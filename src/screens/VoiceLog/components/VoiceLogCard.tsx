@@ -6,7 +6,6 @@ import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
 
 type VoiceLogCardProps = {
-  id: string;
   title?: string;
   createdAt: number;
   duration?: number;
