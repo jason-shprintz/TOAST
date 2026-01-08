@@ -8,7 +8,7 @@ const communicationTools: ToolType[] = [
   {
     name: 'Morse Code',
     screen: 'ComingSoon',
-    icon: 'radio-outline',
+    icon: 'flash-outline',
     id: 'comm_morse_code',
   },
   {
