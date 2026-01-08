@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Alert,
   Vibration,
   Platform,
   PermissionsAndroid,
+  ScrollView,
 } from 'react-native';
 import {
   useSoundRecorder,
@@ -20,7 +20,12 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
+import EmptyState from './components/EmptyState';
+import InfoBox from './components/InfoBox';
+import RecordingControls from './components/RecordingControls';
+import VoiceLogCard from './components/VoiceLogCard';
+import VoiceLogModeButton from './components/VoiceLogModeButton';
 
 const MAX_DURATION_SECONDS = 12;
 
@@ -209,11 +214,6 @@ export default observer(function VoiceLogScreen() {
     }
   };
 
-  const formatTime = (seconds: number): string => {
-    const remaining = MAX_DURATION_SECONDS - seconds;
-    return `${remaining}s`;
-  };
-
   const progress = recordingTime / MAX_DURATION_SECONDS;
 
   // Get only voice logs from notes
@@ -300,51 +300,34 @@ export default observer(function VoiceLogScreen() {
     return (
       <ScreenBody>
         <SectionHeader>Voice Logs</SectionHeader>
-        <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
           <Text style={styles.modeSelectionTitle}>
             What would you like to do?
           </Text>
 
-          <TouchableOpacity
-            style={styles.modeButton}
+          <VoiceLogModeButton
+            icon="mic"
+            title="Record Voice Log"
+            subtitle="Create a new voice note"
             onPress={() => {
               setMode('record');
               setRecordingTime(0);
               setAudioPath(null);
             }}
             accessibilityLabel="Record Voice Log"
-            accessibilityRole="button"
-          >
-            <Icon
-              name="mic"
-              size={48}
-              color={COLORS.PRIMARY_LIGHT}
-              style={styles.modeButtonIcon}
-            />
-            <Text style={styles.modeButtonText}>Record Voice Log</Text>
-            <Text style={styles.modeButtonSubtext}>
-              Create a new voice note
-            </Text>
-          </TouchableOpacity>
+          />
 
-          <TouchableOpacity
-            style={styles.modeButton}
+          <VoiceLogModeButton
+            icon="list"
+            title="View Voice Logs"
+            subtitle={`${voiceLogs.length} saved ${voiceLogs.length === 1 ? 'log' : 'logs'}`}
             onPress={() => setMode('view')}
             accessibilityLabel="View Voice Logs"
-            accessibilityRole="button"
-          >
-            <Icon
-              name="list"
-              size={48}
-              color={COLORS.PRIMARY_LIGHT}
-              style={styles.modeButtonIcon}
-            />
-            <Text style={styles.modeButtonText}>View Voice Logs</Text>
-            <Text style={styles.modeButtonSubtext}>
-              {voiceLogs.length} saved {voiceLogs.length === 1 ? 'log' : 'logs'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+          />
+        </ScrollView>
       </ScreenBody>
     );
   }
@@ -353,91 +336,47 @@ export default observer(function VoiceLogScreen() {
   if (mode === 'record') {
     return (
       <ScreenBody>
-        <View style={styles.headerRow}>
-          <TouchableOpacity
-            onPress={() => setMode('select')}
-            accessibilityLabel="Back"
-            accessibilityRole="button"
-          >
-            <Icon name="chevron-back" size={32} color={COLORS.PRIMARY_DARK} />
-          </TouchableOpacity>
-          <SectionHeader isShowHr={false}>Record Voice Log</SectionHeader>
-          <View style={{ width: 32 }} />
-        </View>
-        <View style={styles.container}>
-          <View style={styles.infoBox}>
-            <Icon
-              name="information-circle-outline"
-              size={20}
-              color={COLORS.PRIMARY_DARK}
-            />
+        <SectionHeader>Record Voice Log</SectionHeader>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <InfoBox icon="information-circle-outline">
             <Text style={styles.infoText}>
               Tap to record a voice note.{'\n'}
               Maximum duration: {MAX_DURATION_SECONDS} seconds.
             </Text>
-          </View>
+          </InfoBox>
 
-          <View style={styles.recordingArea}>
-            {isRecording && (
-              <>
-                <View style={styles.progressContainer}>
-                  <View
-                    style={[
-                      styles.progressBar,
-                      { width: `${progress * 100}%` },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.timerText}>
-                  {formatTime(recordingTime)}
+          <RecordingControls
+            isRecording={isRecording}
+            recordingTime={recordingTime}
+            progress={progress}
+            maxDuration={MAX_DURATION_SECONDS}
+            onStartRecording={handleStartRecording}
+            onStopRecording={handleStopRecording}
+          />
+
+          <InfoBox icon="time-outline">
+            <View>
+              <Text style={styles.featuresTitle}>Auto-captured metadata:</Text>
+              <View style={styles.featureRow}>
+                <Icon name="time-outline" size={16} color={COLORS.PRIMARY_DARK} />
+                <Text style={styles.featureText}>Timestamp</Text>
+              </View>
+              <View style={styles.featureRow}>
+                <Icon
+                  name="location-outline"
+                  size={16}
+                  color={COLORS.PRIMARY_DARK}
+                />
+                <Text style={styles.featureText}>
+                  GPS Location (if available)
                 </Text>
-              </>
-            )}
-
-            <TouchableOpacity
-              style={[
-                styles.recordButton,
-                isRecording && styles.recordButtonActive,
-              ]}
-              onPress={isRecording ? handleStopRecording : handleStartRecording}
-              accessibilityLabel={
-                isRecording ? 'Stop Recording' : 'Start Recording'
-              }
-              accessibilityRole="button"
-            >
-              <Icon
-                name={isRecording ? 'stop' : 'mic'}
-                size={60}
-                color={COLORS.PRIMARY_LIGHT}
-              />
-            </TouchableOpacity>
-
-            {!isRecording && (
-              <Text style={styles.instruction}>Tap to start recording</Text>
-            )}
-            {isRecording && (
-              <Text style={styles.recordingText}>Recording...</Text>
-            )}
-          </View>
-
-          <View style={styles.featuresBox}>
-            <Text style={styles.featuresTitle}>Auto-captured metadata:</Text>
-            <View style={styles.featureRow}>
-              <Icon name="time-outline" size={16} color={COLORS.PRIMARY_DARK} />
-              <Text style={styles.featureText}>Timestamp</Text>
+              </View>
             </View>
-            <View style={styles.featureRow}>
-              <Icon
-                name="location-outline"
-                size={16}
-                color={COLORS.PRIMARY_DARK}
-              />
-              <Text style={styles.featureText}>
-                GPS Location (if available)
-              </Text>
-            </View>
-          </View>
-        </View>
+          </InfoBox>
+        </ScrollView>
       </ScreenBody>
     );
   }
@@ -445,109 +384,48 @@ export default observer(function VoiceLogScreen() {
   // Mode: View
   return (
     <ScreenBody>
-      <View style={styles.headerRow}>
-        <TouchableOpacity
-          onPress={() => setMode('select')}
-          accessibilityLabel="Back"
-          accessibilityRole="button"
-        >
-          <Icon name="chevron-back" size={32} color={COLORS.PRIMARY_DARK} />
-        </TouchableOpacity>
-        <SectionHeader isShowHr={false}>Voice Logs</SectionHeader>
-        <View style={{ width: 32 }} />
-      </View>
-      <View style={styles.container}>
+      <SectionHeader>Voice Logs</SectionHeader>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         {voiceLogs.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Icon
-              name="mic-off-outline"
-              size={64}
-              color={COLORS.PRIMARY_DARK}
-              style={{ opacity: 0.5, marginBottom: 16 }}
-            />
-            <Text style={styles.emptyStateText}>No voice logs yet</Text>
-            <Text style={styles.emptyStateSubtext}>
-              Record your first voice log to get started
-            </Text>
-          </View>
+          <EmptyState
+            icon="mic-off-outline"
+            title="No voice logs yet"
+            subtitle="Record your first voice log to get started"
+          />
         ) : (
           <View style={styles.voiceLogsList}>
             {voiceLogs.map(log => (
-              <View
+              <VoiceLogCard
                 key={log.id}
-                style={[
-                  styles.voiceLogCard,
-                  playingId === log.id && styles.voiceLogCardPlaying,
-                ]}
-              >
-                <View style={styles.voiceLogHeader}>
-                  <View style={styles.voiceLogInfo}>
-                    <Text style={styles.voiceLogTitle}>{log.title}</Text>
-                    <Text style={styles.voiceLogTime}>
-                      {new Date(log.createdAt).toLocaleString()}
-                    </Text>
-                    {log.duration && (
-                      <Text style={styles.voiceLogDuration}>
-                        Duration: {log.duration}s
-                      </Text>
-                    )}
-                    {playingId === log.id && (
-                      <View style={styles.playingIndicator}>
-                        <View style={styles.playingDot} />
-                        <Text style={styles.playingText}>Playing...</Text>
-                      </View>
-                    )}
-                  </View>
-                </View>
-                <View style={styles.voiceLogActions}>
-                  {log.audioUri && (
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handlePlayVoiceLog(log.id, log.audioUri!)}
-                      accessibilityLabel={
-                        playingId === log.id ? 'Stop playing' : 'Play voice log'
-                      }
-                      accessibilityRole="button"
-                    >
-                      <Icon
-                        name={playingId === log.id ? 'pause' : 'play'}
-                        size={24}
-                        color={COLORS.SECONDARY_ACCENT}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteVoiceLog(log.id)}
-                    accessibilityLabel="Delete voice log"
-                    accessibilityRole="button"
-                  >
-                    <Icon name="trash-outline" size={24} color="#d32f2f" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+                title={log.title}
+                createdAt={log.createdAt}
+                duration={log.duration}
+                audioUri={log.audioUri}
+                isPlaying={playingId === log.id}
+                onPlay={() => handlePlayVoiceLog(log.id, log.audioUri!)}
+                onDelete={() => handleDeleteVoiceLog(log.id)}
+              />
             ))}
           </View>
         )}
-      </View>
+      </ScrollView>
     </ScreenBody>
   );
 });
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
-    paddingTop: 20,
   },
-  headerRow: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: SCROLL_PADDING,
     paddingHorizontal: 16,
-    marginVertical: 10,
+    paddingBottom: FOOTER_HEIGHT + SCROLL_PADDING,
   },
   modeSelectionTitle: {
     fontSize: 18,
@@ -556,107 +434,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
   },
-  modeButton: {
-    width: '100%',
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 20,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  modeButtonIcon: {
-    marginBottom: 12,
-  },
-  modeButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 4,
-  },
-  modeButtonSubtext: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-  },
-  infoBox: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 12,
-    marginBottom: 40,
-    width: '100%',
-  },
   infoText: {
-    flex: 1,
     fontSize: 14,
     color: COLORS.PRIMARY_DARK,
-    marginLeft: 8,
     lineHeight: 20,
-  },
-  recordingArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 40,
-  },
-  progressContainer: {
-    width: 200,
-    height: 6,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderRadius: 3,
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 3,
-  },
-  timerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 20,
-  },
-  recordButton: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  recordButtonActive: {
-    backgroundColor: '#d32f2f',
-  },
-  instruction: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.8,
-  },
-  recordingText: {
-    fontSize: 16,
-    color: '#d32f2f',
-    fontWeight: 'bold',
-  },
-  featuresBox: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 16,
-    width: '100%',
-    marginTop: 40,
   },
   featuresTitle: {
     fontSize: 14,
@@ -674,89 +455,7 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
     marginLeft: 8,
   },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-  },
-  emptyStateText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 8,
-  },
-  emptyStateSubtext: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    textAlign: 'center',
-  },
   voiceLogsList: {
     width: '100%',
-  },
-  voiceLogCard: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 12,
-    marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  voiceLogCardPlaying: {
-    backgroundColor: COLORS.ACCENT,
-    borderColor: COLORS.ACCENT,
-  },
-  voiceLogHeader: {
-    flex: 1,
-  },
-  voiceLogInfo: {
-    flex: 1,
-  },
-  voiceLogTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 4,
-  },
-  voiceLogTime: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  voiceLogDuration: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  playingIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  playingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    marginRight: 6,
-  },
-  playingText: {
-    fontSize: 12,
-    color: COLORS.SECONDARY_ACCENT,
-    fontWeight: '600',
-  },
-  voiceLogActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionButton: {
-    padding: 8,
-    marginLeft: 8,
   },
 });
