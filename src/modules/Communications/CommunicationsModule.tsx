@@ -6,22 +6,28 @@ import { ToolType } from '../../types/common-types';
 
 const communicationTools: ToolType[] = [
   {
-    name: 'Ham Radio',
-    screen: 'ComingSoon',
-    icon: 'radio-outline',
-    id: 'comm_ham_radio',
-  },
-  {
     name: 'Morse Code',
     screen: 'ComingSoon',
-    icon: 'code-outline',
+    icon: 'radio-outline',
     id: 'comm_morse_code',
   },
   {
-    name: 'Bluetooth',
+    name: 'Radio Frequency References',
     screen: 'ComingSoon',
-    icon: 'bluetooth-outline',
-    id: 'comm_bluetooth',
+    icon: 'cellular-outline',
+    id: 'comm_radio_frequency',
+  },
+  {
+    name: 'Digital Whistle',
+    screen: 'ComingSoon',
+    icon: 'musical-notes-outline',
+    id: 'comm_digital_whistle',
+  },
+  {
+    name: 'Decibel Meter',
+    screen: 'ComingSoon',
+    icon: 'volume-high-outline',
+    id: 'comm_decibel_meter',
   },
 ];
 
