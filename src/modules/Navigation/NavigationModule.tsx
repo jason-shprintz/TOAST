@@ -6,16 +6,40 @@ import { ToolType } from '../../types/common-types';
 
 const navigationTools: ToolType[] = [
   {
-    name: 'Map',
+    name: 'Offline Map Tiles',
     screen: 'ComingSoon',
     icon: 'map-outline',
-    id: 'nav_map',
+    id: 'nav_offline_map_tiles',
   },
   {
-    name: 'Compass',
+    name: 'Compass & Gyro Orientation',
     screen: 'ComingSoon',
     icon: 'compass-outline',
-    id: 'nav_compass',
+    id: 'nav_compass_gyro',
+  },
+  {
+    name: 'Waypoints & Breadcrumbs',
+    screen: 'ComingSoon',
+    icon: 'location-outline',
+    id: 'nav_waypoints_breadcrumbs',
+  },
+  {
+    name: 'Return to Start',
+    screen: 'ComingSoon',
+    icon: 'arrow-undo-outline',
+    id: 'nav_return_to_start',
+  },
+  {
+    name: 'Elevation Graphs',
+    screen: 'ComingSoon',
+    icon: 'trending-up-outline',
+    id: 'nav_elevation_graphs',
+  },
+  {
+    name: 'Downloadable Trail Packs',
+    screen: 'ComingSoon',
+    icon: 'download-outline',
+    id: 'nav_trail_packs',
   },
 ];
 
