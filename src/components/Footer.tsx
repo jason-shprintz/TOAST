@@ -21,7 +21,7 @@ import { Text } from './ScaledText';
  * Layout:
  * - Left 50% (0%-50%): In-app notifications placeholder
  * - Right middle (50%-75%): Active item shortcut (flashlight mode) or Nightvision fallback
- * - Right side (75%-100%): SOS shortcut (triggers on 3-second hold)
+ * - Right side (75%-100%): SOS shortcut (triggers on 1-second hold)
  *
  * @remarks
  * The footer provides quick access to:
@@ -72,7 +72,7 @@ const FooterImpl = () => {
     }
   };
 
-  // Handle SOS long press (3 seconds)
+  // Handle SOS long press (1 second)
   const handleSOSPressIn = () => {
     setIsSOSPressing(true);
 
@@ -82,7 +82,7 @@ const FooterImpl = () => {
     // Start progress animation
     sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
-      duration: 3000,
+      duration: 1000,
       useNativeDriver: false,
     });
     sosAnimationRef.current.start();
@@ -96,7 +96,7 @@ const FooterImpl = () => {
 
       // Haptic feedback on activation
       Vibration.vibrate(200);
-    }, 3000); // 3 seconds
+    }, 1000); // 1 second
   };
 
   const handleSOSPressOut = () => {
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
+    backgroundColor: COLORS.ACCENT,
+    borderRadius: 4,
   },
   notificationSection: {
     width: '100%',
@@ -237,6 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
+    marginHorizontal: 2,
   },
   notificationText: {
     fontSize: 14,
@@ -250,13 +252,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
+    marginHorizontal: 2,
   },
   activeItemSectionActive: {
     backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
-    margin: 4,
   },
   sosSection: {
     width: '25%',
