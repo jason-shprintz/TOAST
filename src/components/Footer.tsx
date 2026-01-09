@@ -47,6 +47,9 @@ const FooterImpl = () => {
     if (mode === FlashlightModes.SOS) {
       return { icon: 'alert-outline', label: 'SOS', mode };
     }
+    if (mode === FlashlightModes.NIGHTVISION) {
+      return { icon: 'moon-outline', label: 'Nightvision', mode };
+    }
     // No active item, show Nightvision as fallback
     return null;
   };
@@ -60,8 +63,7 @@ const FooterImpl = () => {
       core.setFlashlightMode(FlashlightModes.OFF);
     } else {
       // Navigate to Nightvision
-      // @ts-ignore - navigation types
-      navigation.navigate('Nightvision');
+      navigation.navigate('Nightvision' as never);
     }
   };
 
