@@ -219,7 +219,6 @@ const styles = StyleSheet.create({
   bottomRule: {
     position: 'absolute',
     bottom: FOOTER_HEIGHT,
-    width: '90%',
-    left: '5%',
+    width: '100%',
   },
 });

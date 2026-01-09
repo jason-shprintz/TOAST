@@ -230,6 +230,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     backgroundColor: COLORS.ACCENT,
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 4,
   },
   notificationSection: {
@@ -253,12 +255,14 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
     marginHorizontal: 2,
+    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
   },
   activeItemSectionActive: {
     backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
+    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
   },
   sosSection: {
     width: '25%',
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
+    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
   },
   sosSectionPressing: {
     backgroundColor: COLORS.ACCENT,
