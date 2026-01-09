@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
+  Vibration,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FlashlightModes } from '../../constants';
@@ -75,6 +76,9 @@ const FooterImpl = () => {
   const handleSOSPressIn = () => {
     setIsSOSPressing(true);
 
+    // Haptic feedback on press
+    Vibration.vibrate(50);
+
     // Start progress animation
     sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
@@ -89,6 +93,9 @@ const FooterImpl = () => {
       core.setFlashlightMode(FlashlightModes.SOS);
       setIsSOSPressing(false);
       sosProgressAnim.setValue(0);
+      
+      // Haptic feedback on activation
+      Vibration.vibrate(200);
     }, 3000); // 3 seconds
   };
 
@@ -110,9 +117,27 @@ const FooterImpl = () => {
 
   return (
     <View style={styles.footer}>
-      {/* Left section: Notifications (0%-50%) */}
-      <View style={styles.notificationSection}>
-        <Text style={styles.notificationText}>NOTIFICATION</Text>
+      {/* Left section: Notifications (0%-50%) with fuse timer */}
+      <View style={styles.notificationContainer}>
+        {/* Fuse timer background (left to right) */}
+        {isSOSPressing && (
+          <Animated.View
+            style={[
+              styles.notificationTimerBackground,
+              {
+                width: sosProgressAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['0%', '100%'],
+                }),
+              },
+            ]}
+          />
+        )}
+        
+        {/* Notification content */}
+        <View style={styles.notificationSection}>
+          <Text style={styles.notificationText}>NOTIFICATION</Text>
+        </View>
       </View>
 
       {/* Right middle section: Active item or Nightvision (50%-75%) */}
@@ -141,40 +166,22 @@ const FooterImpl = () => {
         accessibilityLabel="Emergency SOS - Hold for 3 seconds"
         accessibilityRole="button"
       >
-        <View style={styles.sosContainer}>
-          {/* Fuse timer background */}
-          {isSOSPressing && (
-            <Animated.View
-              style={[
-                styles.sosTimerBackground,
-                {
-                  height: sosProgressAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0%', '100%'],
-                  }),
-                },
-              ]}
-            />
-          )}
-
-          {/* SOS content */}
-          <View
-            style={[
-              styles.sosSection,
-              isSOSPressing && styles.sosSectionPressing,
-            ]}
+        <View
+          style={[
+            styles.sosSection,
+            isSOSPressing && styles.sosSectionPressing,
+          ]}
+        >
+          <Ionicons
+            name="warning-outline"
+            size={32}
+            color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
+          />
+          <Text
+            style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
           >
-            <Ionicons
-              name="warning-outline"
-              size={32}
-              color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
-            />
-            <Text
-              style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
-            >
-              SOS
-            </Text>
-          </View>
+            SOS
+          </Text>
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -193,8 +200,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 5,
   },
-  notificationSection: {
+  notificationContainer: {
     width: '50%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  notificationTimerBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+  },
+  notificationSection: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -219,22 +240,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
-  sosContainer: {
-    width: '25%',
-    height: '100%',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  sosTimerBackground: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: COLORS.ACCENT,
-  },
   sosSection: {
-    width: '100%',
-    height: '100%',
+    width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -242,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   sosSectionPressing: {
-    backgroundColor: 'transparent',
+    backgroundColor: COLORS.ACCENT,
   },
   sosText: {
     fontSize: 12,
