@@ -151,7 +151,7 @@ export class CoreStore {
   private isTorchOn: boolean = false;
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
-  nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
+  nightvisionBrightness: number = 1.0; // brightness level for nightvision (fixed at 100%)
   sosWithTone: boolean = true; // whether SOS should play an accompanying tone (DEFAULT true)
 
   /**
