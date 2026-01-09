@@ -1,4 +1,5 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
@@ -20,9 +21,19 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
-import { useCoreStore } from '../../stores';
+import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
+
+type RootStackParamList = {
+  EditNote: { note: Note };
+};
+
+type EditNoteScreenRouteProp = RouteProp<RootStackParamList, 'EditNote'>;
+type EditNoteScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'EditNote'
+>;
 
 /**
  * Screen for editing an existing note.
@@ -45,8 +56,8 @@ import { MAX_TITLE_LENGTH } from './constants';
  */
 export default observer(function EditNoteScreen() {
   const core = useCoreStore();
-  const navigation = useNavigation();
-  const route = useRoute<any>();
+  const navigation = useNavigation<EditNoteScreenNavigationProp>();
+  const route = useRoute<EditNoteScreenRouteProp>();
   const { note } = route.params || {};
 
   const [title, setTitle] = useState(note?.title || '');
@@ -134,10 +145,7 @@ export default observer(function EditNoteScreen() {
                         category,
                       });
                       // Return to previous screen
-                      if (navigation && 'goBack' in navigation) {
-                        // @ts-ignore
-                        navigation.goBack();
-                      }
+                      navigation.goBack();
                     } catch (error) {
                       Alert.alert(
                         'Error',
@@ -150,10 +158,7 @@ export default observer(function EditNoteScreen() {
                 <Button
                   title="Cancel"
                   onPress={() => {
-                    if (navigation && 'goBack' in navigation) {
-                      // @ts-ignore
-                      navigation.goBack();
-                    }
+                    navigation.goBack();
                   }}
                 />
               </View>
