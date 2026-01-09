@@ -58,7 +58,7 @@ export default observer(function EditNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation<EditNoteScreenNavigationProp>();
   const route = useRoute<EditNoteScreenRouteProp>();
-  const { note } = route.params || {};
+  const { note } = route.params;
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
