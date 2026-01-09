@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FlashlightModes } from '../../constants';
@@ -34,6 +35,7 @@ const FooterImpl = () => {
   const navigation = useNavigation();
   const [isSOSPressing, setIsSOSPressing] = useState(false);
   const sosTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sosProgressAnim = useRef(new Animated.Value(0)).current;
 
   // Determine the active item based on flashlight mode
   const getActiveItem = () => {
@@ -68,19 +70,29 @@ const FooterImpl = () => {
     }
   };
 
-  // Handle SOS long press (2 seconds)
+  // Handle SOS long press (3 seconds)
   const handleSOSPressIn = () => {
     setIsSOSPressing(true);
+    
+    // Start progress animation
+    Animated.timing(sosProgressAnim, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start();
+    
     sosTimerRef.current = setTimeout(() => {
       // Trigger SOS with tone enabled
       core.setSosWithTone(true);
       core.setFlashlightMode(FlashlightModes.SOS);
       setIsSOSPressing(false);
-    }, 2000); // 2 seconds
+      sosProgressAnim.setValue(0);
+    }, 3000); // 3 seconds
   };
 
   const handleSOSPressOut = () => {
     setIsSOSPressing(false);
+    sosProgressAnim.setValue(0);
     if (sosTimerRef.current) {
       clearTimeout(sosTimerRef.current);
       sosTimerRef.current = null;
@@ -96,7 +108,10 @@ const FooterImpl = () => {
 
       {/* Right middle section: Active item or Nightvision (50%-75%) */}
       <TouchableOpacity
-        style={styles.activeItemSection}
+        style={[
+          styles.activeItemSection,
+          activeItem && styles.activeItemSectionActive,
+        ]}
         onPress={handleActiveItemPress}
         accessibilityLabel={
           activeItem ? `Turn off ${activeItem.label}` : 'Nightvision'
@@ -114,25 +129,43 @@ const FooterImpl = () => {
       <TouchableWithoutFeedback
         onPressIn={handleSOSPressIn}
         onPressOut={handleSOSPressOut}
-        accessibilityLabel="Emergency SOS - Hold for 2 seconds"
+        accessibilityLabel="Emergency SOS - Hold for 3 seconds"
         accessibilityRole="button"
       >
-        <View
-          style={[
-            styles.sosSection,
-            isSOSPressing && styles.sosSectionPressing,
-          ]}
-        >
-          <Ionicons
-            name="warning-outline"
-            size={32}
-            color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
-          />
-          <Text
-            style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
+        <View style={styles.sosContainer}>
+          {/* Fuse timer background */}
+          {isSOSPressing && (
+            <Animated.View
+              style={[
+                styles.sosTimerBackground,
+                {
+                  height: sosProgressAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0%', '100%'],
+                  }),
+                },
+              ]}
+            />
+          )}
+          
+          {/* SOS content */}
+          <View
+            style={[
+              styles.sosSection,
+              isSOSPressing && styles.sosSectionPressing,
+            ]}
           >
-            SOS
-          </Text>
+            <Ionicons
+              name="warning-outline"
+              size={32}
+              color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
+            />
+            <Text
+              style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
+            >
+              SOS
+            </Text>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -149,6 +182,9 @@ const styles = StyleSheet.create({
     right: 0,
     height: FOOTER_HEIGHT,
     flexDirection: 'row',
+    backgroundColor: COLORS.BACKGROUND,
+    borderTopWidth: 2,
+    borderTopColor: COLORS.PRIMARY_DARK,
   },
   notificationSection: {
     width: '50%',
@@ -165,20 +201,40 @@ const styles = StyleSheet.create({
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: COLORS.PRIMARY_DARK,
   },
-  sosSection: {
-    width: '25%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-  },
-  sosSectionPressing: {
+  activeItemSectionActive: {
     backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
     margin: 4,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+  },
+  sosContainer: {
+    width: '25%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  sosTimerBackground: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+  },
+  sosSection: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sosSectionPressing: {
+    backgroundColor: 'transparent',
   },
   sosText: {
     fontSize: 12,
