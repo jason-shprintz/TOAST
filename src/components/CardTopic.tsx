@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
+    boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT,
   },
   background: {
     ...StyleSheet.absoluteFill,

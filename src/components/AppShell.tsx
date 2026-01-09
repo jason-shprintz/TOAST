@@ -21,6 +21,7 @@ import {
 } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { COLORS, FOOTER_HEIGHT } from '../theme';
+import Footer from './Footer';
 import { HelpModal } from './HelpModal';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
@@ -161,6 +162,8 @@ export default function AppShell({ children }: Props) {
         <View style={styles.bottomRule}>
           <HorizontalRule />
         </View>
+
+        <Footer />
       </View>
 
       <SettingsModal
@@ -216,7 +219,6 @@ const styles = StyleSheet.create({
   bottomRule: {
     position: 'absolute',
     bottom: FOOTER_HEIGHT,
-    width: '90%',
-    left: '5%',
+    width: '100%',
   },
 });
