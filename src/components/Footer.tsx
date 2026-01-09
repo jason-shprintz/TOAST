@@ -130,7 +130,8 @@ const FooterImpl = () => {
         sosTimerRef.current = null;
       }
     };
-  }, [sosProgressAnim, sosAnimationRef, sosTimerRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.footer}>
