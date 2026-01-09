@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -77,12 +77,12 @@ const FooterImpl = () => {
     setIsSOSPressing(true);
 
     // Haptic feedback on press
-    Vibration.vibrate(200);
+    Vibration.vibrate(50);
 
     // Start progress animation
     sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
-      duration: 1000,
+      duration: 3000,
       useNativeDriver: false,
     });
     sosAnimationRef.current.start();
@@ -96,7 +96,7 @@ const FooterImpl = () => {
 
       // Haptic feedback on activation
       Vibration.vibrate(200);
-    }, 1000); // 1 second
+    }, 3000); // 3 seconds
   };
 
   const handleSOSPressOut = () => {
@@ -114,6 +114,23 @@ const FooterImpl = () => {
       sosTimerRef.current = null;
     }
   };
+
+  // Cleanup on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      // Stop animation if it's running
+      if (sosAnimationRef.current) {
+        sosAnimationRef.current.stop();
+        sosAnimationRef.current = null;
+      }
+
+      sosProgressAnim.setValue(0);
+      if (sosTimerRef.current) {
+        clearTimeout(sosTimerRef.current);
+        sosTimerRef.current = null;
+      }
+    };
+  }, [sosProgressAnim, sosAnimationRef, sosTimerRef]);
 
   return (
     <View style={styles.footer}>
@@ -163,7 +180,7 @@ const FooterImpl = () => {
       <TouchableWithoutFeedback
         onPressIn={handleSOSPressIn}
         onPressOut={handleSOSPressOut}
-        accessibilityLabel="Emergency SOS - Hold for 1 Second to Activate"
+        accessibilityLabel="Emergency SOS - Hold for 3 Seconds to Activate"
         accessibilityRole="button"
       >
         <View
@@ -211,8 +228,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: COLORS.ACCENT,
-    borderRadius: 4,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
   },
   notificationSection: {
     width: '100%',
@@ -233,13 +249,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
-    marginHorizontal: 2,
   },
   activeItemSectionActive: {
     backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
+    margin: 4,
   },
   sosSection: {
     width: '25%',
