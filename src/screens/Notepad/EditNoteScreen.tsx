@@ -1,0 +1,308 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+  Animated,
+  Easing,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
+import ScreenBody from '../../components/ScreenBody';
+import SectionHeader from '../../components/SectionHeader';
+import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
+import { useCoreStore } from '../../stores';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { MAX_TITLE_LENGTH } from './constants';
+
+/**
+ * Screen for editing an existing note.
+ *
+ * Provides UI to:
+ * - Edit the note title
+ * - Edit the note text content
+ * - Change the note category
+ * - Save changes or cancel
+ *
+ * Keyboard handling:
+ * - Wraps content in `KeyboardAvoidingView` (iOS uses `padding`) and dismisses the keyboard
+ *   when tapping outside inputs.
+ * - Adapts input height based on `useKeyboardStatus().isVisible`.
+ *
+ * Validation:
+ * - Save action is disabled until the trimmed text is non-empty.
+ *
+ * @returns A React element rendering the "Edit Note" screen.
+ */
+export default observer(function EditNoteScreen() {
+  const core = useCoreStore();
+  const navigation = useNavigation();
+  const route = useRoute<any>();
+  const { note } = route.params || {};
+
+  const [title, setTitle] = useState(note?.title || '');
+  const [text, setText] = useState(note?.text || '');
+  const [category, setCategory] = useState(note?.category || core.categories[0]);
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const { isKeyboardVisible } = useKeyboardStatus();
+  const hasText: boolean = text.trim().length > 0;
+  const animatedHeight = useMemo(() => new Animated.Value(250), []);
+
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: isKeyboardVisible ? 100 : 250,
+      duration: 300,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isKeyboardVisible, animatedHeight]);
+
+  if (!note) {
+    return (
+      <ScreenBody>
+        <SectionHeader>Edit Note</SectionHeader>
+        <View style={styles.card}>
+          <Text style={styles.value}>Note not found.</Text>
+        </View>
+      </ScreenBody>
+    );
+  }
+
+  return (
+    <ScreenBody>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.innerContainer}>
+            <SectionHeader>Edit Note</SectionHeader>
+            <View style={styles.card}>
+              <View style={styles.inlineCenter}>
+                <View style={styles.dropdown}>
+                  <TouchableOpacity
+                    style={styles.dropdownHeader}
+                    onPress={() => setShowCategoryMenu(v => !v)}
+                    accessibilityLabel={`Category: ${category}`}
+                    accessibilityHint="Opens category selection menu"
+                    accessibilityRole="button"
+                  >
+                    <Text style={styles.dropdownHeaderText}>{category}</Text>
+                    <Icon
+                      name="chevron-down-outline"
+                      size={18}
+                      color={COLORS.PRIMARY_DARK}
+                    />
+                  </TouchableOpacity>
+                  {showCategoryMenu && (
+                    <View style={styles.dropdownMenu}>
+                      {core.categories.map(cat => (
+                        <TouchableOpacity
+                          key={cat}
+                          style={styles.dropdownItem}
+                          onPress={() => {
+                            setCategory(cat);
+                            setShowCategoryMenu(false);
+                          }}
+                        >
+                          <Text style={styles.dropdownItemText}>{cat}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              <View style={styles.inline}>
+                <Button
+                  title="Save"
+                  disabled={!hasText}
+                  onPress={async () => {
+                    try {
+                      await core.updateNoteContent(note.id, {
+                        title,
+                        text,
+                        category,
+                      });
+                      // Return to previous screen
+                      if (navigation && 'goBack' in navigation) {
+                        // @ts-ignore
+                        navigation.goBack();
+                      }
+                    } catch (error) {
+                      Alert.alert(
+                        'Error',
+                        'Failed to save note. Please try again.',
+                      );
+                      console.error('Failed to update note:', error);
+                    }
+                  }}
+                />
+                <Button
+                  title="Cancel"
+                  onPress={() => {
+                    if (navigation && 'goBack' in navigation) {
+                      // @ts-ignore
+                      navigation.goBack();
+                    }
+                  }}
+                />
+              </View>
+
+              <TextInput
+                style={styles.titleInput}
+                placeholder="Title (optional)"
+                placeholderTextColor={COLORS.PRIMARY_DARK}
+                value={title}
+                onChangeText={setTitle}
+                maxLength={MAX_TITLE_LENGTH}
+              />
+
+              <Text style={styles.label}>Text</Text>
+              <Animated.View
+                style={[
+                  styles.animatedInputContainer,
+                  { height: animatedHeight },
+                ]}
+              >
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Type your note..."
+                  placeholderTextColor={COLORS.PRIMARY_DARK}
+                  multiline
+                  value={text}
+                  onChangeText={setText}
+                />
+              </Animated.View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScreenBody>
+  );
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  innerContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  card: {
+    flex: 1 - FOOTER_HEIGHT,
+    width: '100%',
+    backgroundColor: COLORS.TOAST_BROWN,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: FOOTER_HEIGHT + 6,
+  },
+  label: {
+    fontSize: 14,
+    color: COLORS.PRIMARY_DARK,
+    opacity: 0.9,
+    marginBottom: 6,
+    fontWeight: '700',
+  },
+  value: {
+    fontSize: 16,
+    color: COLORS.PRIMARY_DARK,
+  },
+  titleInput: {
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+    color: COLORS.PRIMARY_DARK,
+    fontSize: 14,
+  },
+  inline: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 8,
+  },
+  inlineCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  animatedInputContainer: {
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 12,
+    overflow: 'hidden',
+  },
+  textInput: {
+    flex: 1,
+    color: COLORS.PRIMARY_DARK,
+  },
+  dropdown: {
+    flex: 1,
+    position: 'relative',
+  },
+  dropdownHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  dropdownHeaderText: {
+    color: COLORS.PRIMARY_DARK,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderWidth: 1,
+    borderRadius: 8,
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  dropdownItem: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomColor: 'rgba(0,0,0,0.06)',
+    borderBottomWidth: 1,
+  },
+  dropdownItemText: {
+    color: COLORS.PRIMARY_DARK,
+    fontSize: 14,
+  },
+});

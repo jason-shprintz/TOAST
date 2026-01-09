@@ -69,6 +69,20 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
       <SectionHeader>{noteTitle}</SectionHeader>
       <View style={styles.noteHeader}>
         <TouchableOpacity
+          accessibilityLabel="Edit note"
+          accessibilityRole="button"
+          style={shared.noteButton}
+          onPress={() => {
+            navigation.navigate('EditNote', { note });
+          }}
+        >
+          <Icon
+            name="create-outline"
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           accessibilityLabel="Bookmark note"
           accessibilityRole="button"
           style={shared.noteButton}
@@ -139,7 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: FOOTER_HEIGHT + 12,
   },
   noteHeader: {
-    width: '50%',
+    width: '75%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
