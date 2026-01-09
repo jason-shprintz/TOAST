@@ -36,6 +36,7 @@ const FooterImpl = () => {
   const [isSOSPressing, setIsSOSPressing] = useState(false);
   const sosTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sosProgressAnim = useRef(new Animated.Value(0)).current;
+  const sosAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
 
   // Determine the active item based on flashlight mode
   const getActiveItem = () => {
@@ -75,11 +76,12 @@ const FooterImpl = () => {
     setIsSOSPressing(true);
     
     // Start progress animation
-    Animated.timing(sosProgressAnim, {
+    sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
       duration: 3000,
       useNativeDriver: false,
-    }).start();
+    });
+    sosAnimationRef.current.start();
     
     sosTimerRef.current = setTimeout(() => {
       // Trigger SOS with tone enabled
@@ -92,6 +94,13 @@ const FooterImpl = () => {
 
   const handleSOSPressOut = () => {
     setIsSOSPressing(false);
+    
+    // Stop animation if it's running
+    if (sosAnimationRef.current) {
+      sosAnimationRef.current.stop();
+      sosAnimationRef.current = null;
+    }
+    
     sosProgressAnim.setValue(0);
     if (sosTimerRef.current) {
       clearTimeout(sosTimerRef.current);
@@ -211,8 +220,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
     margin: 4,
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
   },
   sosContainer: {
     width: '25%',
