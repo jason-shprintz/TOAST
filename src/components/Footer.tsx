@@ -68,7 +68,7 @@ const FooterImpl = () => {
     }
   };
 
-  // Handle SOS long press (3 seconds)
+  // Handle SOS long press (2 seconds)
   const handleSOSPressIn = () => {
     setIsSOSPressing(true);
     sosTimerRef.current = setTimeout(() => {
@@ -76,7 +76,7 @@ const FooterImpl = () => {
       core.setSosWithTone(true);
       core.setFlashlightMode(FlashlightModes.SOS);
       setIsSOSPressing(false);
-    }, 3000); // 3 seconds
+    }, 2000); // 2 seconds
   };
 
   const handleSOSPressOut = () => {
@@ -114,7 +114,7 @@ const FooterImpl = () => {
       <TouchableWithoutFeedback
         onPressIn={handleSOSPressIn}
         onPressOut={handleSOSPressOut}
-        accessibilityLabel="Emergency SOS - Hold for 3 seconds"
+        accessibilityLabel="Emergency SOS - Hold for 2 seconds"
         accessibilityRole="button"
       >
         <View
@@ -129,10 +129,7 @@ const FooterImpl = () => {
             color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
           />
           <Text
-            style={[
-              styles.sosText,
-              isSOSPressing && styles.sosTextPressing,
-            ]}
+            style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
           >
             SOS
           </Text>
@@ -152,9 +149,6 @@ const styles = StyleSheet.create({
     right: 0,
     height: FOOTER_HEIGHT,
     flexDirection: 'row',
-    backgroundColor: COLORS.BACKGROUND,
-    borderTopWidth: 2,
-    borderTopColor: COLORS.PRIMARY_DARK,
   },
   notificationSection: {
     width: '50%',
@@ -171,18 +165,20 @@ const styles = StyleSheet.create({
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: COLORS.PRIMARY_DARK,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
   },
   sosSection: {
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.BACKGROUND,
+    borderRadius: 50,
   },
   sosSectionPressing: {
     backgroundColor: COLORS.ACCENT,
+    borderRadius: 50,
+    margin: 4,
   },
   sosText: {
     fontSize: 12,
