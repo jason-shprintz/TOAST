@@ -172,10 +172,6 @@ export class CoreStore {
     return this.flashlightMode === FlashlightModes.ON;
   }
 
-  get nightvisionBrightnessPercent(): number {
-    return Math.round(this.nightvisionBrightness * 100);
-  }
-
   /**
    * Applies the current flashlight state based on the `flashlightMode` property.
    * Stops any running SOS or strobe patterns before setting the new state.
@@ -403,17 +399,6 @@ export class CoreStore {
     if (this.flashlightMode !== FlashlightModes.ON) {
       this.setTorch(false);
     }
-  }
-
-  // Nightvision implementation: adjustable brightness for red screen mode
-  /**
-   * Sets the brightness level for nightvision mode.
-   *
-   * @param brightness - A value between 0 and 1 representing the brightness level.
-   */
-  setNightvisionBrightness(brightness: number) {
-    const clamped = Math.max(0, Math.min(1, brightness));
-    this.nightvisionBrightness = clamped;
   }
 
   // SOS tone toggle
