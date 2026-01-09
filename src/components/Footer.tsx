@@ -74,7 +74,7 @@ const FooterImpl = () => {
   // Handle SOS long press (3 seconds)
   const handleSOSPressIn = () => {
     setIsSOSPressing(true);
-    
+
     // Start progress animation
     sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
@@ -82,7 +82,7 @@ const FooterImpl = () => {
       useNativeDriver: false,
     });
     sosAnimationRef.current.start();
-    
+
     sosTimerRef.current = setTimeout(() => {
       // Trigger SOS with tone enabled
       core.setSosWithTone(true);
@@ -94,13 +94,13 @@ const FooterImpl = () => {
 
   const handleSOSPressOut = () => {
     setIsSOSPressing(false);
-    
+
     // Stop animation if it's running
     if (sosAnimationRef.current) {
       sosAnimationRef.current.stop();
       sosAnimationRef.current = null;
     }
-    
+
     sosProgressAnim.setValue(0);
     if (sosTimerRef.current) {
       clearTimeout(sosTimerRef.current);
@@ -156,7 +156,7 @@ const FooterImpl = () => {
               ]}
             />
           )}
-          
+
           {/* SOS content */}
           <View
             style={[
@@ -191,9 +191,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: FOOTER_HEIGHT,
     flexDirection: 'row',
-    backgroundColor: COLORS.BACKGROUND,
-    borderTopWidth: 2,
-    borderTopColor: COLORS.PRIMARY_DARK,
+    padding: 5,
   },
   notificationSection: {
     width: '50%',
@@ -210,16 +208,16 @@ const styles = StyleSheet.create({
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: COLORS.PRIMARY_DARK,
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderRadius: 50,
+    marginHorizontal: 2,
   },
   activeItemSectionActive: {
     backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
-    margin: 4,
   },
   sosContainer: {
     width: '25%',
@@ -232,13 +230,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
+    backgroundColor: COLORS.ACCENT,
   },
   sosSection: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY_ACCENT,
+    borderRadius: 50,
   },
   sosSectionPressing: {
     backgroundColor: 'transparent',
