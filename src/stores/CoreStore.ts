@@ -151,7 +151,7 @@ export class CoreStore {
   private isTorchOn: boolean = false;
   private strobeInterval: ReturnType<typeof setInterval> | null = null;
   strobeFrequencyHz: number = 5; // default frequency
-  nightvisionBrightness: number = 0.5; // brightness level for nightvision (0-1)
+  nightvisionBrightness: number = 1.0; // brightness level for nightvision (fixed at 100%)
   sosWithTone: boolean = true; // whether SOS should play an accompanying tone (DEFAULT true)
 
   /**
@@ -170,10 +170,6 @@ export class CoreStore {
 
   get isFlashlightOn() {
     return this.flashlightMode === FlashlightModes.ON;
-  }
-
-  get nightvisionBrightnessPercent(): number {
-    return Math.round(this.nightvisionBrightness * 100);
   }
 
   /**
@@ -403,17 +399,6 @@ export class CoreStore {
     if (this.flashlightMode !== FlashlightModes.ON) {
       this.setTorch(false);
     }
-  }
-
-  // Nightvision implementation: adjustable brightness for red screen mode
-  /**
-   * Sets the brightness level for nightvision mode.
-   *
-   * @param brightness - A value between 0 and 1 representing the brightness level.
-   */
-  setNightvisionBrightness(brightness: number) {
-    const clamped = Math.max(0, Math.min(1, brightness));
-    this.nightvisionBrightness = clamped;
   }
 
   // SOS tone toggle
