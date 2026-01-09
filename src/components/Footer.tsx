@@ -63,7 +63,8 @@ const FooterImpl = () => {
       core.setFlashlightMode(FlashlightModes.OFF);
     } else {
       // Navigate to Nightvision
-      navigation.navigate('Nightvision' as never);
+      // @ts-ignore - navigation types
+      navigation.navigate('Nightvision');
     }
   };
 
