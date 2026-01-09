@@ -77,12 +77,12 @@ const FooterImpl = () => {
     setIsSOSPressing(true);
 
     // Haptic feedback on press
-    Vibration.vibrate(50);
+    Vibration.vibrate(200);
 
     // Start progress animation
     sosAnimationRef.current = Animated.timing(sosProgressAnim, {
       toValue: 1,
-      duration: 3000,
+      duration: 1000,
       useNativeDriver: false,
     });
     sosAnimationRef.current.start();
@@ -93,10 +93,10 @@ const FooterImpl = () => {
       core.setFlashlightMode(FlashlightModes.SOS);
       setIsSOSPressing(false);
       sosProgressAnim.setValue(0);
-      
+
       // Haptic feedback on activation
       Vibration.vibrate(200);
-    }, 3000); // 3 seconds
+    }, 1000); // 1 second
   };
 
   const handleSOSPressOut = () => {
@@ -133,7 +133,7 @@ const FooterImpl = () => {
             ]}
           />
         )}
-        
+
         {/* Notification content */}
         <View style={styles.notificationSection}>
           <Text style={styles.notificationText}>NOTIFICATION</Text>
@@ -163,7 +163,7 @@ const FooterImpl = () => {
       <TouchableWithoutFeedback
         onPressIn={handleSOSPressIn}
         onPressOut={handleSOSPressOut}
-        accessibilityLabel="Emergency SOS - Hold for 3 seconds"
+        accessibilityLabel="Emergency SOS - Hold for 1 Second to Activate"
         accessibilityRole="button"
       >
         <View
@@ -211,7 +211,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
+    backgroundColor: COLORS.ACCENT,
+    borderRadius: 4,
   },
   notificationSection: {
     width: '100%',
