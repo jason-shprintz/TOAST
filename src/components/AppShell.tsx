@@ -32,7 +32,7 @@ import { SettingsModal } from './SettingsModal';
 
 type Props = PropsWithChildren;
 
-const DATE_FORMAT = 'MMMM D, YYYY';
+const DATE_FORMAT = 'dddd, MMMM D, YYYY';
 
 /**
  * Root layout wrapper for the app.
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     top: 30,
     left: 10,
     zIndex: 10,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   dateText: {
     fontSize: 14,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   settingsButton: {
     position: 'absolute',
     top: 50,
-    right: 30,
+    right: 10,
     zIndex: 10,
     padding: 6,
   },
