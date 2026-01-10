@@ -5,6 +5,7 @@ import AppShell from '../components/AppShell';
 import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
+import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
@@ -73,6 +74,7 @@ function NavigatorContent(): JSX.Element {
             name="CommunicationsModule"
             component={CommunicationsModule}
           />
+          <Stack.Screen name="PrepperModule" component={PrepperModule} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           {/* Core Module */}
