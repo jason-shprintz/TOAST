@@ -26,7 +26,7 @@ const prepperTools: ToolType[] = [
   {
     name: 'Bug-Out',
     screen: 'ComingSoon',
-    icon: 'backpack-outline',
+    icon: 'bag-outline',
     id: 'prepper_bug_out',
   },
   {
