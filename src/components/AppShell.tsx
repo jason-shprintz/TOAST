@@ -32,7 +32,7 @@ import { SettingsModal } from './SettingsModal';
 
 type Props = PropsWithChildren;
 
-const DATE_FORMAT = 'M/D/YYYY';
+const DATE_FORMAT = 'MMMM D, YYYY';
 
 /**
  * Root layout wrapper for the app.
