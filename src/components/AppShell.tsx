@@ -158,7 +158,12 @@ export default function AppShell({ children }: Props) {
         >
           <View style={styles.header}>
             <View style={styles.dateAndHelpContainer}>
-              <Text style={styles.dateText}>{currentDate}</Text>
+              <Text
+                style={styles.dateText}
+                accessibilityLabel={`Current date: ${currentDate}`}
+              >
+                {currentDate}
+              </Text>
               <TouchableOpacity
                 style={styles.helpButton}
                 onPress={() => setIsHelpVisible(true)}
