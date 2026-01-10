@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, {
   PropsWithChildren,
   useMemo,
@@ -12,6 +13,7 @@ import {
   TouchableOpacity,
   View,
   Easing,
+  Text,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
@@ -127,18 +129,23 @@ export default function AppShell({ children }: Props) {
           style={[styles.shell, { transform: [{ translateY: translateYRef }] }]}
         >
           <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.helpButton}
-              onPress={() => setIsHelpVisible(true)}
-              accessibilityLabel="Help"
-              accessibilityRole="button"
-            >
-              <Ionicons
-                name="help-circle-outline"
-                size={32}
-                color={COLORS.PRIMARY_DARK}
-              />
-            </TouchableOpacity>
+            <View style={styles.dateAndHelpContainer}>
+              <Text style={styles.dateText}>
+                {dayjs().format('M/D/YYYY')}
+              </Text>
+              <TouchableOpacity
+                style={styles.helpButton}
+                onPress={() => setIsHelpVisible(true)}
+                accessibilityLabel="Help"
+                accessibilityRole="button"
+              >
+                <Ionicons
+                  name="help-circle-outline"
+                  size={32}
+                  color={COLORS.PRIMARY_DARK}
+                />
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity
               style={styles.settingsButton}
@@ -194,11 +201,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 80,
   },
-  helpButton: {
+  dateAndHelpContainer: {
     position: 'absolute',
-    top: 50,
+    top: 30,
     left: 30,
     zIndex: 10,
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.PRIMARY_DARK,
+    marginBottom: 2,
+  },
+  helpButton: {
     padding: 6,
   },
   settingsButton: {
