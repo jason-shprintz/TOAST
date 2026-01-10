@@ -66,6 +66,7 @@ export default function AppShell({ children }: Props) {
   const [currentDate, setCurrentDate] = useState(() =>
     dayjs().format(DATE_FORMAT),
   );
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update date at midnight
   useEffect(() => {
@@ -76,14 +77,17 @@ export default function AppShell({ children }: Props) {
     const timer = setTimeout(() => {
       setCurrentDate(dayjs().format(DATE_FORMAT));
       // Set up daily interval after first update
-      const interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         setCurrentDate(dayjs().format(DATE_FORMAT));
       }, 24 * 60 * 60 * 1000);
-
-      return () => clearInterval(interval);
     }, msUntilMidnight);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
