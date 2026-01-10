@@ -24,6 +24,12 @@ const modules: ToolType[] = [
     icon: 'call-outline',
     id: 'home_communications',
   },
+  {
+    name: 'Prepper',
+    screen: 'PrepperModule',
+    icon: 'shield-checkmark-outline',
+    id: 'home_prepper',
+  },
 ];
 
 /**
