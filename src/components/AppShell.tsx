@@ -32,6 +32,8 @@ import { SettingsModal } from './SettingsModal';
 
 type Props = PropsWithChildren;
 
+const DATE_FORMAT = 'M/D/YYYY';
+
 /**
  * Root layout wrapper for the app.
  *
@@ -61,6 +63,28 @@ export default function AppShell({ children }: Props) {
   const translateYRef = useRef(new Animated.Value(0)).current;
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const [currentDate, setCurrentDate] = useState(() =>
+    dayjs().format(DATE_FORMAT),
+  );
+
+  // Update date at midnight
+  useEffect(() => {
+    const now = dayjs();
+    const tomorrow = now.add(1, 'day').startOf('day');
+    const msUntilMidnight = tomorrow.diff(now);
+
+    const timer = setTimeout(() => {
+      setCurrentDate(dayjs().format(DATE_FORMAT));
+      // Set up daily interval after first update
+      const interval = setInterval(() => {
+        setCurrentDate(dayjs().format(DATE_FORMAT));
+      }, 24 * 60 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }, msUntilMidnight);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     Animated.timing(translateYRef, {
@@ -130,9 +154,7 @@ export default function AppShell({ children }: Props) {
         >
           <View style={styles.header}>
             <View style={styles.dateAndHelpContainer}>
-              <Text style={styles.dateText}>
-                {dayjs().format('M/D/YYYY')}
-              </Text>
+              <Text style={styles.dateText}>{currentDate}</Text>
               <TouchableOpacity
                 style={styles.helpButton}
                 onPress={() => setIsHelpVisible(true)}
