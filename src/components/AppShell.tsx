@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, {
   PropsWithChildren,
   useMemo,
@@ -12,6 +13,7 @@ import {
   TouchableOpacity,
   View,
   Easing,
+  Text,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
@@ -29,6 +31,8 @@ import ScreenContainer from './ScreenContainer';
 import { SettingsModal } from './SettingsModal';
 
 type Props = PropsWithChildren;
+
+const DATE_FORMAT = 'dddd, MMMM D, YYYY';
 
 /**
  * Root layout wrapper for the app.
@@ -59,6 +63,35 @@ export default function AppShell({ children }: Props) {
   const translateYRef = useRef(new Animated.Value(0)).current;
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const [currentDate, setCurrentDate] = useState(() =>
+    dayjs().format(DATE_FORMAT),
+  );
+  const timeoutRef = useRef<number | null>(null);
+
+  // Keep `currentDate` in sync with the calendar date by scheduling a timeout
+  // to fire exactly at the next midnight. When the timeout runs, it updates
+  // the formatted date and then reschedules itself for the following midnight.
+  // The cleanup function clears any pending timeout when the component unmounts.
+  useEffect(() => {
+    const scheduleNextUpdate = () => {
+      const now = dayjs();
+      const tomorrow = now.add(1, 'day').startOf('day');
+      const msUntilMidnight = tomorrow.diff(now);
+
+      timeoutRef.current = setTimeout(() => {
+        setCurrentDate(dayjs().format(DATE_FORMAT));
+        scheduleNextUpdate();
+      }, msUntilMidnight) as number;
+    };
+
+    scheduleNextUpdate();
+
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     Animated.timing(translateYRef, {
@@ -127,18 +160,26 @@ export default function AppShell({ children }: Props) {
           style={[styles.shell, { transform: [{ translateY: translateYRef }] }]}
         >
           <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.helpButton}
-              onPress={() => setIsHelpVisible(true)}
-              accessibilityLabel="Help"
-              accessibilityRole="button"
-            >
-              <Ionicons
-                name="help-circle-outline"
-                size={32}
-                color={COLORS.PRIMARY_DARK}
-              />
-            </TouchableOpacity>
+            <View style={styles.dateAndHelpContainer}>
+              <Text
+                style={styles.dateText}
+                accessibilityLabel={`Current date: ${currentDate}`}
+              >
+                {currentDate}
+              </Text>
+              <TouchableOpacity
+                style={styles.helpButton}
+                onPress={() => setIsHelpVisible(true)}
+                accessibilityLabel="Help"
+                accessibilityRole="button"
+              >
+                <Ionicons
+                  name="help-circle-outline"
+                  size={32}
+                  color={COLORS.PRIMARY_DARK}
+                />
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity
               style={styles.settingsButton}
@@ -194,17 +235,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 80,
   },
-  helpButton: {
+  dateAndHelpContainer: {
     position: 'absolute',
-    top: 50,
-    left: 30,
+    top: 30,
+    left: 10,
     zIndex: 10,
+    alignItems: 'flex-start',
+  },
+  dateText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.PRIMARY_DARK,
+    marginBottom: 2,
+  },
+  helpButton: {
     padding: 6,
   },
   settingsButton: {
     position: 'absolute',
     top: 50,
-    right: 30,
+    right: 10,
     zIndex: 10,
     padding: 6,
   },
