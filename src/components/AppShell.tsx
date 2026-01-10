@@ -78,7 +78,7 @@ export default function AppShell({ children }: Props) {
       timeoutRef.current = setTimeout(() => {
         setCurrentDate(dayjs().format(DATE_FORMAT));
         scheduleNextUpdate();
-      }, msUntilMidnight) as unknown as number;
+      }, msUntilMidnight) as number;
     };
 
     scheduleNextUpdate();
