@@ -68,7 +68,10 @@ export default function AppShell({ children }: Props) {
   );
   const timeoutRef = useRef<number | null>(null);
 
-  // Update date at midnight
+  // Keep `currentDate` in sync with the calendar date by scheduling a timeout
+  // to fire exactly at the next midnight. When the timeout runs, it updates
+  // the formatted date and then reschedules itself for the following midnight.
+  // The cleanup function clears any pending timeout when the component unmounts.
   useEffect(() => {
     const scheduleNextUpdate = () => {
       const now = dayjs();
