@@ -230,12 +230,12 @@ const styles = StyleSheet.create({
   dateAndHelpContainer: {
     position: 'absolute',
     top: 30,
-    left: 30,
+    left: 10,
     zIndex: 10,
     alignItems: 'center',
   },
   dateText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
     marginBottom: 2,
