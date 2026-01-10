@@ -66,21 +66,26 @@ export default function AppShell({ children }: Props) {
   const [currentDate, setCurrentDate] = useState(() =>
     dayjs().format(DATE_FORMAT),
   );
-  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   // Update date at midnight
   useEffect(() => {
-    const updateDate = () => {
-      const newDate = dayjs().format(DATE_FORMAT);
-      setCurrentDate(prevDate => (prevDate !== newDate ? newDate : prevDate));
+    const scheduleNextUpdate = () => {
+      const now = dayjs();
+      const tomorrow = now.add(1, 'day').startOf('day');
+      const msUntilMidnight = tomorrow.diff(now);
+
+      timeoutRef.current = setTimeout(() => {
+        setCurrentDate(dayjs().format(DATE_FORMAT));
+        scheduleNextUpdate();
+      }, msUntilMidnight) as unknown as number;
     };
 
-    // Check for date change every minute
-    intervalRef.current = setInterval(updateDate, 60 * 1000);
+    scheduleNextUpdate();
 
     return () => {
-      if (intervalRef.current !== null) {
-        clearInterval(intervalRef.current);
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, []);
