@@ -15,7 +15,7 @@ const natoPhoneticAlphabet = [
   { letter: 'G', code: 'Golf' },
   { letter: 'H', code: 'Hotel' },
   { letter: 'I', code: 'India' },
-  { letter: 'J', code: 'Juliett' },
+  { letter: 'J', code: 'Juliet' },
   { letter: 'K', code: 'Kilo' },
   { letter: 'L', code: 'Lima' },
   { letter: 'M', code: 'Mike' },
