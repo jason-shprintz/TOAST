@@ -58,7 +58,10 @@ export default observer(function EditNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation<EditNoteScreenNavigationProp>();
   const route = useRoute<EditNoteScreenRouteProp>();
-  const { note } = route.params;
+  const noteId = route.params.note.id;
+
+  // Look up the note from the store by ID to ensure we have the latest version
+  const note = core.notes.find(n => n.id === noteId);
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
@@ -67,6 +70,15 @@ export default observer(function EditNoteScreen() {
   const { isKeyboardVisible } = useKeyboardStatus();
   const hasText: boolean = text.trim().length > 0;
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
+
+  // Update local state when the note changes in the store
+  useEffect(() => {
+    if (note) {
+      setTitle(note.title || '');
+      setText(note.text || '');
+      setCategory(note.category);
+    }
+  }, [note]);
 
   useEffect(() => {
     Animated.timing(animatedHeight, {
@@ -82,7 +94,9 @@ export default observer(function EditNoteScreen() {
       <ScreenBody>
         <SectionHeader>Edit Note</SectionHeader>
         <View style={styles.card}>
-          <Text style={styles.value}>Note not found.</Text>
+          <Text style={styles.value}>
+            Note not found. It may have been deleted.
+          </Text>
         </View>
       </ScreenBody>
     );
