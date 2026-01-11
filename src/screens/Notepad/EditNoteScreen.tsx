@@ -65,7 +65,9 @@ export default observer(function EditNoteScreen() {
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
-  const [category, setCategory] = useState(note?.category || core.categories[0]);
+  const [category, setCategory] = useState(
+    note?.category || core.categories[0] || 'General',
+  );
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
   const hasText: boolean = text.trim().length > 0;
@@ -76,7 +78,12 @@ export default observer(function EditNoteScreen() {
     if (note) {
       setTitle(note.title || '');
       setText(note.text || '');
-      setCategory(note.category || core.categories[0]);
+      setCategory(note.category || core.categories[0] || 'General');
+    } else {
+      // Reset form if note is no longer available (e.g., deleted)
+      setTitle('');
+      setText('');
+      setCategory(core.categories[0] || 'General');
     }
   }, [note, core.categories]);
 
