@@ -8,47 +8,48 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
 type MorseItem = {
   char: string;
   morse: string;
+  spellOut: string;
 };
 
 const morseCodeData: MorseItem[] = [
   // Alphabet
-  { char: 'A', morse: '.-' },
-  { char: 'B', morse: '-...' },
-  { char: 'C', morse: '-.-.' },
-  { char: 'D', morse: '-..' },
-  { char: 'E', morse: '.' },
-  { char: 'F', morse: '..-.' },
-  { char: 'G', morse: '--.' },
-  { char: 'H', morse: '....' },
-  { char: 'I', morse: '..' },
-  { char: 'J', morse: '.---' },
-  { char: 'K', morse: '-.-' },
-  { char: 'L', morse: '.-..' },
-  { char: 'M', morse: '--' },
-  { char: 'N', morse: '-.' },
-  { char: 'O', morse: '---' },
-  { char: 'P', morse: '.--.' },
-  { char: 'Q', morse: '--.-' },
-  { char: 'R', morse: '.-.' },
-  { char: 'S', morse: '...' },
-  { char: 'T', morse: '-' },
-  { char: 'U', morse: '..-' },
-  { char: 'V', morse: '...-' },
-  { char: 'W', morse: '.--' },
-  { char: 'X', morse: '-..-' },
-  { char: 'Y', morse: '-.--' },
-  { char: 'Z', morse: '--..' },
+  { char: 'A', morse: '.-', spellOut: 'dot dash' },
+  { char: 'B', morse: '-...', spellOut: 'dash dot dot dot' },
+  { char: 'C', morse: '-.-.', spellOut: 'dash dot dash dot' },
+  { char: 'D', morse: '-..', spellOut: 'dash dot dot' },
+  { char: 'E', morse: '.', spellOut: 'dot' },
+  { char: 'F', morse: '..-.', spellOut: 'dot dot dash dot' },
+  { char: 'G', morse: '--.', spellOut: 'dash dash dot' },
+  { char: 'H', morse: '....', spellOut: 'dot dot dot dot' },
+  { char: 'I', morse: '..', spellOut: 'dot dot' },
+  { char: 'J', morse: '.---', spellOut: 'dot dash dash dash' },
+  { char: 'K', morse: '-.-', spellOut: 'dash dot dash' },
+  { char: 'L', morse: '.-..', spellOut: 'dot dash dot dot' },
+  { char: 'M', morse: '--', spellOut: 'dash dash' },
+  { char: 'N', morse: '-.', spellOut: 'dash dot' },
+  { char: 'O', morse: '---', spellOut: 'dash dash dash' },
+  { char: 'P', morse: '.--.', spellOut: 'dot dash dash dot' },
+  { char: 'Q', morse: '--.-', spellOut: 'dash dash dot dash' },
+  { char: 'R', morse: '.-.', spellOut: 'dot dash dot' },
+  { char: 'S', morse: '...', spellOut: 'dot dot dot' },
+  { char: 'T', morse: '-', spellOut: 'dash' },
+  { char: 'U', morse: '..-', spellOut: 'dot dot dash' },
+  { char: 'V', morse: '...-', spellOut: 'dot dot dot dash' },
+  { char: 'W', morse: '.--', spellOut: 'dot dash dash' },
+  { char: 'X', morse: '-..-', spellOut: 'dash dot dot dash' },
+  { char: 'Y', morse: '-.--', spellOut: 'dash dot dash dash' },
+  { char: 'Z', morse: '--..', spellOut: 'dash dash dot dot' },
   // Numbers
-  { char: '0', morse: '-----' },
-  { char: '1', morse: '.----' },
-  { char: '2', morse: '..---' },
-  { char: '3', morse: '...--' },
-  { char: '4', morse: '....-' },
-  { char: '5', morse: '.....' },
-  { char: '6', morse: '-....' },
-  { char: '7', morse: '--...' },
-  { char: '8', morse: '---..' },
-  { char: '9', morse: '----.' },
+  { char: '0', morse: '-----', spellOut: 'dash dash dash dash dash' },
+  { char: '1', morse: '.----', spellOut: 'dot dash dash dash dash' },
+  { char: '2', morse: '..---', spellOut: 'dot dot dash dash dash' },
+  { char: '3', morse: '...--', spellOut: 'dot dot dot dash dash' },
+  { char: '4', morse: '....-', spellOut: 'dot dot dot dot dash' },
+  { char: '5', morse: '.....', spellOut: 'dot dot dot dot dot' },
+  { char: '6', morse: '-....', spellOut: 'dash dot dot dot dot' },
+  { char: '7', morse: '--...', spellOut: 'dash dash dot dot dot' },
+  { char: '8', morse: '---..', spellOut: 'dash dash dash dot dot' },
+  { char: '9', morse: '----.', spellOut: 'dash dash dash dash dot' },
 ];
 
 type SortType = 'alphabetical' | 'morse';
@@ -98,11 +99,13 @@ export default function MorseCodeCheatSheet() {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {sortedData.map((item) => (
+          {sortedData.map(item => (
             <View key={item.char} style={styles.card}>
               <Text style={styles.char}>{item.char}</Text>
-              <Text style={styles.separator}>-</Text>
+              <Text style={styles.separator}>➡️</Text>
               <Text style={styles.morse}>{item.morse}</Text>
+              <Text style={styles.separator}>➡️</Text>
+              <Text style={styles.spellOut}>{item.spellOut}</Text>
             </View>
           ))}
         </ScrollView>
@@ -161,11 +164,16 @@ const styles = StyleSheet.create({
   separator: {
     fontSize: 20,
     color: COLORS.PRIMARY_DARK,
-    marginHorizontal: 8,
+    marginHorizontal: 5,
   },
   morse: {
-    fontSize: 20,
+    fontSize: 30,
     fontFamily: 'monospace',
+    color: COLORS.PRIMARY_DARK,
+    marginHorizontal: 5,
+  },
+  spellOut: {
+    fontSize: 18,
     color: COLORS.PRIMARY_DARK,
     flex: 1,
   },
