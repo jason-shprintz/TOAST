@@ -7,7 +7,7 @@ import { ToolType } from '../../types/common-types';
 const communicationTools: ToolType[] = [
   {
     name: 'Morse Code',
-    screen: 'ComingSoon',
+    screen: 'MorseCode',
     icon: 'flash-outline',
     id: 'comm_morse_code',
   },

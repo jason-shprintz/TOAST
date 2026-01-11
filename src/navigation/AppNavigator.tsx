@@ -14,6 +14,7 @@ import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import EditNoteScreen from '../screens/Notepad/EditNoteScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
@@ -78,6 +79,8 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+          {/* Communications Module */}
+          <Stack.Screen name="MorseCode" component={MorseCodeScreen} />
           {/* Core Module */}
           <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
           <Stack.Screen name="Flashlight" component={FlashlightScreen} />
