@@ -426,7 +426,9 @@ export class CoreStore {
    */
   transmitMorseMessage(morseCode: string, withTone: boolean) {
     this.stopMorseTransmission();
-    this.isMorseTransmitting = true;
+    runInAction(() => {
+      this.isMorseTransmitting = true;
+    });
 
     const unit = this.sosUnitMs;
     const sequence: Array<{
@@ -462,7 +464,9 @@ export class CoreStore {
       if (index >= sequence.length) {
         // Sequence complete
         this.setTorch(false);
-        this.isMorseTransmitting = false;
+        runInAction(() => {
+          this.isMorseTransmitting = false;
+        });
         return;
       }
 
@@ -491,7 +495,9 @@ export class CoreStore {
       clearTimeout(this.morseTimer);
       this.morseTimer = null;
     }
-    this.isMorseTransmitting = false;
+    runInAction(() => {
+      this.isMorseTransmitting = false;
+    });
     this.setTorch(false);
     // Stop any playing audio
     if (this.dotSound) {
