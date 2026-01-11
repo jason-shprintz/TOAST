@@ -76,9 +76,9 @@ export default observer(function EditNoteScreen() {
     if (note) {
       setTitle(note.title || '');
       setText(note.text || '');
-      setCategory(note.category);
+      setCategory(note.category || core.categories[0]);
     }
-  }, [note]);
+  }, [note, core.categories]);
 
   useEffect(() => {
     Animated.timing(animatedHeight, {
@@ -152,6 +152,10 @@ export default observer(function EditNoteScreen() {
                   title="Save"
                   disabled={!hasText}
                   onPress={async () => {
+                    if (!note) {
+                      Alert.alert('Error', 'Note not found.');
+                      return;
+                    }
                     try {
                       await core.updateNoteContent(note.id, {
                         title,
