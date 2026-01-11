@@ -14,6 +14,7 @@ import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
 import NatoPhoneticScreen from '../screens/MorseCode/NatoPhoneticScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
@@ -82,6 +83,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           {/* Communications Module */}
           <Stack.Screen name="MorseCode" component={MorseCodeScreen} />
+          <Stack.Screen
+            name="MorseCodeCheatSheet"
+            component={MorseCodeCheatSheet}
+          />
           <Stack.Screen name="NatoPhonetic" component={NatoPhoneticScreen} />
           {/* Core Module */}
           <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
