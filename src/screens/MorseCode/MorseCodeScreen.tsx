@@ -31,7 +31,7 @@ const morseCodeTools: ToolType[] = [
   },
   {
     name: 'Cheat Sheet',
-    screen: 'ComingSoon',
+    screen: 'MorseCodeCheatSheet',
     icon: 'document-text-outline',
     id: 'morse_cheat_sheet',
   },
