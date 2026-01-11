@@ -69,7 +69,7 @@ export default function MorseCodeCheatSheet() {
   const getSortedData = (): MorseItem[] => {
     if (sortType === 'alphabetical') {
       // Already sorted alphabetically in the data array (A-Z, then 0-9)
-      return [...morseCodeData];
+      return morseCodeData;
     } else {
       // Sort by morse code pattern length (shortest to longest), then alphabetically for same length
       return [...morseCodeData].sort((a, b) => {
