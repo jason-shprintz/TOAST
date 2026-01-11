@@ -45,7 +45,7 @@ const natoPhoneticAlphabet = [
 export default function NatoPhoneticScreen() {
   return (
     <ScreenBody>
-      <SectionHeader>Nato Phonetic</SectionHeader>
+      <SectionHeader>NATO Phonetic</SectionHeader>
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}
