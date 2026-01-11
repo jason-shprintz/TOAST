@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     color: COLORS.PRIMARY_DARK,
     marginHorizontal: 5,
+    minWidth: 90,
   },
   spellOut: {
     fontSize: 18,
