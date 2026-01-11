@@ -25,7 +25,7 @@ const morseCodeTools: ToolType[] = [
   },
   {
     name: 'Nato Phonetic',
-    screen: 'ComingSoon',
+    screen: 'NatoPhonetic',
     icon: 'radio-outline',
     id: 'morse_nato_phonetic',
   },
