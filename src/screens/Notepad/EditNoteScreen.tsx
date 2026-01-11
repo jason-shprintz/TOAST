@@ -25,13 +25,13 @@ import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
 
-type RootStackParamList = {
-  EditNote: { note: Note };
-};
+type EditNoteScreenRouteProp = RouteProp<
+  { EditNote: { note: Note } },
+  'EditNote'
+>;
 
-type EditNoteScreenRouteProp = RouteProp<RootStackParamList, 'EditNote'>;
 type EditNoteScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
+  { EditNote: { note: Note } },
   'EditNote'
 >;
 
