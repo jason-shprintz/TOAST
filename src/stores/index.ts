@@ -1,5 +1,5 @@
 export { RootStore } from './RootStore';
-export { CoreStore } from './CoreStore';
+export { CoreStore, type Note } from './CoreStore';
 export { NavigationStore } from './NavigationStore';
 export { ReferenceStore } from './ReferenceStore';
 export { SettingsStore } from './SettingsStore';

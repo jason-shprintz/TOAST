@@ -895,6 +895,43 @@ export class CoreStore {
   }
 
   /**
+   * Updates the content of an existing note.
+   *
+   * Finds the note by its ID and updates its title, text, and/or category.
+   * After updating the note properties, it calls `updateNote` to persist the changes.
+   *
+   * @param noteId - The unique identifier of the note to update.
+   * @param params - The parameters containing the fields to update.
+   * @param params.title - The new title for the note (optional).
+   * @param params.text - The new text content for the note (optional).
+   * @param params.category - The new category for the note (optional).
+   */
+  async updateNoteContent(
+    noteId: string,
+    params: {
+      title?: string;
+      text?: string;
+      category?: NoteCategory;
+    },
+  ) {
+    const note = this.notes.find(n => n.id === noteId);
+    if (note) {
+      runInAction(() => {
+        if (params.title !== undefined) {
+          note.title = params.title;
+        }
+        if (params.text !== undefined) {
+          note.text = params.text;
+        }
+        if (params.category !== undefined) {
+          note.category = params.category;
+        }
+      });
+      await this.updateNote(note);
+    }
+  }
+
+  /**
    * Sets the note category with the specified ID.
    *
    * Finds the note in the `notes` array by its `noteId` and sets its `category` property

@@ -15,6 +15,7 @@ import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
+import EditNoteScreen from '../screens/Notepad/EditNoteScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
@@ -87,6 +88,7 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="VoiceLog" component={VoiceLogScreen} />
           <Stack.Screen name="NewNote" component={NewNoteScreen} />
+          <Stack.Screen name="EditNote" component={EditNoteScreen} />
           <Stack.Screen name="Notepad" component={NotepadScreen} />
           <Stack.Screen name="NoteCategory" component={NoteCategoryScreen} />
           <Stack.Screen name="NoteEntry" component={NoteEntryScreen} />
