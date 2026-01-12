@@ -188,6 +188,7 @@ export class CoreStore {
     // Stop any running patterns
     this.stopSOS();
     this.stopStrobe();
+    this.stopMorseTransmission();
     // Apply steady on/off
     if (this.flashlightMode === FlashlightModes.ON) {
       this.setTorch(true);
@@ -425,6 +426,9 @@ export class CoreStore {
    * @param withTone - Whether to play accompanying audio tones
    */
   transmitMorseMessage(morseCode: string, withTone: boolean) {
+    // Stop any other flashlight patterns
+    this.stopSOS();
+    this.stopStrobe();
     this.stopMorseTransmission();
     runInAction(() => {
       this.isMorseTransmitting = true;
@@ -441,6 +445,9 @@ export class CoreStore {
     const chars = morseCode.split('');
     for (let i = 0; i < chars.length; i++) {
       const char = chars[i];
+      const prevChar = i > 0 ? chars[i - 1] : null;
+      const nextChar = i < chars.length - 1 ? chars[i + 1] : null;
+
       if (char === '.') {
         // Dot: on for 1 unit
         sequence.push({ on: true, ms: unit, type: 'dot' });
@@ -450,11 +457,14 @@ export class CoreStore {
         sequence.push({ on: true, ms: 3 * unit, type: 'dash' });
         sequence.push({ on: false, ms: unit, type: null }); // intra-signal gap
       } else if (char === ' ') {
-        // Space between letters (already has 1 unit gap from last signal)
-        // Add 2 more units to make total 3 units
-        sequence.push({ on: false, ms: 2 * unit, type: null });
+        // Skip spaces that are adjacent to '/' to avoid double-counting gaps
+        if (prevChar !== '/' && nextChar !== '/') {
+          // Space between letters (already has 1 unit gap from last signal)
+          // Add 2 more units to make total 3 units
+          sequence.push({ on: false, ms: 2 * unit, type: null });
+        }
       } else if (char === '/') {
-        // Word separator: 7 units total (already has 1 unit gap)
+        // Word separator: 7 units total (already has 1 unit gap from last signal)
         // Add 6 more units to make total 7 units
         sequence.push({ on: false, ms: 6 * unit, type: null });
       }
