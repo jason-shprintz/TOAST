@@ -65,12 +65,16 @@ MORSE_CODE_MAP[' '] = '/';
 /**
  * Converts a text string to morse code.
  * Unsupported characters are ignored.
+ * Multiple consecutive spaces are treated as a single word separator.
  *
  * @param text - The input text to convert
  * @returns The morse code representation, with spaces between letters and '/' for word breaks
  */
 export function textToMorse(text: string): string {
-  return text
+  // Normalize multiple spaces to single space and trim
+  const normalized = text.trim().replace(/\s+/g, ' ');
+  
+  return normalized
     .toUpperCase()
     .split('')
     .map(char => MORSE_CODE_MAP[char] || '')
