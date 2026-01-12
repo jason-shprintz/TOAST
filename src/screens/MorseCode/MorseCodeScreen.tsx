@@ -7,7 +7,7 @@ import { ToolType } from '../../types/common-types';
 const morseCodeTools: ToolType[] = [
   {
     name: 'Alpha to Morse',
-    screen: 'ComingSoon',
+    screen: 'AlphaToMorse',
     icon: 'text-outline',
     id: 'morse_alpha_to_morse',
   },

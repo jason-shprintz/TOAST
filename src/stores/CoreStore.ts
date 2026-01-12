@@ -188,6 +188,7 @@ export class CoreStore {
     // Stop any running patterns
     this.stopSOS();
     this.stopStrobe();
+    this.stopMorseTransmission();
     // Apply steady on/off
     if (this.flashlightMode === FlashlightModes.ON) {
       this.setTorch(true);
@@ -409,6 +410,112 @@ export class CoreStore {
    */
   setSosWithTone(enabled: boolean) {
     this.sosWithTone = enabled;
+  }
+
+  // --------------------------------------------------------------------
+  // ===== Morse Code Transmission =====
+  // --------------------------------------------------------------------
+  private morseTimer: ReturnType<typeof setTimeout> | null = null;
+  isMorseTransmitting: boolean = false;
+
+  /**
+   * Transmits a morse code message using the flashlight and optional sound.
+   * Uses the same timing conventions as SOS: dot=1 unit, dash=3 units.
+   *
+   * @param morseCode - The morse code string (e.g., "... --- ...")
+   * @param withTone - Whether to play accompanying audio tones
+   */
+  transmitMorseMessage(morseCode: string, withTone: boolean) {
+    // Stop any other flashlight patterns
+    this.stopSOS();
+    this.stopStrobe();
+    this.stopMorseTransmission();
+    runInAction(() => {
+      this.isMorseTransmitting = true;
+    });
+
+    const unit = this.sosUnitMs;
+    const sequence: Array<{
+      on: boolean;
+      ms: number;
+      type: 'dot' | 'dash' | null;
+    }> = [];
+
+    // Parse morse code string into sequence
+    const chars = morseCode.split('');
+    for (let i = 0; i < chars.length; i++) {
+      const char = chars[i];
+      const prevChar = i > 0 ? chars[i - 1] : null;
+      const nextChar = i < chars.length - 1 ? chars[i + 1] : null;
+
+      if (char === '.') {
+        // Dot: on for 1 unit
+        sequence.push({ on: true, ms: unit, type: 'dot' });
+        sequence.push({ on: false, ms: unit, type: null }); // intra-signal gap
+      } else if (char === '-') {
+        // Dash: on for 3 units
+        sequence.push({ on: true, ms: 3 * unit, type: 'dash' });
+        sequence.push({ on: false, ms: unit, type: null }); // intra-signal gap
+      } else if (char === ' ') {
+        // Skip spaces that are adjacent to '/' to avoid double-counting gaps
+        if (prevChar !== '/' && nextChar !== '/') {
+          // Space between letters (already has 1 unit gap from last signal)
+          // Add 2 more units to make total 3 units
+          sequence.push({ on: false, ms: 2 * unit, type: null });
+        }
+      } else if (char === '/') {
+        // Word separator: 7 units total (already has 1 unit gap from last signal)
+        // Add 6 more units to make total 7 units
+        sequence.push({ on: false, ms: 6 * unit, type: null });
+      }
+    }
+
+    const runSequence = (index: number) => {
+      if (index >= sequence.length) {
+        // Sequence complete
+        this.setTorch(false);
+        runInAction(() => {
+          this.isMorseTransmitting = false;
+        });
+        return;
+      }
+
+      const step = sequence[index];
+      this.setTorch(step.on);
+
+      // Play audio tone if enabled and torch is on
+      if (withTone && step.on && step.type) {
+        this.playSosTone(step.type);
+      }
+
+      this.morseTimer = setTimeout(() => {
+        runSequence(index + 1);
+      }, step.ms);
+    };
+
+    // Start the sequence
+    runSequence(0);
+  }
+
+  /**
+   * Stops the current morse code transmission.
+   */
+  stopMorseTransmission() {
+    if (this.morseTimer) {
+      clearTimeout(this.morseTimer);
+      this.morseTimer = null;
+    }
+    runInAction(() => {
+      this.isMorseTransmitting = false;
+    });
+    this.setTorch(false);
+    // Stop any playing audio
+    if (this.dotSound) {
+      this.dotSound.stop();
+    }
+    if (this.dashSound) {
+      this.dashSound.stop();
+    }
   }
 
   // --------------------------------------------------------------------
