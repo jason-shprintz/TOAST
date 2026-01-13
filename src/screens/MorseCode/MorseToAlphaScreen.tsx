@@ -34,9 +34,21 @@ const MorseToAlphaScreenImpl = () => {
   };
 
   const handleSpace = () => {
-    // Only add space if the last character isn't already a space
+    // Add space between morse characters
     if (morseInput.length > 0 && morseInput[morseInput.length - 1] !== ' ') {
       setMorseInput(prev => prev + ' ');
+    }
+  };
+
+  const handleWordSeparator = () => {
+    // Add word separator (/) with spaces around it
+    if (morseInput.length > 0) {
+      const lastChar = morseInput[morseInput.length - 1];
+      if (lastChar === ' ') {
+        setMorseInput(prev => prev + '/ ');
+      } else {
+        setMorseInput(prev => prev + ' / ');
+      }
     }
   };
 
@@ -104,25 +116,35 @@ const MorseToAlphaScreenImpl = () => {
 
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
+              onPress={handleWordSeparator}
+            >
+              <Text style={styles.secondaryButtonText}>/</Text>
+              <Text style={styles.buttonLabel}>WORD</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={[styles.button, styles.secondaryButton]}
               onPress={handleBackspace}
             >
               <Text style={styles.secondaryButtonText}>⌫</Text>
               <Text style={styles.buttonLabel}>BACK</Text>
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity
-            style={[styles.button, styles.clearButton]}
-            onPress={handleClear}
-          >
-            <Text style={styles.clearButtonText}>Clear All</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.clearButton]}
+              onPress={handleClear}
+            >
+              <Text style={styles.clearButtonText}>CLEAR</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Help Text */}
         <View style={styles.helpContainer}>
           <Text style={styles.helpText}>
-            Tip: Use dot and dash to build characters. Press space between characters and use / for word breaks.
+            Tip: Press SPACE between morse characters (letters/numbers) and WORD to separate words.
           </Text>
         </View>
       </View>
@@ -213,13 +235,9 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     backgroundColor: COLORS.TOAST_BROWN,
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 8,
   },
   clearButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: COLORS.PRIMARY_LIGHT,
   },
