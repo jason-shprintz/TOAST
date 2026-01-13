@@ -41,12 +41,17 @@ const MorseToAlphaScreen = () => {
 
   const handleWordSeparator = () => {
     // Add word separator (/) with spaces around it
+    // Prevent adding consecutive word separators
     if (morseInput.length > 0) {
-      const lastChar = morseInput[morseInput.length - 1];
-      if (lastChar === ' ') {
-        setMorseInput(prev => prev + '/ ');
-      } else {
-        setMorseInput(prev => prev + ' / ');
+      const trimmed = morseInput.trimEnd();
+      // Check if the last non-space character is already a word separator
+      if (trimmed.length > 0 && trimmed[trimmed.length - 1] !== '/') {
+        const lastChar = morseInput[morseInput.length - 1];
+        if (lastChar === ' ') {
+          setMorseInput(prev => prev + '/ ');
+        } else {
+          setMorseInput(prev => prev + ' / ');
+        }
       }
     }
   };
