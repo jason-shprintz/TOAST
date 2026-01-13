@@ -112,9 +112,7 @@ const MorseToAlphaScreen = () => {
                 <Text style={styles.primaryButtonText}>-</Text>
                 <Text style={styles.buttonLabel}>DASH</Text>
               </TouchableOpacity>
-            </View>
 
-            <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.button, styles.secondaryButton]}
                 onPress={handleSpace}
@@ -122,7 +120,9 @@ const MorseToAlphaScreen = () => {
                 <Text style={styles.secondaryButtonText}>⎵</Text>
                 <Text style={styles.buttonLabel}>SPACE</Text>
               </TouchableOpacity>
+            </View>
 
+            <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.button, styles.secondaryButton]}
                 onPress={handleWordSeparator}
@@ -130,9 +130,7 @@ const MorseToAlphaScreen = () => {
                 <Text style={styles.secondaryButtonText}>/</Text>
                 <Text style={styles.buttonLabel}>WORD</Text>
               </TouchableOpacity>
-            </View>
 
-            <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.button, styles.secondaryButton]}
                 onPress={handleBackspace}
@@ -179,47 +177,47 @@ const styles = StyleSheet.create({
   },
   displayContainer: {
     width: '100%',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   displayLabel: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
-    marginBottom: 6,
+    marginBottom: 5,
   },
   displayBox: {
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
-    borderRadius: 10,
-    padding: 12,
-    minHeight: 60,
+    borderRadius: 8,
+    padding: 10,
+    minHeight: 50,
     justifyContent: 'center',
   },
   displayText: {
-    fontSize: 18,
+    fontSize: 16,
     color: COLORS.PRIMARY_DARK,
     fontFamily: 'monospace',
   },
   translatedText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: COLORS.ACCENT,
   },
   buttonGrid: {
     width: '100%',
-    marginTop: 6,
+    marginTop: 4,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
-    gap: 10,
+    marginBottom: 8,
+    gap: 8,
   },
   button: {
     flex: 1,
-    paddingVertical: 16,
-    borderRadius: 10,
+    paddingVertical: 12,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -229,7 +227,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
   },
   primaryButtonText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '700',
     color: COLORS.PRIMARY_LIGHT,
   },
@@ -239,15 +237,15 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
   },
   secondaryButtonText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
   },
   buttonLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
-    marginTop: 3,
+    marginTop: 2,
   },
   clearButton: {
     backgroundColor: COLORS.TOAST_BROWN,
@@ -258,15 +256,15 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_LIGHT,
   },
   helpContainer: {
-    marginTop: 12,
-    padding: 10,
+    marginTop: 10,
+    padding: 8,
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
   helpText: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.SECONDARY_ACCENT,
     textAlign: 'center',
   },
