@@ -17,6 +17,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
+import MorseToAlphaScreen from '../screens/MorseCode/MorseToAlphaScreen';
 import NatoPhoneticScreen from '../screens/MorseCode/NatoPhoneticScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import EditNoteScreen from '../screens/Notepad/EditNoteScreen';
@@ -87,6 +88,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="AlphaToMorse"
             component={AlphaToMorseScreen}
+          />
+          <Stack.Screen
+            name="MorseToAlpha"
+            component={MorseToAlphaScreen}
           />
           <Stack.Screen
             name="MorseCodeCheatSheet"
