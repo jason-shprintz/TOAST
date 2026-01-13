@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -10,19 +10,16 @@ import { morseToText } from '../../utils/morseCodeMapping';
  * Morse to Alpha screen allows users to input morse code and see real-time translation.
  *
  * Features:
- * - Buttons for dot, dash, space (word separator), and backspace
+ * - Buttons for dot, dash, space (character separator), word separator (/), backspace, and clear
  * - Real-time translation as user types
  * - No submit button - translation happens automatically
  * - Shows both morse code input and translated text output
  */
 const MorseToAlphaScreen = () => {
   const [morseInput, setMorseInput] = useState('');
-  const [translatedText, setTranslatedText] = useState('');
 
-  // Update translation whenever morse input changes
-  useEffect(() => {
-    setTranslatedText(morseToText(morseInput));
-  }, [morseInput]);
+  // Compute translation directly from morse input
+  const translatedText = morseToText(morseInput);
 
   const handleDot = () => {
     setMorseInput(prev => prev + '.');
@@ -95,6 +92,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.primaryButton]}
               onPress={handleDot}
+              accessibilityLabel="Add dot"
             >
               <Text style={styles.primaryButtonText}>.</Text>
               <Text style={styles.buttonLabel}>DOT</Text>
@@ -103,6 +101,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.primaryButton]}
               onPress={handleDash}
+              accessibilityLabel="Add dash"
             >
               <Text style={styles.primaryButtonText}>-</Text>
               <Text style={styles.buttonLabel}>DASH</Text>
@@ -111,6 +110,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
               onPress={handleSpace}
+              accessibilityLabel="Add space between characters"
             >
               <Text style={styles.secondaryButtonText}>⎵</Text>
               <Text style={styles.buttonLabel}>SPACE</Text>
@@ -121,6 +121,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
               onPress={handleWordSeparator}
+              accessibilityLabel="Add word separator"
             >
               <Text style={styles.secondaryButtonText}>/</Text>
               <Text style={styles.buttonLabel}>WORD</Text>
@@ -129,6 +130,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
               onPress={handleBackspace}
+              accessibilityLabel="Delete last character"
             >
               <Text style={styles.secondaryButtonText}>⌫</Text>
               <Text style={styles.buttonLabel}>BACK</Text>
@@ -137,6 +139,7 @@ const MorseToAlphaScreen = () => {
             <TouchableOpacity
               style={[styles.button, styles.clearButton]}
               onPress={handleClear}
+              accessibilityLabel="Clear all input"
             >
               <Text style={styles.clearButtonText}>CLEAR</Text>
             </TouchableOpacity>
