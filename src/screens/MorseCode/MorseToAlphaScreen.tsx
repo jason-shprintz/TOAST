@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { morseToText } from '../../utils/morseCodeMapping';
 
 /**
@@ -68,90 +68,96 @@ const MorseToAlphaScreen = () => {
     <ScreenBody>
       <SectionHeader>Morse to Alpha</SectionHeader>
 
-      <View style={styles.container}>
-        {/* Morse Code Input Display */}
-        <View style={styles.displayContainer}>
-          <Text style={styles.displayLabel}>Morse Code:</Text>
-          <View style={styles.displayBox}>
-            <Text style={styles.displayText}>
-              {morseInput || 'Enter morse code...'}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          {/* Morse Code Input Display */}
+          <View style={styles.displayContainer}>
+            <Text style={styles.displayLabel}>Morse Code:</Text>
+            <View style={styles.displayBox}>
+              <Text style={styles.displayText}>
+                {morseInput || 'Enter morse code...'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Translated Text Display */}
+          <View style={styles.displayContainer}>
+            <Text style={styles.displayLabel}>Translation:</Text>
+            <View style={styles.displayBox}>
+              <Text style={styles.translatedText}>
+                {translatedText || '-'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Input Buttons */}
+          <View style={styles.buttonGrid}>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.button, styles.primaryButton]}
+                onPress={handleDot}
+              >
+                <Text style={styles.primaryButtonText}>.</Text>
+                <Text style={styles.buttonLabel}>DOT</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.primaryButton]}
+                onPress={handleDash}
+              >
+                <Text style={styles.primaryButtonText}>-</Text>
+                <Text style={styles.buttonLabel}>DASH</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.button, styles.secondaryButton]}
+                onPress={handleSpace}
+              >
+                <Text style={styles.secondaryButtonText}>⎵</Text>
+                <Text style={styles.buttonLabel}>SPACE</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.secondaryButton]}
+                onPress={handleWordSeparator}
+              >
+                <Text style={styles.secondaryButtonText}>/</Text>
+                <Text style={styles.buttonLabel}>WORD</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.button, styles.secondaryButton]}
+                onPress={handleBackspace}
+              >
+                <Text style={styles.secondaryButtonText}>⌫</Text>
+                <Text style={styles.buttonLabel}>BACK</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.clearButton]}
+                onPress={handleClear}
+              >
+                <Text style={styles.clearButtonText}>CLEAR</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Help Text */}
+          <View style={styles.helpContainer}>
+            <Text style={styles.helpText}>
+              Tip: Press SPACE between morse characters (letters/numbers) and WORD to separate words.
             </Text>
           </View>
         </View>
-
-        {/* Translated Text Display */}
-        <View style={styles.displayContainer}>
-          <Text style={styles.displayLabel}>Translation:</Text>
-          <View style={styles.displayBox}>
-            <Text style={styles.translatedText}>
-              {translatedText || '-'}
-            </Text>
-          </View>
-        </View>
-
-        {/* Input Buttons */}
-        <View style={styles.buttonGrid}>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.primaryButton]}
-              onPress={handleDot}
-            >
-              <Text style={styles.primaryButtonText}>.</Text>
-              <Text style={styles.buttonLabel}>DOT</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.primaryButton]}
-              onPress={handleDash}
-            >
-              <Text style={styles.primaryButtonText}>-</Text>
-              <Text style={styles.buttonLabel}>DASH</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.secondaryButton]}
-              onPress={handleSpace}
-            >
-              <Text style={styles.secondaryButtonText}>⎵</Text>
-              <Text style={styles.buttonLabel}>SPACE</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.secondaryButton]}
-              onPress={handleWordSeparator}
-            >
-              <Text style={styles.secondaryButtonText}>/</Text>
-              <Text style={styles.buttonLabel}>WORD</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.secondaryButton]}
-              onPress={handleBackspace}
-            >
-              <Text style={styles.secondaryButtonText}>⌫</Text>
-              <Text style={styles.buttonLabel}>BACK</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.clearButton]}
-              onPress={handleClear}
-            >
-              <Text style={styles.clearButtonText}>CLEAR</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Help Text */}
-        <View style={styles.helpContainer}>
-          <Text style={styles.helpText}>
-            Tip: Press SPACE between morse characters (letters/numbers) and WORD to separate words.
-          </Text>
-        </View>
-      </View>
+      </ScrollView>
     </ScreenBody>
   );
 };
@@ -159,55 +165,61 @@ const MorseToAlphaScreen = () => {
 export default MorseToAlphaScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
     width: '100%',
+  },
+  scrollContent: {
+    paddingBottom: FOOTER_HEIGHT + 10,
+  },
+  container: {
+    width: '100%',
     paddingHorizontal: 14,
-    paddingTop: 10,
+    paddingTop: 8,
   },
   displayContainer: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   displayLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   displayBox: {
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
-    borderRadius: 12,
-    padding: 16,
-    minHeight: 80,
+    borderRadius: 10,
+    padding: 12,
+    minHeight: 60,
     justifyContent: 'center',
   },
   displayText: {
-    fontSize: 20,
+    fontSize: 18,
     color: COLORS.PRIMARY_DARK,
     fontFamily: 'monospace',
   },
   translatedText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
     color: COLORS.ACCENT,
   },
   buttonGrid: {
     width: '100%',
-    marginTop: 10,
+    marginTop: 6,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
-    gap: 12,
+    marginBottom: 10,
+    gap: 10,
   },
   button: {
     flex: 1,
-    paddingVertical: 24,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -217,7 +229,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
   },
   primaryButtonText: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '700',
     color: COLORS.PRIMARY_LIGHT,
   },
@@ -227,34 +239,34 @@ const styles = StyleSheet.create({
     borderColor: COLORS.TOAST_BROWN,
   },
   secondaryButtonText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
   },
   buttonLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
-    marginTop: 4,
+    marginTop: 3,
   },
   clearButton: {
     backgroundColor: COLORS.TOAST_BROWN,
   },
   clearButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
     color: COLORS.PRIMARY_LIGHT,
   },
   helpContainer: {
-    marginTop: 20,
-    padding: 12,
+    marginTop: 12,
+    padding: 10,
     backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.SECONDARY_ACCENT,
   },
   helpText: {
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.SECONDARY_ACCENT,
     textAlign: 'center',
   },
