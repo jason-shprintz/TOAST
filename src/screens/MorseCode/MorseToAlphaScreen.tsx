@@ -1,4 +1,3 @@
-import { observer } from 'mobx-react-lite';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/ScaledText';
@@ -16,7 +15,7 @@ import { morseToText } from '../../utils/morseCodeMapping';
  * - No submit button - translation happens automatically
  * - Shows both morse code input and translated text output
  */
-const MorseToAlphaScreenImpl = () => {
+const MorseToAlphaScreen = () => {
   const [morseInput, setMorseInput] = useState('');
   const [translatedText, setTranslatedText] = useState('');
 
@@ -152,7 +151,7 @@ const MorseToAlphaScreenImpl = () => {
   );
 };
 
-export default observer(MorseToAlphaScreenImpl);
+export default MorseToAlphaScreen;
 
 const styles = StyleSheet.create({
   container: {
