@@ -19,7 +19,7 @@ const morseCodeTools: ToolType[] = [
   },
   {
     name: 'Trainer',
-    screen: 'ComingSoon',
+    screen: 'MorseTrainer',
     icon: 'school-outline',
     id: 'morse_trainer',
   },
