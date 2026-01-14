@@ -2,7 +2,7 @@
  * @format
  */
 
-import { textToMorse, MORSE_CODE_MAP } from '../src/utils/morseCodeMapping';
+import { textToMorse, morseToText, MORSE_CODE_MAP, REVERSE_MORSE_CODE_MAP } from '../src/utils/morseCodeMapping';
 
 describe('morseCodeMapping', () => {
   describe('textToMorse', () => {
@@ -97,6 +97,86 @@ describe('morseCodeMapping', () => {
       expect(MORSE_CODE_MAP.T).toBe('-');
       expect(MORSE_CODE_MAP.S).toBe('...');
       expect(MORSE_CODE_MAP.O).toBe('---');
+    });
+  });
+
+  describe('morseToText', () => {
+    it('should convert single morse characters correctly', () => {
+      expect(morseToText('.-')).toBe('A');
+      expect(morseToText('.')).toBe('E');
+      expect(morseToText('-')).toBe('T');
+      expect(morseToText('...')).toBe('S');
+    });
+
+    it('should convert morse numbers correctly', () => {
+      expect(morseToText('-----')).toBe('0');
+      expect(morseToText('.----')).toBe('1');
+      expect(morseToText('.....')).toBe('5');
+      expect(morseToText('----.')).toBe('9');
+    });
+
+    it('should convert morse words with spaces between characters', () => {
+      expect(morseToText('... --- ...')).toBe('SOS');
+      expect(morseToText('.... ..')).toBe('HI');
+    });
+
+    it('should convert multiple words with "/" separator', () => {
+      expect(morseToText('.... .. / - .... . .-. .')).toBe('HI THERE');
+      expect(morseToText('... --- ... / .... . .-.. .--.')).toBe('SOS HELP');
+    });
+
+    it('should handle mixed alphanumeric morse', () => {
+      expect(morseToText('.- .---- -... ..---')).toBe('A1B2');
+      expect(morseToText('- . ... - / .---- ..--- ...--')).toBe('TEST 123');
+    });
+
+    it('should ignore unrecognized morse patterns', () => {
+      expect(morseToText('.... .. ..-..')).toBe('HI');
+      expect(morseToText('... --- ... ..--..')).toBe('SOS');
+    });
+
+    it('should handle empty string', () => {
+      expect(morseToText('')).toBe('');
+    });
+
+    it('should handle whitespace-only string', () => {
+      expect(morseToText('   ')).toBe('');
+      expect(morseToText('\t\n')).toBe('');
+    });
+
+    it('should handle string with only unrecognized patterns', () => {
+      expect(morseToText('..--.. ---.....')).toBe('');
+    });
+
+    it('should be reversible with textToMorse for valid text', () => {
+      const testCases = ['HELLO', 'SOS', 'TEST 123', 'A1B2'];
+      testCases.forEach(text => {
+        const morse = textToMorse(text);
+        const reversed = morseToText(morse);
+        expect(reversed).toBe(text);
+      });
+    });
+  });
+
+  describe('REVERSE_MORSE_CODE_MAP', () => {
+    it('should contain reverse mappings for all letters A-Z', () => {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      letters.forEach(letter => {
+        const morse = MORSE_CODE_MAP[letter];
+        expect(REVERSE_MORSE_CODE_MAP[morse]).toBe(letter);
+      });
+    });
+
+    it('should contain reverse mappings for all numbers 0-9', () => {
+      const numbers = '0123456789'.split('');
+      numbers.forEach(number => {
+        const morse = MORSE_CODE_MAP[number];
+        expect(REVERSE_MORSE_CODE_MAP[morse]).toBe(number);
+      });
+    });
+
+    it('should map word separator to space', () => {
+      expect(REVERSE_MORSE_CODE_MAP['/']).toBe(' ');
     });
   });
 });

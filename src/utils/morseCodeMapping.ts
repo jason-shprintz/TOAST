@@ -62,6 +62,18 @@ export const MORSE_CODE_MAP: Record<string, string> = morseCodeData.reduce(
 // Add space as word separator
 MORSE_CODE_MAP[' '] = '/';
 
+// Create reverse lookup map (morse to character)
+export const REVERSE_MORSE_CODE_MAP: Record<string, string> = morseCodeData.reduce(
+  (acc, item) => {
+    acc[item.morse] = item.char;
+    return acc;
+  },
+  {} as Record<string, string>,
+);
+
+// Add word separator mapping
+REVERSE_MORSE_CODE_MAP['/'] = ' ';
+
 /**
  * Converts a text string to morse code.
  * Unsupported characters are ignored.
@@ -80,4 +92,25 @@ export function textToMorse(text: string): string {
     .map(char => MORSE_CODE_MAP[char] || '')
     .filter(morse => morse !== '')
     .join(' ');
+}
+
+/**
+ * Converts morse code to text.
+ * Characters are expected to be separated by spaces.
+ * '/' represents a word separator (space in output).
+ * Unrecognized morse patterns are ignored.
+ *
+ * @param morse - The morse code string to convert (e.g., ".... .. / - .... . .-. .")
+ * @returns The translated text
+ */
+export function morseToText(morse: string): string {
+  if (!morse.trim()) {
+    return '';
+  }
+  
+  return morse
+    .trim()
+    .split(' ')
+    .map(morseChar => REVERSE_MORSE_CODE_MAP[morseChar] || '')
+    .join('');
 }

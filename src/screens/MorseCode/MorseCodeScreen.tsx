@@ -13,7 +13,7 @@ const morseCodeTools: ToolType[] = [
   },
   {
     name: 'Morse to Alpha',
-    screen: 'ComingSoon',
+    screen: 'MorseToAlpha',
     icon: 'swap-horizontal-outline',
     id: 'morse_morse_to_alpha',
   },
