@@ -75,6 +75,7 @@ export default function MorseTrainerLevelScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [dotSound, setDotSound] = useState<Sound | null>(null);
   const [dashSound, setDashSound] = useState<Sound | null>(null);
+  const feedbackTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Load sounds on mount
   useEffect(() => {
@@ -105,6 +106,15 @@ export default function MorseTrainerLevelScreen() {
   useEffect(() => {
     setChallenge(generateChallenge(level));
   }, [level]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+    };
+  }, []);
 
   /**
    * Plays the morse code sequence for the current challenge.
@@ -163,15 +173,18 @@ export default function MorseTrainerLevelScreen() {
       setFeedback('incorrect');
     }
 
+    // Clear any existing timeout
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
+
     // Show feedback for 1.5 seconds, then move to next challenge
-    const timeoutId = setTimeout(() => {
+    feedbackTimeoutRef.current = setTimeout(() => {
       setFeedback(null);
       setUserAnswer('');
       setChallenge(generateChallenge(level));
+      feedbackTimeoutRef.current = null;
     }, FEEDBACK_TIMEOUT_MS);
-
-    // Store timeout ID for cleanup
-    return () => clearTimeout(timeoutId);
   };
 
   /**
@@ -182,14 +195,18 @@ export default function MorseTrainerLevelScreen() {
     setFeedback('incorrect');
     setAttempts(attempts + 1);
 
+    // Clear any existing timeout
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
+
     // Move to next challenge after showing answer
-    const timeoutId = setTimeout(() => {
+    feedbackTimeoutRef.current = setTimeout(() => {
       setFeedback(null);
       setUserAnswer('');
       setChallenge(generateChallenge(level));
+      feedbackTimeoutRef.current = null;
     }, FEEDBACK_TIMEOUT_MS);
-
-    return () => clearTimeout(timeoutId);
   };
 
   const getLevelTitle = () => {
