@@ -19,6 +19,13 @@ type RouteParams = {
   level: TrainerLevel;
 };
 
+// Morse code timing constants (in milliseconds)
+const MORSE_UNIT_MS = 200; // Base unit for morse code timing
+const DASH_DURATION_UNITS = 3; // Dash is 3 times longer than dot
+const LETTER_SPACE_UNITS = 2; // Additional space between letters (total 3 units)
+const WORD_SEPARATOR_UNITS = 6; // Additional space between words (total 7 units)
+const FEEDBACK_TIMEOUT_MS = 1500; // Time to display feedback before next challenge
+
 // Training data
 const COMMON_WORDS = [
   'SOS', 'HELP', 'WATER', 'FOOD', 'SAFE', 'DANGER',
@@ -109,7 +116,6 @@ export default function MorseTrainerLevelScreen() {
 
     setIsPlaying(true);
     const morseCode = textToMorse(challenge);
-    const unit = 200; // milliseconds
 
     const playSequence = async (morse: string) => {
       for (let i = 0; i < morse.length; i++) {
@@ -118,21 +124,21 @@ export default function MorseTrainerLevelScreen() {
         if (char === '.') {
           // Play dot
           dotSound.play();
-          await new Promise(resolve => setTimeout(resolve, unit));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
           // Gap after dot
-          await new Promise(resolve => setTimeout(resolve, unit));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
         } else if (char === '-') {
           // Play dash
           dashSound.play();
-          await new Promise(resolve => setTimeout(resolve, unit * 3));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * DASH_DURATION_UNITS));
           // Gap after dash
-          await new Promise(resolve => setTimeout(resolve, unit));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
         } else if (char === ' ') {
           // Space between letters (2 more units, total 3)
-          await new Promise(resolve => setTimeout(resolve, unit * 2));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * LETTER_SPACE_UNITS));
         } else if (char === '/') {
           // Word separator (6 more units, total 7)
-          await new Promise(resolve => setTimeout(resolve, unit * 6));
+          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * WORD_SEPARATOR_UNITS));
         }
       }
     };
@@ -162,7 +168,7 @@ export default function MorseTrainerLevelScreen() {
       setFeedback(null);
       setUserAnswer('');
       setChallenge(generateChallenge(level));
-    }, 1500);
+    }, FEEDBACK_TIMEOUT_MS);
   };
 
   /**
