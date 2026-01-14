@@ -13,6 +13,9 @@ const COLORS = {
     '#f3cfa3ff',
   ],
   ERROR: '#d32f2f',
+  SUCCESS: '#28a745',
+  SUCCESS_LIGHT: '#d4edda',
+  ERROR_LIGHT: '#f8d7da',
 };
 
 export default COLORS;

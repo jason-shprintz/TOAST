@@ -342,12 +342,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   correctFeedback: {
-    backgroundColor: '#d4edda',
-    borderColor: '#28a745',
+    backgroundColor: COLORS.SUCCESS_LIGHT,
+    borderColor: COLORS.SUCCESS,
   },
   incorrectFeedback: {
-    backgroundColor: '#f8d7da',
-    borderColor: '#dc3545',
+    backgroundColor: COLORS.ERROR_LIGHT,
+    borderColor: COLORS.ERROR,
   },
   feedbackText: {
     fontSize: 14,

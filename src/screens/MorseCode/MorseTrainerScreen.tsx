@@ -19,7 +19,8 @@ export default function MorseTrainerScreen() {
   const navigation = useNavigation();
 
   const handleLevelSelect = (level: TrainerLevel) => {
-    navigation.navigate('MorseTrainerLevel' as never, { level } as never);
+    // @ts-expect-error - Navigation params typing not fully defined
+    navigation.navigate('MorseTrainerLevel', { level });
   };
 
   return (
