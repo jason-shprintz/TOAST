@@ -164,19 +164,32 @@ export default function MorseTrainerLevelScreen() {
     }
 
     // Show feedback for 1.5 seconds, then move to next challenge
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setFeedback(null);
       setUserAnswer('');
       setChallenge(generateChallenge(level));
     }, FEEDBACK_TIMEOUT_MS);
+
+    // Store timeout ID for cleanup
+    return () => clearTimeout(timeoutId);
   };
 
   /**
-   * Reveals the answer to the user.
+   * Reveals the answer to the user and moves to next challenge.
    */
   const showAnswer = () => {
     setUserAnswer(challenge);
+    setFeedback('incorrect');
     setAttempts(attempts + 1);
+
+    // Move to next challenge after showing answer
+    const timeoutId = setTimeout(() => {
+      setFeedback(null);
+      setUserAnswer('');
+      setChallenge(generateChallenge(level));
+    }, FEEDBACK_TIMEOUT_MS);
+
+    return () => clearTimeout(timeoutId);
   };
 
   const getLevelTitle = () => {
