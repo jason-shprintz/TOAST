@@ -99,11 +99,16 @@ export default function MorseTrainerLevelScreen() {
     null,
   );
   const challengeRef = useRef(challenge);
+  const isPlayingRef = useRef(isPlaying);
 
-  // Keep the ref in sync with the challenge state
+  // Keep the refs in sync with state
   useEffect(() => {
     challengeRef.current = challenge;
   }, [challenge]);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   // Load sounds on mount
   useEffect(() => {
@@ -168,7 +173,7 @@ export default function MorseTrainerLevelScreen() {
       !dotSound ||
       !dashSound ||
       !soundsLoaded ||
-      isPlaying ||
+      isPlayingRef.current ||
       !currentChallenge
     ) {
       return;
@@ -182,8 +187,10 @@ export default function MorseTrainerLevelScreen() {
         const char = morse[i];
 
         if (char === '.') {
-          // Play dot
-          dotSound.play();
+          // Play dot - stop first to reset playback position
+          dotSound.stop(() => {
+            dotSound.play();
+          });
           await new Promise(resolve =>
             setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
           );
@@ -192,8 +199,10 @@ export default function MorseTrainerLevelScreen() {
             setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
           );
         } else if (char === '-') {
-          // Play dash
-          dashSound.play();
+          // Play dash - stop first to reset playback position
+          dashSound.stop(() => {
+            dashSound.play();
+          });
           await new Promise(resolve =>
             setTimeout(
               () => resolve(undefined),
@@ -226,7 +235,7 @@ export default function MorseTrainerLevelScreen() {
 
     await playSequence(morseCode);
     setIsPlaying(false);
-  }, [dotSound, dashSound, soundsLoaded, isPlaying]);
+  }, [dotSound, dashSound, soundsLoaded]);
 
   /**
    * Checks the user's answer against the challenge.
