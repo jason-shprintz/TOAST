@@ -1,5 +1,5 @@
 import { useRoute, RouteProp } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -98,6 +98,12 @@ export default function MorseTrainerLevelScreen() {
   const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const challengeRef = useRef(challenge);
+
+  // Keep the ref in sync with the challenge state
+  useEffect(() => {
+    challengeRef.current = challenge;
+  }, [challenge]);
 
   // Load sounds on mount
   useEffect(() => {
@@ -156,13 +162,20 @@ export default function MorseTrainerLevelScreen() {
   /**
    * Plays the morse code sequence for the current challenge.
    */
-  const playMorseCode = async () => {
-    if (!dotSound || !dashSound || !soundsLoaded || isPlaying || !challenge) {
+  const playMorseCode = useCallback(async () => {
+    const currentChallenge = challengeRef.current;
+    if (
+      !dotSound ||
+      !dashSound ||
+      !soundsLoaded ||
+      isPlaying ||
+      !currentChallenge
+    ) {
       return;
     }
 
     setIsPlaying(true);
-    const morseCode = textToMorse(challenge);
+    const morseCode = textToMorse(currentChallenge);
 
     const playSequence = async (morse: string) => {
       for (let i = 0; i < morse.length; i++) {
@@ -213,7 +226,7 @@ export default function MorseTrainerLevelScreen() {
 
     await playSequence(morseCode);
     setIsPlaying(false);
-  };
+  }, [dotSound, dashSound, soundsLoaded, isPlaying]);
 
   /**
    * Checks the user's answer against the challenge.
