@@ -29,7 +29,8 @@ export default function MorseTrainerScreen() {
 
       <View style={styles.container}>
         <Text style={styles.description}>
-          Practice your morse code recognition skills. Select a difficulty level to begin:
+          Practice your morse code recognition skills. Select a difficulty level
+          to begin:
         </Text>
 
         <View style={styles.levelContainer}>
@@ -50,9 +51,7 @@ export default function MorseTrainerScreen() {
             accessibilityLabel="Medium level - word"
           >
             <Text style={styles.levelTitle}>MEDIUM</Text>
-            <Text style={styles.levelDescription}>
-              Word recognition
-            </Text>
+            <Text style={styles.levelDescription}>Word recognition</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -61,9 +60,7 @@ export default function MorseTrainerScreen() {
             accessibilityLabel="Hard level - sentence"
           >
             <Text style={styles.levelTitle}>HARD</Text>
-            <Text style={styles.levelDescription}>
-              Sentence recognition
-            </Text>
+            <Text style={styles.levelDescription}>Sentence recognition</Text>
           </TouchableOpacity>
         </View>
       </View>

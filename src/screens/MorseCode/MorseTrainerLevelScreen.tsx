@@ -28,9 +28,23 @@ const FEEDBACK_TIMEOUT_MS = 1500; // Time to display feedback before next challe
 
 // Training data
 const COMMON_WORDS = [
-  'SOS', 'HELP', 'WATER', 'FOOD', 'SAFE', 'DANGER',
-  'YES', 'NO', 'STOP', 'GO', 'COME', 'HERE',
-  'MORSE', 'CODE', 'TEST', 'RADIO', 'SIGNAL',
+  'SOS',
+  'HELP',
+  'WATER',
+  'FOOD',
+  'SAFE',
+  'DANGER',
+  'YES',
+  'NO',
+  'STOP',
+  'GO',
+  'COME',
+  'HERE',
+  'MORSE',
+  'CODE',
+  'TEST',
+  'RADIO',
+  'SIGNAL',
 ];
 
 const TRAINING_SENTENCES = [
@@ -48,14 +62,17 @@ const TRAINING_SENTENCES = [
 function generateChallenge(level: TrainerLevel): string {
   if (level === 'easy') {
     // Random single character
-    const randomItem = morseCodeData[Math.floor(Math.random() * morseCodeData.length)];
+    const randomItem =
+      morseCodeData[Math.floor(Math.random() * morseCodeData.length)];
     return randomItem.char;
   } else if (level === 'medium') {
     // Random word
     return COMMON_WORDS[Math.floor(Math.random() * COMMON_WORDS.length)];
   } else {
     // Random sentence
-    return TRAINING_SENTENCES[Math.floor(Math.random() * TRAINING_SENTENCES.length)];
+    return TRAINING_SENTENCES[
+      Math.floor(Math.random() * TRAINING_SENTENCES.length)
+    ];
   }
 }
 
@@ -71,17 +88,21 @@ export default function MorseTrainerLevelScreen() {
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
   const [attempts, setAttempts] = useState(0);
-  const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(
+    null,
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [dotSound, setDotSound] = useState<Sound | null>(null);
   const [dashSound, setDashSound] = useState<Sound | null>(null);
   const [soundsLoaded, setSoundsLoaded] = useState(false);
-  const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   // Load sounds on mount
   useEffect(() => {
     Sound.setCategory('Playback');
-    
+
     let dotLoaded = false;
     let dashLoaded = false;
 
@@ -90,8 +111,8 @@ export default function MorseTrainerLevelScreen() {
         setSoundsLoaded(true);
       }
     };
-    
-    const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
+
+    const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dot sound', error);
         return;
@@ -99,8 +120,8 @@ export default function MorseTrainerLevelScreen() {
       dotLoaded = true;
       checkBothLoaded();
     });
-    
-    const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
+
+    const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dash sound', error);
         return;
@@ -150,21 +171,42 @@ export default function MorseTrainerLevelScreen() {
         if (char === '.') {
           // Play dot
           dotSound.play();
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
+          await new Promise(resolve =>
+            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
+          );
           // Gap after dot
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
+          await new Promise(resolve =>
+            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
+          );
         } else if (char === '-') {
           // Play dash
           dashSound.play();
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * DASH_DURATION_UNITS));
+          await new Promise(resolve =>
+            setTimeout(
+              () => resolve(undefined),
+              MORSE_UNIT_MS * DASH_DURATION_UNITS,
+            ),
+          );
           // Gap after dash
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS));
+          await new Promise(resolve =>
+            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
+          );
         } else if (char === ' ') {
           // Space between letters (2 more units, total 3)
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * LETTER_SPACE_UNITS));
+          await new Promise(resolve =>
+            setTimeout(
+              () => resolve(undefined),
+              MORSE_UNIT_MS * LETTER_SPACE_UNITS,
+            ),
+          );
         } else if (char === '/') {
           // Word separator (6 more units, total 7)
-          await new Promise(resolve => setTimeout(resolve, MORSE_UNIT_MS * WORD_SEPARATOR_UNITS));
+          await new Promise(resolve =>
+            setTimeout(
+              () => resolve(undefined),
+              MORSE_UNIT_MS * WORD_SEPARATOR_UNITS,
+            ),
+          );
         }
       }
     };
@@ -251,7 +293,10 @@ export default function MorseTrainerLevelScreen() {
 
         {/* Play Button */}
         <TouchableOpacity
-          style={[styles.playButton, (isPlaying || !soundsLoaded) && styles.playButtonDisabled]}
+          style={[
+            styles.playButton,
+            (isPlaying || !soundsLoaded) && styles.playButtonDisabled,
+          ]}
           onPress={playMorseCode}
           disabled={isPlaying || !soundsLoaded}
           accessibilityLabel="Play morse code"
@@ -270,7 +315,13 @@ export default function MorseTrainerLevelScreen() {
           <Text style={styles.answerLabel}>Your Answer:</Text>
           <TextInput
             style={styles.answerInput}
-            placeholder={`Enter ${level === 'easy' ? 'character' : level === 'medium' ? 'word' : 'sentence'}...`}
+            placeholder={`Enter ${
+              level === 'easy'
+                ? 'character'
+                : level === 'medium'
+                ? 'word'
+                : 'sentence'
+            }...`}
             placeholderTextColor={COLORS.SECONDARY_ACCENT}
             value={userAnswer}
             onChangeText={setUserAnswer}
@@ -285,11 +336,15 @@ export default function MorseTrainerLevelScreen() {
           <View
             style={[
               styles.feedbackContainer,
-              feedback === 'correct' ? styles.correctFeedback : styles.incorrectFeedback,
+              feedback === 'correct'
+                ? styles.correctFeedback
+                : styles.incorrectFeedback,
             ]}
           >
             <Text style={styles.feedbackText}>
-              {feedback === 'correct' ? '✓ Correct!' : `✗ Incorrect. Answer was: ${challenge}`}
+              {feedback === 'correct'
+                ? '✓ Correct!'
+                : `✗ Incorrect. Answer was: ${challenge}`}
             </Text>
           </View>
         )}
@@ -320,7 +375,8 @@ export default function MorseTrainerLevelScreen() {
         {/* Help Text */}
         <View style={styles.helpContainer}>
           <Text style={styles.helpText}>
-            Press PLAY to hear the morse code, then enter what you heard and press SUBMIT.
+            Press PLAY to hear the morse code, then enter what you heard and
+            press SUBMIT.
           </Text>
         </View>
       </View>
