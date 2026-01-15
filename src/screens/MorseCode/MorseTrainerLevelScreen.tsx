@@ -284,6 +284,7 @@ export default function MorseTrainerLevelScreen() {
               onPress={checkAnswer}
               disabled={userAnswer.trim().length === 0}
               accessibilityLabel="Submit answer"
+              accessibilityState={{ disabled: userAnswer.trim().length === 0 }}
             >
               <Text style={styles.buttonText}>SUBMIT</Text>
             </TouchableOpacity>
