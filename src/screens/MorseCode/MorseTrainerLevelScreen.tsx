@@ -75,22 +75,38 @@ export default function MorseTrainerLevelScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [dotSound, setDotSound] = useState<Sound | null>(null);
   const [dashSound, setDashSound] = useState<Sound | null>(null);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
   const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load sounds on mount
   useEffect(() => {
     Sound.setCategory('Playback');
     
+    let dotLoaded = false;
+    let dashLoaded = false;
+
+    const checkBothLoaded = () => {
+      if (dotLoaded && dashLoaded) {
+        setSoundsLoaded(true);
+      }
+    };
+    
     const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dot sound', error);
+        return;
       }
+      dotLoaded = true;
+      checkBothLoaded();
     });
     
     const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dash sound', error);
+        return;
       }
+      dashLoaded = true;
+      checkBothLoaded();
     });
 
     setDotSound(dot);
@@ -120,7 +136,7 @@ export default function MorseTrainerLevelScreen() {
    * Plays the morse code sequence for the current challenge.
    */
   const playMorseCode = async () => {
-    if (!dotSound || !dashSound || isPlaying || !challenge) {
+    if (!dotSound || !dashSound || !soundsLoaded || isPlaying || !challenge) {
       return;
     }
 
@@ -235,13 +251,15 @@ export default function MorseTrainerLevelScreen() {
 
         {/* Play Button */}
         <TouchableOpacity
-          style={[styles.playButton, isPlaying && styles.playButtonDisabled]}
+          style={[styles.playButton, (isPlaying || !soundsLoaded) && styles.playButtonDisabled]}
           onPress={playMorseCode}
-          disabled={isPlaying}
+          disabled={isPlaying || !soundsLoaded}
           accessibilityLabel="Play morse code"
         >
           {isPlaying ? (
             <ActivityIndicator size="large" color={COLORS.PRIMARY_LIGHT} />
+          ) : !soundsLoaded ? (
+            <Text style={styles.playButtonText}>LOADING SOUNDS...</Text>
           ) : (
             <Text style={styles.playButtonText}>▶ PLAY MORSE CODE</Text>
           )}
