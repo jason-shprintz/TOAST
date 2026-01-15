@@ -1,5 +1,5 @@
 import { useRoute, RouteProp } from '@react-navigation/native';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -85,6 +85,7 @@ export default function MorseTrainerLevelScreen() {
   const level = route.params.level;
 
   const [challenge, setChallenge] = useState('');
+  const [playedChallenge, setPlayedChallenge] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
   const [attempts, setAttempts] = useState(0);
@@ -98,17 +99,6 @@ export default function MorseTrainerLevelScreen() {
   const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
-  const challengeRef = useRef(challenge);
-  const isPlayingRef = useRef(isPlaying);
-
-  // Keep the refs in sync with state
-  useEffect(() => {
-    challengeRef.current = challenge;
-  }, [challenge]);
-
-  useEffect(() => {
-    isPlayingRef.current = isPlaying;
-  }, [isPlaying]);
 
   // Load sounds on mount
   useEffect(() => {
@@ -168,19 +158,14 @@ export default function MorseTrainerLevelScreen() {
    * Plays the morse code sequence for the current challenge.
    */
   const playMorseCode = useCallback(async () => {
-    const currentChallenge = challengeRef.current;
-    if (
-      !dotSound ||
-      !dashSound ||
-      !soundsLoaded ||
-      isPlayingRef.current ||
-      !currentChallenge
-    ) {
+    if (!dotSound || !dashSound || !soundsLoaded || isPlaying || !challenge) {
       return;
     }
 
+    // Record which challenge we're playing BEFORE starting playback
+    setPlayedChallenge(challenge);
     setIsPlaying(true);
-    const morseCode = textToMorse(currentChallenge);
+    const morseCode = textToMorse(challenge);
 
     const playSequence = async (morse: string) => {
       for (let i = 0; i < morse.length; i++) {
@@ -235,14 +220,14 @@ export default function MorseTrainerLevelScreen() {
 
     await playSequence(morseCode);
     setIsPlaying(false);
-  }, [dotSound, dashSound, soundsLoaded]);
+  }, [dotSound, dashSound, soundsLoaded, isPlaying, challenge]);
 
   /**
-   * Checks the user's answer against the challenge.
+   * Checks the user's answer against the challenge that was played.
    */
   const checkAnswer = () => {
     const normalizedAnswer = userAnswer.trim().toUpperCase();
-    const normalizedChallenge = challenge.trim().toUpperCase();
+    const normalizedChallenge = playedChallenge.trim().toUpperCase();
 
     setAttempts(attempts + 1);
 
@@ -271,7 +256,7 @@ export default function MorseTrainerLevelScreen() {
    * Reveals the answer to the user and moves to next challenge.
    */
   const showAnswer = () => {
-    setUserAnswer(challenge);
+    setUserAnswer(playedChallenge);
     setFeedback('incorrect');
     setAttempts(attempts + 1);
 
