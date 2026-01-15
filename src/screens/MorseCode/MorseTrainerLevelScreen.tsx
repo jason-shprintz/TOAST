@@ -75,7 +75,7 @@ export default function MorseTrainerLevelScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [dotSound, setDotSound] = useState<Sound | null>(null);
   const [dashSound, setDashSound] = useState<Sound | null>(null);
-  const feedbackTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load sounds on mount
   useEffect(() => {
