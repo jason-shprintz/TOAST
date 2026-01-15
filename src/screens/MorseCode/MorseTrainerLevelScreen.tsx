@@ -98,6 +98,8 @@ export default function MorseTrainerLevelScreen() {
   const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const playbackTimeoutsRef = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  const isPlayingRef = React.useRef(false);
 
   // Load sounds on mount
   useEffect(() => {
@@ -150,6 +152,9 @@ export default function MorseTrainerLevelScreen() {
       if (feedbackTimeoutRef.current) {
         clearTimeout(feedbackTimeoutRef.current);
       }
+      // Clear all playback timeouts
+      playbackTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      playbackTimeoutsRef.current = [];
     };
   }, []);
 
@@ -157,13 +162,18 @@ export default function MorseTrainerLevelScreen() {
    * Plays the morse code sequence for the current challenge.
    */
   const playMorseCode = useCallback(async () => {
-    if (!dotSound || !dashSound || !soundsLoaded || isPlaying || !challenge) {
+    if (!dotSound || !dashSound || !soundsLoaded || isPlayingRef.current || !challenge) {
       return;
     }
+
+    // Clear any existing playback timeouts
+    playbackTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+    playbackTimeoutsRef.current = [];
 
     // Record which challenge we're playing BEFORE starting playback
     setPlayedChallenge(challenge);
     setIsPlaying(true);
+    isPlayingRef.current = true;
     const morseCode = textToMorse(challenge);
 
     // Helper to play a sound with proper stop/start sequence
@@ -177,47 +187,56 @@ export default function MorseTrainerLevelScreen() {
       });
     };
 
+    // Helper to create a tracked timeout
+    const createTimeout = (callback: () => void, delay: number): Promise<void> => {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+          // Remove this timeout from tracking
+          playbackTimeoutsRef.current = playbackTimeoutsRef.current.filter(t => t !== timeout);
+          callback();
+          resolve();
+        }, delay);
+        playbackTimeoutsRef.current.push(timeout);
+      });
+    };
+
     const playSequence = async (morse: string) => {
       for (let i = 0; i < morse.length; i++) {
+        // Check if playback was aborted
+        if (!isPlayingRef.current) {
+          return;
+        }
+
         const char = morse[i];
 
         if (char === '.') {
           // Play dot and wait for it to complete
           await playSound(dotSound);
           // Gap after dot
-          await new Promise(resolve =>
-            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
-          );
+          await createTimeout(() => {}, MORSE_UNIT_MS);
         } else if (char === '-') {
           // Play dash and wait for it to complete
           await playSound(dashSound);
           // Gap after dash
-          await new Promise(resolve =>
-            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
-          );
+          await createTimeout(() => {}, MORSE_UNIT_MS);
         } else if (char === ' ') {
           // Space between letters (2 more units, total 3)
-          await new Promise(resolve =>
-            setTimeout(
-              () => resolve(undefined),
-              MORSE_UNIT_MS * LETTER_SPACE_UNITS,
-            ),
-          );
+          await createTimeout(() => {}, MORSE_UNIT_MS * LETTER_SPACE_UNITS);
         } else if (char === '/') {
           // Word separator (6 more units, total 7)
-          await new Promise(resolve =>
-            setTimeout(
-              () => resolve(undefined),
-              MORSE_UNIT_MS * WORD_SEPARATOR_UNITS,
-            ),
-          );
+          await createTimeout(() => {}, MORSE_UNIT_MS * WORD_SEPARATOR_UNITS);
         }
       }
     };
 
     await playSequence(morseCode);
-    setIsPlaying(false);
-  }, [dotSound, dashSound, soundsLoaded, isPlaying, challenge]);
+    
+    // Only update state if playback wasn't aborted
+    if (isPlayingRef.current) {
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+    }
+  }, [dotSound, dashSound, soundsLoaded, challenge]);
 
   /**
    * Checks the user's answer against the challenge that was played.
@@ -348,7 +367,7 @@ export default function MorseTrainerLevelScreen() {
             <Text style={styles.feedbackText}>
               {feedback === 'correct'
                 ? '✓ Correct!'
-                : `✗ Incorrect. Answer was: ${challenge}`}
+                : `✗ Incorrect. Answer was: ${playedChallenge}`}
             </Text>
           </View>
         )}
@@ -357,18 +376,30 @@ export default function MorseTrainerLevelScreen() {
         {feedback === null && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, styles.submitButton]}
+              style={[
+                styles.button,
+                styles.submitButton,
+                (userAnswer.trim().length === 0 || !playedChallenge) &&
+                  styles.submitButtonDisabled,
+              ]}
               onPress={checkAnswer}
-              disabled={userAnswer.trim().length === 0}
+              disabled={userAnswer.trim().length === 0 || !playedChallenge}
               accessibilityLabel="Submit answer"
-              accessibilityState={{ disabled: userAnswer.trim().length === 0 }}
+              accessibilityState={{
+                disabled: userAnswer.trim().length === 0 || !playedChallenge,
+              }}
             >
               <Text style={styles.buttonText}>SUBMIT</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, styles.hintButton]}
+              style={[
+                styles.button,
+                styles.hintButton,
+                !playedChallenge && styles.hintButtonDisabled,
+              ]}
               onPress={showAnswer}
+              disabled={!playedChallenge}
               accessibilityLabel="Show answer"
             >
               <Text style={styles.buttonText}>SHOW ANSWER</Text>
@@ -481,8 +512,15 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: COLORS.ACCENT,
   },
+  submitButtonDisabled: {
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    opacity: 0.6,
+  },
   hintButton: {
     backgroundColor: COLORS.PRIMARY_LIGHT,
+  },
+  hintButtonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     fontSize: 14,
