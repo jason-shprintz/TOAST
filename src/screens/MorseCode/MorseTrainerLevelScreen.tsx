@@ -20,8 +20,7 @@ type RouteParams = {
 };
 
 // Morse code timing constants (in milliseconds)
-const MORSE_UNIT_MS = 200; // Base unit for morse code timing
-const DASH_DURATION_UNITS = 3; // Dash is 3 times longer than dot
+const MORSE_UNIT_MS = 200; // Base unit for morse code timing (gap between sounds)
 const LETTER_SPACE_UNITS = 2; // Additional space between letters (total 3 units)
 const WORD_SEPARATOR_UNITS = 6; // Additional space between words (total 7 units)
 const FEEDBACK_TIMEOUT_MS = 1500; // Time to display feedback before next challenge
@@ -167,33 +166,31 @@ export default function MorseTrainerLevelScreen() {
     setIsPlaying(true);
     const morseCode = textToMorse(challenge);
 
+    // Helper to play a sound with proper stop/start sequence
+    const playSound = (sound: Sound): Promise<void> => {
+      return new Promise(resolve => {
+        sound.stop(() => {
+          sound.play(() => {
+            resolve();
+          });
+        });
+      });
+    };
+
     const playSequence = async (morse: string) => {
       for (let i = 0; i < morse.length; i++) {
         const char = morse[i];
 
         if (char === '.') {
-          // Play dot - stop first to reset playback position
-          dotSound.stop(() => {
-            dotSound.play();
-          });
-          await new Promise(resolve =>
-            setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
-          );
+          // Play dot and wait for it to complete
+          await playSound(dotSound);
           // Gap after dot
           await new Promise(resolve =>
             setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
           );
         } else if (char === '-') {
-          // Play dash - stop first to reset playback position
-          dashSound.stop(() => {
-            dashSound.play();
-          });
-          await new Promise(resolve =>
-            setTimeout(
-              () => resolve(undefined),
-              MORSE_UNIT_MS * DASH_DURATION_UNITS,
-            ),
-          );
+          // Play dash and wait for it to complete
+          await playSound(dashSound);
           // Gap after dash
           await new Promise(resolve =>
             setTimeout(() => resolve(undefined), MORSE_UNIT_MS),
