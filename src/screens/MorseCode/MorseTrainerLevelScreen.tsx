@@ -257,6 +257,7 @@ export default function MorseTrainerLevelScreen() {
             value={userAnswer}
             onChangeText={setUserAnswer}
             autoCapitalize="characters"
+            autoCorrect={false}
             editable={feedback === null}
           />
         </View>
