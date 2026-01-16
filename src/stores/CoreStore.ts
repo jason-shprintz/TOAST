@@ -1536,7 +1536,9 @@ export class CoreStore {
     // Reassign notes from the deleted category to the fallback category
     const notesToReassign = this.notes.filter(n => n.category === name);
     for (const note of notesToReassign) {
-      note.category = fallbackCategory;
+      runInAction(() => {
+        note.category = fallbackCategory;
+      });
       await this.updateNote(note);
     }
 
