@@ -1332,7 +1332,7 @@ export class CoreStore {
       // Create categories table
       await db.executeSql(
         'CREATE TABLE IF NOT EXISTS categories (' +
-          'name TEXT PRIMARY KEY NOT NULL,' +
+          'name TEXT PRIMARY KEY NOT NULL, ' +
           'createdAt INTEGER NOT NULL' +
           ')',
       );
