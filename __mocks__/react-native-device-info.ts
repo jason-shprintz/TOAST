@@ -24,7 +24,7 @@ const DeviceInfo = {
   useIsHeadphonesConnected: jest.fn(() => false),
   usePowerState: jest.fn(() => ({
     batteryLevel: 1,
-    batteryState: 'full',
+    batteryState: 'unplugged',
     lowPowerMode: false,
   })),
 };
