@@ -23,6 +23,7 @@ import MorseTrainerScreen from '../screens/MorseCode/MorseTrainerScreen';
 import NatoPhoneticScreen from '../screens/MorseCode/NatoPhoneticScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import EditNoteScreen from '../screens/Notepad/EditNoteScreen';
+import ManageCategoriesScreen from '../screens/Notepad/ManageCategoriesScreen';
 import NewNoteScreen from '../screens/Notepad/NewNoteScreen';
 import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
@@ -123,6 +124,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="BookmarkedNotes"
             component={BookmarkedNotesScreen}
+          />
+          <Stack.Screen
+            name="ManageCategories"
+            component={ManageCategoriesScreen}
           />
           <Stack.Screen name="Checklist" component={ChecklistScreen} />
           <Stack.Screen

@@ -71,6 +71,18 @@ export default observer(function NotepadScreen() {
             color={COLORS.PRIMARY_DARK}
           />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.noteButton}
+          onPress={() => navigation.navigate('ManageCategories')}
+          accessibilityLabel="Manage Categories"
+          accessibilityRole="button"
+        >
+          <Ionicons
+            name="folder-open-outline"
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
       </View>
       <HorizontalRule />
 

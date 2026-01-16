@@ -26,10 +26,11 @@ export class RootStore {
    * Initialize settings by loading them from the database
    */
   private async initializeSettings() {
-    // Wait for CoreStore to initialize the database, then load settings
+    // Wait for CoreStore to initialize the database, then load settings and categories
     await this.coreStore.initNotesDb();
     if (this.coreStore.notesDb) {
       await this.settingsStore.loadSettings(this.coreStore.notesDb);
+      await this.coreStore.loadCategories();
     }
   }
 
