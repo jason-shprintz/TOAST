@@ -274,4 +274,45 @@ describe('CoreStore - Note Editing', () => {
       expect(updatedNote?.category).toBe('General');
     });
   });
+
+  describe('createNote - sketch type', () => {
+    it('should create a sketch note with sketchDataUri', async () => {
+      const sketchData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      
+      await coreStore.createNote({
+        type: 'sketch',
+        title: 'My Sketch',
+        sketchDataUri: sketchData,
+        category: 'General',
+      });
+
+      expect(coreStore.notes).toHaveLength(1);
+      const note = coreStore.notes[0];
+      expect(note.type).toBe('sketch');
+      expect(note.title).toBe('My Sketch');
+      expect(note.sketchDataUri).toBe(sketchData);
+    });
+
+    it('should update sketch note with new sketchDataUri', async () => {
+      const initialSketch = 'data:image/png;base64,initial';
+      const updatedSketch = 'data:image/png;base64,updated';
+
+      await coreStore.createNote({
+        type: 'sketch',
+        title: 'Sketch Note',
+        sketchDataUri: initialSketch,
+        category: 'General',
+      });
+
+      const note = coreStore.notes[0];
+      expect(note.sketchDataUri).toBe(initialSketch);
+
+      await coreStore.updateNoteContent(note.id, {
+        sketchDataUri: updatedSketch,
+      });
+
+      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      expect(updatedNote?.sketchDataUri).toBe(updatedSketch);
+    });
+  });
 });
