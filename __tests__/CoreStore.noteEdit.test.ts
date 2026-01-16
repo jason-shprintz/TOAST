@@ -95,6 +95,24 @@ import { CoreStore } from '../src/stores/CoreStore';
 describe('CoreStore - Note Editing', () => {
   let coreStore: CoreStore;
 
+  /**
+   * Helper function to setup a custom SQLite mock with spyable executeSql.
+   * This is used when tests need to inspect database calls to verify persistence.
+   * @returns The mockExecuteSql function that can be inspected in tests
+   */
+  const setupSpyableDatabaseMock = () => {
+    const SQLite = require('react-native-sqlite-storage');
+    const mockExecuteSql = jest.fn(() =>
+      Promise.resolve([{ rows: { length: 0, item: () => null } }]),
+    );
+    SQLite.openDatabase.mockResolvedValue({
+      executeSql: mockExecuteSql,
+      transaction: jest.fn(),
+      close: jest.fn(() => Promise.resolve()),
+    });
+    return mockExecuteSql;
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore = new CoreStore();
@@ -195,16 +213,8 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should persist changes to database', async () => {
-      // Get the mocked executeSql from the SQLite mock
-      const SQLite = require('react-native-sqlite-storage');
-      const mockExecuteSql = jest.fn(() =>
-        Promise.resolve([{ rows: { length: 0, item: () => null } }]),
-      );
-      SQLite.openDatabase.mockResolvedValue({
-        executeSql: mockExecuteSql,
-        transaction: jest.fn(),
-        close: jest.fn(() => Promise.resolve()),
-      });
+      // Setup a spyable database mock to verify persistence calls
+      const mockExecuteSql = setupSpyableDatabaseMock();
 
       // Create a note first
       await coreStore.createNote({
