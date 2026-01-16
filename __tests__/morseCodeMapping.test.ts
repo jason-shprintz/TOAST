@@ -2,7 +2,12 @@
  * @format
  */
 
-import { textToMorse, morseToText, MORSE_CODE_MAP, REVERSE_MORSE_CODE_MAP } from '../src/utils/morseCodeMapping';
+import {
+  textToMorse,
+  morseToText,
+  MORSE_CODE_MAP,
+  REVERSE_MORSE_CODE_MAP,
+} from '../src/utils/morseCodeMapping';
 
 describe('morseCodeMapping', () => {
   describe('textToMorse', () => {
@@ -52,7 +57,9 @@ describe('morseCodeMapping', () => {
 
     it('should ignore unsupported characters', () => {
       expect(textToMorse('HI!')).toBe('.... ..');
-      expect(textToMorse('HELLO@WORLD')).toBe('.... . .-.. .-.. --- .-- --- .-. .-.. -..');
+      expect(textToMorse('HELLO@WORLD')).toBe(
+        '.... . .-.. .-.. --- .-- --- .-. .-.. -..',
+      );
       expect(textToMorse('TEST#123')).toBe('- . ... - .---- ..--- ...--');
     });
 

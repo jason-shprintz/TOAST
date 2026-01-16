@@ -303,6 +303,7 @@ describe('SettingsStore', () => {
 
       const dispose = autorun(() => {
         // Access fontSize to make it observed
+        settingsStore.fontSize;
         reactionCount++;
       });
 
@@ -324,6 +325,7 @@ describe('SettingsStore', () => {
 
       const dispose = autorun(() => {
         // Access themeMode to make it observed
+        settingsStore.themeMode;
         reactionCount++;
       });
 

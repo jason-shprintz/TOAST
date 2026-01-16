@@ -2,84 +2,120 @@
  * @format
  */
 
-import { CoreStore } from '../src/stores/CoreStore';
+// Mock react-native-geolocation-service
+jest.mock('react-native-geolocation-service', () => ({
+  getCurrentPosition: jest.fn((success, _error, _options) => {
+    // Call success callback immediately with mock position
+    success({
+      coords: {
+        latitude: 37.7749,
+        longitude: -122.4194,
+        altitude: 0,
+        accuracy: 5,
+        altitudeAccuracy: 5,
+        heading: 0,
+        speed: 0,
+      },
+      timestamp: Date.now(),
+    });
+  }),
+  requestAuthorization: jest.fn(() => Promise.resolve('granted')),
+}));
 
-// Mock database for testing
-const createMockDatabase = () => {
-  const storage: Record<string, any> = {};
+// Mock react-native modules
+jest.mock('react-native-torch', () => ({
+  switchState: jest.fn(),
+}));
+
+jest.mock('react-native-sound', () => {
+  const Sound = jest.fn().mockImplementation(() => ({
+    play: jest.fn((callback: Function) => callback && callback(true)),
+    stop: jest.fn((callback?: Function) => callback && callback()),
+    release: jest.fn(),
+  })) as jest.Mock & { setCategory: jest.Mock; MAIN_BUNDLE: string };
+  Sound.setCategory = jest.fn();
+  Sound.MAIN_BUNDLE = '';
+  return Sound;
+});
+
+jest.mock('react-native-device-info', () => ({
+  getBatteryLevel: jest.fn(() => Promise.resolve(0.75)),
+  getPowerState: jest.fn(() =>
+    Promise.resolve({ batteryState: 'unplugged', charging: false }),
+  ),
+}));
+
+jest.mock('@react-native-community/netinfo', () => ({
+  fetch: jest.fn(() =>
+    Promise.resolve({
+      isConnected: true,
+      type: 'wifi',
+    }),
+  ),
+  addEventListener: jest.fn(() => jest.fn()),
+}));
+
+jest.mock('react-native', () => ({
+  AppState: {
+    addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+  },
+  NativeModules: {},
+  Platform: { OS: 'ios' },
+}));
+
+jest.mock('react-native-sqlite-storage', () => {
+  const mockExecuteSql = jest.fn(() =>
+    Promise.resolve([{ rows: { length: 0, item: () => null, raw: () => [] } }]),
+  );
 
   return {
-    executeSql: jest.fn((query: string, params?: any[]) => {
-      // Handle CREATE TABLE
-      if (query.includes('CREATE TABLE')) {
-        return Promise.resolve([{ rows: { length: 0 } }]);
-      }
-
-      // Handle ALTER TABLE (migrations)
-      if (query.includes('ALTER TABLE')) {
-        return Promise.resolve([{ rows: { length: 0 } }]);
-      }
-
-      // Handle INSERT OR REPLACE for notes
-      if (query.includes('INSERT OR REPLACE INTO notes')) {
-        // Extract id from params (first parameter)
-        if (params && params.length > 0) {
-          const id = params[0];
-          storage[id] = {
-            id: params[0],
-            createdAt: params[1],
-            latitude: params[2],
-            longitude: params[3],
-            category: params[4],
-            type: params[5],
-            title: params[6],
-            text: params[7],
-            bookmarked: params[8],
-            sketchDataUri: params[9],
-            photoUris: params[10],
-            audioUri: params[11],
-            transcription: params[12],
-            duration: params[13],
-          };
-        }
-        return Promise.resolve([{ rows: { length: 0 } }]);
-      }
-
-      // Handle SELECT for notes
-      if (query.includes('SELECT * FROM notes')) {
-        const items = Object.values(storage);
-        return Promise.resolve([
-          {
-            rows: {
-              length: items.length,
-              item: (index: number) => items[index],
+    openDatabase: jest.fn(() =>
+      Promise.resolve({
+        executeSql: mockExecuteSql,
+        transaction: jest.fn(callback => {
+          const tx = {
+            executeSql: (query: string, params?: any[], success?: Function) => {
+              if (success)
+                success(tx, { rows: { length: 0, item: () => null } });
             },
-          },
-        ]);
-      }
-
-      // Handle DELETE
-      if (query.includes('DELETE FROM notes')) {
-        if (params && params.length > 0) {
-          const id = params[0];
-          delete storage[id];
-        }
-        return Promise.resolve([{ rows: { length: 0 } }]);
-      }
-
-      return Promise.resolve([{ rows: { length: 0 } }]);
-    }),
+          };
+          callback(tx);
+          return Promise.resolve();
+        }),
+        close: jest.fn(() => Promise.resolve()),
+      }),
+    ),
+    enablePromise: jest.fn(),
+    DEBUG: jest.fn(),
   };
-};
+});
+
+import { CoreStore } from '../src/stores/CoreStore';
 
 describe('CoreStore - Note Editing', () => {
   let coreStore: CoreStore;
-  let mockDb: ReturnType<typeof createMockDatabase>;
+
+  /**
+   * Helper function to setup a custom SQLite mock with spyable executeSql.
+   * This is used when tests need to inspect database calls to verify persistence.
+   * @returns The mockExecuteSql function that can be inspected in tests
+   */
+  const setupSpyableDatabaseMock = () => {
+    const SQLite = require('react-native-sqlite-storage');
+    const mockExecuteSql = jest.fn(() =>
+      Promise.resolve([{ rows: { length: 0, item: () => null } }]),
+    );
+    SQLite.openDatabase.mockResolvedValue({
+      executeSql: mockExecuteSql,
+      transaction: jest.fn(),
+      close: jest.fn(() => Promise.resolve()),
+    });
+    return mockExecuteSql;
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore = new CoreStore();
-    mockDb = createMockDatabase();
   });
 
   afterEach(() => {
@@ -88,9 +124,6 @@ describe('CoreStore - Note Editing', () => {
 
   describe('updateNoteContent', () => {
     it('should update note title', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Create a note first
       await coreStore.createNote({
         type: 'text',
@@ -113,9 +146,6 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should update note text', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Create a note first
       await coreStore.createNote({
         type: 'text',
@@ -138,9 +168,6 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should update note category', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Create a note first
       await coreStore.createNote({
         type: 'text',
@@ -162,9 +189,6 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should update multiple fields at once', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Create a note first
       await coreStore.createNote({
         type: 'text',
@@ -189,8 +213,8 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should persist changes to database', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
+      // Setup a spyable database mock to verify persistence calls
+      const mockExecuteSql = setupSpyableDatabaseMock();
 
       // Create a note first
       await coreStore.createNote({
@@ -209,17 +233,16 @@ describe('CoreStore - Note Editing', () => {
       });
 
       // Verify database was called with updated values
-      const lastCall =
-        mockDb.executeSql.mock.calls[mockDb.executeSql.mock.calls.length - 1];
-      expect(lastCall[0]).toContain('INSERT OR REPLACE INTO notes');
-      expect(lastCall[1]).toContain('Updated Title');
-      expect(lastCall[1]).toContain('Updated text');
+      const insertCalls = mockExecuteSql.mock.calls.filter((call: any[]) =>
+        call[0]?.includes('INSERT OR REPLACE INTO notes'),
+      );
+      expect(insertCalls.length).toBeGreaterThan(0);
+      const lastInsertCall = insertCalls[insertCalls.length - 1] as any[];
+      expect(lastInsertCall[1]).toContain('Updated Title');
+      expect(lastInsertCall[1]).toContain('Updated text');
     });
 
     it('should handle non-existent note gracefully', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Try to update a note that doesn't exist
       await coreStore.updateNoteContent('non-existent-id', {
         title: 'Updated Title',
@@ -230,9 +253,6 @@ describe('CoreStore - Note Editing', () => {
     });
 
     it('should handle partial updates', async () => {
-      await coreStore.initNotesDb();
-      (coreStore as any).notesDb = mockDb;
-
       // Create a note first
       await coreStore.createNote({
         type: 'text',
