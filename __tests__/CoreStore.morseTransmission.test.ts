@@ -87,7 +87,7 @@ describe('CoreStore - Morse Code Transmission', () => {
     it('should handle empty morse code gracefully', () => {
       expect(coreStore.isMorseTransmitting).toBe(false);
       coreStore.transmitMorseMessage('', false);
-      
+
       // With empty sequence, it should still complete the transmission flow
       jest.runAllTimers();
       expect(coreStore.isMorseTransmitting).toBe(false);
