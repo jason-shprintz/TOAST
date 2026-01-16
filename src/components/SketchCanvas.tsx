@@ -25,7 +25,7 @@ export default function SketchCanvas({
   onSketchSave,
   initialSketch,
 }: SketchCanvasProps) {
-  const ref = useRef<any>(null);
+  const ref = useRef<SignatureCanvas | null>(null);
 
   const handleOK = (signature: string) => {
     onSketchSave(signature);

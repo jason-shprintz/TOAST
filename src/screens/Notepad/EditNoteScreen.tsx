@@ -187,6 +187,17 @@ export default observer(function EditNoteScreen() {
                   }}
                 />
                 <Button
+                  title="Clear"
+                  disabled={!hasContent}
+                  onPress={() => {
+                    if (noteType === 'text') {
+                      setText('');
+                    } else {
+                      setSketchDataUri(undefined);
+                    }
+                  }}
+                />
+                <Button
                   title="Cancel"
                   onPress={() => {
                     navigation.goBack();
