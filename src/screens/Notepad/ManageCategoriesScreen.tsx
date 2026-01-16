@@ -36,6 +36,10 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
       Alert.alert('Error', 'Category name cannot be empty');
       return;
     }
+    if (trimmedName === 'Voice Logs') {
+      Alert.alert('Error', 'Voice Logs is a reserved category name');
+      return;
+    }
     try {
       await core.addCategory(trimmedName);
       setNewCategoryName('');
@@ -80,7 +84,13 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
             text: 'Continue',
             onPress: () => {
               // Second warning with reassignment confirmation
-              const fallbackCategory = core.categories.find(c => c !== categoryName)!;
+              const fallbackCategory = core.categories.find(c => c !== categoryName);
+              if (!fallbackCategory) {
+                Alert.alert('Error', 'No fallback category available');
+                return;
+              }
+              // Capture note count before async operation to ensure accurate messaging
+              const movedNoteCount = noteCount;
               Alert.alert(
                 'Confirm Deletion',
                 `All notes in "${categoryName}" will be moved to "${fallbackCategory}". This action cannot be undone. Delete anyway?`,
@@ -92,7 +102,10 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
                     onPress: async () => {
                       try {
                         await core.deleteCategory(categoryName, fallbackCategory);
-                        Alert.alert('Success', `Category deleted. ${noteCount} note${noteCount > 1 ? 's' : ''} moved to "${fallbackCategory}"`);
+                        Alert.alert(
+                          'Success',
+                          `Category deleted. ${movedNoteCount} note${movedNoteCount > 1 ? 's' : ''} moved to "${fallbackCategory}"`,
+                        );
                       } catch (error: any) {
                         Alert.alert('Error', error.message || 'Failed to delete category');
                       }
@@ -138,6 +151,7 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
               value={newCategoryName}
               onChangeText={setNewCategoryName}
               autoFocus
+              accessibilityLabel="Enter category name"
             />
             <TouchableOpacity
               style={[

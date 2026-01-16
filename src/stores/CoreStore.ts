@@ -1150,15 +1150,21 @@ export class CoreStore {
         map[n.category].push(n);
       } else {
         const fallbackCategory = 'General';
-        if (!map[fallbackCategory]) {
-          map[fallbackCategory] = [];
-        }
-        map[fallbackCategory].push(n);
-        if (typeof __DEV__ !== 'undefined' && __DEV__) {
+        // Only assign to the fallback category if it already exists in the initialized categories map.
+        if (Object.prototype.hasOwnProperty.call(map, fallbackCategory)) {
+          map[fallbackCategory].push(n);
+          if (typeof __DEV__ !== 'undefined' && __DEV__) {
+            console.warn(
+              `Note with orphaned category "${String(
+                n.category,
+              )}" assigned to fallback category "${fallbackCategory}".`,
+            );
+          }
+        } else if (typeof __DEV__ !== 'undefined' && __DEV__) {
           console.warn(
             `Note with orphaned category "${String(
               n.category,
-            )}" assigned to fallback category "${fallbackCategory}".`,
+            )}" could not be assigned to fallback category "${fallbackCategory}" because it is not in the current categories list.`,
           );
         }
       }
@@ -1491,7 +1497,16 @@ export class CoreStore {
   async createDefaultCategories(): Promise<void> {
     const defaultCategories = ['General', 'Work', 'Personal', 'Ideas'];
     for (const category of defaultCategories) {
-      await this.addCategory(category);
+      try {
+        await this.addCategory(category);
+      } catch (error: any) {
+        // If the category already exists, skip and continue with the remaining defaults.
+        if (error instanceof Error && error.message === 'Category already exists') {
+          continue;
+        }
+        // Re-throw unexpected errors to preserve existing failure behavior.
+        throw error;
+      }
     }
   }
 
@@ -1505,7 +1520,14 @@ export class CoreStore {
     if (!trimmedName) {
       throw new Error('Category name cannot be empty');
     }
-    if (this.categories.includes(trimmedName)) {
+    if (trimmedName === 'Voice Logs') {
+      throw new Error('Voice Logs is a reserved category name');
+    }
+    if (
+      this.categories.some(
+        category => category.toLowerCase() === trimmedName.toLowerCase(),
+      )
+    ) {
       throw new Error('Category already exists');
     }
     await this.initNotesDb();
@@ -1534,12 +1556,12 @@ export class CoreStore {
    * Deletes a category.
    * If the category has notes, they will be reassigned to the specified fallback category.
    * @param name - The name of the category to delete.
-   * @param fallbackCategory - The category to reassign notes to (default: 'General').
+   * @param fallbackCategory - The category to reassign notes to. If not specified, uses the first available category.
    * @throws Will throw an error if trying to delete the last category or if the database operation fails.
    */
   async deleteCategory(
     name: string,
-    fallbackCategory: string = 'General',
+    fallbackCategory?: string,
   ): Promise<void> {
     if (this.categories.length <= 1) {
       throw new Error('Cannot delete the last category');
@@ -1547,6 +1569,19 @@ export class CoreStore {
     if (!this.categories.includes(name)) {
       throw new Error('Category does not exist');
     }
+    
+    // Determine fallback category if not provided
+    const actualFallback = fallbackCategory || this.categories.find(c => c !== name);
+    if (!actualFallback) {
+      throw new Error('No fallback category available');
+    }
+    if (actualFallback === name) {
+      throw new Error('Fallback category cannot be the same as the category being deleted');
+    }
+    if (!this.categories.includes(actualFallback)) {
+      throw new Error('Fallback category does not exist');
+    }
+    
     await this.initNotesDb();
 
     // Reassign notes from the deleted category to the fallback category
@@ -1556,7 +1591,7 @@ export class CoreStore {
       // No database: update notes and categories only in memory, as before
       for (const note of notesToReassign) {
         runInAction(() => {
-          note.category = fallbackCategory;
+          note.category = actualFallback;
         });
         await this.updateNote(note);
       }
@@ -1570,13 +1605,13 @@ export class CoreStore {
       // Database present: batch update all affected notes in a single query
       await this.notesDb.executeSql(
         'UPDATE notes SET category = ? WHERE category = ?',
-        [fallbackCategory, name],
+        [actualFallback, name],
       );
 
       // Update in-memory notes in a single MobX action
       runInAction(() => {
         for (const note of notesToReassign) {
-          note.category = fallbackCategory;
+          note.category = actualFallback;
         }
       });
       await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [

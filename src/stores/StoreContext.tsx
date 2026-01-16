@@ -15,6 +15,11 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     // Load persisted data asynchronously
     (async () => {
       try {
+        // Load categories first before loading notes to avoid race conditions
+        await rootStore.coreStore.initNotesDb();
+        if (rootStore.coreStore.notesDb) {
+          await rootStore.coreStore.loadCategories();
+        }
         await rootStore.coreStore.loadNotes();
         await rootStore.coreStore.loadChecklists();
       } catch (e) {
