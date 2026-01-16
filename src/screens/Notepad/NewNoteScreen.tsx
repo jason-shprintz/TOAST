@@ -181,13 +181,25 @@ export default observer(function NewNoteScreen() {
                   disabled={!hasContent}
                   onPress={async () => {
                     try {
-                      await core.createNote({
+                      const noteParams: {
+                        type: 'text' | 'sketch';
+                        title: string;
+                        text?: string;
+                        sketchDataUri?: string;
+                        category: string;
+                      } = {
                         type: noteType,
                         title,
-                        text: noteType === 'text' ? text : undefined,
-                        sketchDataUri: noteType === 'sketch' ? sketchDataUri : undefined,
                         category,
-                      });
+                      };
+
+                      if (noteType === 'text') {
+                        noteParams.text = text;
+                      } else {
+                        noteParams.sketchDataUri = sketchDataUri;
+                      }
+
+                      await core.createNote(noteParams);
                       // Return to previous screen (Notepad)
                       // Prefer goBack to avoid hard-coding route names
                       if (navigation && 'goBack' in navigation) {

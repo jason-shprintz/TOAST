@@ -169,12 +169,23 @@ export default observer(function EditNoteScreen() {
                       return;
                     }
                     try {
-                      await core.updateNoteContent(note.id, {
+                      const updateParams: {
+                        title: string;
+                        text?: string;
+                        sketchDataUri?: string;
+                        category: string;
+                      } = {
                         title,
-                        text: noteType === 'text' ? text : undefined,
-                        sketchDataUri: noteType === 'sketch' ? sketchDataUri : undefined,
                         category,
-                      });
+                      };
+
+                      if (noteType === 'text') {
+                        updateParams.text = text;
+                      } else {
+                        updateParams.sketchDataUri = sketchDataUri;
+                      }
+
+                      await core.updateNoteContent(note.id, updateParams);
                       // Return to previous screen
                       navigation.goBack();
                     } catch (error) {
