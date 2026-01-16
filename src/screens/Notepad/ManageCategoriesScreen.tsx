@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import {
@@ -27,7 +26,6 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
  * @returns {React.JSX.Element} The rendered manage categories screen component.
  */
 export default observer(function ManageCategoriesScreen(): React.JSX.Element {
-  const navigation = useNavigation<any>();
   const core = useCoreStore();
   const [newCategoryName, setNewCategoryName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
