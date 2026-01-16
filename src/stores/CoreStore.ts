@@ -1555,6 +1555,11 @@ export class CoreStore {
   /**
    * Deletes a category.
    * If the category has notes, they will be reassigned to the specified fallback category.
+   * 
+   * Note: The note count shown in UI warnings is advisory. Due to the async nature of the operation,
+   * the actual number of notes moved may differ if notes are added/modified between the count check
+   * and the deletion. The database transaction ensures atomicity of the deletion itself.
+   * 
    * @param name - The name of the category to delete.
    * @param fallbackCategory - The category to reassign notes to. If not specified, uses the first available category.
    * @throws Will throw an error if trying to delete the last category or if the database operation fails.
@@ -1602,24 +1607,35 @@ export class CoreStore {
     }
 
     try {
-      // Database present: batch update all affected notes in a single query
-      await this.notesDb.executeSql(
-        'UPDATE notes SET category = ? WHERE category = ?',
-        [actualFallback, name],
-      );
+      // Use a transaction to ensure atomicity of the delete operation
+      await this.notesDb.executeSql('BEGIN TRANSACTION');
+      
+      try {
+        // Database present: batch update all affected notes in a single query
+        await this.notesDb.executeSql(
+          'UPDATE notes SET category = ? WHERE category = ?',
+          [actualFallback, name],
+        );
 
-      // Update in-memory notes in a single MobX action
-      runInAction(() => {
-        for (const note of notesToReassign) {
-          note.category = actualFallback;
-        }
-      });
-      await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [
-        name,
-      ]);
-      runInAction(() => {
-        this.categories = this.categories.filter(c => c !== name);
-      });
+        // Delete the category
+        await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [
+          name,
+        ]);
+        
+        await this.notesDb.executeSql('COMMIT');
+
+        // Update in-memory state after successful transaction
+        runInAction(() => {
+          for (const note of notesToReassign) {
+            note.category = actualFallback;
+          }
+          this.categories = this.categories.filter(c => c !== name);
+        });
+      } catch (transactionError) {
+        // Rollback on any error
+        await this.notesDb.executeSql('ROLLBACK');
+        throw transactionError;
+      }
     } catch (error) {
       console.error('Failed to delete category:', error);
       throw error;

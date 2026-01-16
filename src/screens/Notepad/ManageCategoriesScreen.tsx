@@ -152,7 +152,6 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
               onChangeText={setNewCategoryName}
               autoFocus
               accessibilityLabel="Enter category name"
-              accessibilityLabel="Enter category name"
             />
             <TouchableOpacity
               style={[
