@@ -134,11 +134,12 @@ describe('CoreStore - Category Management', () => {
     it('should throw error when adding duplicate category with different case', async () => {
       await coreStore.addCategory('Work');
 
-      // The implementation trims but doesn't normalize case
-      // Test current behavior - categories are case-sensitive
-      await coreStore.addCategory('work');
+      // Categories are case-insensitive, so 'work' should be treated as duplicate of 'Work'
+      await expect(coreStore.addCategory('work')).rejects.toThrow(
+        'Category already exists',
+      );
+      expect(coreStore.categories).toHaveLength(1);
       expect(coreStore.categories).toContain('Work');
-      expect(coreStore.categories).toContain('work');
     });
 
     it('should throw error when adding empty category name', async () => {
