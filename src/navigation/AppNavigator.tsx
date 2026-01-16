@@ -18,6 +18,8 @@ import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
 import MorseToAlphaScreen from '../screens/MorseCode/MorseToAlphaScreen';
+import MorseTrainerLevelScreen from '../screens/MorseCode/MorseTrainerLevelScreen';
+import MorseTrainerScreen from '../screens/MorseCode/MorseTrainerScreen';
 import NatoPhoneticScreen from '../screens/MorseCode/NatoPhoneticScreen';
 import BookmarkedNotesScreen from '../screens/Notepad/BookmarkedNotesScreen';
 import EditNoteScreen from '../screens/Notepad/EditNoteScreen';
@@ -96,6 +98,11 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="MorseCodeCheatSheet"
             component={MorseCodeCheatSheet}
+          />
+          <Stack.Screen name="MorseTrainer" component={MorseTrainerScreen} />
+          <Stack.Screen
+            name="MorseTrainerLevel"
+            component={MorseTrainerLevelScreen}
           />
           <Stack.Screen name="NatoPhonetic" component={NatoPhoneticScreen} />
           {/* Core Module */}

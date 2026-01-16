@@ -20,7 +20,7 @@ jest.mock('react-native-sound', () => {
     play: jest.fn((callback: Function) => callback(true)),
     stop: jest.fn((callback?: Function) => callback && callback()),
     release: jest.fn(),
-  }));
+  })) as jest.Mock & { setCategory: jest.Mock; MAIN_BUNDLE: string };
   Sound.setCategory = jest.fn();
   Sound.MAIN_BUNDLE = '';
   return Sound;

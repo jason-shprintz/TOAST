@@ -80,9 +80,7 @@ const MorseToAlphaScreen = () => {
         <View style={styles.displayContainer}>
           <Text style={styles.displayLabel}>Translation:</Text>
           <View style={styles.displayBox}>
-            <Text style={styles.translatedText}>
-              {translatedText || '-'}
-            </Text>
+            <Text style={styles.translatedText}>{translatedText || '-'}</Text>
           </View>
         </View>
 
@@ -149,7 +147,8 @@ const MorseToAlphaScreen = () => {
         {/* Help Text */}
         <View style={styles.helpContainer}>
           <Text style={styles.helpText}>
-            Tip: Press SPACE between morse characters (letters/numbers) and WORD to separate words.
+            Tip: Press SPACE between morse characters (letters/numbers) and WORD
+            to separate words.
           </Text>
         </View>
       </View>
