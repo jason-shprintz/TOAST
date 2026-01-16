@@ -26,29 +26,9 @@ export interface Tool {
 }
 
 export type NoteInputType = 'text' | 'sketch' | 'voice';
-export type NoteCategory =
-  | 'General'
-  | 'Work'
-  | 'Personal'
-  | 'Ideas'
-  | 'Voice Logs'; // Still supported for Voice Log feature, but not shown in NotePad
-
-// NotePad categories (subset of NoteCategory)
-export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
-
-// Helper to validate NotePad categories
-export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = [
-  'General',
-  'Work',
-  'Personal',
-  'Ideas',
-] as const;
-
-export function isNotePadCategory(
-  category: string,
-): category is NotePadCategory {
-  return NOTEPAD_CATEGORIES.includes(category as NotePadCategory);
-}
+// NoteCategory is now a string since categories are dynamic
+// 'Voice Logs' is still supported for Voice Log feature, but not shown in NotePad
+export type NoteCategory = string;
 
 export interface Note {
   id: string;
@@ -1151,20 +1131,19 @@ export class CoreStore {
 
   /**
    * Groups notes by their category and returns a mapping from each category to an array of notes belonging to that category.
-   * Only includes NotePad categories (excludes Voice Logs which is managed separately).
+   * Excludes Voice Logs which is managed separately.
    *
-   * @returns An object where each key is a NotePad category and the value is an array of notes in that category.
+   * @returns An object where each key is a category name and the value is an array of notes in that category.
    */
-  get notesByCategory(): Record<NotePadCategory, Note[]> {
-    const map: Record<NotePadCategory, Note[]> = {
-      General: [],
-      Work: [],
-      Personal: [],
-      Ideas: [],
-    };
+  get notesByCategory(): Record<string, Note[]> {
+    const map: Record<string, Note[]> = {};
+    // Initialize all categories with empty arrays
+    for (const category of this.categories) {
+      map[category] = [];
+    }
+    // Populate with notes (excluding Voice Logs)
     for (const n of this.notes) {
-      // Only include notes that are in NotePad categories
-      if (isNotePadCategory(n.category)) {
+      if (n.category !== 'Voice Logs' && map[n.category]) {
         map[n.category].push(n);
       }
     }
@@ -1557,7 +1536,7 @@ export class CoreStore {
     // Reassign notes from the deleted category to the fallback category
     const notesToReassign = this.notes.filter(n => n.category === name);
     for (const note of notesToReassign) {
-      note.category = fallbackCategory as NoteCategory;
+      note.category = fallbackCategory;
       await this.updateNote(note);
     }
 
