@@ -1143,8 +1143,24 @@ export class CoreStore {
     }
     // Populate with notes (excluding Voice Logs)
     for (const n of this.notes) {
-      if (n.category !== 'Voice Logs' && map[n.category]) {
+      if (n.category === 'Voice Logs') {
+        continue;
+      }
+      if (map[n.category]) {
         map[n.category].push(n);
+      } else {
+        const fallbackCategory = 'General';
+        if (!map[fallbackCategory]) {
+          map[fallbackCategory] = [];
+        }
+        map[fallbackCategory].push(n);
+        if (typeof __DEV__ !== 'undefined' && __DEV__) {
+          console.warn(
+            `Note with orphaned category "${String(
+              n.category,
+            )}" assigned to fallback category "${fallbackCategory}".`,
+          );
+        }
       }
     }
     return map;
