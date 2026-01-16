@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SketchCanvas from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -65,12 +66,14 @@ export default observer(function EditNoteScreen() {
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
+  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(note?.sketchDataUri);
   const [category, setCategory] = useState(
     note?.category || core.categories[0] || 'General',
   );
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
-  const hasText: boolean = text.trim().length > 0;
+  const noteType = note?.type || 'text';
+  const hasContent: boolean = noteType === 'text' ? text.trim().length > 0 : !!sketchDataUri;
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   // Update local state when the note changes in the store
@@ -78,11 +81,13 @@ export default observer(function EditNoteScreen() {
     if (note) {
       setTitle(note.title || '');
       setText(note.text || '');
+      setSketchDataUri(note.sketchDataUri);
       setCategory(note.category || core.categories[0] || 'General');
     } else {
       // Reset form if note is no longer available (e.g., deleted)
       setTitle('');
       setText('');
+      setSketchDataUri(undefined);
       setCategory(core.categories[0] || 'General');
     }
   }, [note, core.categories]);
@@ -157,7 +162,7 @@ export default observer(function EditNoteScreen() {
               <View style={styles.inline}>
                 <Button
                   title="Save"
-                  disabled={!hasText}
+                  disabled={!hasContent}
                   onPress={async () => {
                     if (!note) {
                       Alert.alert('Error', 'Note not found.');
@@ -166,7 +171,8 @@ export default observer(function EditNoteScreen() {
                     try {
                       await core.updateNoteContent(note.id, {
                         title,
-                        text,
+                        text: noteType === 'text' ? text : undefined,
+                        sketchDataUri: noteType === 'sketch' ? sketchDataUri : undefined,
                         category,
                       });
                       // Return to previous screen
@@ -197,22 +203,33 @@ export default observer(function EditNoteScreen() {
                 maxLength={MAX_TITLE_LENGTH}
               />
 
-              <Text style={styles.label}>Text</Text>
-              <Animated.View
-                style={[
-                  styles.animatedInputContainer,
-                  { height: animatedHeight },
-                ]}
-              >
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Type your note..."
-                  placeholderTextColor={COLORS.PRIMARY_DARK}
-                  multiline
-                  value={text}
-                  onChangeText={setText}
-                />
-              </Animated.View>
+              <Text style={styles.label}>
+                {noteType === 'text' ? 'Text' : 'Sketch'}
+              </Text>
+              {noteType === 'text' ? (
+                <Animated.View
+                  style={[
+                    styles.animatedInputContainer,
+                    { height: animatedHeight },
+                  ]}
+                >
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Type your note..."
+                    placeholderTextColor={COLORS.PRIMARY_DARK}
+                    multiline
+                    value={text}
+                    onChangeText={setText}
+                  />
+                </Animated.View>
+              ) : (
+                <View style={styles.sketchContainer}>
+                  <SketchCanvas
+                    onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
+                    initialSketch={sketchDataUri}
+                  />
+                </View>
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -289,6 +306,10 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     color: COLORS.PRIMARY_DARK,
+  },
+  sketchContainer: {
+    height: 250,
+    marginBottom: 12,
   },
   dropdown: {
     flex: 1,

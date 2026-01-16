@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SketchCanvas from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -56,12 +57,13 @@ export default observer(function NewNoteScreen() {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
+  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(undefined);
   const [category, setCategory] = useState(core.categories[0]);
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
-  const hasText: boolean = text.trim().length > 0;
+  const hasContent: boolean = noteType === 'text' ? text.trim().length > 0 : !!sketchDataUri;
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   useEffect(() => {
@@ -176,13 +178,14 @@ export default observer(function NewNoteScreen() {
               <View style={styles.inline}>
                 <Button
                   title="Save"
-                  disabled={!hasText}
+                  disabled={!hasContent}
                   onPress={async () => {
                     try {
                       await core.createNote({
                         type: noteType,
                         title,
-                        text,
+                        text: noteType === 'text' ? text : undefined,
+                        sketchDataUri: noteType === 'sketch' ? sketchDataUri : undefined,
                         category,
                       });
                       // Return to previous screen (Notepad)
@@ -202,9 +205,13 @@ export default observer(function NewNoteScreen() {
                 />
                 <Button
                   title="Clear"
-                  disabled={!hasText}
+                  disabled={!hasContent}
                   onPress={() => {
-                    setText('');
+                    if (noteType === 'text') {
+                      setText('');
+                    } else {
+                      setSketchDataUri(undefined);
+                    }
                   }}
                 />
               </View>
@@ -221,21 +228,30 @@ export default observer(function NewNoteScreen() {
               <Text style={styles.label}>
                 {noteType === 'text' ? 'Text' : 'Sketch'}
               </Text>
-              <Animated.View
-                style={[
-                  styles.animatedInputContainer,
-                  { height: animatedHeight },
-                ]}
-              >
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Type your note..."
-                  placeholderTextColor={COLORS.PRIMARY_DARK}
-                  multiline
-                  value={text}
-                  onChangeText={setText}
-                />
-              </Animated.View>
+              {noteType === 'text' ? (
+                <Animated.View
+                  style={[
+                    styles.animatedInputContainer,
+                    { height: animatedHeight },
+                  ]}
+                >
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Type your note..."
+                    placeholderTextColor={COLORS.PRIMARY_DARK}
+                    multiline
+                    value={text}
+                    onChangeText={setText}
+                  />
+                </Animated.View>
+              ) : (
+                <View style={styles.sketchContainer}>
+                  <SketchCanvas
+                    onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
+                    initialSketch={sketchDataUri}
+                  />
+                </View>
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -312,6 +328,10 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     color: COLORS.PRIMARY_DARK,
+  },
+  sketchContainer: {
+    height: 250,
+    marginBottom: 12,
   },
   dropdown: {
     flex: 1,
