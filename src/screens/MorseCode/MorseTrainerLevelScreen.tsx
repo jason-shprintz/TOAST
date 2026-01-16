@@ -401,7 +401,6 @@ export default function MorseTrainerLevelScreen() {
               onPress={showAnswer}
               disabled={!playedChallenge}
               accessibilityLabel="Show answer"
-              disabled={!playedChallenge}
             >
               <Text style={styles.buttonText}>SHOW ANSWER</Text>
             </TouchableOpacity>
