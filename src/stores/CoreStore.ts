@@ -26,29 +26,9 @@ export interface Tool {
 }
 
 export type NoteInputType = 'text' | 'sketch' | 'voice';
-export type NoteCategory =
-  | 'General'
-  | 'Work'
-  | 'Personal'
-  | 'Ideas'
-  | 'Voice Logs'; // Still supported for Voice Log feature, but not shown in NotePad
-
-// NotePad categories (subset of NoteCategory)
-export type NotePadCategory = 'General' | 'Work' | 'Personal' | 'Ideas';
-
-// Helper to validate NotePad categories
-export const NOTEPAD_CATEGORIES: readonly NotePadCategory[] = [
-  'General',
-  'Work',
-  'Personal',
-  'Ideas',
-] as const;
-
-export function isNotePadCategory(
-  category: string,
-): category is NotePadCategory {
-  return NOTEPAD_CATEGORIES.includes(category as NotePadCategory);
-}
+// NoteCategory is now a string since categories are dynamic
+// 'Voice Logs' is still supported for Voice Log feature, but not shown in NotePad
+export type NoteCategory = string;
 
 export interface Note {
   id: string;
@@ -840,7 +820,8 @@ export class CoreStore {
   // --------------------------------------------------------------------
   notes: Note[] = [];
   // NotePad categories - Voice Logs is separate and managed by Voice Log feature
-  categories: NotePadCategory[] = ['General', 'Work', 'Personal', 'Ideas'];
+  // Categories are now dynamic and stored in the database
+  categories: string[] = [];
   notesDb: SQLiteDatabase | null = null;
 
   private generateId() {
@@ -1150,21 +1131,42 @@ export class CoreStore {
 
   /**
    * Groups notes by their category and returns a mapping from each category to an array of notes belonging to that category.
-   * Only includes NotePad categories (excludes Voice Logs which is managed separately).
+   * Excludes Voice Logs which is managed separately.
    *
-   * @returns An object where each key is a NotePad category and the value is an array of notes in that category.
+   * @returns An object where each key is a category name and the value is an array of notes in that category.
    */
-  get notesByCategory(): Record<NotePadCategory, Note[]> {
-    const map: Record<NotePadCategory, Note[]> = {
-      General: [],
-      Work: [],
-      Personal: [],
-      Ideas: [],
-    };
+  get notesByCategory(): Record<string, Note[]> {
+    const map: Record<string, Note[]> = {};
+    // Initialize all categories with empty arrays
+    for (const category of this.categories) {
+      map[category] = [];
+    }
+    // Populate with notes (excluding Voice Logs)
     for (const n of this.notes) {
-      // Only include notes that are in NotePad categories
-      if (isNotePadCategory(n.category)) {
+      if (n.category === 'Voice Logs') {
+        continue;
+      }
+      if (map[n.category]) {
         map[n.category].push(n);
+      } else {
+        const fallbackCategory = 'General';
+        // Only assign to the fallback category if it already exists in the initialized categories map.
+        if (Object.prototype.hasOwnProperty.call(map, fallbackCategory)) {
+          map[fallbackCategory].push(n);
+          if (typeof __DEV__ !== 'undefined' && __DEV__) {
+            console.warn(
+              `Note with orphaned category "${String(
+                n.category,
+              )}" assigned to fallback category "${fallbackCategory}".`,
+            );
+          }
+        } else if (typeof __DEV__ !== 'undefined' && __DEV__) {
+          console.warn(
+            `Note with orphaned category "${String(
+              n.category,
+            )}" could not be assigned to fallback category "${fallbackCategory}" because it is not in the current categories list.`,
+          );
+        }
       }
     }
     return map;
@@ -1333,6 +1335,13 @@ export class CoreStore {
           }
         }
       }
+      // Create categories table
+      await db.executeSql(
+        'CREATE TABLE IF NOT EXISTS categories (' +
+          'name TEXT PRIMARY KEY NOT NULL, ' +
+          'createdAt INTEGER NOT NULL' +
+          ')',
+      );
     } catch (error) {
       console.error('Failed to initialize notes database:', error);
       this.notesDb = null;
@@ -1440,6 +1449,206 @@ export class CoreStore {
       console.error('Failed to update note:', error);
       throw error;
     }
+  }
+
+  // ===== Category Management =====
+  /**
+   * Loads categories from the database.
+   * If no categories exist, creates default categories.
+   */
+  async loadCategories(): Promise<void> {
+    await this.initNotesDb();
+    if (!this.notesDb) {
+      // If no database, use default categories
+      runInAction(() => {
+        this.categories = ['General', 'Work', 'Personal', 'Ideas'];
+      });
+      return;
+    }
+    try {
+      const res = await this.notesDb.executeSql(
+        'SELECT * FROM categories ORDER BY createdAt ASC',
+      );
+      const rows = res[0].rows;
+      const loadedCategories: string[] = [];
+      for (let i = 0; i < rows.length; i++) {
+        const r = rows.item(i);
+        loadedCategories.push(r.name);
+      }
+      runInAction(() => {
+        this.categories = loadedCategories;
+      });
+      // If no categories exist, create defaults
+      if (loadedCategories.length === 0) {
+        await this.createDefaultCategories();
+      }
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+      // Fallback to default categories
+      runInAction(() => {
+        this.categories = ['General', 'Work', 'Personal', 'Ideas'];
+      });
+    }
+  }
+
+  /**
+   * Creates default categories.
+   */
+  async createDefaultCategories(): Promise<void> {
+    const defaultCategories = ['General', 'Work', 'Personal', 'Ideas'];
+    for (const category of defaultCategories) {
+      try {
+        await this.addCategory(category);
+      } catch (error: any) {
+        // If the category already exists, skip and continue with the remaining defaults.
+        if (error instanceof Error && error.message === 'Category already exists') {
+          continue;
+        }
+        // Re-throw unexpected errors to preserve existing failure behavior.
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Adds a new category.
+   * @param name - The name of the category to add.
+   * @throws Will throw an error if the category already exists or if the database operation fails.
+   */
+  async addCategory(name: string): Promise<void> {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      throw new Error('Category name cannot be empty');
+    }
+    if (trimmedName === 'Voice Logs') {
+      throw new Error('Voice Logs is a reserved category name');
+    }
+    if (
+      this.categories.some(
+        category => category.toLowerCase() === trimmedName.toLowerCase(),
+      )
+    ) {
+      throw new Error('Category already exists');
+    }
+    await this.initNotesDb();
+    if (!this.notesDb) {
+      // If no database, just add to memory
+      runInAction(() => {
+        this.categories.push(trimmedName);
+      });
+      return;
+    }
+    try {
+      await this.notesDb.executeSql(
+        'INSERT INTO categories (name, createdAt) VALUES (?, ?)',
+        [trimmedName, Date.now()],
+      );
+      runInAction(() => {
+        this.categories.push(trimmedName);
+      });
+    } catch (error) {
+      console.error('Failed to add category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a category.
+   * If the category has notes, they will be reassigned to the specified fallback category.
+   * 
+   * Note: The note count shown in UI warnings is advisory. Due to the async nature of the operation,
+   * the actual number of notes moved may differ if notes are added/modified between the count check
+   * and the deletion. The database transaction ensures atomicity of the deletion itself.
+   * 
+   * @param name - The name of the category to delete.
+   * @param fallbackCategory - The category to reassign notes to. If not specified, uses the first available category.
+   * @throws Will throw an error if trying to delete the last category or if the database operation fails.
+   */
+  async deleteCategory(
+    name: string,
+    fallbackCategory?: string,
+  ): Promise<void> {
+    if (this.categories.length <= 1) {
+      throw new Error('Cannot delete the last category');
+    }
+    if (!this.categories.includes(name)) {
+      throw new Error('Category does not exist');
+    }
+    
+    // Determine fallback category if not provided
+    const actualFallback = fallbackCategory || this.categories.find(c => c !== name);
+    if (!actualFallback) {
+      throw new Error('No fallback category available');
+    }
+    if (actualFallback === name) {
+      throw new Error('Fallback category cannot be the same as the category being deleted');
+    }
+    if (!this.categories.includes(actualFallback)) {
+      throw new Error('Fallback category does not exist');
+    }
+    
+    await this.initNotesDb();
+
+    // Reassign notes from the deleted category to the fallback category
+    const notesToReassign = this.notes.filter(n => n.category === name);
+
+    if (!this.notesDb) {
+      // No database: update notes and categories only in memory, as before
+      for (const note of notesToReassign) {
+        runInAction(() => {
+          note.category = actualFallback;
+        });
+        await this.updateNote(note);
+      }
+      runInAction(() => {
+        this.categories = this.categories.filter(c => c !== name);
+      });
+      return;
+    }
+
+    try {
+      // Use a transaction to ensure atomicity of the delete operation
+      await this.notesDb.executeSql('BEGIN TRANSACTION');
+      
+      try {
+        // Database present: batch update all affected notes in a single query
+        await this.notesDb.executeSql(
+          'UPDATE notes SET category = ? WHERE category = ?',
+          [actualFallback, name],
+        );
+
+        // Delete the category
+        await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [
+          name,
+        ]);
+        
+        await this.notesDb.executeSql('COMMIT');
+
+        // Update in-memory state after successful transaction
+        runInAction(() => {
+          for (const note of notesToReassign) {
+            note.category = actualFallback;
+          }
+          this.categories = this.categories.filter(c => c !== name);
+        });
+      } catch (transactionError) {
+        // Rollback on any error
+        await this.notesDb.executeSql('ROLLBACK');
+        throw transactionError;
+      }
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets the count of notes in a specific category.
+   * @param categoryName - The name of the category.
+   * @returns The number of notes in the category.
+   */
+  getCategoryNoteCount(categoryName: string): number {
+    return this.notes.filter(n => n.category === categoryName).length;
   }
 
   // --------------------------------------------------------------------
