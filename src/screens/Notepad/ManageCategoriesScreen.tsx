@@ -80,7 +80,7 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
             text: 'Continue',
             onPress: () => {
               // Second warning with reassignment confirmation
-              const fallbackCategory = core.categories.find(c => c !== categoryName) || 'General';
+              const fallbackCategory = core.categories.find(c => c !== categoryName)!;
               Alert.alert(
                 'Confirm Deletion',
                 `All notes in "${categoryName}" will be moved to "${fallbackCategory}". This action cannot be undone. Delete anyway?`,
