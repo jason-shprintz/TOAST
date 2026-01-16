@@ -95,6 +95,7 @@ export default function MorseTrainerLevelScreen() {
   const [dotSound, setDotSound] = useState<Sound | null>(null);
   const [dashSound, setDashSound] = useState<Sound | null>(null);
   const [soundsLoaded, setSoundsLoaded] = useState(false);
+  const [soundLoadError, setSoundLoadError] = useState(false);
   const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
@@ -107,16 +108,24 @@ export default function MorseTrainerLevelScreen() {
 
     let dotLoaded = false;
     let dashLoaded = false;
+    let hasError = false;
 
     const checkBothLoaded = () => {
       if (dotLoaded && dashLoaded) {
         setSoundsLoaded(true);
+      } else if (hasError) {
+        // If there's an error, set loaded to true so button becomes enabled
+        // The error will be shown when user tries to play
+        setSoundsLoaded(true);
+        setSoundLoadError(true);
       }
     };
 
     const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dot sound', error);
+        hasError = true;
+        checkBothLoaded();
         return;
       }
       dotLoaded = true;
@@ -126,6 +135,8 @@ export default function MorseTrainerLevelScreen() {
     const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
       if (error) {
         console.error('Failed to load dash sound', error);
+        hasError = true;
+        checkBothLoaded();
         return;
       }
       dashLoaded = true;
@@ -163,6 +174,13 @@ export default function MorseTrainerLevelScreen() {
    */
   const playMorseCode = useCallback(async () => {
     if (!dotSound || !dashSound || !soundsLoaded || isPlayingRef.current || !challenge) {
+      return;
+    }
+
+    // Check if there was a sound loading error
+    if (soundLoadError) {
+      // Show error feedback to user
+      setFeedback('incorrect');
       return;
     }
 
@@ -236,7 +254,7 @@ export default function MorseTrainerLevelScreen() {
       setIsPlaying(false);
       isPlayingRef.current = false;
     }
-  }, [dotSound, dashSound, soundsLoaded, challenge]);
+  }, [dotSound, dashSound, soundsLoaded, soundLoadError, challenge]);
 
   /**
    * Checks the user's answer against the challenge that was played.
@@ -318,14 +336,16 @@ export default function MorseTrainerLevelScreen() {
         <TouchableOpacity
           style={[
             styles.playButton,
-            (isPlaying || !soundsLoaded) && styles.playButtonDisabled,
+            (isPlaying || (!soundsLoaded && !soundLoadError)) && styles.playButtonDisabled,
           ]}
           onPress={playMorseCode}
-          disabled={isPlaying || !soundsLoaded}
+          disabled={isPlaying || (!soundsLoaded && !soundLoadError)}
           accessibilityLabel="Play morse code"
         >
           {isPlaying ? (
             <ActivityIndicator size="large" color={COLORS.PRIMARY_LIGHT} />
+          ) : soundLoadError ? (
+            <Text style={styles.playButtonText}>⚠ AUDIO ERROR</Text>
           ) : !soundsLoaded ? (
             <Text style={styles.playButtonText}>LOADING SOUNDS...</Text>
           ) : (
@@ -367,6 +387,8 @@ export default function MorseTrainerLevelScreen() {
             <Text style={styles.feedbackText}>
               {feedback === 'correct'
                 ? '✓ Correct!'
+                : soundLoadError
+                ? '⚠ Failed to load audio files. Please restart the app.'
                 : `✗ Incorrect. Answer was: ${playedChallenge}`}
             </Text>
           </View>
