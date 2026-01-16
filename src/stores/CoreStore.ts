@@ -1548,24 +1548,37 @@ export class CoreStore {
       throw new Error('Category does not exist');
     }
     await this.initNotesDb();
-    
+
     // Reassign notes from the deleted category to the fallback category
     const notesToReassign = this.notes.filter(n => n.category === name);
-    for (const note of notesToReassign) {
-      runInAction(() => {
-        note.category = fallbackCategory;
-      });
-      await this.updateNote(note);
-    }
 
     if (!this.notesDb) {
-      // If no database, just remove from memory
+      // No database: update notes and categories only in memory, as before
+      for (const note of notesToReassign) {
+        runInAction(() => {
+          note.category = fallbackCategory;
+        });
+        await this.updateNote(note);
+      }
       runInAction(() => {
         this.categories = this.categories.filter(c => c !== name);
       });
       return;
     }
+
     try {
+      // Database present: batch update all affected notes in a single query
+      await this.notesDb.executeSql(
+        'UPDATE notes SET category = ? WHERE category = ?',
+        [fallbackCategory, name],
+      );
+
+      // Update in-memory notes in a single MobX action
+      runInAction(() => {
+        for (const note of notesToReassign) {
+          note.category = fallbackCategory;
+        }
+      });
       await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [
         name,
       ]);
