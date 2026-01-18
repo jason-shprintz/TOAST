@@ -7,6 +7,7 @@ interface SketchCanvasProps {
   onSketchSave: (dataUri: string) => void;
   initialSketch?: string;
   onClear?: () => void;
+  onBegin?: () => void;
 }
 
 export interface SketchCanvasHandle {
@@ -26,10 +27,11 @@ export interface SketchCanvasHandle {
  * @param onSketchSave - Callback invoked with base64 data URI when sketch is saved
  * @param initialSketch - Optional base64 data URI to load an existing sketch
  * @param onClear - Optional callback when clear button is pressed
+ * @param onBegin - Optional callback when user starts drawing
  * @returns A React element rendering the sketch canvas
  */
 const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
-  ({ onSketchSave, initialSketch, onClear }, forwardedRef) => {
+  ({ onSketchSave, initialSketch, onClear, onBegin }, forwardedRef) => {
     const ref = useRef<SignatureCanvas | null>(null);
 
     useImperativeHandle(forwardedRef, () => ({
@@ -51,6 +53,12 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
       onSketchSave(signature);
     };
 
+    const handleBegin = () => {
+      if (onBegin) {
+        onBegin();
+      }
+    };
+
     // Web style for the canvas
     const webStyle = `.m-signature-pad {
     box-shadow: none;
@@ -69,16 +77,18 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
   }`;
 
     return (
-      <View style={styles.container}>
+      <View style={styles.container} collapsable={false}>
         <SignatureCanvas
           ref={ref}
           onOK={handleOK}
+          onBegin={handleBegin}
           descriptionText=""
           webStyle={webStyle}
           backgroundColor={COLORS.PRIMARY_LIGHT}
           penColor={COLORS.PRIMARY_DARK}
           dataURL={initialSketch}
           webviewContainerStyle={styles.webviewContainer}
+          scrollEnabled={false}
         />
       </View>
     );

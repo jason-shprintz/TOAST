@@ -58,6 +58,7 @@ export default observer(function NewNoteScreen() {
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(undefined);
+  const [hasDrawn, setHasDrawn] = useState(false);
   const [category, setCategory] = useState(core.categories[0]);
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
@@ -65,7 +66,7 @@ export default observer(function NewNoteScreen() {
   const { isKeyboardVisible } = useKeyboardStatus();
   const hasContent: boolean = noteType === 'text' 
     ? text.trim().length > 0 
-    : (!!sketchDataUri && title.trim().length > 0);
+    : (hasDrawn && title.trim().length > 0);
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   useEffect(() => {
@@ -76,6 +77,16 @@ export default observer(function NewNoteScreen() {
       useNativeDriver: false,
     }).start();
   }, [isKeyboardVisible, animatedHeight]);
+
+  // Disable gesture navigation when in sketch mode
+  useEffect(() => {
+    if (navigation && 'setOptions' in navigation) {
+      // @ts-ignore
+      navigation.setOptions({
+        gestureEnabled: noteType !== 'sketch',
+      });
+    }
+  }, [noteType, navigation]);
 
   return (
     <ScreenBody>
@@ -254,6 +265,7 @@ export default observer(function NewNoteScreen() {
                       onPress={() => {
                         sketchCanvasRef.current?.clearSignature();
                         setSketchDataUri(undefined);
+                        setHasDrawn(false);
                       }}
                       accessibilityLabel="Clear sketch"
                       accessibilityRole="button"
@@ -318,7 +330,11 @@ export default observer(function NewNoteScreen() {
                     ref={sketchCanvasRef}
                     onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
                     initialSketch={sketchDataUri}
-                    onClear={() => setSketchDataUri(undefined)}
+                    onClear={() => {
+                      setSketchDataUri(undefined);
+                      setHasDrawn(false);
+                    }}
+                    onBegin={() => setHasDrawn(true)}
                   />
                 </View>
               )}

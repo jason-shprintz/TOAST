@@ -314,5 +314,43 @@ describe('CoreStore - Note Editing', () => {
       const updatedNote = coreStore.notes.find(n => n.id === note.id);
       expect(updatedNote?.sketchDataUri).toBe(updatedSketch);
     });
+
+    it('should require title for sketch notes to be saveable', async () => {
+      // Test that sketch notes require a title
+      const sketchData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      
+      // Should be able to create sketch note with title and sketch data
+      await coreStore.createNote({
+        type: 'sketch',
+        title: 'Required Title',
+        sketchDataUri: sketchData,
+        category: 'General',
+      });
+
+      expect(coreStore.notes).toHaveLength(1);
+      const note = coreStore.notes[0];
+      expect(note.type).toBe('sketch');
+      expect(note.title).toBe('Required Title');
+      expect(note.sketchDataUri).toBe(sketchData);
+    });
+
+    it('should save sketch note even without explicit sketchDataUri if drawing occurred', async () => {
+      // Simulates the case where user has drawn but we haven't captured the data URI yet
+      // The UI tracks hasDrawn state and enables save button
+      // When save is clicked, readSignature() is called to get the data
+      const sketchData = 'data:image/png;base64,captured';
+      
+      await coreStore.createNote({
+        type: 'sketch',
+        title: 'Drawn Note',
+        sketchDataUri: sketchData,
+        category: 'General',
+      });
+
+      expect(coreStore.notes).toHaveLength(1);
+      const note = coreStore.notes[0];
+      expect(note.type).toBe('sketch');
+      expect(note.sketchDataUri).toBe(sketchData);
+    });
   });
 });

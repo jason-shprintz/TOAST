@@ -67,6 +67,7 @@ export default observer(function EditNoteScreen() {
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
   const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(note?.sketchDataUri);
+  const [hasDrawn, setHasDrawn] = useState(!!note?.sketchDataUri);
   const [category, setCategory] = useState(
     note?.category || core.categories[0] || 'General',
   );
@@ -75,7 +76,7 @@ export default observer(function EditNoteScreen() {
   const noteType = note?.type || 'text';
   const hasContent: boolean = noteType === 'text' 
     ? text.trim().length > 0 
-    : (!!sketchDataUri && title.trim().length > 0);
+    : (hasDrawn && title.trim().length > 0);
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   // Update local state when the note changes in the store
@@ -84,12 +85,14 @@ export default observer(function EditNoteScreen() {
       setTitle(note.title || '');
       setText(note.text || '');
       setSketchDataUri(note.sketchDataUri);
+      setHasDrawn(!!note.sketchDataUri);
       setCategory(note.category || core.categories[0] || 'General');
     } else {
       // Reset form if note is no longer available (e.g., deleted)
       setTitle('');
       setText('');
       setSketchDataUri(undefined);
+      setHasDrawn(false);
       setCategory(core.categories[0] || 'General');
     }
   }, [note, core.categories]);
@@ -102,6 +105,15 @@ export default observer(function EditNoteScreen() {
       useNativeDriver: false,
     }).start();
   }, [isKeyboardVisible, animatedHeight]);
+
+  // Disable gesture navigation when in sketch mode
+  useEffect(() => {
+    if (navigation && 'setOptions' in navigation) {
+      navigation.setOptions({
+        gestureEnabled: noteType !== 'sketch',
+      });
+    }
+  }, [noteType, navigation]);
 
   if (!note) {
     return (
@@ -236,6 +248,7 @@ export default observer(function EditNoteScreen() {
                       onPress={() => {
                         sketchCanvasRef.current?.clearSignature();
                         setSketchDataUri(undefined);
+                        setHasDrawn(false);
                       }}
                       accessibilityLabel="Clear sketch"
                       accessibilityRole="button"
@@ -330,7 +343,11 @@ export default observer(function EditNoteScreen() {
                     ref={sketchCanvasRef}
                     onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
                     initialSketch={sketchDataUri}
-                    onClear={() => setSketchDataUri(undefined)}
+                    onClear={() => {
+                      setSketchDataUri(undefined);
+                      setHasDrawn(false);
+                    }}
+                    onBegin={() => setHasDrawn(true)}
                   />
                 </View>
               )}
