@@ -7,6 +7,7 @@ import { COLORS } from '../theme';
 interface SketchCanvasProps {
   onSketchSave: (dataUri: string) => void;
   initialSketch?: string;
+  onClear?: () => void;
 }
 
 /**
@@ -19,11 +20,13 @@ interface SketchCanvasProps {
  *
  * @param onSketchSave - Callback invoked with base64 data URI when sketch is saved
  * @param initialSketch - Optional base64 data URI to load an existing sketch
+ * @param onClear - Optional callback when clear button is pressed
  * @returns A React element rendering the sketch canvas
  */
 export default function SketchCanvas({
   onSketchSave,
   initialSketch,
+  onClear,
 }: SketchCanvasProps) {
   const ref = useRef<SignatureCanvas | null>(null);
 
@@ -33,20 +36,25 @@ export default function SketchCanvas({
 
   const handleClear = () => {
     ref.current?.clearSignature();
+    if (onClear) {
+      onClear();
+    }
   };
 
   const handleUndo = () => {
     ref.current?.undo();
   };
 
-  // Web style for the canvas
+  // Web style for the canvas - disable touch-action to prevent swipe navigation
   const webStyle = `.m-signature-pad {
     box-shadow: none;
     border: none;
     background-color: ${COLORS.PRIMARY_LIGHT};
+    touch-action: none;
   }
   .m-signature-pad--body {
     border: none;
+    touch-action: none;
   }
   .m-signature-pad--footer {
     display: none;
@@ -54,6 +62,10 @@ export default function SketchCanvas({
   body,html {
     width: 100%;
     height: 100%;
+    touch-action: none;
+  }
+  canvas {
+    touch-action: none;
   }`;
 
   return (

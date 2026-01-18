@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View,
   TextInput,
-  Button,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
@@ -73,7 +72,9 @@ export default observer(function EditNoteScreen() {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
   const noteType = note?.type || 'text';
-  const hasContent: boolean = noteType === 'text' ? text.trim().length > 0 : !!sketchDataUri;
+  const hasContent: boolean = noteType === 'text' 
+    ? text.trim().length > 0 
+    : (!!sketchDataUri && title.trim().length > 0);
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   // Update local state when the note changes in the store
@@ -160,8 +161,8 @@ export default observer(function EditNoteScreen() {
               </View>
 
               <View style={styles.inline}>
-                <Button
-                  title="Save"
+                <TouchableOpacity
+                  style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
                   disabled={!hasContent}
                   onPress={async () => {
                     if (!note) {
@@ -196,29 +197,51 @@ export default observer(function EditNoteScreen() {
                       console.error('Failed to update note:', error);
                     }
                   }}
-                />
-                <Button
-                  title="Clear"
-                  disabled={!hasContent}
-                  onPress={() => {
-                    if (noteType === 'text') {
+                  accessibilityLabel="Save note"
+                  accessibilityRole="button"
+                >
+                  <Icon
+                    name="checkmark-outline"
+                    size={30}
+                    color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                  />
+                </TouchableOpacity>
+                {noteType === 'text' && (
+                  <TouchableOpacity
+                    style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                    disabled={!hasContent}
+                    onPress={() => {
                       setText('');
-                    } else {
-                      setSketchDataUri(undefined);
-                    }
-                  }}
-                />
-                <Button
-                  title="Cancel"
+                    }}
+                    accessibilityLabel="Clear note"
+                    accessibilityRole="button"
+                  >
+                    <Icon
+                      name="trash-outline"
+                      size={30}
+                      color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                    />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={styles.iconButton}
                   onPress={() => {
                     navigation.goBack();
                   }}
-                />
+                  accessibilityLabel="Cancel"
+                  accessibilityRole="button"
+                >
+                  <Icon
+                    name="close-outline"
+                    size={30}
+                    color={COLORS.PRIMARY_DARK}
+                  />
+                </TouchableOpacity>
               </View>
 
               <TextInput
                 style={styles.titleInput}
-                placeholder="Title (optional)"
+                placeholder={noteType === 'sketch' ? 'Title (required)' : 'Title (optional)'}
                 placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}
@@ -249,6 +272,7 @@ export default observer(function EditNoteScreen() {
                   <SketchCanvas
                     onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
                     initialSketch={sketchDataUri}
+                    onClear={() => setSketchDataUri(undefined)}
                   />
                 </View>
               )}
@@ -306,8 +330,8 @@ const styles = StyleSheet.create({
   },
   inline: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 8,
+    justifyContent: 'flex-start',
+    gap: 16,
     marginBottom: 8,
   },
   inlineCenter: {
@@ -377,5 +401,12 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     color: COLORS.PRIMARY_DARK,
     fontSize: 14,
+  },
+  iconButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  iconButtonDisabled: {
+    opacity: 0.3,
   },
 });
