@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -18,7 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import SketchCanvas from '../../components/SketchCanvas';
+import SketchCanvas, { SketchCanvasHandle } from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -54,6 +54,7 @@ import { MAX_TITLE_LENGTH } from './constants';
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation();
+  const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(undefined);
@@ -182,6 +183,13 @@ export default observer(function NewNoteScreen() {
                   disabled={!hasContent}
                   onPress={async () => {
                     try {
+                      // For sketch notes, read the signature first
+                      if (noteType === 'sketch') {
+                        sketchCanvasRef.current?.readSignature();
+                        // Wait a bit for the signature to be read
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                      }
+
                       const noteParams: {
                         type: 'text' | 'sketch';
                         title: string;
@@ -202,7 +210,7 @@ export default observer(function NewNoteScreen() {
 
                       await core.createNote(noteParams);
                       // Return to previous screen (Notepad)
-                      // Prefer goBack to avoid hard-coding route names
+                      // Prefer goBack to avoid hard-coded route names
                       if (navigation && 'goBack' in navigation) {
                         // @ts-ignore
                         navigation.goBack();
@@ -224,7 +232,40 @@ export default observer(function NewNoteScreen() {
                     color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
                   />
                 </TouchableOpacity>
-                {noteType === 'text' && (
+                <View style={styles.spacer} />
+                {noteType === 'sketch' ? (
+                  <View style={styles.sketchControls}>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.undo();
+                      }}
+                      accessibilityLabel="Undo last stroke"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="arrow-undo-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.clearSignature();
+                        setSketchDataUri(undefined);
+                      }}
+                      accessibilityLabel="Clear sketch"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
                   <TouchableOpacity
                     style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
                     disabled={!hasContent}
@@ -274,6 +315,7 @@ export default observer(function NewNoteScreen() {
               ) : (
                 <View style={styles.sketchContainer}>
                   <SketchCanvas
+                    ref={sketchCanvasRef}
                     onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
                     initialSketch={sketchDataUri}
                     onClear={() => setSketchDataUri(undefined)}
@@ -334,9 +376,17 @@ const styles = StyleSheet.create({
   },
   inline: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    gap: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
+  },
+  spacer: {
+    flex: 1,
+  },
+  sketchControls: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
   },
   inlineCenter: {
     flexDirection: 'row',

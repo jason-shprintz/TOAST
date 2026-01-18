@@ -1,7 +1,6 @@
-import React, { useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import SignatureCanvas from 'react-native-signature-canvas';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../theme';
 
 interface SketchCanvasProps {
@@ -10,12 +9,18 @@ interface SketchCanvasProps {
   onClear?: () => void;
 }
 
+export interface SketchCanvasHandle {
+  readSignature: () => void;
+  clearSignature: () => void;
+  undo: () => void;
+}
+
 /**
  * SketchCanvas component provides a drawing surface for creating sketch notes.
  *
  * Features:
  * - Drawing with touch input
- * - Clear/undo functionality
+ * - Clear/undo functionality via exposed methods
  * - Saves sketch as base64 data URI
  *
  * @param onSketchSave - Callback invoked with base64 data URI when sketch is saved
@@ -23,38 +28,37 @@ interface SketchCanvasProps {
  * @param onClear - Optional callback when clear button is pressed
  * @returns A React element rendering the sketch canvas
  */
-export default function SketchCanvas({
-  onSketchSave,
-  initialSketch,
-  onClear,
-}: SketchCanvasProps) {
-  const ref = useRef<SignatureCanvas | null>(null);
+const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
+  ({ onSketchSave, initialSketch, onClear }, forwardedRef) => {
+    const ref = useRef<SignatureCanvas | null>(null);
 
-  const handleOK = (signature: string) => {
-    onSketchSave(signature);
-  };
+    useImperativeHandle(forwardedRef, () => ({
+      readSignature: () => {
+        ref.current?.readSignature();
+      },
+      clearSignature: () => {
+        ref.current?.clearSignature();
+        if (onClear) {
+          onClear();
+        }
+      },
+      undo: () => {
+        ref.current?.undo();
+      },
+    }));
 
-  const handleClear = () => {
-    ref.current?.clearSignature();
-    if (onClear) {
-      onClear();
-    }
-  };
+    const handleOK = (signature: string) => {
+      onSketchSave(signature);
+    };
 
-  const handleUndo = () => {
-    ref.current?.undo();
-  };
-
-  // Web style for the canvas - disable touch-action to prevent swipe navigation
-  const webStyle = `.m-signature-pad {
+    // Web style for the canvas
+    const webStyle = `.m-signature-pad {
     box-shadow: none;
     border: none;
     background-color: ${COLORS.PRIMARY_LIGHT};
-    touch-action: none;
   }
   .m-signature-pad--body {
     border: none;
-    touch-action: none;
   }
   .m-signature-pad--footer {
     display: none;
@@ -62,33 +66,10 @@ export default function SketchCanvas({
   body,html {
     width: 100%;
     height: 100%;
-    touch-action: none;
-  }
-  canvas {
-    touch-action: none;
   }`;
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableOpacity
-          style={styles.toolButton}
-          onPress={handleUndo}
-          accessibilityLabel="Undo last stroke"
-          accessibilityRole="button"
-        >
-          <Icon name="arrow-undo-outline" size={24} color={COLORS.PRIMARY_DARK} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.toolButton}
-          onPress={handleClear}
-          accessibilityLabel="Clear sketch"
-          accessibilityRole="button"
-        >
-          <Icon name="trash-outline" size={24} color={COLORS.PRIMARY_DARK} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.canvasContainer}>
+    return (
+      <View style={styles.container}>
         <SignatureCanvas
           ref={ref}
           onOK={handleOK}
@@ -97,11 +78,16 @@ export default function SketchCanvas({
           backgroundColor={COLORS.PRIMARY_LIGHT}
           penColor={COLORS.PRIMARY_DARK}
           dataURL={initialSketch}
+          webviewContainerStyle={styles.webviewContainer}
         />
       </View>
-    </View>
-  );
-}
+    );
+  }
+);
+
+SketchCanvas.displayName = 'SketchCanvas';
+
+export default SketchCanvas;
 
 const styles = StyleSheet.create({
   container: {
@@ -112,21 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
   },
-  toolbar: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.SECONDARY_ACCENT,
-    gap: 8,
-  },
-  toolButton: {
-    padding: 8,
-  },
-  canvasContainer: {
+  webviewContainer: {
     flex: 1,
   },
 });

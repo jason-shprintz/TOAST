@@ -1,7 +1,7 @@
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import SketchCanvas from '../../components/SketchCanvas';
+import SketchCanvas, { SketchCanvasHandle } from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -58,6 +58,7 @@ export default observer(function EditNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation<EditNoteScreenNavigationProp>();
   const route = useRoute<EditNoteScreenRouteProp>();
+  const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
   const noteId = route.params.note.id;
 
   // Look up the note from the store by ID to ensure we have the latest version
@@ -170,6 +171,13 @@ export default observer(function EditNoteScreen() {
                       return;
                     }
                     try {
+                      // For sketch notes, read the signature first
+                      if (noteType === 'sketch') {
+                        sketchCanvasRef.current?.readSignature();
+                        // Wait a bit for the signature to be read
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                      }
+
                       const updateParams: {
                         title: string;
                         text?: string;
@@ -206,37 +214,86 @@ export default observer(function EditNoteScreen() {
                     color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
                   />
                 </TouchableOpacity>
-                {noteType === 'text' && (
-                  <TouchableOpacity
-                    style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
-                    disabled={!hasContent}
-                    onPress={() => {
-                      setText('');
-                    }}
-                    accessibilityLabel="Clear note"
-                    accessibilityRole="button"
-                  >
-                    <Icon
-                      name="trash-outline"
-                      size={30}
-                      color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
-                    />
-                  </TouchableOpacity>
+                <View style={styles.spacer} />
+                {noteType === 'sketch' ? (
+                  <View style={styles.sketchControls}>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.undo();
+                      }}
+                      accessibilityLabel="Undo last stroke"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="arrow-undo-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.clearSignature();
+                        setSketchDataUri(undefined);
+                      }}
+                      accessibilityLabel="Clear sketch"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      accessibilityLabel="Cancel"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="close-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                      disabled={!hasContent}
+                      onPress={() => {
+                        setText('');
+                      }}
+                      accessibilityLabel="Clear note"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={30}
+                        color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      accessibilityLabel="Cancel"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="close-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </>
                 )}
-                <TouchableOpacity
-                  style={styles.iconButton}
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                  accessibilityLabel="Cancel"
-                  accessibilityRole="button"
-                >
-                  <Icon
-                    name="close-outline"
-                    size={30}
-                    color={COLORS.PRIMARY_DARK}
-                  />
-                </TouchableOpacity>
               </View>
 
               <TextInput
@@ -270,6 +327,7 @@ export default observer(function EditNoteScreen() {
               ) : (
                 <View style={styles.sketchContainer}>
                   <SketchCanvas
+                    ref={sketchCanvasRef}
                     onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
                     initialSketch={sketchDataUri}
                     onClear={() => setSketchDataUri(undefined)}
@@ -330,9 +388,17 @@ const styles = StyleSheet.create({
   },
   inline: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    gap: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
+  },
+  spacer: {
+    flex: 1,
+  },
+  sketchControls: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
   },
   inlineCenter: {
     flexDirection: 'row',
