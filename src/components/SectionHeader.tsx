@@ -1,10 +1,15 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, TextProps } from 'react-native';
+import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
 import { COLORS } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
 
-type Props = TextProps & { title?: string; isShowHr?: boolean };
+type Props = TextProps & {
+  title?: string;
+  isShowHr?: boolean;
+  enableSearch?: boolean;
+};
 
 /**
  * Renders a section header using a `Text` component.
@@ -15,6 +20,8 @@ type Props = TextProps & { title?: string; isShowHr?: boolean };
  * @param title - The text to display as the section header. If not provided, `children` will be used.
  * @param children - Alternative content to display if `title` is not specified.
  * @param style - Custom styles to apply to the header.
+ * @param isShowHr - Whether to show the horizontal rule below the header. Default is true.
+ * @param enableSearch - Whether clicking the header opens the search screen. Default is true.
  * @param rest - Additional props to pass to the `Text` component.
  */
 export default function SectionHeader({
@@ -22,13 +29,24 @@ export default function SectionHeader({
   children,
   style,
   isShowHr = true,
+  enableSearch = true,
   ...rest
 }: Props) {
+  const navigation = useNavigation<any>();
+
+  const handlePress = () => {
+    if (enableSearch) {
+      navigation.navigate('Search');
+    }
+  };
+
   return (
     <>
-      <Text {...rest} style={[styles.header, style]}>
-        {title ?? children}
-      </Text>
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+        <Text {...rest} style={[styles.header, style]}>
+          {title ?? children}
+        </Text>
+      </TouchableOpacity>
       {isShowHr && <HorizontalRule />}
     </>
   );
