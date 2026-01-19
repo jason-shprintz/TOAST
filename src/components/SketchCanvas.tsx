@@ -1,5 +1,5 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, PanResponder } from 'react-native';
 import SignatureCanvas from 'react-native-signature-canvas';
 import { COLORS } from '../theme';
 
@@ -23,6 +23,7 @@ export interface SketchCanvasHandle {
  * - Drawing with touch input
  * - Clear/undo functionality via exposed methods
  * - Saves sketch as base64 data URI
+ * - Prevents gesture navigation during drawing
  *
  * @param onSketchSave - Callback invoked with base64 data URI when sketch is saved
  * @param initialSketch - Optional base64 data URI to load an existing sketch
@@ -59,6 +60,18 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
       }
     };
 
+    // PanResponder to capture all touch events and prevent gesture navigation
+    const panResponder = useRef(
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
+      })
+    ).current;
+
     // Web style for the canvas
     const webStyle = `.m-signature-pad {
     box-shadow: none;
@@ -77,7 +90,7 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
   }`;
 
     return (
-      <View style={styles.container} collapsable={false}>
+      <View style={styles.container} collapsable={false} {...panResponder.panHandlers}>
         <SignatureCanvas
           ref={ref}
           onOK={handleOK}

@@ -59,6 +59,7 @@ export default observer(function EditNoteScreen() {
   const navigation = useNavigation<EditNoteScreenNavigationProp>();
   const route = useRoute<EditNoteScreenRouteProp>();
   const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
+  const sketchSaveResolveRef = useRef<((dataUri: string) => void) | null>(null);
   const noteId = route.params.note.id;
 
   // Look up the note from the store by ID to ensure we have the latest version
@@ -183,11 +184,22 @@ export default observer(function EditNoteScreen() {
                       return;
                     }
                     try {
-                      // For sketch notes, read the signature first
+                      let sketchData = sketchDataUri;
+                      
+                      // For sketch notes, read the signature first and wait for the callback
                       if (noteType === 'sketch') {
-                        sketchCanvasRef.current?.readSignature();
-                        // Wait a bit for the signature to be read
-                        await new Promise(resolve => setTimeout(resolve, 100));
+                        sketchData = await new Promise<string>((resolve) => {
+                          sketchSaveResolveRef.current = resolve;
+                          sketchCanvasRef.current?.readSignature();
+                          
+                          // Fallback timeout in case callback doesn't fire
+                          setTimeout(() => {
+                            if (sketchSaveResolveRef.current) {
+                              sketchSaveResolveRef.current(sketchDataUri || '');
+                              sketchSaveResolveRef.current = null;
+                            }
+                          }, 1000);
+                        });
                       }
 
                       const updateParams: {
@@ -203,7 +215,7 @@ export default observer(function EditNoteScreen() {
                       if (noteType === 'text') {
                         updateParams.text = text;
                       } else {
-                        updateParams.sketchDataUri = sketchDataUri;
+                        updateParams.sketchDataUri = sketchData;
                       }
 
                       await core.updateNoteContent(note.id, updateParams);
@@ -341,7 +353,14 @@ export default observer(function EditNoteScreen() {
                 <View style={styles.sketchContainer}>
                   <SketchCanvas
                     ref={sketchCanvasRef}
-                    onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
+                    onSketchSave={(dataUri: string) => {
+                      setSketchDataUri(dataUri);
+                      // If we're waiting for sketch data for save, resolve the promise
+                      if (sketchSaveResolveRef.current) {
+                        sketchSaveResolveRef.current(dataUri);
+                        sketchSaveResolveRef.current = null;
+                      }
+                    }}
                     initialSketch={sketchDataUri}
                     onClear={() => {
                       setSketchDataUri(undefined);

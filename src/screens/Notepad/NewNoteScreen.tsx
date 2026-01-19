@@ -55,6 +55,7 @@ export default observer(function NewNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation();
   const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
+  const sketchSaveResolveRef = useRef<((dataUri: string) => void) | null>(null);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(undefined);
@@ -194,11 +195,22 @@ export default observer(function NewNoteScreen() {
                   disabled={!hasContent}
                   onPress={async () => {
                     try {
-                      // For sketch notes, read the signature first
+                      let sketchData = sketchDataUri;
+                      
+                      // For sketch notes, read the signature first and wait for the callback
                       if (noteType === 'sketch') {
-                        sketchCanvasRef.current?.readSignature();
-                        // Wait a bit for the signature to be read
-                        await new Promise(resolve => setTimeout(resolve, 100));
+                        sketchData = await new Promise<string>((resolve) => {
+                          sketchSaveResolveRef.current = resolve;
+                          sketchCanvasRef.current?.readSignature();
+                          
+                          // Fallback timeout in case callback doesn't fire
+                          setTimeout(() => {
+                            if (sketchSaveResolveRef.current) {
+                              sketchSaveResolveRef.current(sketchDataUri || '');
+                              sketchSaveResolveRef.current = null;
+                            }
+                          }, 1000);
+                        });
                       }
 
                       const noteParams: {
@@ -216,12 +228,12 @@ export default observer(function NewNoteScreen() {
                       if (noteType === 'text') {
                         noteParams.text = text;
                       } else {
-                        noteParams.sketchDataUri = sketchDataUri;
+                        noteParams.sketchDataUri = sketchData;
                       }
 
                       await core.createNote(noteParams);
                       // Return to previous screen (Notepad)
-                      // Prefer goBack to avoid hard-coded route names
+                      // Prefer goBack to avoid hard-coding route names
                       if (navigation && 'goBack' in navigation) {
                         // @ts-ignore
                         navigation.goBack();
@@ -328,7 +340,14 @@ export default observer(function NewNoteScreen() {
                 <View style={styles.sketchContainer}>
                   <SketchCanvas
                     ref={sketchCanvasRef}
-                    onSketchSave={(dataUri: string) => setSketchDataUri(dataUri)}
+                    onSketchSave={(dataUri: string) => {
+                      setSketchDataUri(dataUri);
+                      // If we're waiting for sketch data for save, resolve the promise
+                      if (sketchSaveResolveRef.current) {
+                        sketchSaveResolveRef.current(dataUri);
+                        sketchSaveResolveRef.current = null;
+                      }
+                    }}
                     initialSketch={sketchDataUri}
                     onClear={() => {
                       setSketchDataUri(undefined);
