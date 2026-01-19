@@ -1,6 +1,6 @@
+import emergencyData from '../data/emergency.json';
 import healthData from '../data/health.json';
 import survivalData from '../data/survival.json';
-import emergencyData from '../data/emergency.json';
 import toolsData from '../data/tools.json';
 import weatherData from '../data/weather.json';
 import { ToolType } from '../types/common-types';
