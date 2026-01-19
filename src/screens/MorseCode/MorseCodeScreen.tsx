@@ -24,12 +24,6 @@ const morseCodeTools: ToolType[] = [
     id: 'morse_trainer',
   },
   {
-    name: 'Nato Phonetic',
-    screen: 'NatoPhonetic',
-    icon: 'radio-outline',
-    id: 'morse_nato_phonetic',
-  },
-  {
     name: 'Cheat Sheet',
     screen: 'MorseCodeCheatSheet',
     icon: 'document-text-outline',
