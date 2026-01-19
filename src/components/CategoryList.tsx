@@ -26,6 +26,11 @@ export default function CategoryList({
 }: CategoryListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
+  // Sort categories alphabetically by title
+  const sortedCategories = [...categories].sort((a, b) =>
+    a.title.localeCompare(b.title),
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -36,7 +41,7 @@ export default function CategoryList({
           <SectionSubHeader>{disclaimer}</SectionSubHeader>
         )}
         <Grid>
-          {categories.map(category => {
+          {sortedCategories.map(category => {
             return (
               <CardTopic
                 key={category.id}
