@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
@@ -23,6 +24,8 @@ import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { MAX_TITLE_LENGTH } from './constants';
+
+type NewNoteScreenNavigationProp = NativeStackNavigationProp<any>;
 
 /**
  * Screen for composing and saving a new note.
@@ -53,7 +56,7 @@ import { MAX_TITLE_LENGTH } from './constants';
  */
 export default observer(function NewNoteScreen() {
   const core = useCoreStore();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NewNoteScreenNavigationProp>();
   const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
   const sketchSaveResolveRef = useRef<((dataUri: string) => void) | null>(null);
   const [title, setTitle] = useState('');
@@ -81,12 +84,9 @@ export default observer(function NewNoteScreen() {
 
   // Disable gesture navigation when in sketch mode
   useEffect(() => {
-    if (navigation && 'setOptions' in navigation) {
-      // @ts-ignore
-      navigation.setOptions({
-        gestureEnabled: noteType !== 'sketch',
-      });
-    }
+    navigation.setOptions({
+      gestureEnabled: noteType !== 'sketch',
+    });
   }, [noteType, navigation]);
 
   return (
@@ -233,11 +233,7 @@ export default observer(function NewNoteScreen() {
 
                       await core.createNote(noteParams);
                       // Return to previous screen (Notepad)
-                      // Prefer goBack to avoid hard-coding route names
-                      if (navigation && 'goBack' in navigation) {
-                        // @ts-ignore
-                        navigation.goBack();
-                      }
+                      navigation.goBack();
                     } catch (error) {
                       Alert.alert(
                         'Error',
