@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { HorizontalRule } from '../../../components/HorizontalRule';
@@ -58,6 +59,8 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
 
   const noteTitle = note.title || '(Untitled)';
   const noteText = note.text || '';
+  const noteType = note.type || 'text';
+  const sketchDataUri = note.sketchDataUri;
 
   const handleBookmarkPress = async () => {
     await core.toggleNoteBookmark(note.id);
@@ -131,9 +134,25 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
             </Text>
           </View>
 
-          <View>
-            <Text style={shared.itemBodyExpanded}>{noteText}</Text>
-          </View>
+          {noteType === 'text' ? (
+            <View>
+              <Text style={shared.itemBodyExpanded}>{noteText}</Text>
+            </View>
+          ) : noteType === 'sketch' && sketchDataUri ? (
+            <View style={styles.sketchView}>
+              <Image
+                source={{ uri: sketchDataUri }}
+                style={styles.sketchImage}
+                resizeMode="contain"
+              />
+            </View>
+          ) : (
+            <View>
+              <Text style={shared.itemBodyExpanded}>
+                No sketch data available.
+              </Text>
+            </View>
+          )}
         </ScrollView>
       </View>
     </ScreenBody>
@@ -166,5 +185,18 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     paddingBottom: 24,
+  },
+  sketchView: {
+    width: '100%',
+    minHeight: 200,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderRadius: 8,
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sketchImage: {
+    width: '100%',
+    height: 300,
   },
 });

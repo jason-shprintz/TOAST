@@ -1000,6 +1000,7 @@ export class CoreStore {
       title?: string;
       text?: string;
       category?: NoteCategory;
+      sketchDataUri?: string;
     },
   ) {
     const note = this.notes.find(n => n.id === noteId);
@@ -1013,6 +1014,9 @@ export class CoreStore {
         }
         if (params.category !== undefined) {
           note.category = params.category;
+        }
+        if (params.sketchDataUri !== undefined) {
+          note.sketchDataUri = params.sketchDataUri;
         }
       });
       await this.updateNote(note);
