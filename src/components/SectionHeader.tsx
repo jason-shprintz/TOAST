@@ -35,18 +35,24 @@ export default function SectionHeader({
   const navigation = useNavigation<any>();
 
   const handlePress = () => {
-    if (enableSearch) {
-      navigation.navigate('Search');
-    }
+    navigation.navigate('Search');
   };
+
+  const header = (
+    <Text {...rest} style={[styles.header, style]}>
+      {title ?? children}
+    </Text>
+  );
 
   return (
     <>
-      <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
-        <Text {...rest} style={[styles.header, style]}>
-          {title ?? children}
-        </Text>
-      </TouchableOpacity>
+      {enableSearch ? (
+        <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+          {header}
+        </TouchableOpacity>
+      ) : (
+        header
+      )}
       {isShowHr && <HorizontalRule />}
     </>
   );
