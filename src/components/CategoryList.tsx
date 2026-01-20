@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { FOOTER_HEIGHT } from '../theme';
 import { CategoryType } from '../types/common-types';
@@ -26,6 +26,12 @@ export default function CategoryList({
 }: CategoryListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
+  // Sort categories alphabetically by title
+  const sortedCategories = useMemo(
+    () => [...categories].sort((a, b) => a.title.localeCompare(b.title)),
+    [categories],
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -36,7 +42,7 @@ export default function CategoryList({
           <SectionSubHeader>{disclaimer}</SectionSubHeader>
         )}
         <Grid>
-          {categories.map(category => {
+          {sortedCategories.map(category => {
             return (
               <CardTopic
                 key={category.id}
