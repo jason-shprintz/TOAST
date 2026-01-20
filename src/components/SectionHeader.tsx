@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
 import { COLORS } from '../theme';
@@ -10,6 +11,10 @@ type Props = TextProps & {
   isShowHr?: boolean;
   enableSearch?: boolean;
 };
+
+type SectionHeaderNavigationProp = NativeStackNavigationProp<{
+  Search: undefined;
+}>;
 
 /**
  * Renders a section header using a `Text` component.
@@ -32,7 +37,7 @@ export default function SectionHeader({
   enableSearch = true,
   ...rest
 }: Props) {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<SectionHeaderNavigationProp>();
 
   const handlePress = () => {
     navigation.navigate('Search');
