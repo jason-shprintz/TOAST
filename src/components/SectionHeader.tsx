@@ -47,7 +47,11 @@ export default function SectionHeader({
   return (
     <>
       {enableSearch ? (
-        <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={handlePress}
+          activeOpacity={0.7}
+          style={styles.searchBar}
+        >
           {header}
         </TouchableOpacity>
       ) : (
@@ -69,9 +73,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    width: '80%',
+    width: '100%',
     textAlign: 'center',
     alignSelf: 'center',
     marginVertical: 12,
+  },
+  searchBar: {
+    width: '80%',
   },
 });
