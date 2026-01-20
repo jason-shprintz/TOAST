@@ -17,6 +17,9 @@ export type SearchableItem = {
   data?: any; // Additional data for navigation
 };
 
+// Cache for searchable items to improve performance
+let cachedSearchableItems: SearchableItem[] | null = null;
+
 // Main modules
 const modules: ToolType[] = [
   { name: 'Core', screen: 'CoreModule', icon: 'apps-outline', id: 'home_core' },
@@ -281,8 +284,14 @@ function referenceEntryToSearchableItem(
 
 /**
  * Gets all searchable items in the app
+ * Results are cached to improve performance during real-time search
  */
 export function getAllSearchableItems(): SearchableItem[] {
+  // Return cached items if available
+  if (cachedSearchableItems !== null) {
+    return cachedSearchableItems;
+  }
+
   const items: SearchableItem[] = [];
 
   // Add modules
@@ -313,6 +322,9 @@ export function getAllSearchableItems(): SearchableItem[] {
   allReferenceEntries.forEach(entry => {
     items.push(referenceEntryToSearchableItem(entry));
   });
+
+  // Cache the results
+  cachedSearchableItems = items;
 
   return items;
 }
