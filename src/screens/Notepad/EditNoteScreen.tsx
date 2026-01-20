@@ -1,12 +1,11 @@
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
   TextInput,
-  Button,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
@@ -20,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SketchCanvas, { SketchCanvasHandle } from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -58,6 +58,8 @@ export default observer(function EditNoteScreen() {
   const core = useCoreStore();
   const navigation = useNavigation<EditNoteScreenNavigationProp>();
   const route = useRoute<EditNoteScreenRouteProp>();
+  const sketchCanvasRef = useRef<SketchCanvasHandle>(null);
+  const sketchSaveResolveRef = useRef<((dataUri: string) => void) | null>(null);
   const noteId = route.params.note.id;
 
   // Look up the note from the store by ID to ensure we have the latest version
@@ -65,12 +67,17 @@ export default observer(function EditNoteScreen() {
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
+  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(note?.sketchDataUri);
+  const [hasDrawn, setHasDrawn] = useState(!!note?.sketchDataUri);
   const [category, setCategory] = useState(
     note?.category || core.categories[0] || 'General',
   );
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
-  const hasText: boolean = text.trim().length > 0;
+  const noteType = note?.type || 'text';
+  const hasContent: boolean = noteType === 'text' 
+    ? text.trim().length > 0 
+    : (hasDrawn && title.trim().length > 0);
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   // Update local state when the note changes in the store
@@ -78,11 +85,15 @@ export default observer(function EditNoteScreen() {
     if (note) {
       setTitle(note.title || '');
       setText(note.text || '');
+      setSketchDataUri(note.sketchDataUri);
+      setHasDrawn(!!note.sketchDataUri);
       setCategory(note.category || core.categories[0] || 'General');
     } else {
       // Reset form if note is no longer available (e.g., deleted)
       setTitle('');
       setText('');
+      setSketchDataUri(undefined);
+      setHasDrawn(false);
       setCategory(core.categories[0] || 'General');
     }
   }, [note, core.categories]);
@@ -95,6 +106,15 @@ export default observer(function EditNoteScreen() {
       useNativeDriver: false,
     }).start();
   }, [isKeyboardVisible, animatedHeight]);
+
+  // Disable gesture navigation when in sketch mode
+  useEffect(() => {
+    if (navigation && 'setOptions' in navigation) {
+      navigation.setOptions({
+        gestureEnabled: noteType !== 'sketch',
+      });
+    }
+  }, [noteType, navigation]);
 
   if (!note) {
     return (
@@ -155,20 +175,50 @@ export default observer(function EditNoteScreen() {
               </View>
 
               <View style={styles.inline}>
-                <Button
-                  title="Save"
-                  disabled={!hasText}
+                <TouchableOpacity
+                  style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                  disabled={!hasContent}
                   onPress={async () => {
                     if (!note) {
                       Alert.alert('Error', 'Note not found.');
                       return;
                     }
                     try {
-                      await core.updateNoteContent(note.id, {
+                      let sketchData = sketchDataUri;
+                      
+                      // For sketch notes, read the signature first and wait for the callback
+                      if (noteType === 'sketch') {
+                        sketchData = await new Promise<string>((resolve) => {
+                          sketchSaveResolveRef.current = resolve;
+                          sketchCanvasRef.current?.readSignature();
+                          
+                          // Fallback timeout in case callback doesn't fire
+                          setTimeout(() => {
+                            if (sketchSaveResolveRef.current) {
+                              sketchSaveResolveRef.current(sketchDataUri || '');
+                              sketchSaveResolveRef.current = null;
+                            }
+                          }, 1000);
+                        });
+                      }
+
+                      const updateParams: {
+                        title: string;
+                        text?: string;
+                        sketchDataUri?: string;
+                        category: string;
+                      } = {
                         title,
-                        text,
                         category,
-                      });
+                      };
+
+                      if (noteType === 'text') {
+                        updateParams.text = text;
+                      } else {
+                        updateParams.sketchDataUri = sketchData;
+                      }
+
+                      await core.updateNoteContent(note.id, updateParams);
                       // Return to previous screen
                       navigation.goBack();
                     } catch (error) {
@@ -179,40 +229,147 @@ export default observer(function EditNoteScreen() {
                       console.error('Failed to update note:', error);
                     }
                   }}
-                />
-                <Button
-                  title="Cancel"
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                />
+                  accessibilityLabel="Save note"
+                  accessibilityRole="button"
+                >
+                  <Icon
+                    name="checkmark-outline"
+                    size={30}
+                    color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                  />
+                </TouchableOpacity>
+                <View style={styles.spacer} />
+                {noteType === 'sketch' ? (
+                  <View style={styles.sketchControls}>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.undo();
+                      }}
+                      accessibilityLabel="Undo last stroke"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="arrow-undo-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        sketchCanvasRef.current?.clearSignature();
+                        setSketchDataUri(undefined);
+                        setHasDrawn(false);
+                      }}
+                      accessibilityLabel="Clear sketch"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      accessibilityLabel="Cancel"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="close-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                      disabled={!hasContent}
+                      onPress={() => {
+                        setText('');
+                      }}
+                      accessibilityLabel="Clear note"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="trash-outline"
+                        size={30}
+                        color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      accessibilityLabel="Cancel"
+                      accessibilityRole="button"
+                    >
+                      <Icon
+                        name="close-outline"
+                        size={30}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
 
               <TextInput
                 style={styles.titleInput}
-                placeholder="Title (optional)"
+                placeholder={noteType === 'sketch' ? 'Title (required)' : 'Title (optional)'}
                 placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}
                 maxLength={MAX_TITLE_LENGTH}
               />
 
-              <Text style={styles.label}>Text</Text>
-              <Animated.View
-                style={[
-                  styles.animatedInputContainer,
-                  { height: animatedHeight },
-                ]}
-              >
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Type your note..."
-                  placeholderTextColor={COLORS.PRIMARY_DARK}
-                  multiline
-                  value={text}
-                  onChangeText={setText}
-                />
-              </Animated.View>
+              <Text style={styles.label}>
+                {noteType === 'text' ? 'Text' : 'Sketch'}
+              </Text>
+              {noteType === 'text' ? (
+                <Animated.View
+                  style={[
+                    styles.animatedInputContainer,
+                    { height: animatedHeight },
+                  ]}
+                >
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Type your note..."
+                    placeholderTextColor={COLORS.PRIMARY_DARK}
+                    multiline
+                    value={text}
+                    onChangeText={setText}
+                  />
+                </Animated.View>
+              ) : (
+                <View style={styles.sketchContainer}>
+                  <SketchCanvas
+                    ref={sketchCanvasRef}
+                    onSketchSave={(dataUri: string) => {
+                      setSketchDataUri(dataUri);
+                      // If we're waiting for sketch data for save, resolve the promise
+                      if (sketchSaveResolveRef.current) {
+                        sketchSaveResolveRef.current(dataUri);
+                        sketchSaveResolveRef.current = null;
+                      }
+                    }}
+                    initialSketch={sketchDataUri}
+                    onClear={() => {
+                      setSketchDataUri(undefined);
+                      setHasDrawn(false);
+                    }}
+                    onBegin={() => setHasDrawn(true)}
+                  />
+                </View>
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -268,8 +425,16 @@ const styles = StyleSheet.create({
   inline: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
+    alignItems: 'center',
     marginBottom: 8,
+  },
+  spacer: {
+    flex: 1,
+  },
+  sketchControls: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
   },
   inlineCenter: {
     flexDirection: 'row',
@@ -289,6 +454,10 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     color: COLORS.PRIMARY_DARK,
+  },
+  sketchContainer: {
+    height: 250,
+    marginBottom: 12,
   },
   dropdown: {
     flex: 1,
@@ -334,5 +503,12 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     color: COLORS.PRIMARY_DARK,
     fontSize: 14,
+  },
+  iconButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  iconButtonDisabled: {
+    opacity: 0.3,
   },
 });

@@ -12,6 +12,12 @@ const communicationTools: ToolType[] = [
     id: 'comm_morse_code',
   },
   {
+    name: 'NATO Phonetic',
+    screen: 'NatoPhonetic',
+    icon: 'radio-outline',
+    id: 'comm_nato_phonetic',
+  },
+  {
     name: 'Radio Frequency References',
     screen: 'ComingSoon',
     icon: 'cellular-outline',
