@@ -76,15 +76,19 @@ export default function SearchScreen(): JSX.Element {
             autoFocus
             returnKeyType="search"
           />
-          {query.length > 0 && (
-            <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
+          <TouchableOpacity
+            onPress={handleClear}
+            style={styles.clearButton}
+            disabled={query.length === 0}
+          >
+            {query.length > 0 && (
               <Ionicons
                 name="close-circle"
                 size={20}
                 color={COLORS.PRIMARY_DARK}
               />
-            </TouchableOpacity>
-          )}
+            )}
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -134,13 +138,14 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '90%',
+    width: '80%',
     backgroundColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    minHeight: 44,
   },
   searchIcon: {
     marginRight: 8,
@@ -154,6 +159,10 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     padding: 4,
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   resultsContainer: {
     flex: 1,
