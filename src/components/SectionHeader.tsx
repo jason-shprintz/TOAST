@@ -51,6 +51,9 @@ export default function SectionHeader({
           onPress={handlePress}
           activeOpacity={0.7}
           style={styles.searchBar}
+          accessibilityRole="button"
+          accessibilityLabel="Search"
+          accessibilityHint="Double tap to open search screen"
         >
           {header}
         </TouchableOpacity>
