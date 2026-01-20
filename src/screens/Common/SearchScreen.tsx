@@ -75,6 +75,7 @@ export default function SearchScreen(): JSX.Element {
             onChangeText={handleSearch}
             autoFocus
             returnKeyType="search"
+            accessibilityLabel="Search input"
           />
           <TouchableOpacity
             onPress={handleClear}
