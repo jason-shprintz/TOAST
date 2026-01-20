@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { FOOTER_HEIGHT } from '../theme';
 import { CategoryType } from '../types/common-types';
@@ -27,8 +27,9 @@ export default function CategoryList({
   const navigation = useNavigation<any>();
 
   // Sort categories alphabetically by title
-  const sortedCategories = [...categories].sort((a, b) =>
-    a.title.localeCompare(b.title),
+  const sortedCategories = useMemo(
+    () => [...categories].sort((a, b) => a.title.localeCompare(b.title)),
+    [categories],
   );
 
   return (

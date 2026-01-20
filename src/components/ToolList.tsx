@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ToolType } from '../types/common-types';
 import CardTopic from './CardTopic';
@@ -23,8 +23,9 @@ export default function ToolList({ tools }: ToolListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
   // Sort tools alphabetically by name
-  const sortedTools = [...tools].sort((a, b) =>
-    a.name.localeCompare(b.name),
+  const sortedTools = useMemo(
+    () => [...tools].sort((a, b) => a.name.localeCompare(b.name)),
+    [tools],
   );
 
   return (

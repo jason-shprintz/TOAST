@@ -44,6 +44,50 @@ describe('Alphabetical Sorting', () => {
 
       expect(sortedNames).toEqual(expectedOrder);
     });
+
+    it('should handle mixed-case names correctly', () => {
+      const unsortedTools: ToolType[] = [
+        { name: 'alpha', screen: 'AlphaScreen', icon: 'icon1', id: 'a' },
+        { name: 'Beta', screen: 'BetaScreen', icon: 'icon2', id: 'b' },
+        { name: 'Charlie', screen: 'CharlieScreen', icon: 'icon3', id: 'c' },
+        { name: 'delta', screen: 'DeltaScreen', icon: 'icon4', id: 'd' },
+      ];
+
+      const sortedTools = [...unsortedTools].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+
+      const sortedNames = sortedTools.map(tool => tool.name);
+      // localeCompare performs case-insensitive sorting by default
+      const expectedOrder = ['alpha', 'Beta', 'Charlie', 'delta'];
+
+      expect(sortedNames).toEqual(expectedOrder);
+    });
+
+    it('should handle empty array correctly', () => {
+      const emptyTools: ToolType[] = [];
+
+      const sortedTools = [...emptyTools].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+
+      expect(sortedTools).toEqual([]);
+      expect(sortedTools.length).toBe(0);
+    });
+
+    it('should handle single-item array correctly', () => {
+      const singleTool: ToolType[] = [
+        { name: 'Flashlight', screen: 'FlashlightScreen', icon: 'icon1', id: 'f' },
+      ];
+
+      const sortedTools = [...singleTool].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+
+      expect(sortedTools).toEqual(singleTool);
+      expect(sortedTools.length).toBe(1);
+      expect(sortedTools[0].name).toBe('Flashlight');
+    });
   });
 
   describe('CategoryList sorting logic', () => {
@@ -126,6 +170,73 @@ describe('Alphabetical Sorting', () => {
       const expectedOrder = ['Cold Weather', 'Heat & Sun', 'Wind & Storms'];
 
       expect(sortedTitles).toEqual(expectedOrder);
+    });
+
+    it('should handle mixed-case titles correctly', () => {
+      const unsortedCategories: CategoryType[] = [
+        {
+          title: 'emergency',
+          icon: 'icon1',
+          id: 'e',
+          category: 'emergency',
+          data: [],
+        },
+        {
+          title: 'Injury',
+          icon: 'icon2',
+          id: 'i',
+          category: 'Injury',
+          data: [],
+        },
+        {
+          title: 'Illness',
+          icon: 'icon3',
+          id: 'ill',
+          category: 'Illness',
+          data: [],
+        },
+      ];
+
+      const sortedCategories = [...unsortedCategories].sort((a, b) =>
+        a.title.localeCompare(b.title),
+      );
+
+      const sortedTitles = sortedCategories.map(category => category.title);
+      // localeCompare performs case-insensitive sorting by default
+      const expectedOrder = ['emergency', 'Illness', 'Injury'];
+
+      expect(sortedTitles).toEqual(expectedOrder);
+    });
+
+    it('should handle empty array correctly', () => {
+      const emptyCategories: CategoryType[] = [];
+
+      const sortedCategories = [...emptyCategories].sort((a, b) =>
+        a.title.localeCompare(b.title),
+      );
+
+      expect(sortedCategories).toEqual([]);
+      expect(sortedCategories.length).toBe(0);
+    });
+
+    it('should handle single-item array correctly', () => {
+      const singleCategory: CategoryType[] = [
+        {
+          title: 'Emergency',
+          icon: 'icon1',
+          id: 'e',
+          category: 'Emergency',
+          data: [],
+        },
+      ];
+
+      const sortedCategories = [...singleCategory].sort((a, b) =>
+        a.title.localeCompare(b.title),
+      );
+
+      expect(sortedCategories).toEqual(singleCategory);
+      expect(sortedCategories.length).toBe(1);
+      expect(sortedCategories[0].title).toBe('Emergency');
     });
   });
 });
