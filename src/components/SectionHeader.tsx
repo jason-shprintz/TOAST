@@ -80,5 +80,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     width: '80%',
+    alignSelf: 'center',
   },
 });
