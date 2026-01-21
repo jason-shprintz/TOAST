@@ -37,7 +37,7 @@ export const NoteSortSelector = observer(() => {
     <TouchableOpacity
       style={styles.container}
       onPress={cycleSort}
-      accessibilityLabel={`Sort by: ${currentOption?.label}. Tap to change.`}
+      accessibilityLabel={`Sort by: ${currentOption?.label || 'Unknown'}. Tap to change.`}
       accessibilityRole="button"
       accessibilityHint="Cycles through sorting options"
     >
@@ -46,7 +46,7 @@ export const NoteSortSelector = observer(() => {
         size={18}
         color={COLORS.PRIMARY_DARK}
       />
-      <Text style={styles.label}>Sort: {currentOption?.label}</Text>
+      <Text style={styles.label}>Sort: {currentOption?.label || 'Unknown'}</Text>
     </TouchableOpacity>
   );
 });
