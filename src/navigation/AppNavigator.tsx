@@ -10,6 +10,7 @@ import ReferenceModule from '../modules/Reference/ReferenceModule';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
+import SearchScreen from '../screens/Common/SearchScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
@@ -86,6 +87,7 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+          <Stack.Screen name="Search" component={SearchScreen} />
           {/* Communications Module */}
           <Stack.Screen name="MorseCode" component={MorseCodeScreen} />
           <Stack.Screen
