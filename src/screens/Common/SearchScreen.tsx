@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { JSX, useState, useCallback } from 'react';
 import {
   StyleSheet,
@@ -14,6 +15,13 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
 import { searchItems, SearchableItem } from '../../utils/searchData';
+import ReferenceEntryType from '../../types/data-type';
+
+type SearchScreenNavigationProp = NativeStackNavigationProp<{
+  ComingSoon: { title: string; icon: string };
+  Entry: { entry: ReferenceEntryType };
+  [key: string]: undefined | object;
+}>;
 
 /**
  * SearchScreen component allows users to search across all app content.
@@ -25,7 +33,7 @@ import { searchItems, SearchableItem } from '../../utils/searchData';
  * - Swipe back navigation supported
  */
 export default function SearchScreen(): JSX.Element {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<SearchScreenNavigationProp>();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
