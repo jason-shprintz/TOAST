@@ -1,41 +1,8 @@
 import React from 'react';
+import { COMMUNICATION_TOOLS } from '../../../constants';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import ToolList from '../../components/ToolList';
-import { ToolType } from '../../types/common-types';
-
-const communicationTools: ToolType[] = [
-  {
-    name: 'Morse Code',
-    screen: 'MorseCode',
-    icon: 'flash-outline',
-    id: 'comm_morse_code',
-  },
-  {
-    name: 'NATO Phonetic',
-    screen: 'NatoPhonetic',
-    icon: 'radio-outline',
-    id: 'comm_nato_phonetic',
-  },
-  {
-    name: 'Radio Frequency References',
-    screen: 'ComingSoon',
-    icon: 'cellular-outline',
-    id: 'comm_radio_frequency',
-  },
-  {
-    name: 'Digital Whistle',
-    screen: 'ComingSoon',
-    icon: 'musical-notes-outline',
-    id: 'comm_digital_whistle',
-  },
-  {
-    name: 'Decibel Meter',
-    screen: 'ComingSoon',
-    icon: 'volume-high-outline',
-    id: 'comm_decibel_meter',
-  },
-];
 
 /**
  * Renders the Communications screen module.
@@ -49,7 +16,7 @@ export default function CommunicationsModule() {
   return (
     <ScreenBody>
       <SectionHeader>Communications</SectionHeader>
-      <ToolList tools={communicationTools} />
+      <ToolList tools={COMMUNICATION_TOOLS} />
     </ScreenBody>
   );
 }
