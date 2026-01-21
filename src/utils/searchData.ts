@@ -1,3 +1,4 @@
+import { MODULES } from '../../constants';
 import emergencyData from '../data/emergency.json';
 import healthData from '../data/health.json';
 import survivalData from '../data/survival.json';
@@ -19,35 +20,6 @@ export type SearchableItem = {
 
 // Cache for searchable items to improve performance
 let cachedSearchableItems: SearchableItem[] | null = null;
-
-// Main modules
-const modules: ToolType[] = [
-  { name: 'Core', screen: 'CoreModule', icon: 'apps-outline', id: 'home_core' },
-  {
-    name: 'Navigation',
-    screen: 'NavigationModule',
-    icon: 'compass-outline',
-    id: 'home_navigation',
-  },
-  {
-    name: 'Reference',
-    screen: 'ReferenceModule',
-    icon: 'book-outline',
-    id: 'home_reference',
-  },
-  {
-    name: 'Comms',
-    screen: 'CommunicationsModule',
-    icon: 'call-outline',
-    id: 'home_communications',
-  },
-  {
-    name: 'Prepper',
-    screen: 'PrepperModule',
-    icon: 'shield-checkmark-outline',
-    id: 'home_prepper',
-  },
-];
 
 // Core tools
 const coreTools: ToolType[] = [
@@ -295,7 +267,7 @@ export function getAllSearchableItems(): SearchableItem[] {
   const items: SearchableItem[] = [];
 
   // Add modules
-  modules.forEach(module => {
+  MODULES.forEach(module => {
     items.push(toolToSearchableItem(module, 'module'));
   });
 
