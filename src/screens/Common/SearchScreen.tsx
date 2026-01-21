@@ -14,8 +14,8 @@ import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
-import { searchItems, SearchableItem } from '../../utils/searchData';
 import ReferenceEntryType from '../../types/data-type';
+import { searchItems, SearchableItem } from '../../utils/searchData';
 
 type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ComingSoon: { title: string; icon: string };
@@ -74,6 +74,7 @@ export default function SearchScreen(): JSX.Element {
             size={20}
             color={COLORS.PRIMARY_DARK}
             style={styles.searchIcon}
+            accessibilityLabel="Search icon"
           />
           <TextInput
             style={styles.searchInput}
@@ -89,6 +90,9 @@ export default function SearchScreen(): JSX.Element {
             onPress={handleClear}
             style={styles.clearButton}
             disabled={query.length === 0}
+            accessibilityLabel="Clear search"
+            accessibilityHint="Clears the search query"
+            accessibilityRole="button"
           >
             {query.length > 0 && (
               <Ionicons
