@@ -67,12 +67,14 @@ describe('SettingsStore', () => {
     it('should initialize with default values', () => {
       expect(settingsStore.fontSize).toBe('small');
       expect(settingsStore.themeMode).toBe('light');
+      expect(settingsStore.noteSortOrder).toBe('newest-oldest');
     });
 
     it('should make the store observable', () => {
       expect(settingsStore).toBeDefined();
       expect(typeof settingsStore.setFontSize).toBe('function');
       expect(typeof settingsStore.setThemeMode).toBe('function');
+      expect(typeof settingsStore.setNoteSortOrder).toBe('function');
     });
   });
 
@@ -164,6 +166,40 @@ describe('SettingsStore', () => {
     });
   });
 
+  describe('setNoteSortOrder', () => {
+    beforeEach(async () => {
+      await settingsStore.initSettingsDb(mockDb);
+    });
+
+    it('should update noteSortOrder to newest-oldest', async () => {
+      await settingsStore.setNoteSortOrder('newest-oldest');
+      expect(settingsStore.noteSortOrder).toBe('newest-oldest');
+    });
+
+    it('should update noteSortOrder to oldest-newest', async () => {
+      await settingsStore.setNoteSortOrder('oldest-newest');
+      expect(settingsStore.noteSortOrder).toBe('oldest-newest');
+    });
+
+    it('should update noteSortOrder to a-z', async () => {
+      await settingsStore.setNoteSortOrder('a-z');
+      expect(settingsStore.noteSortOrder).toBe('a-z');
+    });
+
+    it('should update noteSortOrder to z-a', async () => {
+      await settingsStore.setNoteSortOrder('z-a');
+      expect(settingsStore.noteSortOrder).toBe('z-a');
+    });
+
+    it('should persist noteSortOrder to database', async () => {
+      await settingsStore.setNoteSortOrder('a-z');
+      expect(mockDb.executeSql).toHaveBeenCalledWith(
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('noteSortOrder', ?)",
+        ['a-z'],
+      );
+    });
+  });
+
   describe('database initialization', () => {
     it('should initialize settings table', async () => {
       await settingsStore.initSettingsDb(mockDb);
@@ -224,6 +260,18 @@ describe('SettingsStore', () => {
       expect(newStore.themeMode).toBe('dark');
     });
 
+    it('should load noteSortOrder from database', async () => {
+      // Set and persist noteSortOrder with first store
+      await settingsStore.setNoteSortOrder('a-z');
+
+      // Create new store with same database to simulate reload
+      const newStore = new SettingsStore();
+      await newStore.initSettingsDb(mockDb);
+      await newStore.loadSettings(mockDb);
+
+      expect(newStore.noteSortOrder).toBe('a-z');
+    });
+
     it('should use default values if database is empty', async () => {
       const newStore = new SettingsStore();
       const emptyDb = createMockDatabase();
@@ -232,6 +280,7 @@ describe('SettingsStore', () => {
 
       expect(newStore.fontSize).toBe('small');
       expect(newStore.themeMode).toBe('light');
+      expect(newStore.noteSortOrder).toBe('newest-oldest');
     });
 
     it('should handle load errors gracefully', async () => {
@@ -273,6 +322,10 @@ describe('SettingsStore', () => {
       expect(mockDb.executeSql).toHaveBeenCalledWith(
         "INSERT OR REPLACE INTO settings (key, value) VALUES ('themeMode', ?)",
         ['dark'],
+      );
+      expect(mockDb.executeSql).toHaveBeenCalledWith(
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('noteSortOrder', ?)",
+        ['newest-oldest'],
       );
     });
 
@@ -386,6 +439,7 @@ describe('SettingsStore', () => {
       // Set initial values
       await settingsStore.setFontSize('large');
       await settingsStore.setThemeMode('dark');
+      await settingsStore.setNoteSortOrder('a-z');
 
       // Simulate app restart by creating new store with same database
       const newStore = new SettingsStore();
@@ -395,6 +449,7 @@ describe('SettingsStore', () => {
       // Settings should be restored
       expect(newStore.fontSize).toBe('large');
       expect(newStore.themeMode).toBe('dark');
+      expect(newStore.noteSortOrder).toBe('a-z');
       expect(newStore.fontScale).toBe(1.4);
     });
   });

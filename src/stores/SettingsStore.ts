@@ -2,10 +2,12 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 export type FontSize = 'small' | 'medium' | 'large';
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type NoteSortOrder = 'newest-oldest' | 'oldest-newest' | 'a-z' | 'z-a';
 
 export interface Settings {
   fontSize: FontSize;
   themeMode: ThemeMode;
+  noteSortOrder: NoteSortOrder;
 }
 
 /**
@@ -15,6 +17,7 @@ export interface Settings {
 export class SettingsStore {
   fontSize: FontSize = 'small';
   themeMode: ThemeMode = 'light';
+  noteSortOrder: NoteSortOrder = 'newest-oldest';
   private settingsDb: any | null = null;
 
   constructor() {
@@ -39,6 +42,17 @@ export class SettingsStore {
   async setThemeMode(mode: ThemeMode) {
     runInAction(() => {
       this.themeMode = mode;
+    });
+    await this.persistSettings();
+  }
+
+  /**
+   * Sets the note sort order setting.
+   * @param order - The desired sort order ('newest-oldest', 'oldest-newest', 'a-z', or 'z-a')
+   */
+  async setNoteSortOrder(order: NoteSortOrder) {
+    runInAction(() => {
+      this.noteSortOrder = order;
     });
     await this.persistSettings();
   }
@@ -94,6 +108,13 @@ export class SettingsStore {
   }
 
   /**
+   * Validates if a value is a valid NoteSortOrder
+   */
+  private isValidNoteSortOrder(value: any): value is NoteSortOrder {
+    return ['newest-oldest', 'oldest-newest', 'a-z', 'z-a'].includes(value);
+  }
+
+  /**
    * Loads settings from the database.
    */
   async loadSettings(db: any): Promise<void> {
@@ -134,6 +155,23 @@ export class SettingsStore {
           );
         }
       }
+
+      // Load note sort order
+      const noteSortOrderRes = await this.settingsDb.executeSql(
+        "SELECT value FROM settings WHERE key = 'noteSortOrder'",
+      );
+      if (noteSortOrderRes[0].rows.length > 0) {
+        const value = noteSortOrderRes[0].rows.item(0).value;
+        if (this.isValidNoteSortOrder(value)) {
+          runInAction(() => {
+            this.noteSortOrder = value;
+          });
+        } else {
+          console.warn(
+            `Invalid noteSortOrder value in database: ${value}, using default 'newest-oldest'`,
+          );
+        }
+      }
     } catch (error) {
       console.error('Failed to load settings:', error);
     }
@@ -153,6 +191,10 @@ export class SettingsStore {
       await this.settingsDb.executeSql(
         "INSERT OR REPLACE INTO settings (key, value) VALUES ('themeMode', ?)",
         [this.themeMode],
+      );
+      await this.settingsDb.executeSql(
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('noteSortOrder', ?)",
+        [this.noteSortOrder],
       );
     } catch (error) {
       console.error('Failed to persist settings:', error);

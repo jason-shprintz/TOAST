@@ -8,11 +8,13 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { NoteSortSelector } from '../../components/NoteSortSelector';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useCoreStore } from '../../stores';
+import { useCoreStore, useSettingsStore } from '../../stores';
 import { COLORS } from '../../theme';
+import { sortNotes } from '../../utils/noteSorting';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
@@ -36,11 +38,16 @@ import { noteListSharedStyles as shared } from './noteListStyles';
  */
 export default observer(function RecentNotesScreen() {
   const core = useCoreStore();
+  const settings = useSettingsStore();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const data = useMemo(() => core.recentNotesTop20, [core.recentNotesTop20]);
+  const data = useMemo(
+    () => sortNotes(core.recentNotesTop20, settings.noteSortOrder),
+    [core.recentNotesTop20, settings.noteSortOrder],
+  );
   return (
     <ScreenBody>
       <SectionHeader>Recent Notes</SectionHeader>
+      <NoteSortSelector />
       <View style={styles.card}>
         <FlatList
           style={styles.list}
