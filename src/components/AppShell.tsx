@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import React, {
   PropsWithChildren,
@@ -57,6 +58,7 @@ const DATE_FORMAT = 'dddd, MMMM D, YYYY';
  * @returns The composed app shell containing the header, content, and gesture handlers.
  */
 export default function AppShell({ children }: Props) {
+  const navigation = useNavigation();
   const navigationHistory = useNavigationHistory();
   const { disableGestureNavigation } = useGestureNavigation();
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStatus();
@@ -194,7 +196,16 @@ export default function AppShell({ children }: Props) {
               />
             </TouchableOpacity>
 
-            <LogoHeader />
+            <TouchableOpacity
+              onPress={() => {
+                // @ts-ignore - navigation types
+                navigation.navigate('Home');
+              }}
+              accessibilityLabel="Go to home screen"
+              accessibilityRole="button"
+            >
+              <LogoHeader />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.content}>{children}</View>
