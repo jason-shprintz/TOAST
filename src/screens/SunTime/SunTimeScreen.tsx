@@ -51,8 +51,15 @@ function SunTimeScreen() {
         // Request location if not available
         if (!core.lastFix) {
           core.startDeviceStatusMonitoring();
-          // Give it a moment to get location
-          await new Promise<void>(resolve => setTimeout(resolve, 2000));
+          // Wait for location with a reasonable timeout
+          const maxWaitTime = 3000;
+          const checkInterval = 500;
+          let elapsed = 0;
+          
+          while (!core.lastFix && elapsed < maxWaitTime) {
+            await new Promise<void>(resolve => setTimeout(resolve, checkInterval));
+            elapsed += checkInterval;
+          }
         }
 
         if (!core.lastFix) {
@@ -88,7 +95,10 @@ function SunTimeScreen() {
           nightEnd: formatTime(times.nightEnd),
         });
       } catch (err) {
-        setError('Error calculating sun times');
+        const errorMessage = err instanceof Error 
+          ? `Error: ${err.message}`
+          : 'Invalid location data. Please try again.';
+        setError(errorMessage);
         console.error('Sun time calculation error:', err);
       } finally {
         setLoading(false);
