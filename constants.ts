@@ -73,6 +73,12 @@ export const CORE_TOOLS: ToolType[] = [
     icon: 'list-outline',
     id: 'core_checklist',
   },
+  {
+    name: 'Sun Times',
+    screen: 'SunTime',
+    icon: 'sunny-outline',
+    id: 'core_sun_time',
+  },
 ];
 
 export const COMMUNICATION_TOOLS: ToolType[] = [
