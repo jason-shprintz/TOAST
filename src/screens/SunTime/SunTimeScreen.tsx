@@ -70,9 +70,8 @@ function SunTimeScreen() {
       setError(null);
 
       try {
-        // Request location if not available
+        // Request location if not available: wait briefly for a fix
         if (!core.lastFix) {
-          core.startDeviceStatusMonitoring();
           // Wait for location with a reasonable timeout
           let elapsed = 0;
 
