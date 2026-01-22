@@ -89,11 +89,12 @@ export function formatTime(date: Date): string {
 export function formatDateTime(date: Date): string {
   const use24Hour = is24HourFormat();
   
-  // Get date components
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const year = date.getFullYear();
-  const dateStr = `${month}/${day}/${year}`;
+  // Use locale-aware date formatting to respect user's date format preferences
+  const dateStr = date.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
   
   if (use24Hour) {
     // Manual formatting for 24-hour to ensure consistency
