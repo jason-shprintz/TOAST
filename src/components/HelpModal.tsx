@@ -10,7 +10,7 @@ import {
   Linking,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 
 interface HelpModalProps {
   visible: boolean;
@@ -36,88 +36,84 @@ interface AccordionItem {
 // No-op handler to prevent backdrop touch from propagating
 const preventClose = () => {};
 
-/**
- * Renders text content with clickable links for URLs and emails.
- * URLs starting with http/https are clickable to open in browser.
- * Email addresses (format: text@domain) are clickable to open email client.
- */
-const renderLinkableText = (text: string) => {
-  // Regex patterns for URLs and emails
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+  const renderLinkableText = (text: string) => {
+    // Regex patterns for URLs and emails
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 
-  // Split text by both URLs and emails, preserving the delimiters
-  const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> = [];
-  let lastIndex = 0;
+    // Split text by both URLs and emails, preserving the delimiters
+    const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> = [];
+    let lastIndex = 0;
 
-  // First, find all URLs
-  const urlMatches = Array.from(text.matchAll(urlRegex));
-  // Then find all emails
-  const emailMatches = Array.from(text.matchAll(emailRegex));
+    // First, find all URLs
+    const urlMatches = Array.from(text.matchAll(urlRegex));
+    // Then find all emails
+    const emailMatches = Array.from(text.matchAll(emailRegex));
 
-  // Combine and sort all matches by position
-  const allMatches = [
-    ...urlMatches.map(m => ({ ...m, type: 'url' as const })),
-    ...emailMatches.map(m => ({ ...m, type: 'email' as const })),
-  ].sort((a, b) => a.index! - b.index!);
+    // Combine and sort all matches by position
+    const allMatches = [
+      ...urlMatches.map(m => ({ ...m, type: 'url' as const })),
+      ...emailMatches.map(m => ({ ...m, type: 'email' as const })),
+    ].sort((a, b) => a.index! - b.index!);
 
-  allMatches.forEach(match => {
-    const matchStart = match.index!;
-    const matchEnd = matchStart + match[0].length;
+    allMatches.forEach(match => {
+      const matchStart = match.index!;
+      const matchEnd = matchStart + match[0].length;
 
-    // Add text before this match
-    if (lastIndex < matchStart) {
+      // Add text before this match
+      if (lastIndex < matchStart) {
+        parts.push({
+          type: 'text',
+          content: text.substring(lastIndex, matchStart),
+        });
+      }
+
+      // Add the match itself
+      parts.push({
+        type: match.type,
+        content: match[0],
+      });
+
+      lastIndex = matchEnd;
+    });
+
+    // Add remaining text
+    if (lastIndex < text.length) {
       parts.push({
         type: 'text',
-        content: text.substring(lastIndex, matchStart),
+        content: text.substring(lastIndex),
       });
     }
 
-    // Add the match itself
-    parts.push({
-      type: match.type,
-      content: match[0],
+    return parts.map((part, index) => {
+      if (part.type === 'url') {
+        return (
+          <RNText
+            key={index}
+            style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
+            onPress={() => Linking.openURL(part.content)}
+          >
+            {part.content}
+          </RNText>
+        );
+      } else if (part.type === 'email') {
+        return (
+          <RNText
+            key={index}
+            style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
+            onPress={() => Linking.openURL(`mailto:${part.content}`)}
+          >
+            {part.content}
+          </RNText>
+        );
+      } else {
+        return <RNText key={index}>{part.content}</RNText>;
+      }
     });
-
-    lastIndex = matchEnd;
-  });
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push({
-      type: 'text',
-      content: text.substring(lastIndex),
-    });
-  }
-
-  return parts.map((part, index) => {
-    if (part.type === 'url') {
-      return (
-        <RNText
-          key={index}
-          style={styles.link}
-          onPress={() => Linking.openURL(part.content)}
-        >
-          {part.content}
-        </RNText>
-      );
-    } else if (part.type === 'email') {
-      return (
-        <RNText
-          key={index}
-          style={styles.link}
-          onPress={() => Linking.openURL(`mailto:${part.content}`)}
-        >
-          {part.content}
-        </RNText>
-      );
-    } else {
-      return <RNText key={index}>{part.content}</RNText>;
-    }
-  });
-};
+  };
 
 export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
+  const COLORS = useTheme();
   const [expandedSection, setExpandedSection] = useState<HelpSection | null>(
     null,
   );
@@ -174,9 +170,15 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
       >
         <View style={styles.overlay}>
           <TouchableWithoutFeedback onPress={preventClose}>
-            <View style={styles.modalContainer}>
-              <View style={styles.header}>
-                <RNText style={styles.headerText}>Help</RNText>
+            <View style={[
+              styles.modalContainer,
+              { backgroundColor: COLORS.PRIMARY_LIGHT, borderColor: COLORS.TOAST_BROWN }
+            ]}>
+              <View style={[
+                styles.header,
+                { backgroundColor: COLORS.SECONDARY_ACCENT, borderBottomColor: COLORS.TOAST_BROWN }
+              ]}>
+                <RNText style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}>Help</RNText>
                 <TouchableOpacity
                   onPress={onClose}
                   style={styles.closeButton}
@@ -197,8 +199,9 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
                     <TouchableOpacity
                       style={[
                         styles.accordionHeader,
+                        { borderColor: COLORS.TOAST_BROWN, backgroundColor: COLORS.BACKGROUND },
                         expandedSection === section.id &&
-                          styles.accordionHeaderExpanded,
+                          { backgroundColor: COLORS.TOAST_BROWN, borderColor: COLORS.PRIMARY_DARK },
                       ]}
                       onPress={() => handleSectionPress(section.id)}
                       accessibilityLabel={`${section.title} ${
@@ -211,7 +214,7 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
                         expandedSection === section.id ? 'collapse' : 'expand'
                       } ${section.title}`}
                     >
-                      <RNText style={styles.accordionTitle}>
+                      <RNText style={[styles.accordionTitle, { color: COLORS.PRIMARY_DARK }]}>
                         {section.title}
                       </RNText>
                       <Ionicons
@@ -225,8 +228,11 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
                       />
                     </TouchableOpacity>
                     {expandedSection === section.id && (
-                      <View style={styles.accordionContent}>
-                        <RNText style={styles.accordionText}>
+                      <View style={[
+                        styles.accordionContent,
+                        { backgroundColor: COLORS.PRIMARY_LIGHT, borderColor: COLORS.TOAST_BROWN }
+                      ]}>
+                        <RNText style={[styles.accordionText, { color: COLORS.PRIMARY_DARK }]}>
                           {renderLinkableText(section.content)}
                         </RNText>
                       </View>
@@ -253,10 +259,8 @@ const styles = StyleSheet.create({
     width: '85%',
     maxWidth: 500,
     height: '80%',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 16,
     borderWidth: 3,
-    borderColor: COLORS.TOAST_BROWN,
     overflow: 'hidden',
     flexDirection: 'column',
   },
@@ -266,14 +270,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     borderBottomWidth: 2,
-    borderBottomColor: COLORS.TOAST_BROWN,
   },
   headerText: {
     fontSize: 22,
     fontWeight: '800',
-    color: COLORS.PRIMARY_DARK,
   },
   closeButton: {
     padding: 4,
@@ -293,35 +294,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    backgroundColor: COLORS.BACKGROUND,
-  },
-  accordionHeaderExpanded: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderColor: COLORS.PRIMARY_DARK,
   },
   accordionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
     flex: 1,
   },
   accordionContent: {
     marginTop: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: COLORS.TOAST_BROWN,
   },
   accordionText: {
     fontSize: 14,
     lineHeight: 20,
-    color: COLORS.PRIMARY_DARK,
   },
   link: {
-    color: COLORS.SECONDARY_ACCENT,
     textDecorationLine: 'underline',
   },
 });

@@ -2,9 +2,9 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useTheme } from '../hooks/useTheme';
 import { useSettingsStore } from '../stores';
 import { NoteSortOrder } from '../stores/SettingsStore';
-import { COLORS } from '../theme';
 import { Text } from './ScaledText';
 
 /**
@@ -13,6 +13,7 @@ import { Text } from './ScaledText';
  */
 export const NoteSortSelector = observer(() => {
   const settingsStore = useSettingsStore();
+  const COLORS = useTheme();
 
   const sortOptions: { value: NoteSortOrder; label: string; icon: string }[] = [
     { value: 'newest-oldest', label: 'Newest', icon: 'arrow-down-outline' },
@@ -48,7 +49,7 @@ export const NoteSortSelector = observer(() => {
         size={18}
         color={COLORS.PRIMARY_DARK}
       />
-      <Text style={styles.label}>{currentOption?.label || 'Unknown'}</Text>
+      <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>{currentOption?.label || 'Unknown'}</Text>
     </TouchableOpacity>
   );
 });
@@ -68,6 +69,5 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     minWidth: 60,
     textAlign: 'left',
-    color: COLORS.PRIMARY_DARK,
   },
 });
