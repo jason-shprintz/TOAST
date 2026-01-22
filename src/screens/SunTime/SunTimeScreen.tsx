@@ -1,13 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as SunCalc from 'suncalc';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 
 interface SunTimes {
   sunrise: string;
@@ -169,17 +169,22 @@ function SunTimeScreen() {
       )}
 
       {sunTimes && !loading && !error && (
-        <>
-          {renderCard('Sunrise', sunTimes.sunrise)}
-          {renderCard('Sunset', sunTimes.sunset)}
-          {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
-          {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
-          {renderCard('Solar Noon', sunTimes.solarNoon)}
-          {renderCard('Golden Hour Start', sunTimes.goldenHour)}
-          {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
-          {renderCard('Night Start', sunTimes.night)}
-          {renderCard('Night End', sunTimes.nightEnd)}
-        </>
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {renderCard('Sunrise', sunTimes.sunrise)}
+            {renderCard('Sunset', sunTimes.sunset)}
+            {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
+            {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
+            {renderCard('Solar Noon', sunTimes.solarNoon)}
+            {renderCard('Golden Hour Start', sunTimes.goldenHour)}
+            {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
+            {renderCard('Night Start', sunTimes.night)}
+            {renderCard('Night End', sunTimes.nightEnd)}
+          </ScrollView>
+        </View>
       )}
     </ScreenBody>
   );
@@ -188,6 +193,22 @@ function SunTimeScreen() {
 export default observer(SunTimeScreen);
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    width: '100%',
+    alignItems: 'center',
+    paddingTop: 8,
+    paddingBottom: 24,
+  },
   card: {
     width: '90%',
     borderRadius: 12,
