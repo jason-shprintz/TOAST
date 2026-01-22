@@ -65,7 +65,7 @@ function SunTimeScreen() {
 
     const fetchLocation = async () => {
       if (!isMounted) return;
-      
+
       setLoading(true);
       setError(null);
 
@@ -75,9 +75,15 @@ function SunTimeScreen() {
           core.startDeviceStatusMonitoring();
           // Wait for location with a reasonable timeout
           let elapsed = 0;
-          
-          while (!core.lastFix && elapsed < LOCATION_WAIT_TIMEOUT_MS && isMounted) {
-            await new Promise<void>(resolve => setTimeout(resolve, LOCATION_CHECK_INTERVAL_MS));
+
+          while (
+            !core.lastFix &&
+            elapsed < LOCATION_WAIT_TIMEOUT_MS &&
+            isMounted
+          ) {
+            await new Promise<void>(resolve =>
+              setTimeout(resolve, LOCATION_CHECK_INTERVAL_MS),
+            );
             elapsed += LOCATION_CHECK_INTERVAL_MS;
           }
         }
@@ -111,10 +117,11 @@ function SunTimeScreen() {
         });
       } catch (err) {
         if (!isMounted) return;
-        
-        const errorMessage = err instanceof Error 
-          ? `Error: ${err.message}`
-          : 'Invalid location data. Please try again.';
+
+        const errorMessage =
+          err instanceof Error
+            ? `Error: ${err.message}`
+            : 'Invalid location data. Please try again.';
         setError(errorMessage);
         console.error('Sun time calculation error:', err);
       } finally {
