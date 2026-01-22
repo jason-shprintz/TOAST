@@ -27,6 +27,7 @@ const DeviceInfo = {
     batteryState: 'unplugged',
     lowPowerMode: false,
   })),
+  is24Hour: jest.fn(() => false),
 };
 
 export default DeviceInfo;

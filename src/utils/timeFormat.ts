@@ -3,14 +3,14 @@
  * Automatically detects whether the user prefers 12-hour or 24-hour format.
  */
 
-import DeviceInfo from 'react-native-device-info';
+import * as RNLocalize from 'react-native-localize';
 
 // Cache the 24-hour format detection result since it rarely changes during app session
 let cachedIs24Hour: boolean | null = null;
 
 /**
  * Detects if the user's device is set to use 24-hour time format.
- * This uses react-native-device-info to check the device's time format setting.
+ * This uses react-native-localize to check the device's time format setting.
  * The result is cached for performance.
  * 
  * @returns true if the device uses 24-hour format, false for 12-hour format
@@ -22,8 +22,8 @@ export function is24HourFormat(): boolean {
   }
 
   try {
-    // Use DeviceInfo.is24Hour() to get the device's actual 24-hour setting
-    const is24Hour = DeviceInfo.is24Hour();
+    // Use RNLocalize.uses24HourClock() to get the device's actual 24-hour setting
+    const is24Hour = RNLocalize.uses24HourClock();
     cachedIs24Hour = is24Hour;
     return is24Hour;
   } catch (error) {
@@ -66,10 +66,17 @@ export function resetTimeFormatCache(): void {
 export function formatTime(date: Date): string {
   const use24Hour = is24HourFormat();
   
+  if (use24Hour) {
+    // Manual formatting for 24-hour to ensure consistency
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+  
   return date.toLocaleTimeString(undefined, {
-    hour: use24Hour ? '2-digit' : 'numeric',
+    hour: 'numeric',
     minute: '2-digit',
-    hour12: !use24Hour,
+    hour12: true,
   });
 }
 
@@ -82,12 +89,25 @@ export function formatTime(date: Date): string {
 export function formatDateTime(date: Date): string {
   const use24Hour = is24HourFormat();
   
+  // Get date components
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const dateStr = `${month}/${day}/${year}`;
+  
+  if (use24Hour) {
+    // Manual formatting for 24-hour to ensure consistency
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${dateStr}, ${hours}:${minutes}`;
+  }
+  
   return date.toLocaleString(undefined, {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
-    hour: use24Hour ? '2-digit' : 'numeric',
+    hour: 'numeric',
     minute: '2-digit',
-    hour12: !use24Hour,
+    hour12: true,
   });
 }
