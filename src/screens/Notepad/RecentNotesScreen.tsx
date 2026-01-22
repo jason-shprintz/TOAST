@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import { NoteSortSelector } from '../../components/NoteSortSelector';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -48,6 +49,7 @@ export default observer(function RecentNotesScreen() {
     <ScreenBody>
       <SectionHeader>Recent Notes</SectionHeader>
       <NoteSortSelector />
+      <HorizontalRule />
       <View style={styles.card}>
         <FlatList
           style={styles.list}

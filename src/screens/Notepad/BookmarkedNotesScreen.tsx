@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import { NoteSortSelector } from '../../components/NoteSortSelector';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -45,6 +46,7 @@ export default observer(function BookmarkedNotesScreen(): React.JSX.Element {
     <ScreenBody>
       <SectionHeader>Bookmarked Notes</SectionHeader>
       <NoteSortSelector />
+      <HorizontalRule />
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}

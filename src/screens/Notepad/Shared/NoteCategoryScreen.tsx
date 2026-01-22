@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
+import { HorizontalRule } from '../../../components/HorizontalRule';
 import { NoteSortSelector } from '../../../components/NoteSortSelector';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
@@ -34,9 +35,10 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
 
   const { category } = route.params || {};
   // Filter out Voice Logs from NotePad screens
-  const isValidCategory = category && category !== 'Voice Logs' && core.categories.includes(category);
+  const isValidCategory =
+    category && category !== 'Voice Logs' && core.categories.includes(category);
   const notes = useMemo(
-    () => isValidCategory ? (core.notesByCategory[category] ?? []) : [],
+    () => (isValidCategory ? core.notesByCategory[category] ?? [] : []),
     [isValidCategory, category, core.notesByCategory],
   );
 
@@ -49,6 +51,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
     <ScreenBody>
       <SectionHeader>{category}</SectionHeader>
       <NoteSortSelector />
+      <HorizontalRule />
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}
@@ -60,7 +63,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map((note) => {
+            {sortedNotes.map(note => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic

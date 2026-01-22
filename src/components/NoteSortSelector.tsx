@@ -15,8 +15,8 @@ export const NoteSortSelector = observer(() => {
   const settingsStore = useSettingsStore();
 
   const sortOptions: { value: NoteSortOrder; label: string; icon: string }[] = [
-    { value: 'newest-oldest', label: 'Newest First', icon: 'arrow-down-outline' },
-    { value: 'oldest-newest', label: 'Oldest First', icon: 'arrow-up-outline' },
+    { value: 'newest-oldest', label: 'Newest', icon: 'arrow-down-outline' },
+    { value: 'oldest-newest', label: 'Oldest', icon: 'arrow-up-outline' },
     { value: 'a-z', label: 'A-Z', icon: 'text-outline' },
     { value: 'z-a', label: 'Z-A', icon: 'text-outline' },
   ];
@@ -37,7 +37,9 @@ export const NoteSortSelector = observer(() => {
     <TouchableOpacity
       style={styles.container}
       onPress={cycleSort}
-      accessibilityLabel={`Sort by: ${currentOption?.label || 'Unknown'}. Tap to change.`}
+      accessibilityLabel={`Sort by: ${
+        currentOption?.label || 'Unknown'
+      }. Tap to change.`}
       accessibilityRole="button"
       accessibilityHint="Cycles through sorting options"
     >
@@ -46,7 +48,7 @@ export const NoteSortSelector = observer(() => {
         size={18}
         color={COLORS.PRIMARY_DARK}
       />
-      <Text style={styles.label}>Sort: {currentOption?.label || 'Unknown'}</Text>
+      <Text style={styles.label}>{currentOption?.label || 'Unknown'}</Text>
     </TouchableOpacity>
   );
 });
@@ -58,15 +60,13 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
+    width: '25%',
+    textAlign: 'left',
     color: COLORS.PRIMARY_DARK,
   },
 });
