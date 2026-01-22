@@ -218,6 +218,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 12,
     overflow: 'hidden',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   cardBackground: {
     ...StyleSheet.absoluteFill,
