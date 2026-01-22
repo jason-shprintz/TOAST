@@ -1,22 +1,26 @@
 # Dark Mode Feature
 
 ## Overview
+
 The TOAST app now supports dark mode with three theme options that can be configured in the Settings modal.
 
 ## Theme Options
 
 ### 1. Light Mode (Default)
+
 - Classic light theme with warm, natural colors
 - Uses the original color palette
 - Best for daytime use and well-lit environments
 
 ### 2. Dark Mode
+
 - Dark theme optimized for low-light conditions
 - Inverted color scheme with darker backgrounds
 - Reduces eye strain in dark environments
 - Better for nighttime use and battery life (on OLED screens)
 
 ### 3. System
+
 - Automatically matches your device's system theme setting
 - Switches between light and dark as your system preference changes
 - Provides seamless integration with your device's appearance settings
@@ -35,12 +39,14 @@ The TOAST app now supports dark mode with three theme options that can be config
 ## Technical Details
 
 ### For Users
+
 - Theme preference is stored locally on your device
 - No internet connection required
 - Changes take effect immediately
 - Setting is preserved when you close and reopen the app
 
 ### For Developers
+
 - Theme implementation uses React Native's `useColorScheme` hook
 - Colors are dynamically applied via the `useTheme` custom hook
 - Theme preference is persisted in SQLite database via `SettingsStore`
@@ -50,16 +56,19 @@ The TOAST app now supports dark mode with three theme options that can be config
 ## Color Palette
 
 ### Light Mode
+
 - Background: Warm beige/tan tones
 - Text: Dark brown/charcoal
 - Accents: Orange and sage green
 
 ### Dark Mode
+
 - Background: Dark brown/charcoal tones
 - Text: Light cream/off-white
 - Accents: Orange and muted green (adjusted for dark backgrounds)
 
 ## Accessibility
+
 - Both themes maintain proper contrast ratios for readability
 - Color choices follow accessibility guidelines
 - Text remains legible in both modes
