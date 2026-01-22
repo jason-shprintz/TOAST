@@ -4,11 +4,14 @@ import React, { useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
+import { HorizontalRule } from '../../components/HorizontalRule';
+import { NoteSortSelector } from '../../components/NoteSortSelector';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useCoreStore } from '../../stores';
+import { useCoreStore, useSettingsStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
+import { sortNotes } from '../../utils/noteSorting';
 
 /**
  * Displays all bookmarked notes.
@@ -27,6 +30,7 @@ import { FOOTER_HEIGHT } from '../../theme';
 export default observer(function BookmarkedNotesScreen(): React.JSX.Element {
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const settings = useSettingsStore();
 
   const bookmarkedNotes = useMemo(
     () => core.bookmarkedNotes,
@@ -34,16 +38,15 @@ export default observer(function BookmarkedNotesScreen(): React.JSX.Element {
   );
 
   const sortedNotes = useMemo(
-    () =>
-      bookmarkedNotes.slice().sort(
-        (a, b) => b.createdAt - a.createdAt, // Most recent first
-      ),
-    [bookmarkedNotes],
+    () => sortNotes(bookmarkedNotes, settings.noteSortOrder),
+    [bookmarkedNotes, settings.noteSortOrder],
   );
 
   return (
     <ScreenBody>
       <SectionHeader>Bookmarked Notes</SectionHeader>
+      <NoteSortSelector />
+      <HorizontalRule />
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}

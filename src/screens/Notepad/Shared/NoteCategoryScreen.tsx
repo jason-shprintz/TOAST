@@ -4,11 +4,14 @@ import React, { useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../../components/CardTopic';
 import Grid from '../../../components/Grid';
+import { HorizontalRule } from '../../../components/HorizontalRule';
+import { NoteSortSelector } from '../../../components/NoteSortSelector';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
-import { useCoreStore } from '../../../stores';
+import { useCoreStore, useSettingsStore } from '../../../stores';
 import { FOOTER_HEIGHT } from '../../../theme';
+import { sortNotes } from '../../../utils/noteSorting';
 
 /**
  * Displays all notes for a specific category.
@@ -28,26 +31,27 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const settings = useSettingsStore();
 
   const { category } = route.params || {};
   // Filter out Voice Logs from NotePad screens
-  const isValidCategory = category && category !== 'Voice Logs' && core.categories.includes(category);
+  const isValidCategory =
+    category && category !== 'Voice Logs' && core.categories.includes(category);
   const notes = useMemo(
-    () => isValidCategory ? (core.notesByCategory[category] ?? []) : [],
+    () => (isValidCategory ? core.notesByCategory[category] ?? [] : []),
     [isValidCategory, category, core.notesByCategory],
   );
 
   const sortedNotes = useMemo(
-    () =>
-      notes.slice().sort(
-        (a, b) => b.createdAt - a.createdAt, // Most recent first
-      ),
-    [notes],
+    () => sortNotes(notes, settings.noteSortOrder),
+    [notes, settings.noteSortOrder],
   );
 
   return (
     <ScreenBody>
       <SectionHeader>{category}</SectionHeader>
+      <NoteSortSelector />
+      <HorizontalRule />
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}
@@ -59,7 +63,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map((note) => {
+            {sortedNotes.map(note => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic
