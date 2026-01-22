@@ -41,6 +41,19 @@ interface SunTimes {
 const LOCATION_WAIT_TIMEOUT_MS = 3000;
 const LOCATION_CHECK_INTERVAL_MS = 500;
 
+/**
+ * Formats a Date object to a localized time string
+ * @param date - The date to format
+ * @returns Formatted time string (e.g., "6:30 AM")
+ */
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+};
+
 function SunTimeScreen() {
   const core = useCoreStore();
   const [sunTimes, setSunTimes] = useState<SunTimes | null>(null);
@@ -82,15 +95,6 @@ function SunTimeScreen() {
 
         // Calculate sun times for today
         const times = SunCalc.getTimes(now, latitude, longitude);
-
-        // Format times to local time strings
-        const formatTime = (date: Date): string => {
-          return date.toLocaleTimeString(undefined, {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-          });
-        };
 
         if (!isMounted) return;
 
