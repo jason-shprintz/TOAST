@@ -135,6 +135,7 @@ function SunTimeScreen() {
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderCard = (label: string, value: string) => (
