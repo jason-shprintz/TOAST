@@ -36,6 +36,11 @@ interface SunTimes {
  *
  * @returns A React element containing the Sun Time screen UI.
  */
+
+// Constants for location polling
+const LOCATION_WAIT_TIMEOUT_MS = 3000;
+const LOCATION_CHECK_INTERVAL_MS = 500;
+
 function SunTimeScreen() {
   const core = useCoreStore();
   const [sunTimes, setSunTimes] = useState<SunTimes | null>(null);
@@ -43,7 +48,11 @@ function SunTimeScreen() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchLocation = async () => {
+      if (!isMounted) return;
+      
       setLoading(true);
       setError(null);
 
@@ -52,15 +61,15 @@ function SunTimeScreen() {
         if (!core.lastFix) {
           core.startDeviceStatusMonitoring();
           // Wait for location with a reasonable timeout
-          const maxWaitTime = 3000;
-          const checkInterval = 500;
           let elapsed = 0;
           
-          while (!core.lastFix && elapsed < maxWaitTime) {
-            await new Promise<void>(resolve => setTimeout(resolve, checkInterval));
-            elapsed += checkInterval;
+          while (!core.lastFix && elapsed < LOCATION_WAIT_TIMEOUT_MS && isMounted) {
+            await new Promise<void>(resolve => setTimeout(resolve, LOCATION_CHECK_INTERVAL_MS));
+            elapsed += LOCATION_CHECK_INTERVAL_MS;
           }
         }
+
+        if (!isMounted) return;
 
         if (!core.lastFix) {
           setError('Unable to get location. Please enable location services.');
@@ -76,12 +85,14 @@ function SunTimeScreen() {
 
         // Format times to local time strings
         const formatTime = (date: Date): string => {
-          return date.toLocaleTimeString('en-US', {
+          return date.toLocaleTimeString(undefined, {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true,
           });
         };
+
+        if (!isMounted) return;
 
         setSunTimes({
           sunrise: formatTime(times.sunrise),
@@ -95,17 +106,25 @@ function SunTimeScreen() {
           nightEnd: formatTime(times.nightEnd),
         });
       } catch (err) {
+        if (!isMounted) return;
+        
         const errorMessage = err instanceof Error 
           ? `Error: ${err.message}`
           : 'Invalid location data. Please try again.';
         setError(errorMessage);
         console.error('Sun time calculation error:', err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchLocation();
+
+    return () => {
+      isMounted = false;
+    };
   }, [core]);
 
   const renderCard = (label: string, value: string) => (
