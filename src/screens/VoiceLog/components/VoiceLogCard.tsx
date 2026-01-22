@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
+import { formatDateTime } from '../../../utils/timeFormat';
 
 type VoiceLogCardProps = {
   title?: string;
@@ -39,7 +40,7 @@ export default function VoiceLogCard({
       <View style={styles.content}>
         <View style={styles.info}>
           <Text style={styles.title}>{title || 'Voice Log'}</Text>
-          <Text style={styles.time}>{new Date(createdAt).toLocaleString()}</Text>
+          <Text style={styles.time}>{formatDateTime(new Date(createdAt))}</Text>
           {duration && <Text style={styles.duration}>Duration: {duration}s</Text>}
           {isPlaying && (
             <View style={styles.playingIndicator}>

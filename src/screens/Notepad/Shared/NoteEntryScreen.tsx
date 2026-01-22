@@ -16,6 +16,7 @@ import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
 import { useCoreStore } from '../../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../../theme';
+import { formatDateTime } from '../../../utils/timeFormat';
 import { noteListSharedStyles as shared } from '../noteListStyles';
 
 /**
@@ -130,7 +131,7 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
         >
           <View style={shared.actionsRow}>
             <Text style={shared.itemMeta}>
-              {new Date(note.createdAt).toLocaleString()} • {note.category}
+              {formatDateTime(new Date(note.createdAt))} • {note.category}
             </Text>
           </View>
 

@@ -8,6 +8,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore } from '../../stores/StoreContext';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { formatTime } from '../../utils/timeFormat';
 
 interface SunTimes {
   sunrise: string;
@@ -41,18 +42,7 @@ interface SunTimes {
 const LOCATION_WAIT_TIMEOUT_MS = 3000;
 const LOCATION_CHECK_INTERVAL_MS = 500;
 
-/**
- * Formats a Date object to a localized time string
- * @param date - The date to format
- * @returns Formatted time string (e.g., "6:30 AM")
- */
-const formatTime = (date: Date): string => {
-  return date.toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
-};
+
 
 function SunTimeScreen() {
   const core = useCoreStore();
