@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    width: '25%',
+    flexShrink: 0,
+    minWidth: 60,
     textAlign: 'left',
     color: COLORS.PRIMARY_DARK,
   },
