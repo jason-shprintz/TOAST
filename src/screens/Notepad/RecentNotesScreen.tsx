@@ -16,6 +16,7 @@ import SectionHeader from '../../components/SectionHeader';
 import { useCoreStore, useSettingsStore } from '../../stores';
 import { COLORS } from '../../theme';
 import { sortNotes } from '../../utils/noteSorting';
+import { formatDateTime } from '../../utils/timeFormat';
 import { MAX_TITLE_LENGTH } from './constants';
 import { noteListSharedStyles as shared } from './noteListStyles';
 
@@ -95,7 +96,7 @@ export default observer(function RecentNotesScreen() {
                   )}
                   <View style={shared.actionsRow}>
                     <Text style={shared.itemMeta}>
-                      {new Date(item.createdAt).toLocaleString()} •{' '}
+                      {formatDateTime(new Date(item.createdAt))} •{' '}
                       {item.category}
                     </Text>
                     {/* DELETE */}

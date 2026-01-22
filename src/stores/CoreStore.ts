@@ -11,6 +11,7 @@ import Torch from 'react-native-torch';
 import { FlashlightModes } from '../../constants';
 import { FlashlightModeType } from '../types/common-types';
 import { SQLiteDatabase } from '../types/database-types';
+import { formatTime } from '../utils/timeFormat';
 
 let SQLite: any;
 try {
@@ -935,11 +936,7 @@ export class CoreStore {
     }
 
     const now = Date.now();
-    const timeStr = new Date(now).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
+    const timeStr = formatTime(new Date(now));
 
     const note: Note = {
       id: this.generateId(),
