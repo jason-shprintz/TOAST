@@ -136,7 +136,7 @@ function SunTimeScreen() {
     return () => {
       isMounted = false;
     };
-  }, [core]);
+  }, []);
 
   const renderCard = (label: string, value: string) => (
     <View style={styles.card} key={label}>
