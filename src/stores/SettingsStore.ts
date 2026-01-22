@@ -16,7 +16,7 @@ export interface Settings {
  */
 export class SettingsStore {
   fontSize: FontSize = 'small';
-  themeMode: ThemeMode = 'light';
+  themeMode: ThemeMode = 'system';
   noteSortOrder: NoteSortOrder = 'newest-oldest';
   private settingsDb: any | null = null;
 

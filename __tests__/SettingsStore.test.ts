@@ -66,7 +66,7 @@ describe('SettingsStore', () => {
   describe('constructor', () => {
     it('should initialize with default values', () => {
       expect(settingsStore.fontSize).toBe('small');
-      expect(settingsStore.themeMode).toBe('light');
+      expect(settingsStore.themeMode).toBe('system');
       expect(settingsStore.noteSortOrder).toBe('newest-oldest');
     });
 
@@ -279,7 +279,7 @@ describe('SettingsStore', () => {
       await newStore.loadSettings(emptyDb);
 
       expect(newStore.fontSize).toBe('small');
-      expect(newStore.themeMode).toBe('light');
+      expect(newStore.themeMode).toBe('system');
       expect(newStore.noteSortOrder).toBe('newest-oldest');
     });
 

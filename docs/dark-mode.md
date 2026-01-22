@@ -6,24 +6,25 @@ The TOAST app now supports dark mode with three theme options that can be config
 
 ## Theme Options
 
-### 1. Light Mode (Default)
+### 1. System (Default)
+
+- Automatically matches your device's system theme setting
+- Switches between light and dark as your system preference changes
+- Provides seamless integration with your device's appearance settings
+- Ensures consistent experience on app startup
+
+### 2. Light Mode
 
 - Classic light theme with warm, natural colors
 - Uses the original color palette
 - Best for daytime use and well-lit environments
 
-### 2. Dark Mode
+### 3. Dark Mode
 
 - Dark theme optimized for low-light conditions
 - Inverted color scheme with darker backgrounds
 - Reduces eye strain in dark environments
 - Better for nighttime use and battery life (on OLED screens)
-
-### 3. System
-
-- Automatically matches your device's system theme setting
-- Switches between light and dark as your system preference changes
-- Provides seamless integration with your device's appearance settings
 
 ## How to Change Theme
 
