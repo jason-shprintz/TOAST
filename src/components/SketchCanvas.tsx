@@ -1,6 +1,8 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import { StyleSheet, View, PanResponder } from 'react-native';
-import SignatureCanvas from 'react-native-signature-canvas';
+import SignatureCanvas, {
+  SignatureViewRef,
+} from 'react-native-signature-canvas';
 import { COLORS } from '../theme';
 
 interface SketchCanvasProps {
@@ -33,7 +35,7 @@ export interface SketchCanvasHandle {
  */
 const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
   ({ onSketchSave, initialSketch, onClear, onBegin }, forwardedRef) => {
-    const ref = useRef<SignatureCanvas | null>(null);
+    const ref = useRef<SignatureViewRef | null>(null);
 
     useImperativeHandle(forwardedRef, () => ({
       readSignature: () => {
@@ -69,7 +71,7 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
         onMoveShouldSetPanResponderCapture: () => true,
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
-      })
+      }),
     ).current;
 
     // Web style for the canvas
@@ -90,7 +92,11 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
   }`;
 
     return (
-      <View style={styles.container} collapsable={false} {...panResponder.panHandlers}>
+      <View
+        style={styles.container}
+        collapsable={false}
+        {...panResponder.panHandlers}
+      >
         <SignatureCanvas
           ref={ref}
           onOK={handleOK}
@@ -101,11 +107,11 @@ const SketchCanvas = forwardRef<SketchCanvasHandle, SketchCanvasProps>(
           penColor={COLORS.PRIMARY_DARK}
           dataURL={initialSketch}
           webviewContainerStyle={styles.webviewContainer}
-          scrollEnabled={false}
+          scrollable={false}
         />
       </View>
     );
-  }
+  },
 );
 
 SketchCanvas.displayName = 'SketchCanvas';
