@@ -50,9 +50,9 @@ function SunTimeScreen() {
       try {
         // Request location if not available
         if (!core.lastFix) {
-          await core.startLocationPolling();
+          core.startDeviceStatusMonitoring();
           // Give it a moment to get location
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise<void>(resolve => setTimeout(resolve, 2000));
         }
 
         if (!core.lastFix) {
@@ -117,7 +117,7 @@ function SunTimeScreen() {
 
       {loading && (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={COLORS.PRIMARY_ACCENT} />
+          <ActivityIndicator size="large" color={COLORS.ACCENT} />
           <Text style={styles.loadingText}>Getting location...</Text>
         </View>
       )}
