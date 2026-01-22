@@ -19,12 +19,13 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
+import { useTheme } from '../hooks/useTheme';
 import {
   useNavigationHistory,
   useGestureNavigation,
 } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
-import { COLORS, FOOTER_HEIGHT } from '../theme';
+import { FOOTER_HEIGHT } from '../theme';
 import Footer from './Footer';
 import { HelpModal } from './HelpModal';
 import { HorizontalRule } from './HorizontalRule';
@@ -74,6 +75,7 @@ export default function AppShell({ children }: Props) {
     dayjs().format(DATE_FORMAT),
   );
   const timeoutRef = useRef<number | null>(null);
+  const COLORS = useTheme();
 
   // Keep `currentDate` in sync with the calendar date by scheduling a timeout
   // to fire exactly at the next midnight. When the timeout runs, it updates
@@ -169,7 +171,7 @@ export default function AppShell({ children }: Props) {
           <View style={styles.header}>
             <View style={styles.dateAndHelpContainer}>
               <Text
-                style={styles.dateText}
+                style={[styles.dateText, { color: COLORS.PRIMARY_DARK }]}
                 accessibilityLabel={`Current date: ${currentDate}`}
               >
                 {currentDate}
@@ -260,7 +262,6 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 2,
   },
   helpButton: {

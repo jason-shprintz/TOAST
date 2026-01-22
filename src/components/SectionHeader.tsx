@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
-import { COLORS } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
 
@@ -38,13 +38,18 @@ export default function SectionHeader({
   ...rest
 }: Props) {
   const navigation = useNavigation<SectionHeaderNavigationProp>();
+  const COLORS = useTheme();
 
   const handlePress = () => {
     navigation.navigate('Search');
   };
 
   const header = (
-    <Text {...rest} style={[styles.header, style]}>
+    <Text {...rest} style={[
+      styles.header,
+      { color: COLORS.PRIMARY_DARK, backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN },
+      style
+    ]}>
       {title ?? children}
     </Text>
   );
@@ -74,10 +79,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.PRIMARY_DARK,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
