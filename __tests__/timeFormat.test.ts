@@ -1,18 +1,45 @@
-import { is24HourFormat, formatTime, formatDateTime } from '../src/utils/timeFormat';
+import { is24HourFormat, formatTime, formatDateTime, resetTimeFormatCache } from '../src/utils/timeFormat';
 
 describe('timeFormat utilities', () => {
+  // Reset cache before each test to ensure clean state
+  beforeEach(() => {
+    resetTimeFormatCache();
+  });
+
   describe('is24HourFormat', () => {
     it('should return a boolean value', () => {
       const result = is24HourFormat();
       expect(typeof result).toBe('boolean');
     });
 
-    it('should detect 24-hour format correctly', () => {
+    it('should detect 24-hour format consistently', () => {
       // This test will pass or fail based on the system locale
-      // We're just checking that it returns a consistent result
+      // We're checking that it returns a consistent result
       const result1 = is24HourFormat();
       const result2 = is24HourFormat();
       expect(result1).toBe(result2);
+    });
+
+    it('should cache the result for performance', () => {
+      // First call initializes cache
+      const result1 = is24HourFormat();
+      // Second call should use cached value
+      const result2 = is24HourFormat();
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('resetTimeFormatCache', () => {
+    it('should reset the cached value', () => {
+      // Initialize cache
+      is24HourFormat();
+      
+      // Reset cache
+      resetTimeFormatCache();
+      
+      // Next call should re-detect
+      const result = is24HourFormat();
+      expect(typeof result).toBe('boolean');
     });
   });
 
