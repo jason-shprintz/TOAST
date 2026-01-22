@@ -41,5 +41,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 2,
     borderColor: COLORS.TOAST_BROWN,
+    boxShadow: '0px 5px 10px ' + COLORS.TOAST_BROWN,
   },
 });
