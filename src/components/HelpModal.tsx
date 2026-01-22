@@ -10,7 +10,7 @@ import {
   Linking,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 
 interface HelpModalProps {
   visible: boolean;
@@ -36,86 +36,87 @@ interface AccordionItem {
 // No-op handler to prevent backdrop touch from propagating
 const preventClose = () => {};
 
-const renderLinkableText = (text: string) => {
-  // Regex patterns for URLs and emails
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
-
-  // Split text by both URLs and emails, preserving the delimiters
-  const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> = [];
-  let lastIndex = 0;
-
-  // First, find all URLs
-  const urlMatches = Array.from(text.matchAll(urlRegex));
-  // Then find all emails
-  const emailMatches = Array.from(text.matchAll(emailRegex));
-
-  // Combine and sort all matches by position
-  const allMatches = [
-    ...urlMatches.map(m => ({ ...m, type: 'url' as const })),
-    ...emailMatches.map(m => ({ ...m, type: 'email' as const })),
-  ].sort((a, b) => a.index! - b.index!);
-
-  allMatches.forEach(match => {
-    const matchStart = match.index!;
-    const matchEnd = matchStart + match[0].length;
-
-    // Add text before this match
-    if (lastIndex < matchStart) {
-      parts.push({
-        type: 'text',
-        content: text.substring(lastIndex, matchStart),
-      });
-    }
-
-    // Add the match itself
-    parts.push({
-      type: match.type,
-      content: match[0],
-    });
-
-    lastIndex = matchEnd;
-  });
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push({
-      type: 'text',
-      content: text.substring(lastIndex),
-    });
-  }
-
-  return parts.map((part, index) => {
-    if (part.type === 'url') {
-      return (
-        <RNText
-          key={index}
-          style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
-          onPress={() => Linking.openURL(part.content)}
-        >
-          {part.content}
-        </RNText>
-      );
-    } else if (part.type === 'email') {
-      return (
-        <RNText
-          key={index}
-          style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
-          onPress={() => Linking.openURL(`mailto:${part.content}`)}
-        >
-          {part.content}
-        </RNText>
-      );
-    } else {
-      return <RNText key={index}>{part.content}</RNText>;
-    }
-  });
-};
-
 export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
+  const COLORS = useTheme();
   const [expandedSection, setExpandedSection] = useState<HelpSection | null>(
     null,
   );
+
+  const renderLinkableText = (text: string) => {
+    // Regex patterns for URLs and emails
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+
+    // Split text by both URLs and emails, preserving the delimiters
+    const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> = [];
+    let lastIndex = 0;
+
+    // First, find all URLs
+    const urlMatches = Array.from(text.matchAll(urlRegex));
+    // Then find all emails
+    const emailMatches = Array.from(text.matchAll(emailRegex));
+
+    // Combine and sort all matches by position
+    const allMatches = [
+      ...urlMatches.map(m => ({ ...m, type: 'url' as const })),
+      ...emailMatches.map(m => ({ ...m, type: 'email' as const })),
+    ].sort((a, b) => a.index! - b.index!);
+
+    allMatches.forEach(match => {
+      const matchStart = match.index!;
+      const matchEnd = matchStart + match[0].length;
+
+      // Add text before this match
+      if (lastIndex < matchStart) {
+        parts.push({
+          type: 'text',
+          content: text.substring(lastIndex, matchStart),
+        });
+      }
+
+      // Add the match itself
+      parts.push({
+        type: match.type,
+        content: match[0],
+      });
+
+      lastIndex = matchEnd;
+    });
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push({
+        type: 'text',
+        content: text.substring(lastIndex),
+      });
+    }
+
+    return parts.map((part, index) => {
+      if (part.type === 'url') {
+        return (
+          <RNText
+            key={index}
+            style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
+            onPress={() => Linking.openURL(part.content)}
+          >
+            {part.content}
+          </RNText>
+        );
+      } else if (part.type === 'email') {
+        return (
+          <RNText
+            key={index}
+            style={[styles.link, { color: COLORS.SECONDARY_ACCENT }]}
+            onPress={() => Linking.openURL(`mailto:${part.content}`)}
+          >
+            {part.content}
+          </RNText>
+        );
+      } else {
+        return <RNText key={index}>{part.content}</RNText>;
+      }
+    });
+  };
 
   const helpSections: AccordionItem[] = [
     {

@@ -9,6 +9,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
+import { LIGHT_COLORS } from '../theme/colors';
 import { Text } from './ScaledText';
 
 export type CardTopicProps = {
@@ -76,10 +77,10 @@ export default function CardTopic({
         <IconComponent
           name={icon}
           size={40}
-          color={COLORS.PRIMARY_DARK}
+          color={LIGHT_COLORS.PRIMARY_DARK}
           style={styles.icon}
         />
-        <Text style={[styles.title, { color: COLORS.PRIMARY_DARK }, titleStyle]}>{title}</Text>
+        <Text style={[styles.title, { color: LIGHT_COLORS.PRIMARY_DARK }, titleStyle]}>{title}</Text>
       </Animated.View>
     </TouchableWithoutFeedback>
   );

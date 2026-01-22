@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
+import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
 
@@ -47,7 +48,7 @@ export default function SectionHeader({
   const header = (
     <Text {...rest} style={[
       styles.header,
-      { color: COLORS.PRIMARY_DARK, backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN },
+      { color: LIGHT_COLORS.PRIMARY_DARK, backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN },
       style
     ]}>
       {title ?? children}
