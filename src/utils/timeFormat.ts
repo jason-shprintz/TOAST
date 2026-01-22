@@ -3,12 +3,14 @@
  * Automatically detects whether the user prefers 12-hour or 24-hour format.
  */
 
+import DeviceInfo from 'react-native-device-info';
+
 // Cache the 24-hour format detection result since it rarely changes during app session
 let cachedIs24Hour: boolean | null = null;
 
 /**
  * Detects if the user's device is set to use 24-hour time format.
- * This uses the Intl API to check the locale's time formatting preference.
+ * This uses react-native-device-info to check the device's time format setting.
  * The result is cached for performance.
  * 
  * @returns true if the device uses 24-hour format, false for 12-hour format
@@ -20,29 +22,30 @@ export function is24HourFormat(): boolean {
   }
 
   try {
-    // Use the user's default locale formatting
-    const formatter = new Intl.DateTimeFormat(undefined, {
-      hour: 'numeric',
-      minute: 'numeric',
-    });
-    
-    // Test with 13:00 (1 PM) - a clear indicator time
-    // In 12-hour format, this will be "1:xx PM" or similar
-    // In 24-hour format, this will be "13:xx" or similar
-    const testDate = new Date(2000, 0, 1, 13, 0, 0);
-    const formatted = formatter.format(testDate);
-    
-    // Check if the formatted string contains '13' which only appears in 24-hour format
-    // In 12-hour format, it would show '1' with AM/PM markers
-    const is24Hour = formatted.includes('13');
-    
+    // Use DeviceInfo.is24Hour() to get the device's actual 24-hour setting
+    const is24Hour = DeviceInfo.is24Hour();
     cachedIs24Hour = is24Hour;
     return is24Hour;
   } catch (error) {
-    // Default to 12-hour format if detection fails
-    console.warn('Failed to detect time format preference:', error);
-    cachedIs24Hour = false;
-    return false;
+    // Fallback: try to detect from locale formatting
+    try {
+      const formatter = new Intl.DateTimeFormat(undefined, {
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+      
+      const testDate = new Date(2000, 0, 1, 13, 0, 0);
+      const formatted = formatter.format(testDate);
+      
+      const is24Hour = formatted.includes('13');
+      cachedIs24Hour = is24Hour;
+      return is24Hour;
+    } catch (fallbackError) {
+      // Default to 12-hour format if all detection fails
+      console.warn('Failed to detect time format preference:', error, fallbackError);
+      cachedIs24Hour = false;
+      return false;
+    }
   }
 }
 
