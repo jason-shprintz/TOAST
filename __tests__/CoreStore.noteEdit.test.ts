@@ -277,8 +277,9 @@ describe('CoreStore - Note Editing', () => {
 
   describe('createNote - sketch type', () => {
     it('should create a sketch note with sketchDataUri', async () => {
-      const sketchData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-      
+      const sketchData =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
       await coreStore.createNote({
         type: 'sketch',
         title: 'My Sketch',
@@ -317,8 +318,9 @@ describe('CoreStore - Note Editing', () => {
 
     it('should require title for sketch notes to be saveable', async () => {
       // Test that sketch notes require a title
-      const sketchData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-      
+      const sketchData =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
       // Should be able to create sketch note with title and sketch data
       await coreStore.createNote({
         type: 'sketch',
@@ -339,7 +341,7 @@ describe('CoreStore - Note Editing', () => {
       // The UI tracks hasDrawn state and enables save button
       // When save is clicked, readSignature() is called to get the data
       const sketchData = 'data:image/png;base64,captured';
-      
+
       await coreStore.createNote({
         type: 'sketch',
         title: 'Drawn Note',
