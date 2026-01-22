@@ -20,25 +20,21 @@ export function is24HourFormat(): boolean {
   }
 
   try {
-    // Create a date formatter with the user's locale
+    // Use the user's default locale formatting
     const formatter = new Intl.DateTimeFormat(undefined, {
       hour: 'numeric',
       minute: 'numeric',
     });
     
-    // Test with multiple times to ensure accuracy across different locales
-    // Use 0:00 and 13:00 to clearly distinguish between 12-hour and 24-hour formats
-    const midnight = new Date(2000, 0, 1, 0, 0, 0);
-    const afternoon = new Date(2000, 0, 1, 13, 0, 0);
+    // Test with 13:00 (1 PM) - a clear indicator time
+    // In 12-hour format, this will be "1:xx PM" or similar
+    // In 24-hour format, this will be "13:xx" or similar
+    const testDate = new Date(2000, 0, 1, 13, 0, 0);
+    const formatted = formatter.format(testDate);
     
-    const midnightFormatted = formatter.format(midnight);
-    const afternoonFormatted = formatter.format(afternoon);
-    
-    // In 24-hour format: midnight contains '0' or '00', afternoon contains '13'
-    // In 12-hour format: midnight contains '12' and AM, afternoon contains '1' and PM
-    const is24Hour = 
-      (midnightFormatted.includes('0') || midnightFormatted.startsWith('0')) &&
-      (afternoonFormatted.includes('13') || afternoonFormatted.startsWith('13'));
+    // Check if the formatted string contains '13' which only appears in 24-hour format
+    // In 12-hour format, it would show '1' with AM/PM markers
+    const is24Hour = formatted.includes('13');
     
     cachedIs24Hour = is24Hour;
     return is24Hour;
