@@ -38,6 +38,7 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
 import VoiceLogScreen from '../screens/VoiceLog/VoiceLogScreen';
@@ -136,6 +137,7 @@ function NavigatorContent(): JSX.Element {
             name="ChecklistEntry"
             component={ChecklistEntryScreen}
           />
+          <Stack.Screen name="SunTime" component={SunTimeScreen} />
           {/* Unit Conversion */}
           <Stack.Screen
             name="UnitConversion"
