@@ -27,7 +27,7 @@ interface SunShadowStyle {
  * - Dawn/dusk: faint shadow (low altitude)
  * - Solar noon: intense shadow (high altitude)
  *
- * @returns Shadow style object with shadowColor, shadowOffset, shadowOpacity, and shadowRadius
+ * @returns Shadow style object with shadowColor, shadowOffset, shadowOpacity, shadowRadius, and elevation
  */
 export function useSunShadow(): SunShadowStyle {
   const core = useCoreStore();
