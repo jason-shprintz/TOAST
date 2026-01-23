@@ -235,6 +235,7 @@ const DecibelMeterScreenImpl = () => {
             const barLevel = (i + 1) * 5; // Each bar represents 5 dB
             const isBarActive = decibelLevel >= barLevel;
             const barColor = getLevelColor(barLevel);
+            const barHeight = ((i + 1) / 20) * 120; // Height scales from 6px to 120px
 
             return (
               <View
@@ -242,6 +243,7 @@ const DecibelMeterScreenImpl = () => {
                 style={[
                   styles.bar,
                   {
+                    height: barHeight,
                     backgroundColor: isBarActive ? barColor : COLORS.BACKGROUND,
                     borderColor: COLORS.SECONDARY_ACCENT,
                     opacity: isBarActive ? 1 : 0.3,
@@ -431,7 +433,7 @@ const styles = StyleSheet.create({
     flex: 1, // Equal width bars that flex to fill container
     borderRadius: 4,
     borderWidth: 1,
-    minHeight: 8, // Bars use flex with alignItems: 'flex-end' to create standard meter effect
+    // Height is set dynamically based on bar level to create proper meter visualization
   },
   controlsContainer: {
     paddingHorizontal: 16,

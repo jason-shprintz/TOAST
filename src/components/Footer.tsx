@@ -188,6 +188,7 @@ const FooterImpl = () => {
                       : barLevel < 70
                         ? COLORS.ACCENT
                         : COLORS.ERROR;
+                  const barHeight = ((i + 1) / 10) * 40; // Height scales from 4px to 40px
 
                   return (
                     <View
@@ -195,6 +196,7 @@ const FooterImpl = () => {
                       style={[
                         styles.decibelBar,
                         {
+                          height: barHeight,
                           backgroundColor: isBarActive
                             ? barColor
                             : COLORS.BACKGROUND,
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     width: 6,
     borderRadius: 2,
     borderWidth: 1,
-    minHeight: 4,
+    // Height is set dynamically based on bar level
   },
   decibelText: {
     fontSize: 14,
