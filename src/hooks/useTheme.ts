@@ -1,3 +1,4 @@
+import { reaction } from 'mobx';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { useSettingsStore } from '../stores';
@@ -23,6 +24,9 @@ function getColorSchemeForThemeMode(
 /**
  * Hook that provides the current theme colors based on the user's theme mode setting.
  * 
+ * Uses MobX reaction to automatically update when themeMode changes in the SettingsStore,
+ * ensuring components re-render with the new theme without needing to be wrapped in observer.
+ * 
  * - If theme mode is 'light', returns light colors
  * - If theme mode is 'dark', returns dark colors
  * - If theme mode is 'system', returns colors based on system color scheme
@@ -37,12 +41,27 @@ export function useTheme(): ColorScheme {
   );
 
   useEffect(() => {
+    // Use MobX reaction to track changes to themeMode
+    const dispose = reaction(
+      () => settingsStore.themeMode,
+      (themeMode) => {
+        const newColors = getColorSchemeForThemeMode(themeMode, systemColorScheme);
+        setColors(newColors);
+      },
+      {
+        fireImmediately: false, // Don't fire on initial setup since we already set initial state
+      }
+    );
+
+    // Also update when system color scheme changes
     const newColors = getColorSchemeForThemeMode(
       settingsStore.themeMode,
       systemColorScheme
     );
     setColors(newColors);
-  }, [settingsStore.themeMode, systemColorScheme]);
+
+    return dispose;
+  }, [settingsStore, systemColorScheme]);
 
   return colors;
 }
