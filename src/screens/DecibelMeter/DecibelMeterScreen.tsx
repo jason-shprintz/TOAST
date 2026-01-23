@@ -8,6 +8,7 @@ import {
   PermissionsAndroid,
   Alert,
   Animated,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
@@ -15,6 +16,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
+import { FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
 
 /**
  * DecibelMeterScreen component
@@ -175,206 +177,196 @@ const DecibelMeterScreenImpl = () => {
   return (
     <ScreenBody>
       <SectionHeader>Decibel Meter</SectionHeader>
-
-      {/* Info Section */}
-      <View style={styles.infoContainer}>
-        <Icon
-          name="information-circle-outline"
-          size={20}
-          color={COLORS.PRIMARY_DARK}
-        />
-        <Text style={[styles.infoText, { color: COLORS.PRIMARY_DARK }]}>
-          {isActive
-            ? 'Monitoring ambient sound levels. The meter will also appear in the footer.'
-            : 'Tap Start to begin monitoring ambient sound levels.'}
-        </Text>
-      </View>
-
-      {/* Main Meter Display */}
-      <View
-        style={[
-          styles.meterContainer,
-          {
-            backgroundColor: COLORS.PRIMARY_LIGHT,
-            borderColor: COLORS.SECONDARY_ACCENT,
-          },
-        ]}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
       >
-        {/* Decibel Level Display */}
-        <View style={styles.levelDisplay}>
-          <Text
-            style={[
-              styles.levelNumber,
-              { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
-            ]}
-          >
-            {Math.round(decibelLevel)}
-          </Text>
-          <Text
-            style={[
-              styles.levelUnit,
-              { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
-            ]}
-          >
-            dB
-          </Text>
-        </View>
-
-        <Text
+        {/* Main Meter Display */}
+        <View
           style={[
-            styles.levelDescription,
-            { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
-          ]}
-        >
-          {isActive ? levelDescription : 'Inactive'}
-        </Text>
-
-        {/* Visual Bar Meter */}
-        <View style={styles.barMeterContainer}>
-          {[...Array(20)].map((_, i) => {
-            const barLevel = (i + 1) * 5; // Each bar represents 5 dB
-            const isBarActive = decibelLevel >= barLevel;
-            const barColor = getLevelColor(barLevel);
-            const barHeight = ((i + 1) / 20) * 120; // Height scales from 6px to 120px
-
-            return (
-              <View
-                key={i}
-                style={[
-                  styles.bar,
-                  {
-                    height: barHeight,
-                    backgroundColor: isBarActive ? barColor : COLORS.BACKGROUND,
-                    borderColor: COLORS.SECONDARY_ACCENT,
-                    opacity: isBarActive ? 1 : 0.3,
-                  },
-                ]}
-              />
-            );
-          })}
-        </View>
-      </View>
-
-      {/* Controls */}
-      <View style={styles.controlsContainer}>
-        {!isActive ? (
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: COLORS.SUCCESS,
-                borderColor: COLORS.SECONDARY_ACCENT,
-              },
-            ]}
-            onPress={handleStart}
-            accessibilityLabel="Start Decibel Meter"
-            accessibilityRole="button"
-          >
-            <Icon name="play" size={24} color={COLORS.PRIMARY_LIGHT} />
-            <Text style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}>
-              Start Monitoring
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: COLORS.ERROR,
-                borderColor: COLORS.SECONDARY_ACCENT,
-              },
-            ]}
-            onPress={handleStop}
-            accessibilityLabel="Stop Decibel Meter"
-            accessibilityRole="button"
-          >
-            <Icon name="stop" size={24} color={COLORS.PRIMARY_LIGHT} />
-            <Text style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}>
-              Stop Monitoring
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Reference Levels */}
-      <View style={styles.referenceContainer}>
-        <Text
-          style={[
-            styles.referenceTitle,
+            styles.meterContainer,
             {
-              color: COLORS.PRIMARY_DARK,
-              borderBottomColor: COLORS.SECONDARY_ACCENT,
+              backgroundColor: COLORS.PRIMARY_LIGHT,
+              borderColor: COLORS.SECONDARY_ACCENT,
             },
           ]}
         >
-          Reference Sound Levels
-        </Text>
-        <View style={styles.referenceItem}>
-          <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
-            30 dB
-          </Text>
+          {/* Decibel Level Display */}
+          <View style={styles.levelDisplay}>
+            <Text
+              style={[
+                styles.levelNumber,
+                { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
+              ]}
+            >
+              {Math.round(decibelLevel)}
+            </Text>
+            <Text
+              style={[
+                styles.levelUnit,
+                { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
+              ]}
+            >
+              dB
+            </Text>
+          </View>
+
           <Text
             style={[
-              styles.referenceDescription,
-              { color: COLORS.PRIMARY_DARK },
+              styles.levelDescription,
+              { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
             ]}
           >
-            Whisper, Quiet Library
+            {isActive ? levelDescription : 'Inactive'}
           </Text>
+
+          {/* Visual Bar Meter */}
+          <View style={styles.barMeterContainer}>
+            {[...Array(20)].map((_, i) => {
+              const barLevel = (i + 1) * 5; // Each bar represents 5 dB
+              const isBarActive = decibelLevel >= barLevel;
+              const barColor = getLevelColor(barLevel);
+              const barHeight = ((i + 1) / 20) * 120; // Height scales from 6px to 120px
+
+              return (
+                <View
+                  key={i}
+                  style={[
+                    styles.bar,
+                    {
+                      height: barHeight,
+                      backgroundColor: isBarActive ? barColor : COLORS.BACKGROUND,
+                      borderColor: COLORS.SECONDARY_ACCENT,
+                      opacity: isBarActive ? 1 : 0.3,
+                    },
+                  ]}
+                />
+              );
+            })}
+          </View>
         </View>
-        <View style={styles.referenceItem}>
-          <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
-            50 dB
-          </Text>
+
+        {/* Controls */}
+        <View style={styles.controlsContainer}>
+          {!isActive ? (
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: COLORS.SUCCESS,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
+              onPress={handleStart}
+              accessibilityLabel="Start Decibel Meter"
+              accessibilityRole="button"
+            >
+              <Icon name="play" size={24} color={COLORS.PRIMARY_LIGHT} />
+              <Text style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}>
+                Start Monitoring
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: COLORS.ERROR,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
+              onPress={handleStop}
+              accessibilityLabel="Stop Decibel Meter"
+              accessibilityRole="button"
+            >
+              <Icon name="stop" size={24} color={COLORS.PRIMARY_LIGHT} />
+              <Text style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}>
+                Stop Monitoring
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Reference Levels */}
+        <View style={styles.referenceContainer}>
           <Text
             style={[
-              styles.referenceDescription,
-              { color: COLORS.PRIMARY_DARK },
+              styles.referenceTitle,
+              {
+                color: COLORS.PRIMARY_DARK,
+                borderBottomColor: COLORS.SECONDARY_ACCENT,
+              },
             ]}
           >
-            Normal Conversation
+            Reference Sound Levels
           </Text>
+          <View style={styles.referenceItem}>
+            <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
+              30 dB
+            </Text>
+            <Text
+              style={[
+                styles.referenceDescription,
+                { color: COLORS.PRIMARY_DARK },
+              ]}
+            >
+              Whisper, Quiet Library
+            </Text>
+          </View>
+          <View style={styles.referenceItem}>
+            <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
+              50 dB
+            </Text>
+            <Text
+              style={[
+                styles.referenceDescription,
+                { color: COLORS.PRIMARY_DARK },
+              ]}
+            >
+              Normal Conversation
+            </Text>
+          </View>
+          <View style={styles.referenceItem}>
+            <Text style={[styles.referenceLevel, { color: COLORS.ACCENT }]}>
+              70 dB
+            </Text>
+            <Text
+              style={[
+                styles.referenceDescription,
+                { color: COLORS.PRIMARY_DARK },
+              ]}
+            >
+              Busy Street Traffic
+            </Text>
+          </View>
+          <View style={styles.referenceItem}>
+            <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
+              85 dB
+            </Text>
+            <Text
+              style={[
+                styles.referenceDescription,
+                { color: COLORS.PRIMARY_DARK },
+              ]}
+            >
+              Heavy Traffic, Power Tools
+            </Text>
+          </View>
+          <View style={styles.referenceItem}>
+            <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
+              100 dB
+            </Text>
+            <Text
+              style={[
+                styles.referenceDescription,
+                { color: COLORS.PRIMARY_DARK },
+              ]}
+            >
+              Motorcycle, Chainsaw
+            </Text>
+          </View>
         </View>
-        <View style={styles.referenceItem}>
-          <Text style={[styles.referenceLevel, { color: COLORS.ACCENT }]}>
-            70 dB
-          </Text>
-          <Text
-            style={[
-              styles.referenceDescription,
-              { color: COLORS.PRIMARY_DARK },
-            ]}
-          >
-            Busy Street Traffic
-          </Text>
-        </View>
-        <View style={styles.referenceItem}>
-          <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
-            85 dB
-          </Text>
-          <Text
-            style={[
-              styles.referenceDescription,
-              { color: COLORS.PRIMARY_DARK },
-            ]}
-          >
-            Heavy Traffic, Power Tools
-          </Text>
-        </View>
-        <View style={styles.referenceItem}>
-          <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
-            100 dB
-          </Text>
-          <Text
-            style={[
-              styles.referenceDescription,
-              { color: COLORS.PRIMARY_DARK },
-            ]}
-          >
-            Motorcycle, Chainsaw
-          </Text>
-        </View>
-      </View>
+      </ScrollView>
     </ScreenBody>
   );
 };
@@ -382,16 +374,15 @@ const DecibelMeterScreenImpl = () => {
 export default observer(DecibelMeterScreenImpl);
 
 const styles = StyleSheet.create({
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  infoText: {
+  scrollView: {
     flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
+    width: '100%',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: SCROLL_PADDING,
+    paddingHorizontal: 16,
+    paddingBottom: FOOTER_HEIGHT + SCROLL_PADDING,
   },
   meterContainer: {
     marginHorizontal: 16,
