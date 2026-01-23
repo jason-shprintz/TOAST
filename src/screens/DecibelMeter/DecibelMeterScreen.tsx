@@ -70,30 +70,47 @@ const DecibelMeterScreenImpl = () => {
   };
 
   /**
-   * Simulates audio level monitoring.
+   * Simulates audio level monitoring with smoother, more realistic behavior.
    * Note: Real audio metering would require native module enhancements.
    * This implementation uses simulated levels for demonstration.
    */
   const startMonitoring = () => {
-    // Simulate audio level changes
+    let currentLevel = 25; // Start at quiet ambient level
+    const targetLevelRef = { value: 25 }; // Use object to share across closures
+    
+    // Simulate audio level changes with smoother transitions
     intervalRef.current = setInterval(() => {
-      // Generate pseudo-random audio levels that look realistic
-      // Real implementation would read from actual microphone input
-      const baseLevel = 20 + Math.random() * 30; // Base ambient noise (20-50)
-      const spike = Math.random() > 0.8 ? Math.random() * 40 : 0; // Occasional spikes
-      const newLevel = Math.min(100, baseLevel + spike);
-
+      // Slowly drift the target level to simulate ambient changes
+      if (Math.random() > 0.95) {
+        // Occasionally change the target ambient level
+        targetLevelRef.value = 20 + Math.random() * 25; // Range: 20-45 dB (quiet to moderate)
+      }
+      
+      // Add occasional brief spikes to simulate sounds
+      let targetLevel = targetLevelRef.value;
+      if (Math.random() > 0.92) {
+        // Brief spike (simulating a sound)
+        targetLevel += Math.random() * 30; // Up to +30 dB
+      }
+      
+      // Smooth interpolation toward target (not instant jumps)
+      const smoothing = 0.3; // Lower = smoother transitions
+      currentLevel = currentLevel + (targetLevel - currentLevel) * smoothing;
+      
+      // Clamp to valid range
+      const newLevel = Math.max(15, Math.min(100, currentLevel));
+      
       setDecibelLevel(newLevel);
       core.setCurrentDecibelLevel(newLevel);
 
-      // Animate the level change
+      // Animate the level change with smooth spring
       Animated.spring(animatedLevel, {
         toValue: newLevel,
         useNativeDriver: false,
-        friction: 8,
-        tension: 40,
+        friction: 12,
+        tension: 30,
       }).start();
-    }, 100); // Update 10 times per second
+    }, 150); // Update ~6-7 times per second for smoother appearance
   };
 
   /**
@@ -137,19 +154,34 @@ const DecibelMeterScreenImpl = () => {
   };
 
   /**
-   * Cleanup on unmount.
+   * Cleanup on unmount - only stop the interval, but keep the meter active
+   * so it persists when navigating away from the screen.
    */
   useEffect(() => {
     return () => {
+      // Only stop the monitoring interval on this screen
+      // Don't deactivate the meter - it should persist across navigation
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      core.setDecibelMeterActive(false);
-      core.setCurrentDecibelLevel(0);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /**
+   * Sync local state with core store and restart monitoring if meter is active.
+   * This ensures the monitoring resumes when returning to the screen.
+   */
+  useEffect(() => {
+    setIsActive(core.decibelMeterActive);
+    
+    // If the meter is active (from core store) but not monitoring locally, start it
+    if (core.decibelMeterActive && !intervalRef.current) {
+      startMonitoring();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [core.decibelMeterActive]);
 
   /**
    * Get color based on decibel level.
@@ -381,7 +413,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingTop: SCROLL_PADDING,
-    paddingHorizontal: 16,
     paddingBottom: FOOTER_HEIGHT + SCROLL_PADDING,
   },
   meterContainer: {
