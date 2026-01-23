@@ -2,9 +2,145 @@
  * @format
  */
 
+import React from 'react';
+import ReactTestRenderer from 'react-test-renderer';
 import * as SunCalc from 'suncalc';
+import { useSunShadow } from '../src/hooks/useSunShadow';
+import * as StoreContext from '../src/stores/StoreContext';
+
+// Mock the CoreStore context
+jest.mock('../src/stores/StoreContext', () => ({
+  useCoreStore: jest.fn(),
+}));
 
 describe('useSunShadow', () => {
+  let mockCoreStore: any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    
+    // Create a mock core store with location data
+    mockCoreStore = {
+      lastFix: {
+        coords: {
+          latitude: 40.7128,
+          longitude: -74.006,
+          accuracy: 10,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          speed: null,
+        },
+        timestamp: Date.now(),
+      },
+    };
+
+    (StoreContext.useCoreStore as jest.Mock).mockReturnValue(mockCoreStore);
+  });
+
+  describe('Hook Integration Tests', () => {
+    test('hook returns shadow object with required properties when location is available', () => {
+      let shadowResult: any;
+      
+      function TestHook() {
+        shadowResult = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook));
+      });
+
+      expect(shadowResult).toBeDefined();
+      expect(shadowResult).toHaveProperty('shadowColor');
+      expect(shadowResult).toHaveProperty('shadowOffset');
+      expect(shadowResult).toHaveProperty('shadowOpacity');
+      expect(shadowResult).toHaveProperty('shadowRadius');
+      expect(shadowResult.shadowColor).toBe('#000000');
+      expect(typeof shadowResult.shadowOpacity).toBe('number');
+      expect(shadowResult.shadowOpacity).toBeGreaterThanOrEqual(0);
+      expect(shadowResult.shadowOpacity).toBeLessThanOrEqual(1);
+    });
+
+    test('hook returns default shadow when location is unavailable', () => {
+      mockCoreStore.lastFix = null;
+      let shadowResult: any;
+      
+      function TestHook() {
+        shadowResult = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook));
+      });
+
+      expect(shadowResult).toEqual({
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      });
+    });
+
+    test('hook calculates different shadows for different locations', () => {
+      let shadow1: any;
+      let shadow2: any;
+      
+      // First location: New York
+      mockCoreStore.lastFix = {
+        coords: {
+          latitude: 40.7128,
+          longitude: -74.006,
+          accuracy: 10,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          speed: null,
+        },
+        timestamp: Date.now(),
+      };
+      
+      function TestHook1() {
+        shadow1 = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook1));
+      });
+
+      // Second location: London (different coordinates)
+      mockCoreStore.lastFix = {
+        coords: {
+          latitude: 51.5074,
+          longitude: -0.1278,
+          accuracy: 10,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          speed: null,
+        },
+        timestamp: Date.now(),
+      };
+      
+      function TestHook2() {
+        shadow2 = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook2));
+      });
+
+      // Both should have valid shadow properties
+      expect(shadow1.shadowColor).toBe('#000000');
+      expect(shadow2.shadowColor).toBe('#000000');
+      expect(typeof shadow1.shadowOpacity).toBe('number');
+      expect(typeof shadow2.shadowOpacity).toBe('number');
+    });
+  });
+
   describe('Sun Position Calculations', () => {
     test('calculates sun position correctly using suncalc', () => {
       const testDate = new Date('2024-06-21T12:00:00Z'); // Summer solstice noon

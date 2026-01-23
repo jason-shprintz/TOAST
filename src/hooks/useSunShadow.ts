@@ -75,12 +75,13 @@ export function useSunShadow(): SunShadowStyle {
       }
 
       // Calculate shadow offset based on azimuth
-      // Azimuth is measured clockwise from north (0)
+      // Azimuth is measured from south to west (suncalc convention)
+      // 0 = south, π/2 = west, π = north, -π/2 = east
       // We want the shadow to be opposite to the sun's direction
       // 
-      // Sun in east (π/2): azimuth ≈ 90°, shadow to west (negative x)
-      // Sun in south (π): azimuth ≈ 180°, shadow to north (negative y)
-      // Sun in west (3π/2): azimuth ≈ 270°, shadow to east (positive x)
+      // Sun in east (azimuth ≈ -π/2): shadow to west (negative x in screen coords)
+      // Sun in south (azimuth ≈ 0): shadow to north (negative y in screen coords)
+      // Sun in west (azimuth ≈ π/2): shadow to east (positive x in screen coords)
 
       // Shadow direction is opposite to sun
       const shadowAngle = azimuth + Math.PI;
@@ -112,14 +113,12 @@ export function useSunShadow(): SunShadowStyle {
       });
     };
 
-    // Update immediately
+    // Update immediately when location changes
     updateShadow();
 
-    // Update every 5 minutes to keep shadow in sync with sun
-    // (more frequent updates aren't necessary as sun position changes slowly)
-    const interval = setInterval(updateShadow, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
+    // Note: No interval needed here. The shadow updates whenever core.lastFix changes,
+    // which happens approximately every 60 seconds when GPS updates.
+    // This is sufficient since sun position changes slowly.
   }, [core.lastFix]);
 
   return shadowStyle;
