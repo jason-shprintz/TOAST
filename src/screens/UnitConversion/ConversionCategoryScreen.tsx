@@ -140,6 +140,23 @@ export default function ConversionCategoryScreen() {
   const fromUnit = isReversed ? selectedUnit.toName : selectedUnit.fromName;
   const toUnit = isReversed ? selectedUnit.fromName : selectedUnit.toName;
 
+  // Helper functions for inline styles
+  const getValueContainerStyle = () => [
+    styles.valueContainer,
+    {
+      borderColor: COLORS.SECONDARY_ACCENT,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+    },
+  ];
+
+  const getKeypadButtonStyle = () => [
+    styles.keypadButton,
+    {
+      backgroundColor: COLORS.TOAST_BROWN,
+      borderColor: COLORS.SECONDARY_ACCENT,
+    },
+  ];
+
   return (
     <View style={[styles.container, { backgroundColor: COLORS.BACKGROUND }]}>
       <LinearGradient
@@ -189,13 +206,7 @@ export default function ConversionCategoryScreen() {
 
         {/* Conversion Display */}
         <View style={styles.conversionContainer}>
-          <View style={[
-            styles.valueContainer,
-            {
-              borderColor: COLORS.SECONDARY_ACCENT,
-              backgroundColor: COLORS.PRIMARY_LIGHT,
-            },
-          ]}>
+          <View style={getValueContainerStyle()}>
             <Text style={[styles.valueLabel, { color: COLORS.PRIMARY_DARK }]}>{fromUnit}</Text>
             <Text style={[styles.valueText, { color: COLORS.PRIMARY_DARK }]}>{inputValue}</Text>
           </View>
@@ -208,13 +219,7 @@ export default function ConversionCategoryScreen() {
             />
           </TouchableOpacity>
 
-          <View style={[
-            styles.valueContainer,
-            {
-              borderColor: COLORS.SECONDARY_ACCENT,
-              backgroundColor: COLORS.PRIMARY_LIGHT,
-            },
-          ]}>
+          <View style={getValueContainerStyle()}>
             <Text style={[styles.valueLabel, { color: COLORS.PRIMARY_DARK }]}>{toUnit}</Text>
             <Text style={[styles.valueText, { color: COLORS.PRIMARY_DARK }]}>{getConvertedValue()}</Text>
           </View>
@@ -224,37 +229,19 @@ export default function ConversionCategoryScreen() {
         <View style={styles.keypad}>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('7')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>7</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('8')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>8</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('9')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>9</Text>
@@ -262,37 +249,19 @@ export default function ConversionCategoryScreen() {
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('4')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>4</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('5')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>5</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('6')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>6</Text>
@@ -300,37 +269,19 @@ export default function ConversionCategoryScreen() {
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('1')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>1</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('2')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>2</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('3')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>3</Text>
@@ -338,37 +289,19 @@ export default function ConversionCategoryScreen() {
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={handleToggleSign}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>+/−</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('0')}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>0</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.keypadButton,
-                {
-                  backgroundColor: COLORS.TOAST_BROWN,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
+              style={getKeypadButtonStyle()}
               onPress={handleDecimalPress}
             >
               <Text style={[styles.keypadButtonText, { color: COLORS.PRIMARY_DARK }]}>.</Text>
