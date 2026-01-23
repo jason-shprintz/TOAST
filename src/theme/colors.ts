@@ -39,6 +39,7 @@ const DARK_COLORS = {
 };
 
 export type ThemeColors = typeof LIGHT_COLORS;
+// ColorScheme is an alias for ThemeColors, used by useTheme hook for consistency
 export type ColorScheme = ThemeColors;
 
 // Default export for backwards compatibility
