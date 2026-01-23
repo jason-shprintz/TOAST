@@ -13,7 +13,8 @@ import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
 
@@ -34,6 +35,7 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
  */
 export default function SearchScreen(): JSX.Element {
   const navigation = useNavigation<SearchScreenNavigationProp>();
+  const COLORS = useTheme();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
@@ -68,7 +70,10 @@ export default function SearchScreen(): JSX.Element {
   return (
     <ScreenBody>
       <View style={styles.searchContainer}>
-        <View style={styles.searchInputContainer}>
+        <View style={[
+          styles.searchInputContainer,
+          { backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN }
+        ]}>
           <Ionicons
             name="search-outline"
             size={20}
@@ -77,7 +82,7 @@ export default function SearchScreen(): JSX.Element {
             accessibilityLabel="Search icon"
           />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { color: COLORS.PRIMARY_DARK }]}
             placeholder="Search TOAST..."
             placeholderTextColor={COLORS.PRIMARY_DARK + '80'}
             value={query}
@@ -112,13 +117,13 @@ export default function SearchScreen(): JSX.Element {
           keyboardShouldPersistTaps="handled"
         >
           {query.trim() === '' && (
-            <Text style={styles.helperText}>
+            <Text style={[styles.helperText, { color: COLORS.PRIMARY_DARK }]}>
               Start typing to search across all TOAST content
             </Text>
           )}
 
           {query.trim() !== '' && results.length === 0 && (
-            <Text style={styles.helperText}>
+            <Text style={[styles.helperText, { color: COLORS.PRIMARY_DARK }]}>
               No results found for "{query}"
             </Text>
           )}
@@ -152,9 +157,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '90%',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -167,7 +170,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     padding: 0,
   },
   clearButton: {
@@ -198,6 +200,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 20,
     textAlign: 'center',
-    color: COLORS.PRIMARY_DARK,
   },
 });

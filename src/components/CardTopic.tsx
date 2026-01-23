@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../theme';
+import { useTheme } from '../hooks/useTheme';
+import { LIGHT_COLORS } from '../theme/colors';
 import { Text } from './ScaledText';
 
 export type CardTopicProps = {
@@ -40,6 +41,7 @@ export default function CardTopic({
   IconComponent = Ionicons,
 }: CardTopicProps) {
   const scale = useRef(new Animated.Value(1)).current;
+  const COLORS = useTheme();
 
   const bounce = () => {
     Animated.sequence([
@@ -59,7 +61,12 @@ export default function CardTopic({
   return (
     <TouchableWithoutFeedback onPress={bounce}>
       <Animated.View
-        style={[styles.card, { transform: [{ scale }] }, containerStyle]}
+        style={[
+          styles.card,
+          { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT },
+          { transform: [{ scale }] },
+          containerStyle
+        ]}
       >
         <LinearGradient
           colors={COLORS.TOAST_BROWN_GRADIENT}
@@ -70,10 +77,10 @@ export default function CardTopic({
         <IconComponent
           name={icon}
           size={40}
-          color={COLORS.PRIMARY_DARK}
+          color={LIGHT_COLORS.PRIMARY_DARK}
           style={styles.icon}
         />
-        <Text style={[styles.title, titleStyle]}>{title}</Text>
+        <Text style={[styles.title, { color: LIGHT_COLORS.PRIMARY_DARK }, titleStyle]}>{title}</Text>
       </Animated.View>
     </TouchableWithoutFeedback>
   );
@@ -90,9 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 22,
     elevation: 2,
     overflow: 'hidden',
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,
-    boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT,
   },
   background: {
     ...StyleSheet.absoluteFill,
@@ -103,7 +108,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
     paddingHorizontal: 6,
   },

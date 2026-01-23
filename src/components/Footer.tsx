@@ -11,8 +11,9 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FlashlightModes } from '../../constants';
+import { useTheme } from '../hooks/useTheme';
 import { useCoreStore } from '../stores/StoreContext';
-import { COLORS, FOOTER_HEIGHT } from '../theme';
+import { FOOTER_HEIGHT } from '../theme';
 import { Text } from './ScaledText';
 
 /**
@@ -34,6 +35,7 @@ import { Text } from './ScaledText';
 const FooterImpl = () => {
   const core = useCoreStore();
   const navigation = useNavigation();
+  const COLORS = useTheme();
   const [isSOSPressing, setIsSOSPressing] = useState(false);
   const sosTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sosProgressAnim = useRef(new Animated.Value(0)).current;
@@ -142,6 +144,7 @@ const FooterImpl = () => {
           <Animated.View
             style={[
               styles.notificationTimerBackground,
+              { backgroundColor: COLORS.ACCENT, borderColor: COLORS.SECONDARY_ACCENT },
               {
                 width: sosProgressAnim.interpolate({
                   inputRange: [0, 1],
@@ -154,7 +157,7 @@ const FooterImpl = () => {
 
         {/* Notification content */}
         <View style={styles.notificationSection}>
-          <Text style={styles.notificationText}>NOTIFICATION</Text>
+          <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>NOTIFICATION</Text>
         </View>
       </View>
 
@@ -162,7 +165,11 @@ const FooterImpl = () => {
       <TouchableOpacity
         style={[
           styles.activeItemSection,
-          activeItem && styles.activeItemSectionActive,
+          { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT },
+          activeItem && [
+            styles.activeItemSectionActive,
+            { backgroundColor: COLORS.ACCENT, borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT }
+          ],
         ]}
         onPress={handleActiveItemPress}
         accessibilityLabel={
@@ -187,7 +194,8 @@ const FooterImpl = () => {
         <View
           style={[
             styles.sosSection,
-            isSOSPressing && styles.sosSectionPressing,
+            { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT },
+            isSOSPressing && { backgroundColor: COLORS.ACCENT },
           ]}
         >
           <Ionicons
@@ -196,7 +204,11 @@ const FooterImpl = () => {
             color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
           />
           <Text
-            style={[styles.sosText, isSOSPressing && styles.sosTextPressing]}
+            style={[
+              styles.sosText,
+              { color: COLORS.PRIMARY_DARK },
+              isSOSPressing && { color: COLORS.PRIMARY_LIGHT }
+            ]}
           >
             SOS
           </Text>
@@ -229,9 +241,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: COLORS.ACCENT,
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 4,
   },
   notificationSection: {
@@ -245,44 +255,29 @@ const styles = StyleSheet.create({
   notificationText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
   },
   activeItemSection: {
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
     marginHorizontal: 2,
-    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
   },
   activeItemSectionActive: {
-    backgroundColor: COLORS.ACCENT,
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
   },
   sosSection: {
     width: '25%',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 50,
-    boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
-  },
-  sosSectionPressing: {
-    backgroundColor: COLORS.ACCENT,
   },
   sosText: {
     fontSize: 12,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
     marginTop: 4,
-  },
-  sosTextPressing: {
-    color: COLORS.PRIMARY_LIGHT,
   },
 });

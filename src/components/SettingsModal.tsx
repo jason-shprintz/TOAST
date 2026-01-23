@@ -10,9 +10,9 @@ import {
   Text as RNText,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useTheme } from '../hooks/useTheme';
 import { useSettingsStore } from '../stores';
 import { FontSize, ThemeMode } from '../stores/SettingsStore';
-import { COLORS } from '../theme';
 
 interface SettingsModalProps {
   visible: boolean;
@@ -33,6 +33,7 @@ const preventClose = () => {};
 export const SettingsModal = observer(
   ({ visible, onClose }: SettingsModalProps) => {
     const settingsStore = useSettingsStore();
+    const COLORS = useTheme();
 
     const fontSizeOptions: { value: FontSize; label: string }[] = [
       { value: 'small', label: 'Small' },
@@ -61,9 +62,15 @@ export const SettingsModal = observer(
         >
           <View style={styles.overlay}>
             <TouchableWithoutFeedback onPress={preventClose}>
-              <View style={styles.modalContainer}>
-                <View style={styles.header}>
-                  <RNText style={styles.headerText}>Settings</RNText>
+              <View style={[
+                styles.modalContainer,
+                { backgroundColor: COLORS.PRIMARY_LIGHT, borderColor: COLORS.TOAST_BROWN }
+              ]}>
+                <View style={[
+                  styles.header,
+                  { backgroundColor: COLORS.SECONDARY_ACCENT, borderBottomColor: COLORS.TOAST_BROWN }
+                ]}>
+                  <RNText style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}>Settings</RNText>
                   <TouchableOpacity
                     onPress={onClose}
                     style={styles.closeButton}
@@ -81,15 +88,16 @@ export const SettingsModal = observer(
                 <ScrollView style={styles.content}>
                   {/* Font Size Section */}
                   <View style={styles.section}>
-                    <RNText style={styles.sectionTitle}>Font Size</RNText>
+                    <RNText style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>Font Size</RNText>
                     <View style={styles.optionsContainer}>
                       {fontSizeOptions.map(option => (
                         <TouchableOpacity
                           key={option.value}
                           style={[
                             styles.optionButton,
+                            { borderColor: COLORS.TOAST_BROWN, backgroundColor: COLORS.BACKGROUND },
                             settingsStore.fontSize === option.value &&
-                              styles.optionButtonSelected,
+                              { backgroundColor: COLORS.TOAST_BROWN, borderColor: COLORS.PRIMARY_DARK },
                           ]}
                           onPress={() => settingsStore.setFontSize(option.value)}
                           accessibilityLabel={`Set font size to ${option.label}`}
@@ -98,6 +106,7 @@ export const SettingsModal = observer(
                           <RNText
                             style={[
                               styles.optionText,
+                              { color: COLORS.PRIMARY_DARK },
                               settingsStore.fontSize === option.value &&
                                 styles.optionTextSelected,
                             ]}
@@ -111,18 +120,16 @@ export const SettingsModal = observer(
 
                   {/* Theme Mode Section */}
                   <View style={styles.section}>
-                    <RNText style={styles.sectionTitle}>Theme</RNText>
-                    <RNText style={styles.placeholderNote}>
-                      (Placeholder - not yet implemented)
-                    </RNText>
+                    <RNText style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>Theme</RNText>
                     <View style={styles.optionsContainer}>
                       {themeModeOptions.map(option => (
                         <TouchableOpacity
                           key={option.value}
                           style={[
                             styles.optionButton,
+                            { borderColor: COLORS.TOAST_BROWN, backgroundColor: COLORS.BACKGROUND },
                             settingsStore.themeMode === option.value &&
-                              styles.optionButtonSelected,
+                              { backgroundColor: COLORS.TOAST_BROWN, borderColor: COLORS.PRIMARY_DARK },
                           ]}
                           onPress={() => settingsStore.setThemeMode(option.value)}
                           accessibilityLabel={`Set theme to ${option.label}`}
@@ -131,6 +138,7 @@ export const SettingsModal = observer(
                           <RNText
                             style={[
                               styles.optionText,
+                              { color: COLORS.PRIMARY_DARK },
                               settingsStore.themeMode === option.value &&
                                 styles.optionTextSelected,
                             ]}
@@ -161,10 +169,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: '85%',
     maxWidth: 500,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 16,
     borderWidth: 3,
-    borderColor: COLORS.TOAST_BROWN,
     maxHeight: '80%',
     overflow: 'hidden',
   },
@@ -174,14 +180,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     borderBottomWidth: 2,
-    borderBottomColor: COLORS.TOAST_BROWN,
   },
   headerText: {
     fontSize: 22,
     fontWeight: '800',
-    color: COLORS.PRIMARY_DARK,
   },
   closeButton: {
     padding: 4,
@@ -195,15 +198,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 8,
-  },
-  placeholderNote: {
-    fontSize: 12,
-    fontStyle: 'italic',
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.6,
-    marginBottom: 12,
   },
   optionsContainer: {
     gap: 12,
@@ -213,17 +208,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    backgroundColor: COLORS.BACKGROUND,
-  },
-  optionButtonSelected: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderColor: COLORS.PRIMARY_DARK,
   },
   optionText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
   },
   optionTextSelected: {
