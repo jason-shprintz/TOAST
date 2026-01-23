@@ -39,7 +39,13 @@ export function useSunShadow(): SunShadowStyle {
     const updateShadow = () => {
       // Get current location
       if (!core.lastFix) {
-        // No location available, use default shadow
+        // No location available, use default shadow (straight down)
+        setShadowStyle({
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+        });
         return;
       }
 
@@ -109,8 +115,9 @@ export function useSunShadow(): SunShadowStyle {
     // Update immediately
     updateShadow();
 
-    // Update every minute to keep shadow in sync with sun
-    const interval = setInterval(updateShadow, 60000);
+    // Update every 5 minutes to keep shadow in sync with sun
+    // (more frequent updates aren't necessary as sun position changes slowly)
+    const interval = setInterval(updateShadow, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [core.lastFix]);
