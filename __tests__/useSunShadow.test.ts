@@ -6,6 +6,7 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import * as SunCalc from 'suncalc';
 import { useSunShadow } from '../src/hooks/useSunShadow';
+import * as UseTheme from '../src/hooks/useTheme';
 import * as StoreContext from '../src/stores/StoreContext';
 
 // Mock the CoreStore context
@@ -13,11 +14,21 @@ jest.mock('../src/stores/StoreContext', () => ({
   useCoreStore: jest.fn(),
 }));
 
+// Mock the useTheme hook
+jest.mock('../src/hooks/useTheme', () => ({
+  useTheme: jest.fn(),
+}));
+
 describe('useSunShadow', () => {
   let mockCoreStore: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    // Mock the theme
+    (UseTheme.useTheme as jest.Mock).mockReturnValue({
+      TOAST_BROWN: '#C09A6B',
+    });
     
     // Create a mock core store with location data
     mockCoreStore = {
@@ -57,7 +68,7 @@ describe('useSunShadow', () => {
       expect(shadowResult).toHaveProperty('shadowOpacity');
       expect(shadowResult).toHaveProperty('shadowRadius');
       expect(shadowResult).toHaveProperty('elevation');
-      expect(shadowResult.shadowColor).toBe('#000000');
+      expect(shadowResult.shadowColor).toBe('#C09A6B');
       expect(typeof shadowResult.shadowOpacity).toBe('number');
       expect(shadowResult.shadowOpacity).toBeGreaterThanOrEqual(0);
       expect(shadowResult.shadowOpacity).toBeLessThanOrEqual(1);
@@ -79,7 +90,7 @@ describe('useSunShadow', () => {
       });
 
       expect(shadowResult).toEqual({
-        shadowColor: '#000000',
+        shadowColor: '#C09A6B',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -138,8 +149,8 @@ describe('useSunShadow', () => {
       });
 
       // Both should have valid shadow properties
-      expect(shadow1.shadowColor).toBe('#000000');
-      expect(shadow2.shadowColor).toBe('#000000');
+      expect(shadow1.shadowColor).toBe('#C09A6B');
+      expect(shadow2.shadowColor).toBe('#C09A6B');
       expect(typeof shadow1.shadowOpacity).toBe('number');
       expect(typeof shadow2.shadowOpacity).toBe('number');
     });
@@ -376,7 +387,7 @@ describe('useSunShadow', () => {
   describe('Shadow Style Properties', () => {
     test('default shadow style has required properties', () => {
       const defaultShadow = {
-        shadowColor: '#000000',
+        shadowColor: '#C09A6B',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -392,9 +403,9 @@ describe('useSunShadow', () => {
       expect(defaultShadow.shadowOffset).toHaveProperty('height');
     });
 
-    test('shadow color is always black', () => {
-      const shadowColor = '#000000';
-      expect(shadowColor).toBe('#000000');
+    test('shadow color is TOAST_BROWN', () => {
+      const shadowColor = '#C09A6B';
+      expect(shadowColor).toBe('#C09A6B');
     });
 
     test('shadow opacity is within valid range', () => {
