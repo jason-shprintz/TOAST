@@ -140,7 +140,13 @@ export function useSunShadow(): SunShadowStyle {
     // Note: No interval needed here. The shadow updates whenever core.lastFix changes,
     // which happens approximately every 60 seconds when GPS updates.
     // This is sufficient since sun position changes slowly.
-  }, [core.lastFix, shadowColor]);
+  }, [
+    core.lastFix,
+    shadowColor,
+    settingsStore.themeMode,
+    systemColorScheme,
+    theme,
+  ]);
 
   return shadowStyle;
 }
