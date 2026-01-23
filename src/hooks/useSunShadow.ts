@@ -79,9 +79,9 @@ export function useSunShadow(): SunShadowStyle {
       // 0 = south, π/2 = west, π = north, -π/2 = east
       // We want the shadow to be opposite to the sun's direction
       // 
-      // Sun in east (azimuth ≈ -π/2): shadow to west (negative x in screen coords)
-      // Sun in south (azimuth ≈ 0): shadow to north (negative y in screen coords)
-      // Sun in west (azimuth ≈ π/2): shadow to east (positive x in screen coords)
+      // Sun in east (azimuth ≈ -π/2): shadow to west (left, negative x)
+      // Sun in south (azimuth ≈ 0): shadow downward (positive y)
+      // Sun in west (azimuth ≈ π/2): shadow to east (right, positive x)
 
       // Shadow direction is opposite to sun
       const shadowAngle = azimuth + Math.PI;
@@ -94,8 +94,10 @@ export function useSunShadow(): SunShadowStyle {
         : 0;
 
       // Calculate shadow offset
+      // Note: Y-axis is inverted (negative cos instead of positive) to make
+      // shadows extend downward when sun is high (azimuth ≈ 0)
       const shadowX = -Math.sin(shadowAngle) * baseLength;
-      const shadowY = Math.cos(shadowAngle) * baseLength;
+      const shadowY = -Math.cos(shadowAngle) * baseLength;
 
       // Calculate shadow blur based on altitude (higher sun = sharper shadow)
       const shadowRadius = altitudeDeg > 0

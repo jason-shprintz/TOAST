@@ -310,7 +310,7 @@ describe('useSunShadow', () => {
         : 0;
 
       const shadowAngle = position.azimuth + Math.PI;
-      const shadowX = Math.sin(shadowAngle) * baseLength;
+      const shadowX = -Math.sin(shadowAngle) * baseLength;
       const shadowY = -Math.cos(shadowAngle) * baseLength;
 
       // Shadow offsets should be finite numbers
