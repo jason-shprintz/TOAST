@@ -38,7 +38,7 @@ const DARK_COLORS = {
   ERROR_LIGHT: '#4a2d2e',
 };
 
-export type ColorScheme = typeof LIGHT_COLORS;
+export type ThemeColors = typeof LIGHT_COLORS;
 
 // Default export for backwards compatibility
 const COLORS = LIGHT_COLORS;
