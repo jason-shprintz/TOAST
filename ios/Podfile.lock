@@ -10,7 +10,7 @@ PODS:
   - hermes-engine (0.82.1):
     - hermes-engine/Pre-built (= 0.82.1)
   - hermes-engine/Pre-built (0.82.1)
-  - NitroModules (0.32.0):
+  - NitroModules (0.32.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -2562,7 +2562,7 @@ PODS:
     - React-perflogger (= 0.82.1)
     - React-utils (= 0.82.1)
     - SocketRocket
-  - RNBootSplash (6.3.11):
+  - RNBootSplash (6.3.12):
     - boost
     - DoubleConversion
     - fast_float
@@ -2620,7 +2620,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNScreens (4.18.0):
+  - RNScreens (4.20.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2647,10 +2647,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.18.0)
+    - RNScreens/common (= 4.20.0)
     - SocketRocket
     - Yoga
-  - RNScreens/common (4.18.0):
+  - RNScreens/common (4.20.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -3025,7 +3025,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 273e30e7fb618279934b0b95ffab60ecedb7acf5
-  NitroModules: f964d2f3f5b392d0c0303737085cc30e375dc43f
+  NitroModules: 107a9262c74fd84fa8e77ebd82a72980b6aa50b1
   NitroSound: 3227c096023253d5a71e4145a19ea886808c1295
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: f17e2ebc07876ca9ab8eb6e4b0a4e4647497ae3a
@@ -3099,10 +3099,10 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: a45ef34bb22dc1c9b2ac1f74167d9a28af961176
   ReactCodegen: 878add6c7d8ff8cea87697c44d29c03b79b6f2d9
   ReactCommon: 804dc80944fa90b86800b43c871742ec005ca424
-  RNBootSplash: 98a34471966945e8dacd1da8f0c2f87cbc2e2df7
+  RNBootSplash: a50a2908e25aa4a3e5e2eb429bcf5ed54cbcb9e2
   RNDeviceInfo: 36d7f232bfe7c9b5c494cb7793230424ed32c388
   RNLocalize: 23e6689ec46c6cba49eb8cde959e30e49160a35b
-  RNScreens: d821082c6dd1cb397cc0c98b026eeafaa68be479
+  RNScreens: 714e10b6b554f7dc7ad9f78dcf36dc8e3fc73415
   RNSound: d5dd3ca86d9978e1c2736dfa943ba619fc9fc504
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
