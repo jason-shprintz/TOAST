@@ -93,8 +93,8 @@ export function useSunShadow(): SunShadowStyle {
         : 0;
 
       // Calculate shadow offset
-      const shadowX = Math.sin(shadowAngle) * baseLength;
-      const shadowY = -Math.cos(shadowAngle) * baseLength;
+      const shadowX = -Math.sin(shadowAngle) * baseLength;
+      const shadowY = Math.cos(shadowAngle) * baseLength;
 
       // Calculate shadow blur based on altitude (higher sun = sharper shadow)
       const shadowRadius = altitudeDeg > 0
