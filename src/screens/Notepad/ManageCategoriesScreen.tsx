@@ -52,7 +52,7 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
 
   const handleDeleteCategory = (categoryName: string) => {
     const noteCount = core.getCategoryNoteCount(categoryName);
-    
+
     if (noteCount === 0) {
       // No notes in category - single warning
       Alert.alert(
@@ -67,7 +67,10 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
               try {
                 await core.deleteCategory(categoryName);
               } catch (error: any) {
-                Alert.alert('Error', error.message || 'Failed to delete category');
+                Alert.alert(
+                  'Error',
+                  error.message || 'Failed to delete category',
+                );
               }
             },
           },
@@ -84,7 +87,9 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
             text: 'Continue',
             onPress: () => {
               // Second warning with reassignment confirmation
-              const fallbackCategory = core.categories.find(c => c !== categoryName);
+              const fallbackCategory = core.categories.find(
+                (c) => c !== categoryName,
+              );
               if (!fallbackCategory) {
                 Alert.alert('Error', 'No fallback category available');
                 return;
@@ -101,13 +106,19 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
                     style: 'destructive',
                     onPress: async () => {
                       try {
-                        await core.deleteCategory(categoryName, fallbackCategory);
+                        await core.deleteCategory(
+                          categoryName,
+                          fallbackCategory,
+                        );
                         Alert.alert(
                           'Success',
                           `Category deleted. ${movedNoteCount} note${movedNoteCount > 1 ? 's' : ''} moved to "${fallbackCategory}"`,
                         );
                       } catch (error: any) {
-                        Alert.alert('Error', error.message || 'Failed to delete category');
+                        Alert.alert(
+                          'Error',
+                          error.message || 'Failed to delete category',
+                        );
                       }
                     },
                   },
@@ -175,7 +186,7 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
           {core.categories.length === 0 ? (
             <Text style={styles.emptyText}>No categories yet.</Text>
           ) : (
-            core.categories.map(category => {
+            core.categories.map((category) => {
               const noteCount = core.getCategoryNoteCount(category);
               return (
                 <View key={category} style={styles.categoryItem}>

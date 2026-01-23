@@ -6,7 +6,7 @@ TOAST uses MobX for reactive state management across the application. The store 
 
 ## Store Structure
 
-``` bash
+```bash
 src/stores/
 ├── index.ts              # Barrel export
 ├── RootStore.ts          # Root store combining all domain stores

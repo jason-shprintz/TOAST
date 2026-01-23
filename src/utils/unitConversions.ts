@@ -387,7 +387,8 @@ const fuelConversions: ConversionUnit[] = [
     fromName: 'MPG',
     toName: 'L/100km',
     convert: (mpg: number) => (mpg === 0 ? NaN : 235.215 / mpg),
-    reverseConvert: (lp100km: number) => (lp100km === 0 ? NaN : 235.215 / lp100km),
+    reverseConvert: (lp100km: number) =>
+      lp100km === 0 ? NaN : 235.215 / lp100km,
   },
   {
     id: 'gallons_liters_fuel',

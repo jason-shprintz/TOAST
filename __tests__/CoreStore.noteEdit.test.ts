@@ -72,7 +72,7 @@ jest.mock('react-native-sqlite-storage', () => {
     openDatabase: jest.fn(() =>
       Promise.resolve({
         executeSql: mockExecuteSql,
-        transaction: jest.fn(callback => {
+        transaction: jest.fn((callback) => {
           const tx = {
             executeSql: (query: string, params?: any[], success?: Function) => {
               if (success)
@@ -140,7 +140,7 @@ describe('CoreStore - Note Editing', () => {
         title: 'Updated Title',
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.title).toBe('Updated Title');
       expect(updatedNote?.text).toBe('Original text'); // Text should remain unchanged
     });
@@ -162,7 +162,7 @@ describe('CoreStore - Note Editing', () => {
         text: 'Updated text',
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.text).toBe('Updated text');
       expect(updatedNote?.title).toBe('Title'); // Title should remain unchanged
     });
@@ -184,7 +184,7 @@ describe('CoreStore - Note Editing', () => {
         category: 'Work',
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.category).toBe('Work');
     });
 
@@ -206,7 +206,7 @@ describe('CoreStore - Note Editing', () => {
         category: 'Personal',
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.title).toBe('Updated Title');
       expect(updatedNote?.text).toBe('Updated text');
       expect(updatedNote?.category).toBe('Personal');
@@ -268,7 +268,7 @@ describe('CoreStore - Note Editing', () => {
         title: 'New Title',
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.title).toBe('New Title');
       expect(updatedNote?.text).toBe('Original text');
       expect(updatedNote?.category).toBe('General');
@@ -312,7 +312,7 @@ describe('CoreStore - Note Editing', () => {
         sketchDataUri: updatedSketch,
       });
 
-      const updatedNote = coreStore.notes.find(n => n.id === note.id);
+      const updatedNote = coreStore.notes.find((n) => n.id === note.id);
       expect(updatedNote?.sketchDataUri).toBe(updatedSketch);
     });
 

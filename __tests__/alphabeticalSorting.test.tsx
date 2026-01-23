@@ -20,7 +20,7 @@ describe('Alphabetical Sorting', () => {
       );
 
       // Extract names in sorted order
-      const sortedNames = sortedTools.map(tool => tool.name);
+      const sortedNames = sortedTools.map((tool) => tool.name);
 
       // Expected alphabetical order
       const expectedOrder = ['Alpha', 'Beta', 'Mike', 'Zebra'];
@@ -39,7 +39,7 @@ describe('Alphabetical Sorting', () => {
         a.name.localeCompare(b.name),
       );
 
-      const sortedNames = sortedTools.map(tool => tool.name);
+      const sortedNames = sortedTools.map((tool) => tool.name);
       const expectedOrder = ['Decibel', 'Device', 'Digital'];
 
       expect(sortedNames).toEqual(expectedOrder);
@@ -57,7 +57,7 @@ describe('Alphabetical Sorting', () => {
         a.name.localeCompare(b.name),
       );
 
-      const sortedNames = sortedTools.map(tool => tool.name);
+      const sortedNames = sortedTools.map((tool) => tool.name);
       // localeCompare performs case-insensitive sorting by default
       const expectedOrder = ['alpha', 'Beta', 'Charlie', 'delta'];
 
@@ -77,7 +77,12 @@ describe('Alphabetical Sorting', () => {
 
     it('should handle single-item array correctly', () => {
       const singleTool: ToolType[] = [
-        { name: 'Flashlight', screen: 'FlashlightScreen', icon: 'icon1', id: 'f' },
+        {
+          name: 'Flashlight',
+          screen: 'FlashlightScreen',
+          icon: 'icon1',
+          id: 'f',
+        },
       ];
 
       const sortedTools = [...singleTool].sort((a, b) =>
@@ -129,7 +134,7 @@ describe('Alphabetical Sorting', () => {
       );
 
       // Extract titles in sorted order
-      const sortedTitles = sortedCategories.map(category => category.title);
+      const sortedTitles = sortedCategories.map((category) => category.title);
 
       // Expected alphabetical order
       const expectedOrder = ['Alpha', 'Beta', 'Mike', 'Zebra'];
@@ -166,7 +171,7 @@ describe('Alphabetical Sorting', () => {
         a.title.localeCompare(b.title),
       );
 
-      const sortedTitles = sortedCategories.map(category => category.title);
+      const sortedTitles = sortedCategories.map((category) => category.title);
       const expectedOrder = ['Cold Weather', 'Heat & Sun', 'Wind & Storms'];
 
       expect(sortedTitles).toEqual(expectedOrder);
@@ -201,7 +206,7 @@ describe('Alphabetical Sorting', () => {
         a.title.localeCompare(b.title),
       );
 
-      const sortedTitles = sortedCategories.map(category => category.title);
+      const sortedTitles = sortedCategories.map((category) => category.title);
       // localeCompare performs case-insensitive sorting by default
       const expectedOrder = ['emergency', 'Illness', 'Injury'];
 

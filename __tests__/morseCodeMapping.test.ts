@@ -81,7 +81,7 @@ describe('morseCodeMapping', () => {
   describe('MORSE_CODE_MAP', () => {
     it('should contain all letters A-Z', () => {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      letters.forEach(letter => {
+      letters.forEach((letter) => {
         expect(MORSE_CODE_MAP[letter]).toBeDefined();
         expect(MORSE_CODE_MAP[letter]).toMatch(/^[.-]+$/);
       });
@@ -89,7 +89,7 @@ describe('morseCodeMapping', () => {
 
     it('should contain all numbers 0-9', () => {
       const numbers = '0123456789'.split('');
-      numbers.forEach(number => {
+      numbers.forEach((number) => {
         expect(MORSE_CODE_MAP[number]).toBeDefined();
         expect(MORSE_CODE_MAP[number]).toMatch(/^[.-]+$/);
       });
@@ -157,7 +157,7 @@ describe('morseCodeMapping', () => {
 
     it('should be reversible with textToMorse for valid text', () => {
       const testCases = ['HELLO', 'SOS', 'TEST 123', 'A1B2'];
-      testCases.forEach(text => {
+      testCases.forEach((text) => {
         const morse = textToMorse(text);
         const reversed = morseToText(morse);
         expect(reversed).toBe(text);
@@ -168,7 +168,7 @@ describe('morseCodeMapping', () => {
   describe('REVERSE_MORSE_CODE_MAP', () => {
     it('should contain reverse mappings for all letters A-Z', () => {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      letters.forEach(letter => {
+      letters.forEach((letter) => {
         const morse = MORSE_CODE_MAP[letter];
         expect(REVERSE_MORSE_CODE_MAP[morse]).toBe(letter);
       });
@@ -176,7 +176,7 @@ describe('morseCodeMapping', () => {
 
     it('should contain reverse mappings for all numbers 0-9', () => {
       const numbers = '0123456789'.split('');
-      numbers.forEach(number => {
+      numbers.forEach((number) => {
         const morse = MORSE_CODE_MAP[number];
         expect(REVERSE_MORSE_CODE_MAP[morse]).toBe(number);
       });

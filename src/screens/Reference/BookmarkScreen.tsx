@@ -47,7 +47,7 @@ export default function BookmarkScreen(): JSX.Element {
 
     // Development-time check for duplicate IDs
     if (__DEV__) {
-      const ids = allEntries.map(entry => entry.id);
+      const ids = allEntries.map((entry) => entry.id);
       const uniqueIds = new Set(ids);
       if (ids.length !== uniqueIds.size) {
         console.error(
@@ -57,7 +57,7 @@ export default function BookmarkScreen(): JSX.Element {
     }
 
     return new Map<string, ReferenceEntryType>(
-      allEntries.map(entry => [entry.id, entry]),
+      allEntries.map((entry) => [entry.id, entry]),
     );
   }, []);
 
@@ -123,7 +123,7 @@ export default function BookmarkScreen(): JSX.Element {
               {items
                 .slice()
                 .sort((a, b) => a.title.localeCompare(b.title))
-                .map(item => (
+                .map((item) => (
                   <CardTopic
                     key={item.id}
                     title={item.title}

@@ -121,7 +121,7 @@ export default function MorseTrainerLevelScreen() {
       }
     };
 
-    const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
+    const dot = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dot sound', error);
         hasError = true;
@@ -132,7 +132,7 @@ export default function MorseTrainerLevelScreen() {
       checkBothLoaded();
     });
 
-    const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
+    const dash = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dash sound', error);
         hasError = true;
@@ -164,7 +164,7 @@ export default function MorseTrainerLevelScreen() {
         clearTimeout(feedbackTimeoutRef.current);
       }
       // Clear all playback timeouts
-      playbackTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      playbackTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
       playbackTimeoutsRef.current = [];
     };
   }, []);
@@ -173,7 +173,13 @@ export default function MorseTrainerLevelScreen() {
    * Plays the morse code sequence for the current challenge.
    */
   const playMorseCode = useCallback(async () => {
-    if (!dotSound || !dashSound || !soundsLoaded || isPlayingRef.current || !challenge) {
+    if (
+      !dotSound ||
+      !dashSound ||
+      !soundsLoaded ||
+      isPlayingRef.current ||
+      !challenge
+    ) {
       return;
     }
 
@@ -185,7 +191,7 @@ export default function MorseTrainerLevelScreen() {
     }
 
     // Clear any existing playback timeouts
-    playbackTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+    playbackTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
     playbackTimeoutsRef.current = [];
 
     // Record which challenge we're playing BEFORE starting playback
@@ -196,7 +202,7 @@ export default function MorseTrainerLevelScreen() {
 
     // Helper to play a sound with proper stop/start sequence
     const playSound = (sound: Sound): Promise<void> => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         sound.stop(() => {
           sound.play(() => {
             resolve();
@@ -206,11 +212,16 @@ export default function MorseTrainerLevelScreen() {
     };
 
     // Helper to create a tracked timeout
-    const createTimeout = (callback: () => void, delay: number): Promise<void> => {
-      return new Promise(resolve => {
+    const createTimeout = (
+      callback: () => void,
+      delay: number,
+    ): Promise<void> => {
+      return new Promise((resolve) => {
         const timeout = setTimeout(() => {
           // Remove this timeout from tracking
-          playbackTimeoutsRef.current = playbackTimeoutsRef.current.filter(t => t !== timeout);
+          playbackTimeoutsRef.current = playbackTimeoutsRef.current.filter(
+            (t) => t !== timeout,
+          );
           callback();
           resolve();
         }, delay);
@@ -248,7 +259,7 @@ export default function MorseTrainerLevelScreen() {
     };
 
     await playSequence(morseCode);
-    
+
     // Only update state if playback wasn't aborted
     if (isPlayingRef.current) {
       setIsPlaying(false);
@@ -336,7 +347,8 @@ export default function MorseTrainerLevelScreen() {
         <TouchableOpacity
           style={[
             styles.playButton,
-            (isPlaying || (!soundsLoaded && !soundLoadError)) && styles.playButtonDisabled,
+            (isPlaying || (!soundsLoaded && !soundLoadError)) &&
+              styles.playButtonDisabled,
           ]}
           onPress={playMorseCode}
           disabled={isPlaying || (!soundsLoaded && !soundLoadError)}
@@ -362,8 +374,8 @@ export default function MorseTrainerLevelScreen() {
               level === 'easy'
                 ? 'character'
                 : level === 'medium'
-                ? 'word'
-                : 'sentence'
+                  ? 'word'
+                  : 'sentence'
             }...`}
             placeholderTextColor={COLORS.SECONDARY_ACCENT}
             value={userAnswer}
@@ -388,8 +400,8 @@ export default function MorseTrainerLevelScreen() {
               {feedback === 'correct'
                 ? '✓ Correct!'
                 : soundLoadError
-                ? '⚠ Failed to load audio files. Please restart the app.'
-                : `✗ Incorrect. Answer was: ${playedChallenge}`}
+                  ? '⚠ Failed to load audio files. Please restart the app.'
+                  : `✗ Incorrect. Answer was: ${playedChallenge}`}
             </Text>
           </View>
         )}

@@ -320,7 +320,7 @@ describe('useSunShadow', () => {
         new Date('2024-06-21T22:00:00Z'), // Evening
       ];
 
-      const opacities = times.map(testDate => {
+      const opacities = times.map((testDate) => {
         const position = SunCalc.getPosition(testDate, latitude, longitude);
         const altitudeDeg = position.altitude * (180 / Math.PI);
 
@@ -340,7 +340,7 @@ describe('useSunShadow', () => {
     test('shadow length decreases with sun altitude', () => {
       const testAltitudes = [5, 30, 60, 90]; // degrees
 
-      const shadowLengths = testAltitudes.map(altitudeDeg => {
+      const shadowLengths = testAltitudes.map((altitudeDeg) => {
         return altitudeDeg > 0 ? Math.max(5, 20 - (altitudeDeg / 90) * 15) : 0;
       });
 
@@ -353,7 +353,7 @@ describe('useSunShadow', () => {
     test('shadow blur decreases with sun altitude', () => {
       const testAltitudes = [5, 30, 60, 90]; // degrees
 
-      const shadowBlurs = testAltitudes.map(altitudeDeg => {
+      const shadowBlurs = testAltitudes.map((altitudeDeg) => {
         return altitudeDeg > 0 ? Math.max(4, 12 - (altitudeDeg / 90) * 8) : 4;
       });
 
@@ -437,7 +437,7 @@ describe('useSunShadow', () => {
       const latitude = 40.7128;
       const longitude = -74.006;
 
-      dates.forEach(date => {
+      dates.forEach((date) => {
         const position = SunCalc.getPosition(date, latitude, longitude);
 
         // All positions should be valid
@@ -481,7 +481,7 @@ describe('useSunShadow', () => {
     test('shadow opacity is within valid range', () => {
       const testAltitudes = [0, 30, 60, 90];
 
-      testAltitudes.forEach(altitudeDeg => {
+      testAltitudes.forEach((altitudeDeg) => {
         let opacity = 0;
         if (altitudeDeg > 0) {
           opacity = 0.1 + (altitudeDeg / 90) * 0.5;
@@ -497,7 +497,7 @@ describe('useSunShadow', () => {
     test('shadow radius is always positive', () => {
       const testAltitudes = [0, 30, 60, 90];
 
-      testAltitudes.forEach(altitudeDeg => {
+      testAltitudes.forEach((altitudeDeg) => {
         const shadowRadius =
           altitudeDeg > 0 ? Math.max(4, 12 - (altitudeDeg / 90) * 8) : 4;
 

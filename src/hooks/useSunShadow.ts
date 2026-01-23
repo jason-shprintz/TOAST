@@ -51,7 +51,6 @@ export function useSunShadow(): SunShadowStyle {
 
   useEffect(() => {
     const updateShadow = () => {
-
       // Get current location
       if (!core.lastFix) {
         // No location available, use default shadow (straight down)

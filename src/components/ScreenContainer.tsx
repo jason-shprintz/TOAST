@@ -18,7 +18,7 @@ export default function ScreenContainer({
   children,
 }: PropsWithChildren<Props>) {
   const COLORS = useTheme();
-  
+
   return (
     <View style={[styles.base, style, { backgroundColor: COLORS.BACKGROUND }]}>
       <LinearGradient

@@ -53,7 +53,7 @@ export default function MorseCodeCheatSheet() {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {sortedData.map(item => (
+          {sortedData.map((item) => (
             <View key={item.char} style={styles.card}>
               <Text style={styles.char}>{item.char}</Text>
               <Text style={styles.separator}>➡️</Text>

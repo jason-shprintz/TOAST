@@ -1,4 +1,9 @@
-import { is24HourFormat, formatTime, formatDateTime, resetTimeFormatCache } from '../src/utils/timeFormat';
+import {
+  is24HourFormat,
+  formatTime,
+  formatDateTime,
+  resetTimeFormatCache,
+} from '../src/utils/timeFormat';
 
 describe('timeFormat utilities', () => {
   // Reset cache before each test to ensure clean state
@@ -33,10 +38,10 @@ describe('timeFormat utilities', () => {
     it('should reset the cached value', () => {
       // Initialize cache
       is24HourFormat();
-      
+
       // Reset cache
       resetTimeFormatCache();
-      
+
       // Next call should re-detect
       const result = is24HourFormat();
       expect(typeof result).toBe('boolean');
@@ -47,10 +52,10 @@ describe('timeFormat utilities', () => {
     it('should format time with minutes', () => {
       const date = new Date(2024, 0, 15, 14, 30, 0); // 2:30 PM / 14:30
       const result = formatTime(date);
-      
+
       // Should contain the minutes
       expect(result).toContain('30');
-      
+
       // Should be a non-empty string
       expect(result.length).toBeGreaterThan(0);
     });
@@ -58,7 +63,7 @@ describe('timeFormat utilities', () => {
     it('should format morning time', () => {
       const date = new Date(2024, 0, 15, 6, 30, 0); // 6:30 AM / 06:30
       const result = formatTime(date);
-      
+
       // Should contain the minutes
       expect(result).toContain('30');
       expect(result.length).toBeGreaterThan(0);
@@ -67,7 +72,7 @@ describe('timeFormat utilities', () => {
     it('should format evening time', () => {
       const date = new Date(2024, 0, 15, 23, 45, 0); // 11:45 PM / 23:45
       const result = formatTime(date);
-      
+
       // Should contain the minutes
       expect(result).toContain('45');
       expect(result.length).toBeGreaterThan(0);
@@ -85,14 +90,14 @@ describe('timeFormat utilities', () => {
     it('should format full datetime', () => {
       const date = new Date(2024, 0, 15, 14, 30, 0); // Jan 15, 2024, 2:30 PM
       const result = formatDateTime(date);
-      
+
       // Should contain date components
       expect(result).toContain('15');
       expect(result).toContain('2024');
-      
+
       // Should contain time component (minutes)
       expect(result).toContain('30');
-      
+
       // Should be a non-empty string
       expect(result.length).toBeGreaterThan(0);
     });
@@ -109,7 +114,7 @@ describe('timeFormat utilities', () => {
       const date2 = new Date(2024, 5, 20, 9, 15, 0);
       const result1 = formatDateTime(date1);
       const result2 = formatDateTime(date2);
-      
+
       // Different dates should produce different strings
       expect(result1).not.toBe(result2);
     });

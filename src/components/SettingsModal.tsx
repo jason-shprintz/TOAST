@@ -23,7 +23,7 @@ interface SettingsModalProps {
  * Settings modal component that overlays on top of the app.
  * Allows users to configure font size and theme mode.
  * Settings are automatically persisted when changed.
- * 
+ *
  * Note: Uses React Native's Text directly to avoid scaling issues in the settings UI.
  */
 
@@ -62,15 +62,29 @@ export const SettingsModal = observer(
         >
           <View style={styles.overlay}>
             <TouchableWithoutFeedback onPress={preventClose}>
-              <View style={[
-                styles.modalContainer,
-                { backgroundColor: COLORS.PRIMARY_LIGHT, borderColor: COLORS.TOAST_BROWN }
-              ]}>
-                <View style={[
-                  styles.header,
-                  { backgroundColor: COLORS.SECONDARY_ACCENT, borderBottomColor: COLORS.TOAST_BROWN }
-                ]}>
-                  <RNText style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}>Settings</RNText>
+              <View
+                style={[
+                  styles.modalContainer,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.TOAST_BROWN,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.header,
+                    {
+                      backgroundColor: COLORS.SECONDARY_ACCENT,
+                      borderBottomColor: COLORS.TOAST_BROWN,
+                    },
+                  ]}
+                >
+                  <RNText
+                    style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}
+                  >
+                    Settings
+                  </RNText>
                   <TouchableOpacity
                     onPress={onClose}
                     style={styles.closeButton}
@@ -88,18 +102,32 @@ export const SettingsModal = observer(
                 <ScrollView style={styles.content}>
                   {/* Font Size Section */}
                   <View style={styles.section}>
-                    <RNText style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>Font Size</RNText>
+                    <RNText
+                      style={[
+                        styles.sectionTitle,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                    >
+                      Font Size
+                    </RNText>
                     <View style={styles.optionsContainer}>
-                      {fontSizeOptions.map(option => (
+                      {fontSizeOptions.map((option) => (
                         <TouchableOpacity
                           key={option.value}
                           style={[
                             styles.optionButton,
-                            { borderColor: COLORS.TOAST_BROWN, backgroundColor: COLORS.BACKGROUND },
-                            settingsStore.fontSize === option.value &&
-                              { backgroundColor: COLORS.TOAST_BROWN, borderColor: COLORS.PRIMARY_DARK },
+                            {
+                              borderColor: COLORS.TOAST_BROWN,
+                              backgroundColor: COLORS.BACKGROUND,
+                            },
+                            settingsStore.fontSize === option.value && {
+                              backgroundColor: COLORS.TOAST_BROWN,
+                              borderColor: COLORS.PRIMARY_DARK,
+                            },
                           ]}
-                          onPress={() => settingsStore.setFontSize(option.value)}
+                          onPress={() =>
+                            settingsStore.setFontSize(option.value)
+                          }
                           accessibilityLabel={`Set font size to ${option.label}`}
                           accessibilityRole="button"
                         >
@@ -120,18 +148,32 @@ export const SettingsModal = observer(
 
                   {/* Theme Mode Section */}
                   <View style={styles.section}>
-                    <RNText style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>Theme</RNText>
+                    <RNText
+                      style={[
+                        styles.sectionTitle,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                    >
+                      Theme
+                    </RNText>
                     <View style={styles.optionsContainer}>
-                      {themeModeOptions.map(option => (
+                      {themeModeOptions.map((option) => (
                         <TouchableOpacity
                           key={option.value}
                           style={[
                             styles.optionButton,
-                            { borderColor: COLORS.TOAST_BROWN, backgroundColor: COLORS.BACKGROUND },
-                            settingsStore.themeMode === option.value &&
-                              { backgroundColor: COLORS.TOAST_BROWN, borderColor: COLORS.PRIMARY_DARK },
+                            {
+                              borderColor: COLORS.TOAST_BROWN,
+                              backgroundColor: COLORS.BACKGROUND,
+                            },
+                            settingsStore.themeMode === option.value && {
+                              backgroundColor: COLORS.TOAST_BROWN,
+                              borderColor: COLORS.PRIMARY_DARK,
+                            },
                           ]}
-                          onPress={() => settingsStore.setThemeMode(option.value)}
+                          onPress={() =>
+                            settingsStore.setThemeMode(option.value)
+                          }
                           accessibilityLabel={`Set theme to ${option.label}`}
                           accessibilityRole="button"
                         >

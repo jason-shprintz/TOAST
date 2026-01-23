@@ -85,7 +85,7 @@ export function getAllSearchableItems(): SearchableItem[] {
   const items: SearchableItem[] = [];
 
   // Add modules
-  MODULES.forEach(module => {
+  MODULES.forEach((module) => {
     items.push(toolToSearchableItem(module, 'module'));
   });
 
@@ -96,7 +96,7 @@ export function getAllSearchableItems(): SearchableItem[] {
     ...NAVIGATION_TOOLS,
     ...REFERENCE_TOOLS,
     ...PREPPER_TOOLS,
-  ].forEach(tool => {
+  ].forEach((tool) => {
     items.push(toolToSearchableItem(tool, 'tool'));
   });
 
@@ -109,7 +109,7 @@ export function getAllSearchableItems(): SearchableItem[] {
     ...weatherData.entries,
   ];
 
-  allReferenceEntries.forEach(entry => {
+  allReferenceEntries.forEach((entry) => {
     items.push(referenceEntryToSearchableItem(entry));
   });
 
@@ -130,7 +130,7 @@ export function searchItems(query: string): SearchableItem[] {
   const normalizedQuery = query.toLowerCase().trim();
   const allItems = getAllSearchableItems();
 
-  const results = allItems.filter(item =>
+  const results = allItems.filter((item) =>
     item.searchText.includes(normalizedQuery),
   );
 

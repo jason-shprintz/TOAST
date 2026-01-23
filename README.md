@@ -51,9 +51,9 @@ Tactical Operations And Survival Toolkit (TOAST) is a React Native app providing
 
 Optional: --mode Debug
 
-  ```sh
-  npx react-native run-ios --scheme TOAST --mode Debug
-  ```
+```sh
+npx react-native run-ios --scheme TOAST --mode Debug
+```
 
 - **Android:**
 
@@ -67,16 +67,16 @@ Optional: --mode Debug
 
 If you encounter an error about a missing scheme when building for iOS, ensure that the TOAST scheme is shared in Xcode:
 
-  ```sh
-  mkdir -p ios/TOAST.xcodeproj/xcshareddata/xcschemes
-  
-  # copy the real scheme (ignore the ._ file)
-  cp -f ios/TOAST.xcworkspace/xcshareddata/xcschemes/TOAST.xcscheme \
-        ios/TOAST.xcodeproj/xcshareddata/xcschemes/TOAST.xcscheme
-  
-  # sanity check: project should now list TOAST scheme
-  xcodebuild -list -project ios/TOAST.xcodeproj | sed -n '1,80p'
-  ```
+```sh
+mkdir -p ios/TOAST.xcodeproj/xcshareddata/xcschemes
+
+# copy the real scheme (ignore the ._ file)
+cp -f ios/TOAST.xcworkspace/xcshareddata/xcschemes/TOAST.xcscheme \
+      ios/TOAST.xcodeproj/xcshareddata/xcschemes/TOAST.xcscheme
+
+# sanity check: project should now list TOAST scheme
+xcodebuild -list -project ios/TOAST.xcodeproj | sed -n '1,80p'
+```
 
 ### macOS `._*` files (AppleDouble)
 

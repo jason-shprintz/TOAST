@@ -38,7 +38,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
   const isValidCategory =
     category && category !== 'Voice Logs' && core.categories.includes(category);
   const notes = useMemo(
-    () => (isValidCategory ? core.notesByCategory[category] ?? [] : []),
+    () => (isValidCategory ? (core.notesByCategory[category] ?? []) : []),
     [isValidCategory, category, core.notesByCategory],
   );
 
@@ -63,7 +63,7 @@ export default observer(function NoteCategoryScreen(): React.JSX.Element {
             </Text>
           )}
           <Grid>
-            {sortedNotes.map(note => {
+            {sortedNotes.map((note) => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic

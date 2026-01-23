@@ -22,17 +22,17 @@ const MorseToAlphaScreen = () => {
   const translatedText = morseToText(morseInput);
 
   const handleDot = () => {
-    setMorseInput(prev => prev + '.');
+    setMorseInput((prev) => prev + '.');
   };
 
   const handleDash = () => {
-    setMorseInput(prev => prev + '-');
+    setMorseInput((prev) => prev + '-');
   };
 
   const handleSpace = () => {
     // Add space between morse characters
     if (morseInput.length > 0 && morseInput[morseInput.length - 1] !== ' ') {
-      setMorseInput(prev => prev + ' ');
+      setMorseInput((prev) => prev + ' ');
     }
   };
 
@@ -45,16 +45,16 @@ const MorseToAlphaScreen = () => {
       if (trimmed.length > 0 && trimmed[trimmed.length - 1] !== '/') {
         const lastChar = morseInput[morseInput.length - 1];
         if (lastChar === ' ') {
-          setMorseInput(prev => prev + '/ ');
+          setMorseInput((prev) => prev + '/ ');
         } else {
-          setMorseInput(prev => prev + ' / ');
+          setMorseInput((prev) => prev + ' / ');
         }
       }
     }
   };
 
   const handleBackspace = () => {
-    setMorseInput(prev => prev.slice(0, -1));
+    setMorseInput((prev) => prev.slice(0, -1));
   };
 
   const handleClear = () => {

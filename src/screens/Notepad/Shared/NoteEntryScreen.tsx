@@ -80,11 +80,7 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
             navigation.navigate('EditNote', { note });
           }}
         >
-          <Icon
-            name="create-outline"
-            size={30}
-            color={COLORS.PRIMARY_DARK}
-          />
+          <Icon name="create-outline" size={30} color={COLORS.PRIMARY_DARK} />
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="Bookmark note"

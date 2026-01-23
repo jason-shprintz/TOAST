@@ -144,7 +144,10 @@ const FooterImpl = () => {
           <Animated.View
             style={[
               styles.notificationTimerBackground,
-              { backgroundColor: COLORS.ACCENT, borderColor: COLORS.SECONDARY_ACCENT },
+              {
+                backgroundColor: COLORS.ACCENT,
+                borderColor: COLORS.SECONDARY_ACCENT,
+              },
               {
                 width: sosProgressAnim.interpolate({
                   inputRange: [0, 1],
@@ -157,7 +160,11 @@ const FooterImpl = () => {
 
         {/* Notification content */}
         <View style={styles.notificationSection}>
-          <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>NOTIFICATION</Text>
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+          >
+            NOTIFICATION
+          </Text>
         </View>
       </View>
 
@@ -165,10 +172,17 @@ const FooterImpl = () => {
       <TouchableOpacity
         style={[
           styles.activeItemSection,
-          { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT },
+          {
+            borderColor: COLORS.SECONDARY_ACCENT,
+            boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
+          },
           activeItem && [
             styles.activeItemSectionActive,
-            { backgroundColor: COLORS.ACCENT, borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT }
+            {
+              backgroundColor: COLORS.ACCENT,
+              borderColor: COLORS.SECONDARY_ACCENT,
+              boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
+            },
           ],
         ]}
         onPress={handleActiveItemPress}
@@ -194,7 +208,10 @@ const FooterImpl = () => {
         <View
           style={[
             styles.sosSection,
-            { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT },
+            {
+              borderColor: COLORS.SECONDARY_ACCENT,
+              boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
+            },
             isSOSPressing && { backgroundColor: COLORS.ACCENT },
           ]}
         >
@@ -207,7 +224,7 @@ const FooterImpl = () => {
             style={[
               styles.sosText,
               { color: COLORS.PRIMARY_DARK },
-              isSOSPressing && { color: COLORS.PRIMARY_LIGHT }
+              isSOSPressing && { color: COLORS.PRIMARY_LIGHT },
             ]}
           >
             SOS

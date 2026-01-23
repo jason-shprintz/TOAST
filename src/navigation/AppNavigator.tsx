@@ -91,14 +91,8 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="Search" component={SearchScreen} />
           {/* Communications Module */}
           <Stack.Screen name="MorseCode" component={MorseCodeScreen} />
-          <Stack.Screen
-            name="AlphaToMorse"
-            component={AlphaToMorseScreen}
-          />
-          <Stack.Screen
-            name="MorseToAlpha"
-            component={MorseToAlphaScreen}
-          />
+          <Stack.Screen name="AlphaToMorse" component={AlphaToMorseScreen} />
+          <Stack.Screen name="MorseToAlpha" component={MorseToAlphaScreen} />
           <Stack.Screen
             name="MorseCodeCheatSheet"
             component={MorseCodeCheatSheet}

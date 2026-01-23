@@ -103,7 +103,7 @@ export class CoreStore {
       }
     };
 
-    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, error => {
+    this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dot sound:', error);
         return;
@@ -112,7 +112,7 @@ export class CoreStore {
       checkBothLoaded();
     });
 
-    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, error => {
+    this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dash sound:', error);
         return;
@@ -302,7 +302,7 @@ export class CoreStore {
     if (sound) {
       try {
         sound.stop(() => {
-          sound.play(success => {
+          sound.play((success) => {
             if (!success) {
               console.error('Failed to play SOS tone');
             }
@@ -702,7 +702,7 @@ export class CoreStore {
    */
   private startNetSubscription = () => {
     if (this.netUnsub) return;
-    this.netUnsub = NetInfo.addEventListener(state => {
+    this.netUnsub = NetInfo.addEventListener((state) => {
       runInAction(() => {
         this.netInfo = state;
       });
@@ -730,13 +730,13 @@ export class CoreStore {
    */
   private gpsGetFix = () => {
     Geolocation.getCurrentPosition(
-      pos => {
+      (pos) => {
         runInAction(() => {
           this.lastFix = pos;
           this.locationError = null;
         });
       },
-      err => {
+      (err) => {
         runInAction(() => {
           this.locationError = err.message;
         });
@@ -857,9 +857,9 @@ export class CoreStore {
     try {
       const auth = await Geolocation.requestAuthorization('whenInUse');
       if (auth === 'granted') {
-        await new Promise<void>(resolve => {
+        await new Promise<void>((resolve) => {
           Geolocation.getCurrentPosition(
-            pos => {
+            (pos) => {
               latitude = pos.coords.latitude;
               longitude = pos.coords.longitude;
               resolve();
@@ -919,9 +919,9 @@ export class CoreStore {
     try {
       const auth = await Geolocation.requestAuthorization('whenInUse');
       if (auth === 'granted') {
-        await new Promise<void>(resolve => {
+        await new Promise<void>((resolve) => {
           Geolocation.getCurrentPosition(
-            pos => {
+            (pos) => {
               latitude = pos.coords.latitude;
               longitude = pos.coords.longitude;
               resolve();
@@ -970,7 +970,7 @@ export class CoreStore {
    * @param noteId - The unique identifier of the note to toggle.
    */
   async toggleNoteBookmark(noteId: string) {
-    const note = this.notes.find(n => n.id === noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (note) {
       runInAction(() => {
         note.bookmarked = !note.bookmarked;
@@ -1000,7 +1000,7 @@ export class CoreStore {
       sketchDataUri?: string;
     },
   ) {
-    const note = this.notes.find(n => n.id === noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (note) {
       runInAction(() => {
         if (params.title !== undefined) {
@@ -1031,7 +1031,7 @@ export class CoreStore {
    * @param category - The new category to assign to the note.
    */
   setNoteCategory(noteId: string, category: NoteCategory) {
-    const idx = this.notes.findIndex(n => n.id === noteId);
+    const idx = this.notes.findIndex((n) => n.id === noteId);
     if (idx >= 0) {
       runInAction(() => {
         this.notes[idx].category = category;
@@ -1050,7 +1050,7 @@ export class CoreStore {
    * @param uri - The URI of the photo to attach to the note.
    */
   attachPhoto(noteId: string, uri: string) {
-    const note = this.notes.find(item => item.id === noteId);
+    const note = this.notes.find((item) => item.id === noteId);
     if (note) {
       runInAction(() => {
         note.photoUris.push(uri);
@@ -1079,14 +1079,14 @@ export class CoreStore {
       if (!this.notesDb) {
         // If no database, just remove from memory
         runInAction(() => {
-          this.notes = this.notes.filter(n => n.id !== noteId);
+          this.notes = this.notes.filter((n) => n.id !== noteId);
         });
         return;
       }
       await this.notesDb.executeSql('DELETE FROM notes WHERE id = ?', [noteId]);
       // Only remove from in-memory list after successful database deletion
       runInAction(() => {
-        this.notes = this.notes.filter(n => n.id !== noteId);
+        this.notes = this.notes.filter((n) => n.id !== noteId);
       });
     } catch (error) {
       console.error('Failed to delete note from database:', noteId, error);
@@ -1127,7 +1127,7 @@ export class CoreStore {
    * @returns An array of all bookmarked `Note` objects.
    */
   get bookmarkedNotes(): Note[] {
-    return this.notes.filter(n => n.bookmarked === true);
+    return this.notes.filter((n) => n.bookmarked === true);
   }
 
   /**
@@ -1502,7 +1502,10 @@ export class CoreStore {
         await this.addCategory(category);
       } catch (error: any) {
         // If the category already exists, skip and continue with the remaining defaults.
-        if (error instanceof Error && error.message === 'Category already exists') {
+        if (
+          error instanceof Error &&
+          error.message === 'Category already exists'
+        ) {
           continue;
         }
         // Re-throw unexpected errors to preserve existing failure behavior.
@@ -1526,7 +1529,7 @@ export class CoreStore {
     }
     if (
       this.categories.some(
-        category => category.toLowerCase() === trimmedName.toLowerCase(),
+        (category) => category.toLowerCase() === trimmedName.toLowerCase(),
       )
     ) {
       throw new Error('Category already exists');
@@ -1556,42 +1559,42 @@ export class CoreStore {
   /**
    * Deletes a category.
    * If the category has notes, they will be reassigned to the specified fallback category.
-   * 
+   *
    * Note: The note count shown in UI warnings is advisory. Due to the async nature of the operation,
    * the actual number of notes moved may differ if notes are added/modified between the count check
    * and the deletion. The database transaction ensures atomicity of the deletion itself.
-   * 
+   *
    * @param name - The name of the category to delete.
    * @param fallbackCategory - The category to reassign notes to. If not specified, uses the first available category.
    * @throws Will throw an error if trying to delete the last category or if the database operation fails.
    */
-  async deleteCategory(
-    name: string,
-    fallbackCategory?: string,
-  ): Promise<void> {
+  async deleteCategory(name: string, fallbackCategory?: string): Promise<void> {
     if (this.categories.length <= 1) {
       throw new Error('Cannot delete the last category');
     }
     if (!this.categories.includes(name)) {
       throw new Error('Category does not exist');
     }
-    
+
     // Determine fallback category if not provided
-    const actualFallback = fallbackCategory || this.categories.find(c => c !== name);
+    const actualFallback =
+      fallbackCategory || this.categories.find((c) => c !== name);
     if (!actualFallback) {
       throw new Error('No fallback category available');
     }
     if (actualFallback === name) {
-      throw new Error('Fallback category cannot be the same as the category being deleted');
+      throw new Error(
+        'Fallback category cannot be the same as the category being deleted',
+      );
     }
     if (!this.categories.includes(actualFallback)) {
       throw new Error('Fallback category does not exist');
     }
-    
+
     await this.initNotesDb();
 
     // Reassign notes from the deleted category to the fallback category
-    const notesToReassign = this.notes.filter(n => n.category === name);
+    const notesToReassign = this.notes.filter((n) => n.category === name);
 
     if (!this.notesDb) {
       // No database: update notes and categories only in memory, as before
@@ -1602,7 +1605,7 @@ export class CoreStore {
         await this.updateNote(note);
       }
       runInAction(() => {
-        this.categories = this.categories.filter(c => c !== name);
+        this.categories = this.categories.filter((c) => c !== name);
       });
       return;
     }
@@ -1610,7 +1613,7 @@ export class CoreStore {
     try {
       // Use a transaction to ensure atomicity of the delete operation
       await this.notesDb.executeSql('BEGIN TRANSACTION');
-      
+
       try {
         // Database present: batch update all affected notes in a single query
         await this.notesDb.executeSql(
@@ -1622,7 +1625,7 @@ export class CoreStore {
         await this.notesDb.executeSql('DELETE FROM categories WHERE name = ?', [
           name,
         ]);
-        
+
         await this.notesDb.executeSql('COMMIT');
 
         // Update in-memory state after successful transaction
@@ -1630,7 +1633,7 @@ export class CoreStore {
           for (const note of notesToReassign) {
             note.category = actualFallback;
           }
-          this.categories = this.categories.filter(c => c !== name);
+          this.categories = this.categories.filter((c) => c !== name);
         });
       } catch (transactionError) {
         // Rollback on any error
@@ -1649,7 +1652,7 @@ export class CoreStore {
    * @returns The number of notes in the category.
    */
   getCategoryNoteCount(categoryName: string): number {
-    return this.notes.filter(n => n.category === categoryName).length;
+    return this.notes.filter((n) => n.category === categoryName).length;
   }
 
   // --------------------------------------------------------------------
@@ -1858,9 +1861,9 @@ export class CoreStore {
       await this.initChecklistsDb();
       if (!this.notesDb) {
         runInAction(() => {
-          this.checklists = this.checklists.filter(c => c.id !== checklistId);
+          this.checklists = this.checklists.filter((c) => c.id !== checklistId);
           this.checklistItems = this.checklistItems.filter(
-            i => i.checklistId !== checklistId,
+            (i) => i.checklistId !== checklistId,
           );
         });
         return;
@@ -1877,9 +1880,9 @@ export class CoreStore {
       ]);
 
       runInAction(() => {
-        this.checklists = this.checklists.filter(c => c.id !== checklistId);
+        this.checklists = this.checklists.filter((c) => c.id !== checklistId);
         this.checklistItems = this.checklistItems.filter(
-          i => i.checklistId !== checklistId,
+          (i) => i.checklistId !== checklistId,
         );
       });
     } catch (error) {
@@ -1894,7 +1897,7 @@ export class CoreStore {
    */
   async addChecklistItem(checklistId: string, text: string): Promise<void> {
     const existingItems = this.checklistItems.filter(
-      i => i.checklistId === checklistId,
+      (i) => i.checklistId === checklistId,
     );
 
     // Increment order of all existing items to make room at the top
@@ -1927,7 +1930,7 @@ export class CoreStore {
    * Toggles the checked state of a checklist item.
    */
   async toggleChecklistItem(itemId: string): Promise<void> {
-    const item = this.checklistItems.find(i => i.id === itemId);
+    const item = this.checklistItems.find((i) => i.id === itemId);
     if (item) {
       runInAction(() => {
         item.checked = !item.checked;
@@ -1945,7 +1948,7 @@ export class CoreStore {
       if (!this.notesDb) {
         runInAction(() => {
           this.checklistItems = this.checklistItems.filter(
-            i => i.id !== itemId,
+            (i) => i.id !== itemId,
           );
         });
         return;
@@ -1957,7 +1960,9 @@ export class CoreStore {
       );
 
       runInAction(() => {
-        this.checklistItems = this.checklistItems.filter(i => i.id !== itemId);
+        this.checklistItems = this.checklistItems.filter(
+          (i) => i.id !== itemId,
+        );
       });
     } catch (error) {
       console.error('Failed to delete checklist item:', error);
@@ -2015,7 +2020,7 @@ export class CoreStore {
    */
   getChecklistItems(checklistId: string): ChecklistItem[] {
     return this.checklistItems
-      .filter(item => item.checklistId === checklistId)
+      .filter((item) => item.checklistId === checklistId)
       .sort((a, b) => a.order - b.order);
   }
 

@@ -24,7 +24,7 @@ export class NavigationStore {
   }
 
   markToolUsed(toolId: string) {
-    const tool = this.tools.find(t => t.id === toolId);
+    const tool = this.tools.find((t) => t.id === toolId);
     if (tool) {
       tool.lastUsed = new Date();
     }

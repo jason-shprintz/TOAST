@@ -71,7 +71,7 @@ jest.mock('react-native-sqlite-storage', () => {
     openDatabase: jest.fn(() =>
       Promise.resolve({
         executeSql: mockExecuteSql,
-        transaction: jest.fn(callback => {
+        transaction: jest.fn((callback) => {
           const tx = {
             executeSql: (query: string, params?: any[], success?: Function) => {
               if (success)
@@ -245,16 +245,16 @@ describe('CoreStore - Category Management', () => {
         category: 'Personal',
       });
 
-      const workNotes = coreStore.notes.filter(n => n.category === 'Work');
+      const workNotes = coreStore.notes.filter((n) => n.category === 'Work');
       expect(workNotes).toHaveLength(2);
 
       await coreStore.deleteCategory('Work', 'Personal');
 
       const reassignedNotes = coreStore.notes.filter(
-        n => n.category === 'Personal',
+        (n) => n.category === 'Personal',
       );
       expect(reassignedNotes).toHaveLength(3);
-      expect(coreStore.notes.filter(n => n.category === 'Work')).toHaveLength(
+      expect(coreStore.notes.filter((n) => n.category === 'Work')).toHaveLength(
         0,
       );
     });
@@ -290,7 +290,7 @@ describe('CoreStore - Category Management', () => {
       await coreStore.deleteCategory('Work', 'General');
 
       const generalNotes = coreStore.notes.filter(
-        n => n.category === 'General',
+        (n) => n.category === 'General',
       );
       expect(generalNotes).toHaveLength(2);
     });
@@ -409,7 +409,7 @@ describe('CoreStore - Category Management', () => {
       await coreStore.addCategory('Temporary');
 
       // Note should still exist but be in General
-      const note = coreStore.notes.find(n => n.id === noteId);
+      const note = coreStore.notes.find((n) => n.id === noteId);
       expect(note).toBeDefined();
       expect(note?.category).toBe('General');
     });
@@ -456,9 +456,11 @@ describe('CoreStore - Category Management', () => {
       await coreStore.deleteCategory('Work', 'General');
 
       // Other notes should be unaffected
-      const generalNote = coreStore.notes.find(n => n.title === 'General Note');
+      const generalNote = coreStore.notes.find(
+        (n) => n.title === 'General Note',
+      );
       const personalNote = coreStore.notes.find(
-        n => n.title === 'Personal Note',
+        (n) => n.title === 'Personal Note',
       );
 
       expect(generalNote?.category).toBe('General');

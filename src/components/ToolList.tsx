@@ -35,7 +35,7 @@ export default function ToolList({ tools }: ToolListProps): JSX.Element {
         contentContainerStyle={styles.scrollContent}
       >
         <Grid>
-          {sortedTools.map(tool => {
+          {sortedTools.map((tool) => {
             if (tool.screen === 'ComingSoon') {
               return (
                 <CardTopic
