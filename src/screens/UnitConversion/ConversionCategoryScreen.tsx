@@ -1,18 +1,13 @@
 import { RouteProp, useRoute, useFocusEffect } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
-import { COLORS } from '../../theme';
 import {
   conversionCategories,
   ConversionUnit,
@@ -43,6 +38,7 @@ const DECIMAL_PLACES = 6;
 export default function ConversionCategoryScreen() {
   const route = useRoute<RouteProp<RouteParams, 'ConversionCategory'>>();
   const { setDisableGestureNavigation } = useGestureNavigation();
+  const COLORS = useTheme();
   const { categoryId } = route.params;
 
   const category = conversionCategories.find(cat => cat.id === categoryId);
@@ -62,7 +58,9 @@ export default function ConversionCategoryScreen() {
     return (
       <ScreenBody>
         <SectionHeader>Error</SectionHeader>
-        <Text style={styles.errorText}>Category not found</Text>
+        <Text style={[styles.errorText, { color: COLORS.PRIMARY_DARK }]}>
+          Category not found
+        </Text>
       </ScreenBody>
     );
   }
@@ -139,8 +137,25 @@ export default function ConversionCategoryScreen() {
   const fromUnit = isReversed ? selectedUnit.toName : selectedUnit.fromName;
   const toUnit = isReversed ? selectedUnit.fromName : selectedUnit.toName;
 
+  // Helper functions for inline styles
+  const getValueContainerStyle = () => [
+    styles.valueContainer,
+    {
+      borderColor: COLORS.SECONDARY_ACCENT,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+    },
+  ];
+
+  const getKeypadButtonStyle = () => [
+    styles.keypadButton,
+    {
+      backgroundColor: COLORS.TOAST_BROWN,
+      borderColor: COLORS.SECONDARY_ACCENT,
+    },
+  ];
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: COLORS.BACKGROUND }]}>
       <LinearGradient
         colors={COLORS.BACKGROUND_GRADIENT}
         start={{ x: 0.5, y: 1 }}
@@ -160,7 +175,13 @@ export default function ConversionCategoryScreen() {
                 key={unit.id}
                 style={[
                   styles.unitButton,
-                  selectedUnitIndex === index && styles.unitButtonActive,
+                  {
+                    backgroundColor:
+                      selectedUnitIndex === index
+                        ? COLORS.ACCENT
+                        : COLORS.TOAST_BROWN,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                  },
                 ]}
                 onPress={() => {
                   setSelectedUnitIndex(index);
@@ -171,7 +192,12 @@ export default function ConversionCategoryScreen() {
                 <Text
                   style={[
                     styles.unitButtonText,
-                    selectedUnitIndex === index && styles.unitButtonTextActive,
+                    {
+                      color:
+                        selectedUnitIndex === index
+                          ? COLORS.PRIMARY_LIGHT
+                          : COLORS.PRIMARY_DARK,
+                    },
                   ]}
                 >
                   {unit.name}
@@ -183,9 +209,13 @@ export default function ConversionCategoryScreen() {
 
         {/* Conversion Display */}
         <View style={styles.conversionContainer}>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueLabel}>{fromUnit}</Text>
-            <Text style={styles.valueText}>{inputValue}</Text>
+          <View style={getValueContainerStyle()}>
+            <Text style={[styles.valueLabel, { color: COLORS.PRIMARY_DARK }]}>
+              {fromUnit}
+            </Text>
+            <Text style={[styles.valueText, { color: COLORS.PRIMARY_DARK }]}>
+              {inputValue}
+            </Text>
           </View>
 
           <TouchableOpacity style={styles.swapButton} onPress={handleSwap}>
@@ -196,9 +226,13 @@ export default function ConversionCategoryScreen() {
             />
           </TouchableOpacity>
 
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueLabel}>{toUnit}</Text>
-            <Text style={styles.valueText}>{getConvertedValue()}</Text>
+          <View style={getValueContainerStyle()}>
+            <Text style={[styles.valueLabel, { color: COLORS.PRIMARY_DARK }]}>
+              {toUnit}
+            </Text>
+            <Text style={[styles.valueText, { color: COLORS.PRIMARY_DARK }]}>
+              {getConvertedValue()}
+            </Text>
           </View>
         </View>
 
@@ -206,93 +240,198 @@ export default function ConversionCategoryScreen() {
         <View style={styles.keypad}>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('7')}
             >
-              <Text style={styles.keypadButtonText}>7</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                7
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('8')}
             >
-              <Text style={styles.keypadButtonText}>8</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                8
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('9')}
             >
-              <Text style={styles.keypadButtonText}>9</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                9
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('4')}
             >
-              <Text style={styles.keypadButtonText}>4</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                4
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('5')}
             >
-              <Text style={styles.keypadButtonText}>5</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                5
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('6')}
             >
-              <Text style={styles.keypadButtonText}>6</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                6
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('1')}
             >
-              <Text style={styles.keypadButtonText}>1</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                1
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('2')}
             >
-              <Text style={styles.keypadButtonText}>2</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                2
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('3')}
             >
-              <Text style={styles.keypadButtonText}>3</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                3
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={handleToggleSign}
             >
-              <Text style={styles.keypadButtonText}>+/−</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                +/−
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={() => handleNumberPress('0')}
             >
-              <Text style={styles.keypadButtonText}>0</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                0
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.keypadButton}
+              style={getKeypadButtonStyle()}
               onPress={handleDecimalPress}
             >
-              <Text style={styles.keypadButtonText}>.</Text>
+              <Text
+                style={[
+                  styles.keypadButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
+                .
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.keypadRow}>
             <TouchableOpacity
-              style={[styles.keypadButton, styles.clearButton]}
+              style={[
+                styles.keypadButton,
+                styles.clearButton,
+                {
+                  backgroundColor: COLORS.ACCENT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
               onPress={handleClear}
             >
-              <Text style={styles.clearButtonText}>Clear</Text>
+              <Text
+                style={[
+                  styles.clearButtonText,
+                  { color: COLORS.PRIMARY_LIGHT },
+                ]}
+              >
+                Clear
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.keypadButton, styles.backspaceButton]}
+              style={[
+                styles.keypadButton,
+                styles.backspaceButton,
+                {
+                  backgroundColor: COLORS.SECONDARY_ACCENT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
               onPress={handleBackspace}
             >
               <Ionicons
@@ -312,11 +451,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.BACKGROUND,
   },
   errorText: {
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
     marginTop: 20,
   },
@@ -340,21 +477,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 4,
     borderRadius: 8,
-    backgroundColor: COLORS.TOAST_BROWN,
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-  },
-  unitButtonActive: {
-    backgroundColor: COLORS.ACCENT,
-    borderColor: COLORS.SECONDARY_ACCENT,
   },
   unitButtonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-  },
-  unitButtonTextActive: {
-    color: COLORS.PRIMARY_LIGHT,
   },
   conversionContainer: {
     width: '90%',
@@ -364,15 +491,12 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     paddingVertical: 5,
     paddingHorizontal: 16,
     marginVertical: 2,
   },
   valueLabel: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
     marginBottom: 4,
     fontWeight: '600',
@@ -380,7 +504,6 @@ const styles = StyleSheet.create({
   valueText: {
     fontSize: 28,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
   },
   swapButton: {
     alignSelf: 'center',
@@ -399,31 +522,23 @@ const styles = StyleSheet.create({
     width: '30%',
     aspectRatio: 1.5,
     borderRadius: 12,
-    backgroundColor: COLORS.TOAST_BROWN,
     borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
     justifyContent: 'center',
     alignItems: 'center',
   },
   keypadButtonText: {
     fontSize: 28,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
   },
   clearButton: {
     width: '63%',
     aspectRatio: 3,
-    backgroundColor: COLORS.ACCENT,
-    borderColor: COLORS.SECONDARY_ACCENT,
   },
   clearButtonText: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.PRIMARY_LIGHT,
   },
   backspaceButton: {
     width: '32%',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderColor: COLORS.SECONDARY_ACCENT,
   },
 });
