@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
+import { useSunShadow } from '../hooks/useSunShadow';
 import { useTheme } from '../hooks/useTheme';
 import {
   useNavigationHistory,
@@ -76,6 +77,7 @@ export default function AppShell({ children }: Props) {
   );
   const timeoutRef = useRef<number | null>(null);
   const COLORS = useTheme();
+  const sunShadow = useSunShadow();
 
   // Keep `currentDate` in sync with the calendar date by scheduling a timeout
   // to fire exactly at the next midnight. When the timeout runs, it updates
@@ -210,7 +212,7 @@ export default function AppShell({ children }: Props) {
               accessibilityLabel="Go to home screen"
               accessibilityRole="button"
             >
-              <LogoHeader />
+              <LogoHeader shadowStyle={sunShadow} />
             </TouchableOpacity>
           </View>
 

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet, ImageStyle, StyleProp } from 'react-native';
+import { Image, StyleSheet, ImageStyle, StyleProp, ViewStyle } from 'react-native';
 import { COLORS } from '../theme';
 
 type Props = {
   size?: number;
   style?: StyleProp<ImageStyle>;
+  shadowStyle?: Partial<ViewStyle>;
 };
 
 /**
@@ -12,9 +13,10 @@ type Props = {
  *
  * @param size - The diameter of the logo in pixels. Defaults to 120.
  * @param style - Optional additional styles to apply to the logo image.
+ * @param shadowStyle - Optional shadow styles to apply dynamic shadows (e.g., sun shadow).
  * @returns A React element displaying the Toast logo.
  */
-export default function LogoHeader({ size = 120, style }: Props) {
+export default function LogoHeader({ size = 120, style, shadowStyle }: Props) {
   const dynamicStyle: StyleProp<ImageStyle> = [
     styles.base,
     {
@@ -22,6 +24,7 @@ export default function LogoHeader({ size = 120, style }: Props) {
       height: size,
       borderRadius: size / 2,
     },
+    shadowStyle,
     style,
   ];
 
