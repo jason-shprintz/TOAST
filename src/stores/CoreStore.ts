@@ -394,6 +394,35 @@ export class CoreStore {
   }
 
   // --------------------------------------------------------------------
+  // ===== Decibel Meter =====
+  // --------------------------------------------------------------------
+  decibelMeterActive: boolean = false;
+  currentDecibelLevel: number = 0; // Current decibel level (0-100 normalized scale)
+
+  /**
+   * Sets the decibel meter active state.
+   * When active, the decibel meter appears in the footer.
+   *
+   * @param active - Whether the decibel meter should be active.
+   */
+  setDecibelMeterActive(active: boolean) {
+    this.decibelMeterActive = active;
+    if (!active) {
+      // Reset level when deactivated
+      this.currentDecibelLevel = 0;
+    }
+  }
+
+  /**
+   * Updates the current decibel level.
+   *
+   * @param level - The decibel level (0-100 normalized scale).
+   */
+  setCurrentDecibelLevel(level: number) {
+    this.currentDecibelLevel = Math.max(0, Math.min(100, level));
+  }
+
+  // --------------------------------------------------------------------
   // ===== Morse Code Transmission =====
   // --------------------------------------------------------------------
   private morseTimer: ReturnType<typeof setTimeout> | null = null;
