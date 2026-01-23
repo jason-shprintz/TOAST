@@ -74,8 +74,8 @@ const FooterImpl = () => {
   // Handle active item press (turn off or navigate to nightvision)
   const handleActiveItemPress = () => {
     if (activeItem) {
-      // Check if it's the decibel meter
-      if (activeItem.type === 'decibel') {
+      // Check if it's the decibel meter (has 'type' property)
+      if ('type' in activeItem && activeItem.type === 'decibel') {
         // Turn off the decibel meter
         core.setDecibelMeterActive(false);
       } else {

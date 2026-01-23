@@ -259,7 +259,6 @@ const DecibelMeterScreenImpl = () => {
           <TouchableOpacity
             style={[
               styles.button,
-              styles.startButton,
               {
                 backgroundColor: COLORS.SUCCESS,
                 borderColor: COLORS.SECONDARY_ACCENT,
@@ -278,7 +277,6 @@ const DecibelMeterScreenImpl = () => {
           <TouchableOpacity
             style={[
               styles.button,
-              styles.stopButton,
               {
                 backgroundColor: COLORS.ERROR,
                 borderColor: COLORS.SECONDARY_ACCENT,
@@ -430,10 +428,10 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   bar: {
-    flex: 1,
+    flex: 1, // Equal width bars that flex to fill container
     borderRadius: 4,
     borderWidth: 1,
-    minHeight: 8,
+    minHeight: 8, // Bars use flex with alignItems: 'flex-end' to create standard meter effect
   },
   controlsContainer: {
     paddingHorizontal: 16,
@@ -447,12 +445,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     gap: 12,
-  },
-  startButton: {
-    // Additional styles for start button if needed
-  },
-  stopButton: {
-    // Additional styles for stop button if needed
   },
   buttonText: {
     fontSize: 18,
