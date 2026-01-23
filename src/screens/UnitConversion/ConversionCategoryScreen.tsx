@@ -12,7 +12,7 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
-import { COLORS } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
 import {
   conversionCategories,
   ConversionUnit,
@@ -43,6 +43,7 @@ const DECIMAL_PLACES = 6;
 export default function ConversionCategoryScreen() {
   const route = useRoute<RouteProp<RouteParams, 'ConversionCategory'>>();
   const { setDisableGestureNavigation } = useGestureNavigation();
+  const COLORS = useTheme();
   const { categoryId } = route.params;
 
   const category = conversionCategories.find(cat => cat.id === categoryId);
