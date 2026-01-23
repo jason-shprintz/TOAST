@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useColorScheme } from 'react-native';
 import * as SunCalc from 'suncalc';
-import { useCoreStore } from '../stores/StoreContext';
+import { useCoreStore, useSettingsStore } from '../stores/StoreContext';
 import { useTheme } from './useTheme';
 
 interface SunShadowStyle {
@@ -31,14 +32,15 @@ interface SunShadowStyle {
 export function useSunShadow(): SunShadowStyle {
   const core = useCoreStore();
   const theme = useTheme();
-  
-  // Helper function to get shadow color based on theme
-  // Use PRIMARY_DARK for light mode (#1F1F1F - dark shadow on light background)
-  // Use TOAST_BROWN for dark mode (#C09A6B - brown shadow on dark background)
-  // We can detect the theme by checking if PRIMARY_DARK is dark (#1F1F1F) or light (#E8E8E8)
-  const isDarkMode = theme.PRIMARY_DARK === '#E8E8E8';
+  const settingsStore = useSettingsStore();
+  const systemColorScheme = useColorScheme();
+
+  // Determine if dark mode based on themeMode setting and system preference
+  const isDarkMode =
+    settingsStore.themeMode === 'dark' ||
+    (settingsStore.themeMode === 'system' && systemColorScheme === 'dark');
   const shadowColor = isDarkMode ? theme.TOAST_BROWN : theme.PRIMARY_DARK;
-  
+
   const [shadowStyle, setShadowStyle] = useState<SunShadowStyle>({
     shadowColor: shadowColor,
     shadowOffset: { width: 0, height: 8 },
@@ -49,10 +51,14 @@ export function useSunShadow(): SunShadowStyle {
 
   useEffect(() => {
     const updateShadow = () => {
-      // Get shadow color for current theme
-      const currentIsDarkMode = theme.PRIMARY_DARK === '#E8E8E8';
-      const currentShadowColor = currentIsDarkMode ? theme.TOAST_BROWN : theme.PRIMARY_DARK;
-      
+      // Determine if dark mode based on themeMode setting and system preference
+      const currentIsDarkMode =
+        settingsStore.themeMode === 'dark' ||
+        (settingsStore.themeMode === 'system' && systemColorScheme === 'dark');
+      const currentShadowColor = currentIsDarkMode
+        ? theme.TOAST_BROWN
+        : theme.PRIMARY_DARK;
+
       // Get current location
       if (!core.lastFix) {
         // No location available, use default shadow (straight down)
@@ -141,7 +147,7 @@ export function useSunShadow(): SunShadowStyle {
     // Note: No interval needed here. The shadow updates whenever core.lastFix changes,
     // which happens approximately every 60 seconds when GPS updates.
     // This is sufficient since sun position changes slowly.
-  }, [core.lastFix, theme]);
+  }, [core.lastFix, theme, settingsStore.themeMode, systemColorScheme]);
 
   return shadowStyle;
 }
