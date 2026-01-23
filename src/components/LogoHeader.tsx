@@ -1,11 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet, ImageStyle, StyleProp, ViewStyle } from 'react-native';
+import { Image, StyleSheet, ImageStyle, StyleProp } from 'react-native';
 import { COLORS } from '../theme';
 
 type Props = {
   size?: number;
   style?: StyleProp<ImageStyle>;
-  shadowStyle?: Partial<ViewStyle>;
+  shadowStyle?: Partial<ImageStyle>;
 };
 
 /**
