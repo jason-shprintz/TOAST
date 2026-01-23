@@ -51,19 +51,12 @@ export function useSunShadow(): SunShadowStyle {
 
   useEffect(() => {
     const updateShadow = () => {
-      // Determine if dark mode based on themeMode setting and system preference
-      const currentIsDarkMode =
-        settingsStore.themeMode === 'dark' ||
-        (settingsStore.themeMode === 'system' && systemColorScheme === 'dark');
-      const currentShadowColor = currentIsDarkMode
-        ? theme.TOAST_BROWN
-        : theme.PRIMARY_DARK;
 
       // Get current location
       if (!core.lastFix) {
         // No location available, use default shadow (straight down)
         setShadowStyle({
-          shadowColor: currentShadowColor,
+          shadowColor: shadowColor,
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.3,
           shadowRadius: 8,
@@ -130,7 +123,7 @@ export function useSunShadow(): SunShadowStyle {
       const elevation = opacity * 15;
 
       setShadowStyle({
-        shadowColor: currentShadowColor,
+        shadowColor: shadowColor,
         shadowOffset: {
           width: shadowX,
           height: shadowY,
@@ -147,7 +140,7 @@ export function useSunShadow(): SunShadowStyle {
     // Note: No interval needed here. The shadow updates whenever core.lastFix changes,
     // which happens approximately every 60 seconds when GPS updates.
     // This is sufficient since sun position changes slowly.
-  }, [core.lastFix, theme, settingsStore.themeMode, systemColorScheme]);
+  }, [core.lastFix, shadowColor]);
 
   return shadowStyle;
 }

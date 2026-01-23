@@ -3,11 +3,17 @@
  */
 
 import React from 'react';
+import { useColorScheme } from 'react-native';
 import ReactTestRenderer from 'react-test-renderer';
 import * as SunCalc from 'suncalc';
 import { useSunShadow } from '../src/hooks/useSunShadow';
 import * as UseTheme from '../src/hooks/useTheme';
 import * as StoreContext from '../src/stores/StoreContext';
+
+// Mock React Native's useColorScheme
+jest.mock('react-native', () => ({
+  useColorScheme: jest.fn(),
+}));
 
 // Mock the CoreStore context
 jest.mock('../src/stores/StoreContext', () => ({
@@ -25,6 +31,9 @@ describe('useSunShadow', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Mock useColorScheme to return light mode by default
+    (useColorScheme as jest.Mock).mockReturnValue('light');
 
     // Mock the theme for light mode (default)
     (UseTheme.useTheme as jest.Mock).mockReturnValue({
