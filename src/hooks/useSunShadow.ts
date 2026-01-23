@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as SunCalc from 'suncalc';
 import { useCoreStore } from '../stores/StoreContext';
+import { useTheme } from './useTheme';
 
 interface SunShadowStyle {
   shadowColor: string;
@@ -29,8 +30,9 @@ interface SunShadowStyle {
  */
 export function useSunShadow(): SunShadowStyle {
   const core = useCoreStore();
+  const theme = useTheme();
   const [shadowStyle, setShadowStyle] = useState<SunShadowStyle>({
-    shadowColor: '#000000',
+    shadowColor: theme.TOAST_BROWN,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -43,7 +45,7 @@ export function useSunShadow(): SunShadowStyle {
       if (!core.lastFix) {
         // No location available, use default shadow (straight down)
         setShadowStyle({
-          shadowColor: '#000000',
+          shadowColor: theme.TOAST_BROWN,
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.3,
           shadowRadius: 8,
@@ -112,7 +114,7 @@ export function useSunShadow(): SunShadowStyle {
       const elevation = opacity * 15;
 
       setShadowStyle({
-        shadowColor: '#000000',
+        shadowColor: theme.TOAST_BROWN,
         shadowOffset: {
           width: shadowX,
           height: shadowY,
@@ -129,7 +131,7 @@ export function useSunShadow(): SunShadowStyle {
     // Note: No interval needed here. The shadow updates whenever core.lastFix changes,
     // which happens approximately every 60 seconds when GPS updates.
     // This is sufficient since sun position changes slowly.
-  }, [core.lastFix]);
+  }, [core.lastFix, theme]);
 
   return shadowStyle;
 }
