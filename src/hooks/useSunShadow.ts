@@ -56,7 +56,7 @@ export function useSunShadow(): SunShadowStyle {
       const sunPosition = SunCalc.getPosition(now, latitude, longitude);
       
       // altitude: angle above/below horizon in radians (-π/2 to π/2)
-      // azimuth: direction in radians (0 = north, π/2 = east, π = south, 3π/2 = west)
+      // azimuth: direction in radians from south (-π to π, 0 = south, negative = east of south, positive = west of south)
       const altitude = sunPosition.altitude;
       const azimuth = sunPosition.azimuth;
 
