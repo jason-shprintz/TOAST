@@ -23,7 +23,7 @@ describe('Search Functionality', () => {
   test('searchItems finds Core module', () => {
     const results = searchItems('core');
     expect(results.length).toBeGreaterThan(0);
-    const coreModule = results.find(item => item.id === 'home_core');
+    const coreModule = results.find((item) => item.id === 'home_core');
     expect(coreModule).toBeDefined();
     expect(coreModule?.title).toBe('Core');
   });
@@ -31,7 +31,7 @@ describe('Search Functionality', () => {
   test('searchItems finds Flashlight tool', () => {
     const results = searchItems('flashlight');
     expect(results.length).toBeGreaterThan(0);
-    const flashlight = results.find(item => item.id === 'core_flashlight');
+    const flashlight = results.find((item) => item.id === 'core_flashlight');
     expect(flashlight).toBeDefined();
     expect(flashlight?.title).toBe('Flashlight');
   });
@@ -48,7 +48,9 @@ describe('Search Functionality', () => {
   test('searchItems finds reference entries by title', () => {
     const results = searchItems('fire');
     expect(results.length).toBeGreaterThan(0);
-    const fireEntry = results.find(item => item.type === 'reference' && item.searchText.includes('fire'));
+    const fireEntry = results.find(
+      (item) => item.type === 'reference' && item.searchText.includes('fire'),
+    );
     expect(fireEntry).toBeDefined();
   });
 
@@ -56,7 +58,9 @@ describe('Search Functionality', () => {
     const results = searchItems('a');
     expect(results.length).toBeGreaterThan(1);
     for (let i = 0; i < results.length - 1; i++) {
-      expect(results[i].title.localeCompare(results[i + 1].title)).toBeLessThanOrEqual(0);
+      expect(
+        results[i].title.localeCompare(results[i + 1].title),
+      ).toBeLessThanOrEqual(0);
     }
   });
 
@@ -64,7 +68,7 @@ describe('Search Functionality', () => {
     const results = searchItems('comm');
     expect(results.length).toBeGreaterThan(0);
     // Should find "Comms" module and "Communications" related items
-    const commsModule = results.find(item => item.title === 'Comms');
+    const commsModule = results.find((item) => item.title === 'Comms');
     expect(commsModule).toBeDefined();
   });
 
@@ -72,7 +76,7 @@ describe('Search Functionality', () => {
     // Search for a common tag like "survival"
     const results = searchItems('survival');
     expect(results.length).toBeGreaterThan(0);
-    const survivalItem = results.find(item => item.type === 'reference');
+    const survivalItem = results.find((item) => item.type === 'reference');
     expect(survivalItem).toBeDefined();
   });
 });

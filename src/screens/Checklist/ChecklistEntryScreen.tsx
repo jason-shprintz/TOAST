@@ -59,20 +59,16 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
   };
 
   const handleDeleteItem = (itemId: string) => {
-    Alert.alert(
-      'Delete Item',
-      'Are you sure you want to delete this item?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await core.deleteChecklistItem(itemId);
-          },
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await core.deleteChecklistItem(itemId);
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleDeleteChecklist = () => {
@@ -179,18 +175,18 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
             </View>
           )}
 
-          {items.map(item => (
+          {items.map((item) => (
             <View key={item.id} style={styles.itemRow}>
               <TouchableOpacity
                 style={styles.checkbox}
                 onPress={() => core.toggleChecklistItem(item.id)}
-                accessibilityLabel={item.checked ? 'Uncheck item' : 'Check item'}
+                accessibilityLabel={
+                  item.checked ? 'Uncheck item' : 'Check item'
+                }
                 accessibilityRole="checkbox"
               >
                 <Icon
-                  name={
-                    item.checked ? 'checkbox-outline' : 'square-outline'
-                  }
+                  name={item.checked ? 'checkbox-outline' : 'square-outline'}
                   size={28}
                   color={COLORS.PRIMARY_DARK}
                 />

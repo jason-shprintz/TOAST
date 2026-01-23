@@ -51,7 +51,7 @@ export default function NatoPhoneticScreen() {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {natoPhoneticAlphabet.map(item => (
+          {natoPhoneticAlphabet.map((item) => (
             <View key={item.letter} style={styles.card}>
               <Text style={styles.letter}>{item.letter}</Text>
               <Text style={styles.separator}>-</Text>

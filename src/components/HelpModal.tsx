@@ -48,7 +48,8 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
     const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 
     // Split text by both URLs and emails, preserving the delimiters
-    const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> = [];
+    const parts: Array<{ type: 'text' | 'url' | 'email'; content: string }> =
+      [];
     let lastIndex = 0;
 
     // First, find all URLs
@@ -58,11 +59,11 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
 
     // Combine and sort all matches by position
     const allMatches = [
-      ...urlMatches.map(m => ({ ...m, type: 'url' as const })),
-      ...emailMatches.map(m => ({ ...m, type: 'email' as const })),
+      ...urlMatches.map((m) => ({ ...m, type: 'url' as const })),
+      ...emailMatches.map((m) => ({ ...m, type: 'email' as const })),
     ].sort((a, b) => a.index! - b.index!);
 
-    allMatches.forEach(match => {
+    allMatches.forEach((match) => {
       const matchStart = match.index!;
       const matchEnd = matchStart + match[0].length;
 
@@ -208,7 +209,7 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
               </View>
 
               <ScrollView style={styles.content}>
-                {helpSections.map(section => (
+                {helpSections.map((section) => (
                   <View key={section.id} style={styles.accordionItem}>
                     <TouchableOpacity
                       style={[

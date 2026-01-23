@@ -70,10 +70,15 @@ export default function SearchScreen(): JSX.Element {
   return (
     <ScreenBody>
       <View style={styles.searchContainer}>
-        <View style={[
-          styles.searchInputContainer,
-          { backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN }
-        ]}>
+        <View
+          style={[
+            styles.searchInputContainer,
+            {
+              backgroundColor: COLORS.SECONDARY_ACCENT,
+              borderColor: COLORS.TOAST_BROWN,
+            },
+          ]}
+        >
           <Ionicons
             name="search-outline"
             size={20}
@@ -130,7 +135,7 @@ export default function SearchScreen(): JSX.Element {
 
           {results.length > 0 && (
             <Grid>
-              {results.map(item => (
+              {results.map((item) => (
                 <CardTopic
                   key={item.id}
                   title={item.title}

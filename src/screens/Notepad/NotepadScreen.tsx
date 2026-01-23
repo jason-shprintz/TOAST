@@ -88,7 +88,7 @@ export default observer(function NotepadScreen() {
       <HorizontalRule />
 
       <Grid>
-        {core.categories.map(cat => (
+        {core.categories.map((cat) => (
           <CardTopic
             key={cat}
             title={cat}

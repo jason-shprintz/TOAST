@@ -25,9 +25,9 @@ This project uses `patch-package` to persist a native fix for `react-native-torc
   1. Make the same edit in `node_modules/react-native-torch/ios/RCTTorch.m`.
   2. Run:
 
-    ```zsh
-    npx patch-package react-native-torch
-    ```
+  ```zsh
+  npx patch-package react-native-torch
+  ```
 
   3. Commit the updated file under `patches/react-native-torch+<new-version>.patch`.
 

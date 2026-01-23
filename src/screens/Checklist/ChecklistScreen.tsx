@@ -53,14 +53,12 @@ export default observer(function ChecklistScreen() {
       <HorizontalRule />
 
       <Grid>
-        {core.checklists.map(checklist => (
+        {core.checklists.map((checklist) => (
           <CardTopic
             key={checklist.id}
             title={checklist.name}
             icon={checklistIcons[checklist.name] || 'list-outline'}
-            onPress={() =>
-              navigation.navigate('ChecklistEntry', { checklist })
-            }
+            onPress={() => navigation.navigate('ChecklistEntry', { checklist })}
           />
         ))}
       </Grid>

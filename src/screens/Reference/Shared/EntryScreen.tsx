@@ -1,11 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HorizontalRule } from '../../../components/HorizontalRule';
 import { Text } from '../../../components/ScaledText';

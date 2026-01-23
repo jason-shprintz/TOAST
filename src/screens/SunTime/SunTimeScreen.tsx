@@ -42,8 +42,6 @@ interface SunTimes {
 const LOCATION_WAIT_TIMEOUT_MS = 3000;
 const LOCATION_CHECK_INTERVAL_MS = 500;
 
-
-
 function SunTimeScreen() {
   const core = useCoreStore();
   const [sunTimes, setSunTimes] = useState<SunTimes | null>(null);
@@ -70,7 +68,7 @@ function SunTimeScreen() {
             elapsed < LOCATION_WAIT_TIMEOUT_MS &&
             isMounted
           ) {
-            await new Promise<void>(resolve =>
+            await new Promise<void>((resolve) =>
               setTimeout(resolve, LOCATION_CHECK_INTERVAL_MS),
             );
             elapsed += LOCATION_CHECK_INTERVAL_MS;

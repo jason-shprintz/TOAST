@@ -23,12 +23,12 @@ export const NoteSortSelector = observer(() => {
   ];
 
   const currentOption = sortOptions.find(
-    opt => opt.value === settingsStore.noteSortOrder,
+    (opt) => opt.value === settingsStore.noteSortOrder,
   );
 
   const cycleSort = () => {
     const currentIndex = sortOptions.findIndex(
-      opt => opt.value === settingsStore.noteSortOrder,
+      (opt) => opt.value === settingsStore.noteSortOrder,
     );
     const nextIndex = (currentIndex + 1) % sortOptions.length;
     settingsStore.setNoteSortOrder(sortOptions[nextIndex].value);
@@ -49,7 +49,9 @@ export const NoteSortSelector = observer(() => {
         size={18}
         color={COLORS.PRIMARY_DARK}
       />
-      <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>{currentOption?.label || 'Unknown'}</Text>
+      <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+        {currentOption?.label || 'Unknown'}
+      </Text>
     </TouchableOpacity>
   );
 });

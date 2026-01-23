@@ -29,7 +29,7 @@ export class ReferenceStore {
 
   // TODO: Is this needed?
   toggleBookmark(referenceId: string) {
-    const reference = this.references.find(r => r.id === referenceId);
+    const reference = this.references.find((r) => r.id === referenceId);
     if (reference) {
       reference.bookmarked = !reference.bookmarked;
     }
@@ -41,14 +41,14 @@ export class ReferenceStore {
   }
 
   get bookmarkedReferences() {
-    return this.references.filter(ref => ref.bookmarked);
+    return this.references.filter((ref) => ref.bookmarked);
   }
 
   get filteredReferences() {
     if (!this.searchQuery) return this.references;
 
     return this.references.filter(
-      ref =>
+      (ref) =>
         ref.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         ref.content.toLowerCase().includes(this.searchQuery.toLowerCase()),
     );

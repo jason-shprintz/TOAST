@@ -42,7 +42,7 @@ export default function CategoryList({
           <SectionSubHeader>{disclaimer}</SectionSubHeader>
         )}
         <Grid>
-          {sortedCategories.map(category => {
+          {sortedCategories.map((category) => {
             return (
               <CardTopic
                 key={category.id}

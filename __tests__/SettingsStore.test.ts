@@ -350,7 +350,7 @@ describe('SettingsStore', () => {
   });
 
   describe('MobX reactivity', () => {
-    it('should trigger reactions when fontSize changes', done => {
+    it('should trigger reactions when fontSize changes', (done) => {
       let reactionCount = 0;
       const { autorun } = require('mobx');
 
@@ -372,7 +372,7 @@ describe('SettingsStore', () => {
       });
     });
 
-    it('should trigger reactions when themeMode changes', done => {
+    it('should trigger reactions when themeMode changes', (done) => {
       let reactionCount = 0;
       const { autorun } = require('mobx');
 
@@ -394,7 +394,7 @@ describe('SettingsStore', () => {
       });
     });
 
-    it('should trigger reactions when fontScale changes due to fontSize', done => {
+    it('should trigger reactions when fontScale changes due to fontSize', (done) => {
       let observedScale = 1.0;
       const { autorun } = require('mobx');
 

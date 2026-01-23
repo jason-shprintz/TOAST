@@ -41,7 +41,7 @@ export default function ConversionCategoryScreen() {
   const COLORS = useTheme();
   const { categoryId } = route.params;
 
-  const category = conversionCategories.find(cat => cat.id === categoryId);
+  const category = conversionCategories.find((cat) => cat.id === categoryId);
   const [selectedUnitIndex, setSelectedUnitIndex] = useState(0);
   const [inputValue, setInputValue] = useState('0');
   const [isReversed, setIsReversed] = useState(false);
@@ -68,7 +68,7 @@ export default function ConversionCategoryScreen() {
   const selectedUnit: ConversionUnit = category.units[selectedUnitIndex];
 
   const handleNumberPress = (num: string) => {
-    setInputValue(prev => {
+    setInputValue((prev) => {
       // Handle leading zero - replace '0' with the number, but not '0.' or '-0'
       if (prev === '0' || prev === '-0') {
         return prev.startsWith('-') ? '-' + num : num;
@@ -79,7 +79,7 @@ export default function ConversionCategoryScreen() {
 
   const handleDecimalPress = () => {
     if (!inputValue.includes('.')) {
-      setInputValue(prev => prev + '.');
+      setInputValue((prev) => prev + '.');
     }
   };
 
@@ -88,7 +88,7 @@ export default function ConversionCategoryScreen() {
   };
 
   const handleBackspace = () => {
-    setInputValue(prev => {
+    setInputValue((prev) => {
       if (prev.length === 1 || (prev.length === 2 && prev.startsWith('-'))) {
         return '0';
       }
@@ -97,7 +97,7 @@ export default function ConversionCategoryScreen() {
   };
 
   const handleToggleSign = () => {
-    setInputValue(prev => {
+    setInputValue((prev) => {
       if (prev === '0') {
         return '0';
       }
@@ -109,7 +109,7 @@ export default function ConversionCategoryScreen() {
   };
 
   const handleSwap = () => {
-    setIsReversed(prev => !prev);
+    setIsReversed((prev) => !prev);
   };
 
   const getConvertedValue = (): string => {

@@ -33,7 +33,7 @@ export default function UnitConversionScreen() {
       >
         <View style={styles.gridWrapper}>
           <Grid>
-            {conversionCategories.map(category => (
+            {conversionCategories.map((category) => (
               <CardTopic
                 key={category.id}
                 title={category.name}

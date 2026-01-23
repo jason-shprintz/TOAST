@@ -27,7 +27,7 @@ describe('SunTimeScreen', () => {
         { latitude: 51.5074, longitude: -0.1278 }, // London
       ];
 
-      testCoords.forEach(coords => {
+      testCoords.forEach((coords) => {
         expect(coords.latitude).toBeGreaterThanOrEqual(-90);
         expect(coords.latitude).toBeLessThanOrEqual(90);
         expect(coords.longitude).toBeGreaterThanOrEqual(-180);
@@ -93,7 +93,9 @@ describe('SunTimeScreen', () => {
 
       const times = SunCalc.getTimes(testDate, latitude, longitude);
 
-      expect(times.solarNoon.getTime()).toBeGreaterThan(times.sunrise.getTime());
+      expect(times.solarNoon.getTime()).toBeGreaterThan(
+        times.sunrise.getTime(),
+      );
       expect(times.solarNoon.getTime()).toBeLessThan(times.sunset.getTime());
     });
 
@@ -106,13 +108,13 @@ describe('SunTimeScreen', () => {
         { name: 'Sydney', lat: -33.8688, lon: 151.2093 },
       ];
 
-      locations.forEach(location => {
+      locations.forEach((location) => {
         const times = SunCalc.getTimes(testDate, location.lat, location.lon);
-        
+
         // All times should be valid Date objects
         expect(times.sunrise).toBeInstanceOf(Date);
         expect(times.sunset).toBeInstanceOf(Date);
-        
+
         // Sunrise should be before sunset
         expect(times.sunrise.getTime()).toBeLessThan(times.sunset.getTime());
       });
@@ -128,13 +130,13 @@ describe('SunTimeScreen', () => {
       const latitude = 40.7128; // New York
       const longitude = -74.006;
 
-      dates.forEach(date => {
+      dates.forEach((date) => {
         const times = SunCalc.getTimes(date, latitude, longitude);
-        
+
         // All times should be valid
         expect(times.sunrise).toBeInstanceOf(Date);
         expect(times.sunset).toBeInstanceOf(Date);
-        
+
         // Basic sanity check
         expect(times.sunrise.getTime()).toBeLessThan(times.sunset.getTime());
       });
@@ -144,10 +146,10 @@ describe('SunTimeScreen', () => {
   describe('Error States', () => {
     test('handles edge case coordinates gracefully', () => {
       const testDate = new Date('2024-06-21T12:00:00Z');
-      
+
       // Test coordinates at 0,0 (valid location in Gulf of Guinea)
       const times = SunCalc.getTimes(testDate, 0, 0);
-      
+
       // Should still return valid times
       expect(times.sunrise).toBeInstanceOf(Date);
       expect(times.sunset).toBeInstanceOf(Date);
@@ -156,11 +158,11 @@ describe('SunTimeScreen', () => {
 
     test('handles extreme latitudes', () => {
       const testDate = new Date('2024-06-21T12:00:00Z');
-      
+
       // Test near poles (may have midnight sun or polar night)
       const arcticTimes = SunCalc.getTimes(testDate, 80, 0);
       const antarcticTimes = SunCalc.getTimes(testDate, -80, 0);
-      
+
       // Should still return Date objects even if times are unusual
       expect(arcticTimes.sunrise).toBeInstanceOf(Date);
       expect(antarcticTimes.sunrise).toBeInstanceOf(Date);
@@ -170,7 +172,7 @@ describe('SunTimeScreen', () => {
   describe('Time Formatting', () => {
     test('formats time correctly', () => {
       const testDate = new Date('2024-06-21T14:30:00Z');
-      
+
       // Format using the same logic as the component
       const formattedTime = testDate.toLocaleTimeString(undefined, {
         hour: 'numeric',
@@ -192,13 +194,13 @@ describe('SunTimeScreen', () => {
         new Date('2024-06-21T23:59:00Z'), // 11:59 PM
       ];
 
-      times.forEach(time => {
+      times.forEach((time) => {
         const formatted = time.toLocaleTimeString(undefined, {
           hour: 'numeric',
           minute: '2-digit',
           hour12: true,
         });
-        
+
         expect(typeof formatted).toBe('string');
         expect(formatted.length).toBeGreaterThan(0);
       });
@@ -242,7 +244,7 @@ describe('SunTimeScreen', () => {
         'nightEnd',
       ];
 
-      requiredProperties.forEach(prop => {
+      requiredProperties.forEach((prop) => {
         expect(times).toHaveProperty(prop);
         expect(times[prop as keyof typeof times]).toBeInstanceOf(Date);
       });
@@ -262,7 +264,7 @@ describe('SunTimeScreen', () => {
         times.goldenHourEnd,
         times.night,
         times.nightEnd,
-      ].map(t => t.getTime());
+      ].map((t) => t.getTime());
 
       // All timestamps should be different
       const uniqueTimestamps = new Set(timestamps);
@@ -277,9 +279,11 @@ describe('SunTimeScreen', () => {
 
       // Golden hour (evening start) should be before sunset
       expect(times.goldenHour.getTime()).toBeLessThan(times.sunset.getTime());
-      
+
       // Golden hour end (morning end) should be after sunrise
-      expect(times.goldenHourEnd.getTime()).toBeGreaterThan(times.sunrise.getTime());
+      expect(times.goldenHourEnd.getTime()).toBeGreaterThan(
+        times.sunrise.getTime(),
+      );
     });
   });
 
@@ -290,7 +294,7 @@ describe('SunTimeScreen', () => {
 
       // Night should start after dusk
       expect(times.night.getTime()).toBeGreaterThan(times.dusk.getTime());
-      
+
       // Night should end before dawn
       expect(times.nightEnd.getTime()).toBeLessThan(times.dawn.getTime());
     });

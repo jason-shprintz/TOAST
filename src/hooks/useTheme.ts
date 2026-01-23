@@ -44,7 +44,7 @@ export function useTheme(): ColorScheme {
     // Use MobX reaction to track changes to themeMode
     const dispose = reaction(
       () => settingsStore.themeMode,
-      themeMode => {
+      (themeMode) => {
         const newColors = getColorSchemeForThemeMode(
           themeMode,
           systemColorScheme,

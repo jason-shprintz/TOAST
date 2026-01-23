@@ -31,24 +31,24 @@ describe('noteSorting', () => {
   describe('sortNotes', () => {
     it('should sort by newest-oldest (default)', () => {
       const sorted = sortNotes(mockNotes, 'newest-oldest');
-      expect(sorted.map(n => n.id)).toEqual(['3', '2', '4', '1']);
+      expect(sorted.map((n) => n.id)).toEqual(['3', '2', '4', '1']);
     });
 
     it('should sort by oldest-newest', () => {
       const sorted = sortNotes(mockNotes, 'oldest-newest');
-      expect(sorted.map(n => n.id)).toEqual(['1', '4', '2', '3']);
+      expect(sorted.map((n) => n.id)).toEqual(['1', '4', '2', '3']);
     });
 
     it('should sort by a-z', () => {
       const sorted = sortNotes(mockNotes, 'a-z');
       // Untitled notes should come first alphabetically
-      expect(sorted.map(n => n.id)).toEqual(['4', '1', '3', '2']);
+      expect(sorted.map((n) => n.id)).toEqual(['4', '1', '3', '2']);
     });
 
     it('should sort by z-a', () => {
       const sorted = sortNotes(mockNotes, 'z-a');
       // Untitled notes should come last when sorting Z-A
-      expect(sorted.map(n => n.id)).toEqual(['2', '3', '1', '4']);
+      expect(sorted.map((n) => n.id)).toEqual(['2', '3', '1', '4']);
     });
 
     it('should handle empty array', () => {
@@ -81,7 +81,7 @@ describe('noteSorting', () => {
         { id: '3', title: 'CHERRY', createdAt: 3000 },
       ];
       const sorted = sortNotes(caseNotes, 'a-z');
-      expect(sorted.map(n => n.title)).toEqual(['apple', 'Banana', 'CHERRY']);
+      expect(sorted.map((n) => n.title)).toEqual(['apple', 'Banana', 'CHERRY']);
     });
   });
 });

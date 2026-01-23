@@ -56,7 +56,7 @@ export default observer(function BookmarkedNotesScreen(): React.JSX.Element {
             <Text style={styles.helperText}>No bookmarked notes yet.</Text>
           )}
           <Grid>
-            {sortedNotes.map(note => {
+            {sortedNotes.map((note) => {
               const titleText = note.title || '(Untitled)';
               return (
                 <CardTopic

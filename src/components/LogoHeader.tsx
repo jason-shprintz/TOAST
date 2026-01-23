@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, StyleSheet, ImageStyle, StyleProp, View, ViewStyle } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  ImageStyle,
+  StyleProp,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { COLORS } from '../theme';
 
 type Props = {

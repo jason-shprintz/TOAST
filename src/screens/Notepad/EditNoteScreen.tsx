@@ -19,7 +19,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import SketchCanvas, { SketchCanvasHandle } from '../../components/SketchCanvas';
+import SketchCanvas, {
+  SketchCanvasHandle,
+} from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -63,11 +65,13 @@ export default observer(function EditNoteScreen() {
   const noteId = route.params.note.id;
 
   // Look up the note from the store by ID to ensure we have the latest version
-  const note = core.notes.find(n => n.id === noteId);
+  const note = core.notes.find((n) => n.id === noteId);
 
   const [title, setTitle] = useState(note?.title || '');
   const [text, setText] = useState(note?.text || '');
-  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(note?.sketchDataUri);
+  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(
+    note?.sketchDataUri,
+  );
   const [hasDrawn, setHasDrawn] = useState(!!note?.sketchDataUri);
   const [category, setCategory] = useState(
     note?.category || core.categories[0] || 'General',
@@ -75,9 +79,10 @@ export default observer(function EditNoteScreen() {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
   const noteType = note?.type || 'text';
-  const hasContent: boolean = noteType === 'text' 
-    ? text.trim().length > 0 
-    : (hasDrawn && title.trim().length > 0);
+  const hasContent: boolean =
+    noteType === 'text'
+      ? text.trim().length > 0
+      : hasDrawn && title.trim().length > 0;
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   // Update local state when the note changes in the store
@@ -143,7 +148,7 @@ export default observer(function EditNoteScreen() {
                 <View style={styles.dropdown}>
                   <TouchableOpacity
                     style={styles.dropdownHeader}
-                    onPress={() => setShowCategoryMenu(v => !v)}
+                    onPress={() => setShowCategoryMenu((v) => !v)}
                     accessibilityLabel={`Category: ${category}`}
                     accessibilityHint="Opens category selection menu"
                     accessibilityRole="button"
@@ -157,7 +162,7 @@ export default observer(function EditNoteScreen() {
                   </TouchableOpacity>
                   {showCategoryMenu && (
                     <View style={styles.dropdownMenu}>
-                      {core.categories.map(cat => (
+                      {core.categories.map((cat) => (
                         <TouchableOpacity
                           key={cat}
                           style={styles.dropdownItem}
@@ -176,7 +181,10 @@ export default observer(function EditNoteScreen() {
 
               <View style={styles.inline}>
                 <TouchableOpacity
-                  style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                  style={[
+                    styles.iconButton,
+                    !hasContent && styles.iconButtonDisabled,
+                  ]}
                   disabled={!hasContent}
                   onPress={async () => {
                     if (!note) {
@@ -185,13 +193,13 @@ export default observer(function EditNoteScreen() {
                     }
                     try {
                       let sketchData = sketchDataUri;
-                      
+
                       // For sketch notes, read the signature first and wait for the callback
                       if (noteType === 'sketch') {
                         sketchData = await new Promise<string>((resolve) => {
                           sketchSaveResolveRef.current = resolve;
                           sketchCanvasRef.current?.readSignature();
-                          
+
                           // Fallback timeout in case callback doesn't fire
                           setTimeout(() => {
                             if (sketchSaveResolveRef.current) {
@@ -235,7 +243,11 @@ export default observer(function EditNoteScreen() {
                   <Icon
                     name="checkmark-outline"
                     size={30}
-                    color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                    color={
+                      !hasContent
+                        ? COLORS.PRIMARY_DARK + '40'
+                        : COLORS.PRIMARY_DARK
+                    }
                   />
                 </TouchableOpacity>
                 <View style={styles.spacer} />
@@ -289,7 +301,10 @@ export default observer(function EditNoteScreen() {
                 ) : (
                   <>
                     <TouchableOpacity
-                      style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                      style={[
+                        styles.iconButton,
+                        !hasContent && styles.iconButtonDisabled,
+                      ]}
                       disabled={!hasContent}
                       onPress={() => {
                         setText('');
@@ -300,7 +315,11 @@ export default observer(function EditNoteScreen() {
                       <Icon
                         name="trash-outline"
                         size={30}
-                        color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                        color={
+                          !hasContent
+                            ? COLORS.PRIMARY_DARK + '40'
+                            : COLORS.PRIMARY_DARK
+                        }
                       />
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -323,7 +342,11 @@ export default observer(function EditNoteScreen() {
 
               <TextInput
                 style={styles.titleInput}
-                placeholder={noteType === 'sketch' ? 'Title (required)' : 'Title (optional)'}
+                placeholder={
+                  noteType === 'sketch'
+                    ? 'Title (required)'
+                    : 'Title (optional)'
+                }
                 placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}

@@ -63,9 +63,12 @@ export default function CardTopic({
       <Animated.View
         style={[
           styles.card,
-          { borderColor: COLORS.SECONDARY_ACCENT, boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT },
+          {
+            borderColor: COLORS.SECONDARY_ACCENT,
+            boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT,
+          },
           { transform: [{ scale }] },
-          containerStyle
+          containerStyle,
         ]}
       >
         <LinearGradient
@@ -80,7 +83,15 @@ export default function CardTopic({
           color={LIGHT_COLORS.PRIMARY_DARK}
           style={styles.icon}
         />
-        <Text style={[styles.title, { color: LIGHT_COLORS.PRIMARY_DARK }, titleStyle]}>{title}</Text>
+        <Text
+          style={[
+            styles.title,
+            { color: LIGHT_COLORS.PRIMARY_DARK },
+            titleStyle,
+          ]}
+        >
+          {title}
+        </Text>
       </Animated.View>
     </TouchableWithoutFeedback>
   );

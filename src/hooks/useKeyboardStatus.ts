@@ -23,7 +23,7 @@ export function useKeyboardStatus(): KeyboardStatus {
   const keyboardHeightOffset = 2;
 
   useEffect(() => {
-    const showListener = Keyboard.addListener('keyboardDidShow', event => {
+    const showListener = Keyboard.addListener('keyboardDidShow', (event) => {
       setIsKeyboardVisible(true);
       setKeyboardHeight(event.endCoordinates.height / keyboardHeightOffset);
     });

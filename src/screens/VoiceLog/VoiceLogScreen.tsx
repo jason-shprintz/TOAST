@@ -54,7 +54,9 @@ export default observer(function VoiceLogScreen() {
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const soundRef = useRef<Sound | null>(null);
-  const stopRecorderRef = useRef<(() => Promise<string | undefined>) | null>(null);
+  const stopRecorderRef = useRef<(() => Promise<string | undefined>) | null>(
+    null,
+  );
   const isRecordingRef = useRef(false);
   const handleStopRecordingRef = useRef<(() => Promise<void>) | null>(null);
 
@@ -128,12 +130,15 @@ export default observer(function VoiceLogScreen() {
 
   // Initialize sound recorder
   const { startRecorder, stopRecorder } = useSoundRecorder({
-    onRecord: e => {
+    onRecord: (e) => {
       const currentTime = Math.floor(e.currentPosition / 1000);
       setRecordingTime(currentTime);
 
       // Auto-stop at max duration - use ref to avoid stale closure
-      if (currentTime >= MAX_DURATION_SECONDS && handleStopRecordingRef.current) {
+      if (
+        currentTime >= MAX_DURATION_SECONDS &&
+        handleStopRecordingRef.current
+      ) {
         handleStopRecordingRef.current();
       }
     },
@@ -149,11 +154,11 @@ export default observer(function VoiceLogScreen() {
     return () => {
       // Stop active recording if component unmounts
       if (isRecordingRef.current && stopRecorderRef.current) {
-        stopRecorderRef.current().catch(err => {
+        stopRecorderRef.current().catch((err) => {
           console.warn('Error stopping recorder on unmount:', err);
         });
       }
-      
+
       // Stop playback when unmounting
       if (soundRef.current) {
         soundRef.current.stop(() => {
@@ -217,7 +222,7 @@ export default observer(function VoiceLogScreen() {
   const progress = recordingTime / MAX_DURATION_SECONDS;
 
   // Get only voice logs from notes
-  const voiceLogs = core.notes.filter(note => note.category === 'Voice Logs');
+  const voiceLogs = core.notes.filter((note) => note.category === 'Voice Logs');
 
   const handlePlayVoiceLog = (noteId: string, audioUri: string) => {
     try {
@@ -235,7 +240,7 @@ export default observer(function VoiceLogScreen() {
       setPlayingId(noteId);
 
       // Load audio file
-      const sound = new Sound(audioUri, '', error => {
+      const sound = new Sound(audioUri, '', (error) => {
         if (error) {
           console.error('Failed to load sound:', error);
           Alert.alert('Error', 'Failed to load audio file.');
@@ -245,7 +250,7 @@ export default observer(function VoiceLogScreen() {
         }
 
         // Play the sound
-        sound.play(success => {
+        sound.play((success) => {
           if (success) {
             setPlayingId(null);
           } else {
@@ -361,7 +366,11 @@ export default observer(function VoiceLogScreen() {
             <View>
               <Text style={styles.featuresTitle}>Auto-captured metadata:</Text>
               <View style={styles.featureRow}>
-                <Icon name="time-outline" size={16} color={COLORS.PRIMARY_DARK} />
+                <Icon
+                  name="time-outline"
+                  size={16}
+                  color={COLORS.PRIMARY_DARK}
+                />
                 <Text style={styles.featureText}>Timestamp</Text>
               </View>
               <View style={styles.featureRow}>
@@ -397,7 +406,7 @@ export default observer(function VoiceLogScreen() {
           />
         ) : (
           <View style={styles.voiceLogsList}>
-            {voiceLogs.map(log => (
+            {voiceLogs.map((log) => (
               <VoiceLogCard
                 key={log.id}
                 title={log.title}

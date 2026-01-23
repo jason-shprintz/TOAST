@@ -55,7 +55,7 @@ export default observer(function RecentNotesScreen() {
         <FlatList
           style={styles.list}
           data={data}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             const isExpanded = expandedId === item.id;
             const previewTitle = item.title || '(Untitled)';
@@ -64,7 +64,7 @@ export default observer(function RecentNotesScreen() {
               <TouchableOpacity
                 accessibilityRole="button"
                 onPress={() =>
-                  setExpandedId(prev => (prev === item.id ? null : item.id))
+                  setExpandedId((prev) => (prev === item.id ? null : item.id))
                 }
               >
                 <View style={shared.itemRow}>
@@ -104,7 +104,7 @@ export default observer(function RecentNotesScreen() {
                       accessibilityLabel="Delete note"
                       accessibilityRole="button"
                       style={shared.noteButton}
-                      onPress={e => {
+                      onPress={(e) => {
                         e.stopPropagation();
                         Alert.alert(
                           'Delete Note',

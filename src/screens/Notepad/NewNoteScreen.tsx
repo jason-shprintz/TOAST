@@ -19,7 +19,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import SketchCanvas, { SketchCanvasHandle } from '../../components/SketchCanvas';
+import SketchCanvas, {
+  SketchCanvasHandle,
+} from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
@@ -61,16 +63,19 @@ export default observer(function NewNoteScreen() {
   const sketchSaveResolveRef = useRef<((dataUri: string) => void) | null>(null);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
-  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(undefined);
+  const [sketchDataUri, setSketchDataUri] = useState<string | undefined>(
+    undefined,
+  );
   const [hasDrawn, setHasDrawn] = useState(false);
   const [category, setCategory] = useState(core.categories[0]);
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
-  const hasContent: boolean = noteType === 'text' 
-    ? text.trim().length > 0 
-    : (hasDrawn && title.trim().length > 0);
+  const hasContent: boolean =
+    noteType === 'text'
+      ? text.trim().length > 0
+      : hasDrawn && title.trim().length > 0;
   const animatedHeight = useMemo(() => new Animated.Value(250), []);
 
   useEffect(() => {
@@ -103,7 +108,7 @@ export default observer(function NewNoteScreen() {
                 <View style={styles.dropdown}>
                   <TouchableOpacity
                     style={styles.dropdownHeader}
-                    onPress={() => setShowCategoryMenu(v => !v)}
+                    onPress={() => setShowCategoryMenu((v) => !v)}
                     accessibilityLabel={`Category: ${category}`}
                     accessibilityHint="Opens category selection menu"
                     accessibilityRole="button"
@@ -117,7 +122,7 @@ export default observer(function NewNoteScreen() {
                   </TouchableOpacity>
                   {showCategoryMenu && (
                     <View style={styles.dropdownMenu}>
-                      {core.categories.map(cat => (
+                      {core.categories.map((cat) => (
                         <TouchableOpacity
                           key={cat}
                           style={styles.dropdownItem}
@@ -136,7 +141,7 @@ export default observer(function NewNoteScreen() {
                 <View style={styles.dropdown}>
                   <TouchableOpacity
                     style={styles.dropdownHeader}
-                    onPress={() => setShowTypeMenu(v => !v)}
+                    onPress={() => setShowTypeMenu((v) => !v)}
                     accessibilityLabel={`Note type: ${
                       noteType === 'text' ? 'Type Text' : 'Sketch'
                     }`}
@@ -154,7 +159,7 @@ export default observer(function NewNoteScreen() {
                   </TouchableOpacity>
                   {showTypeMenu && (
                     <View style={styles.dropdownMenu}>
-                      {['text', 'sketch'].map(t => (
+                      {['text', 'sketch'].map((t) => (
                         <TouchableOpacity
                           key={t}
                           style={styles.dropdownItem}
@@ -191,18 +196,21 @@ export default observer(function NewNoteScreen() {
 
               <View style={styles.inline}>
                 <TouchableOpacity
-                  style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                  style={[
+                    styles.iconButton,
+                    !hasContent && styles.iconButtonDisabled,
+                  ]}
                   disabled={!hasContent}
                   onPress={async () => {
                     try {
                       let sketchData = sketchDataUri;
-                      
+
                       // For sketch notes, read the signature first and wait for the callback
                       if (noteType === 'sketch') {
                         sketchData = await new Promise<string>((resolve) => {
                           sketchSaveResolveRef.current = resolve;
                           sketchCanvasRef.current?.readSignature();
-                          
+
                           // Fallback timeout in case callback doesn't fire
                           setTimeout(() => {
                             if (sketchSaveResolveRef.current) {
@@ -248,7 +256,11 @@ export default observer(function NewNoteScreen() {
                   <Icon
                     name="checkmark-outline"
                     size={30}
-                    color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                    color={
+                      !hasContent
+                        ? COLORS.PRIMARY_DARK + '40'
+                        : COLORS.PRIMARY_DARK
+                    }
                   />
                 </TouchableOpacity>
                 <View style={styles.spacer} />
@@ -287,7 +299,10 @@ export default observer(function NewNoteScreen() {
                   </View>
                 ) : (
                   <TouchableOpacity
-                    style={[styles.iconButton, !hasContent && styles.iconButtonDisabled]}
+                    style={[
+                      styles.iconButton,
+                      !hasContent && styles.iconButtonDisabled,
+                    ]}
                     disabled={!hasContent}
                     onPress={() => {
                       setText('');
@@ -298,7 +313,11 @@ export default observer(function NewNoteScreen() {
                     <Icon
                       name="trash-outline"
                       size={30}
-                      color={!hasContent ? COLORS.PRIMARY_DARK + '40' : COLORS.PRIMARY_DARK}
+                      color={
+                        !hasContent
+                          ? COLORS.PRIMARY_DARK + '40'
+                          : COLORS.PRIMARY_DARK
+                      }
                     />
                   </TouchableOpacity>
                 )}
@@ -306,7 +325,11 @@ export default observer(function NewNoteScreen() {
 
               <TextInput
                 style={styles.titleInput}
-                placeholder={noteType === 'sketch' ? 'Title (required)' : 'Title (optional)'}
+                placeholder={
+                  noteType === 'sketch'
+                    ? 'Title (required)'
+                    : 'Title (optional)'
+                }
                 placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={title}
                 onChangeText={setTitle}

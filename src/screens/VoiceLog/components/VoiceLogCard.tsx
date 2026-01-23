@@ -41,7 +41,9 @@ export default function VoiceLogCard({
         <View style={styles.info}>
           <Text style={styles.title}>{title || 'Voice Log'}</Text>
           <Text style={styles.time}>{formatDateTime(new Date(createdAt))}</Text>
-          {duration && <Text style={styles.duration}>Duration: {duration}s</Text>}
+          {duration && (
+            <Text style={styles.duration}>Duration: {duration}s</Text>
+          )}
           {isPlaying && (
             <View style={styles.playingIndicator}>
               <View style={styles.playingDot} />

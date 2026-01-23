@@ -46,11 +46,18 @@ export default function SectionHeader({
   };
 
   const header = (
-    <Text {...rest} style={[
-      styles.header,
-      { color: LIGHT_COLORS.PRIMARY_DARK, backgroundColor: COLORS.SECONDARY_ACCENT, borderColor: COLORS.TOAST_BROWN },
-      style
-    ]}>
+    <Text
+      {...rest}
+      style={[
+        styles.header,
+        {
+          color: LIGHT_COLORS.PRIMARY_DARK,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+          borderColor: COLORS.TOAST_BROWN,
+        },
+        style,
+      ]}
+    >
       {title ?? children}
     </Text>
   );

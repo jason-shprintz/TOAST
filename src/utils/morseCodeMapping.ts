@@ -63,13 +63,14 @@ export const MORSE_CODE_MAP: Record<string, string> = morseCodeData.reduce(
 MORSE_CODE_MAP[' '] = '/';
 
 // Create reverse lookup map (morse to character)
-export const REVERSE_MORSE_CODE_MAP: Record<string, string> = morseCodeData.reduce(
-  (acc, item) => {
-    acc[item.morse] = item.char;
-    return acc;
-  },
-  {} as Record<string, string>,
-);
+export const REVERSE_MORSE_CODE_MAP: Record<string, string> =
+  morseCodeData.reduce(
+    (acc, item) => {
+      acc[item.morse] = item.char;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
 
 // Add word separator mapping
 REVERSE_MORSE_CODE_MAP['/'] = ' ';
@@ -85,12 +86,12 @@ REVERSE_MORSE_CODE_MAP['/'] = ' ';
 export function textToMorse(text: string): string {
   // Normalize multiple spaces to single space and trim
   const normalized = text.trim().replace(/\s+/g, ' ');
-  
+
   return normalized
     .toUpperCase()
     .split('')
-    .map(char => MORSE_CODE_MAP[char] || '')
-    .filter(morse => morse !== '')
+    .map((char) => MORSE_CODE_MAP[char] || '')
+    .filter((morse) => morse !== '')
     .join(' ');
 }
 
@@ -107,10 +108,10 @@ export function morseToText(morse: string): string {
   if (!morse.trim()) {
     return '';
   }
-  
+
   return morse
     .trim()
     .split(' ')
-    .map(morseChar => REVERSE_MORSE_CODE_MAP[morseChar] || '')
+    .map((morseChar) => REVERSE_MORSE_CODE_MAP[morseChar] || '')
     .join('');
 }

@@ -27,11 +27,11 @@ export class SignalsStore {
   }
 
   removeSignal(signalId: string) {
-    this.signals = this.signals.filter(s => s.id !== signalId);
+    this.signals = this.signals.filter((s) => s.id !== signalId);
   }
 
   toggleConnection(signalId: string) {
-    const signal = this.signals.find(s => s.id === signalId);
+    const signal = this.signals.find((s) => s.id === signalId);
     if (signal) {
       signal.connected = !signal.connected;
     }
@@ -46,14 +46,14 @@ export class SignalsStore {
   }
 
   get connectedSignals() {
-    return this.signals.filter(signal => signal.connected);
+    return this.signals.filter((signal) => signal.connected);
   }
 
   get hamRadioSignals() {
-    return this.signals.filter(signal => signal.type === 'ham');
+    return this.signals.filter((signal) => signal.type === 'ham');
   }
 
   get bluetoothSignals() {
-    return this.signals.filter(signal => signal.type === 'bluetooth');
+    return this.signals.filter((signal) => signal.type === 'bluetooth');
   }
 }
