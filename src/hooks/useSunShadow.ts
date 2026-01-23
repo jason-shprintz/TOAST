@@ -31,8 +31,16 @@ interface SunShadowStyle {
 export function useSunShadow(): SunShadowStyle {
   const core = useCoreStore();
   const theme = useTheme();
+  
+  // Helper function to get shadow color based on theme
+  // Use PRIMARY_DARK for light mode (#1F1F1F - dark shadow on light background)
+  // Use TOAST_BROWN for dark mode (#C09A6B - brown shadow on dark background)
+  // We can detect the theme by checking if PRIMARY_DARK is dark (#1F1F1F) or light (#E8E8E8)
+  const isDarkMode = theme.PRIMARY_DARK === '#E8E8E8';
+  const shadowColor = isDarkMode ? theme.TOAST_BROWN : theme.PRIMARY_DARK;
+  
   const [shadowStyle, setShadowStyle] = useState<SunShadowStyle>({
-    shadowColor: theme.TOAST_BROWN,
+    shadowColor: shadowColor,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -41,11 +49,15 @@ export function useSunShadow(): SunShadowStyle {
 
   useEffect(() => {
     const updateShadow = () => {
+      // Get shadow color for current theme
+      const currentIsDarkMode = theme.PRIMARY_DARK === '#E8E8E8';
+      const currentShadowColor = currentIsDarkMode ? theme.TOAST_BROWN : theme.PRIMARY_DARK;
+      
       // Get current location
       if (!core.lastFix) {
         // No location available, use default shadow (straight down)
         setShadowStyle({
-          shadowColor: theme.TOAST_BROWN,
+          shadowColor: currentShadowColor,
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.3,
           shadowRadius: 8,
@@ -112,7 +124,7 @@ export function useSunShadow(): SunShadowStyle {
       const elevation = opacity * 15;
 
       setShadowStyle({
-        shadowColor: theme.TOAST_BROWN,
+        shadowColor: currentShadowColor,
         shadowOffset: {
           width: shadowX,
           height: shadowY,

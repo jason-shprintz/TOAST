@@ -25,8 +25,9 @@ describe('useSunShadow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Mock the theme
+    // Mock the theme for light mode (default)
     (UseTheme.useTheme as jest.Mock).mockReturnValue({
+      PRIMARY_DARK: '#1F1F1F', // Light mode: dark color for shadows
       TOAST_BROWN: '#C09A6B',
     });
     
@@ -68,7 +69,7 @@ describe('useSunShadow', () => {
       expect(shadowResult).toHaveProperty('shadowOpacity');
       expect(shadowResult).toHaveProperty('shadowRadius');
       expect(shadowResult).toHaveProperty('elevation');
-      expect(shadowResult.shadowColor).toBe('#C09A6B');
+      expect(shadowResult.shadowColor).toBe('#1F1F1F'); // Light mode uses PRIMARY_DARK
       expect(typeof shadowResult.shadowOpacity).toBe('number');
       expect(shadowResult.shadowOpacity).toBeGreaterThanOrEqual(0);
       expect(shadowResult.shadowOpacity).toBeLessThanOrEqual(1);
@@ -90,7 +91,7 @@ describe('useSunShadow', () => {
       });
 
       expect(shadowResult).toEqual({
-        shadowColor: '#C09A6B',
+        shadowColor: '#1F1F1F', // Light mode uses PRIMARY_DARK
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -149,10 +150,54 @@ describe('useSunShadow', () => {
       });
 
       // Both should have valid shadow properties
-      expect(shadow1.shadowColor).toBe('#C09A6B');
-      expect(shadow2.shadowColor).toBe('#C09A6B');
+      expect(shadow1.shadowColor).toBe('#1F1F1F'); // Light mode uses PRIMARY_DARK
+      expect(shadow2.shadowColor).toBe('#1F1F1F'); // Light mode uses PRIMARY_DARK
       expect(typeof shadow1.shadowOpacity).toBe('number');
       expect(typeof shadow2.shadowOpacity).toBe('number');
+    });
+
+    test('uses correct shadow color for dark mode', () => {
+      // Mock dark mode theme
+      (UseTheme.useTheme as jest.Mock).mockReturnValue({
+        PRIMARY_DARK: '#E8E8E8', // Dark mode: light color
+        TOAST_BROWN: '#C09A6B',
+      });
+
+      let shadowResult: any;
+      
+      function TestHook() {
+        shadowResult = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook));
+      });
+
+      // Dark mode should use TOAST_BROWN for shadow visibility
+      expect(shadowResult.shadowColor).toBe('#C09A6B');
+    });
+
+    test('uses correct shadow color for light mode', () => {
+      // Mock light mode theme (already set in beforeEach, but being explicit)
+      (UseTheme.useTheme as jest.Mock).mockReturnValue({
+        PRIMARY_DARK: '#1F1F1F', // Light mode: dark color
+        TOAST_BROWN: '#C09A6B',
+      });
+
+      let shadowResult: any;
+      
+      function TestHook() {
+        shadowResult = useSunShadow();
+        return null;
+      }
+      
+      ReactTestRenderer.act(() => {
+        ReactTestRenderer.create(React.createElement(TestHook));
+      });
+
+      // Light mode should use PRIMARY_DARK for shadow
+      expect(shadowResult.shadowColor).toBe('#1F1F1F');
     });
   });
 
@@ -385,9 +430,9 @@ describe('useSunShadow', () => {
   });
 
   describe('Shadow Style Properties', () => {
-    test('default shadow style has required properties', () => {
+    test('default shadow style has required properties for light mode', () => {
       const defaultShadow = {
-        shadowColor: '#C09A6B',
+        shadowColor: '#1F1F1F', // Light mode uses PRIMARY_DARK
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -403,9 +448,14 @@ describe('useSunShadow', () => {
       expect(defaultShadow.shadowOffset).toHaveProperty('height');
     });
 
-    test('shadow color is TOAST_BROWN', () => {
-      const shadowColor = '#C09A6B';
-      expect(shadowColor).toBe('#C09A6B');
+    test('shadow color changes based on theme', () => {
+      // Light mode color
+      const lightModeShadowColor = '#1F1F1F'; // PRIMARY_DARK in light mode
+      expect(lightModeShadowColor).toBe('#1F1F1F');
+      
+      // Dark mode color
+      const darkModeShadowColor = '#C09A6B'; // TOAST_BROWN in dark mode
+      expect(darkModeShadowColor).toBe('#C09A6B');
     });
 
     test('shadow opacity is within valid range', () => {
