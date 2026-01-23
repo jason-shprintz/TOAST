@@ -15,16 +15,16 @@ interface SunShadowStyle {
 
 /**
  * Custom hook that calculates shadow properties based on the sun's position.
- * 
+ *
  * The shadow simulates how the sun casts shadows throughout the day:
  * - Sun rises in the east: shadow extends to the left (west)
  * - Sun at noon: shadow extends downward
  * - Sun sets in the west: shadow extends to the right (east)
- * 
+ *
  * Shadow intensity (opacity) varies based on sun altitude:
  * - Dawn/dusk: faint shadow (low altitude)
  * - Solar noon: intense shadow (high altitude)
- * 
+ *
  * @returns Shadow style object with shadowColor, shadowOffset, shadowOpacity, and shadowRadius
  */
 export function useSunShadow(): SunShadowStyle {
@@ -57,7 +57,7 @@ export function useSunShadow(): SunShadowStyle {
 
       // Get sun position (altitude and azimuth)
       const sunPosition = SunCalc.getPosition(now, latitude, longitude);
-      
+
       // altitude: angle above/below horizon in radians (-π/2 to π/2)
       // azimuth: direction in radians from south (-π to π, 0 = south, negative = east of south, positive = west of south)
       const altitude = sunPosition.altitude;
@@ -81,7 +81,7 @@ export function useSunShadow(): SunShadowStyle {
       // Azimuth is measured from south to west (suncalc convention)
       // 0 = south, π/2 = west, π = north, -π/2 = east
       // We want the shadow to be opposite to the sun's direction
-      // 
+      //
       // Sun in east (azimuth ≈ -π/2): shadow to west (left, negative x)
       // Sun in south (azimuth ≈ 0): shadow downward (positive y)
       // Sun in west (azimuth ≈ π/2): shadow to east (right, positive x)
@@ -92,9 +92,8 @@ export function useSunShadow(): SunShadowStyle {
       // Calculate shadow length based on altitude (lower sun = longer shadow)
       // At 5° altitude: max shadow length (20)
       // At 90° altitude: min shadow length (5)
-      const baseLength = altitudeDeg > 0 
-        ? Math.max(5, 20 - (altitudeDeg / 90) * 15)
-        : 0;
+      const baseLength =
+        altitudeDeg > 0 ? Math.max(5, 20 - (altitudeDeg / 90) * 15) : 0;
 
       // Calculate shadow offset
       // Note: Y-axis is inverted (negative cos instead of positive) to make
@@ -103,9 +102,8 @@ export function useSunShadow(): SunShadowStyle {
       const shadowY = -Math.cos(shadowAngle) * baseLength;
 
       // Calculate shadow blur based on altitude (higher sun = sharper shadow)
-      const shadowRadius = altitudeDeg > 0
-        ? Math.max(4, 12 - (altitudeDeg / 90) * 8)
-        : 4;
+      const shadowRadius =
+        altitudeDeg > 0 ? Math.max(4, 12 - (altitudeDeg / 90) * 8) : 4;
 
       // Calculate elevation for Android (based on opacity for consistency)
       // Opacity ranges from 0-0.6, so elevation ranges from 0-9
