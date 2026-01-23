@@ -12,6 +12,7 @@ import * as StoreContext from '../src/stores/StoreContext';
 // Mock the CoreStore context
 jest.mock('../src/stores/StoreContext', () => ({
   useCoreStore: jest.fn(),
+  useSettingsStore: jest.fn(),
 }));
 
 // Mock the useTheme hook
@@ -24,13 +25,18 @@ describe('useSunShadow', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock the theme for light mode (default)
     (UseTheme.useTheme as jest.Mock).mockReturnValue({
       PRIMARY_DARK: '#1F1F1F', // Light mode: dark color for shadows
       TOAST_BROWN: '#C09A6B',
     });
-    
+
+    // Mock the settings store with default light mode
+    (StoreContext.useSettingsStore as jest.Mock).mockReturnValue({
+      themeMode: 'light',
+    });
+
     // Create a mock core store with location data
     mockCoreStore = {
       lastFix: {
@@ -53,12 +59,12 @@ describe('useSunShadow', () => {
   describe('Hook Integration Tests', () => {
     test('hook returns shadow object with required properties when location is available', () => {
       let shadowResult: any;
-      
+
       function TestHook() {
         shadowResult = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook));
       });
@@ -80,12 +86,12 @@ describe('useSunShadow', () => {
     test('hook returns default shadow when location is unavailable', () => {
       mockCoreStore.lastFix = null;
       let shadowResult: any;
-      
+
       function TestHook() {
         shadowResult = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook));
       });
@@ -102,7 +108,7 @@ describe('useSunShadow', () => {
     test('hook calculates different shadows for different locations', () => {
       let shadow1: any;
       let shadow2: any;
-      
+
       // First location: New York
       mockCoreStore.lastFix = {
         coords: {
@@ -116,12 +122,12 @@ describe('useSunShadow', () => {
         },
         timestamp: Date.now(),
       };
-      
+
       function TestHook1() {
         shadow1 = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook1));
       });
@@ -139,12 +145,12 @@ describe('useSunShadow', () => {
         },
         timestamp: Date.now(),
       };
-      
+
       function TestHook2() {
         shadow2 = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook2));
       });
@@ -163,13 +169,18 @@ describe('useSunShadow', () => {
         TOAST_BROWN: '#C09A6B',
       });
 
+      // Mock settings store for dark mode
+      (StoreContext.useSettingsStore as jest.Mock).mockReturnValue({
+        themeMode: 'dark',
+      });
+
       let shadowResult: any;
-      
+
       function TestHook() {
         shadowResult = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook));
       });
@@ -185,13 +196,18 @@ describe('useSunShadow', () => {
         TOAST_BROWN: '#C09A6B',
       });
 
+      // Mock settings store for light mode
+      (StoreContext.useSettingsStore as jest.Mock).mockReturnValue({
+        themeMode: 'light',
+      });
+
       let shadowResult: any;
-      
+
       function TestHook() {
         shadowResult = useSunShadow();
         return null;
       }
-      
+
       ReactTestRenderer.act(() => {
         ReactTestRenderer.create(React.createElement(TestHook));
       });
@@ -316,9 +332,7 @@ describe('useSunShadow', () => {
       const testAltitudes = [5, 30, 60, 90]; // degrees
 
       const shadowLengths = testAltitudes.map(altitudeDeg => {
-        return altitudeDeg > 0 
-          ? Math.max(5, 20 - (altitudeDeg / 90) * 15)
-          : 0;
+        return altitudeDeg > 0 ? Math.max(5, 20 - (altitudeDeg / 90) * 15) : 0;
       });
 
       // Higher altitude should result in shorter shadow
@@ -331,9 +345,7 @@ describe('useSunShadow', () => {
       const testAltitudes = [5, 30, 60, 90]; // degrees
 
       const shadowBlurs = testAltitudes.map(altitudeDeg => {
-        return altitudeDeg > 0
-          ? Math.max(4, 12 - (altitudeDeg / 90) * 8)
-          : 4;
+        return altitudeDeg > 0 ? Math.max(4, 12 - (altitudeDeg / 90) * 8) : 4;
       });
 
       // Higher altitude should result in sharper shadow (less blur)
@@ -364,10 +376,9 @@ describe('useSunShadow', () => {
 
       const position = SunCalc.getPosition(testDate, latitude, longitude);
       const altitudeDeg = position.altitude * (180 / Math.PI);
-      
-      const baseLength = altitudeDeg > 0 
-        ? Math.max(5, 20 - (altitudeDeg / 90) * 15)
-        : 0;
+
+      const baseLength =
+        altitudeDeg > 0 ? Math.max(5, 20 - (altitudeDeg / 90) * 15) : 0;
 
       const shadowAngle = position.azimuth + Math.PI;
       const shadowX = -Math.sin(shadowAngle) * baseLength;
@@ -419,7 +430,7 @@ describe('useSunShadow', () => {
 
       dates.forEach(date => {
         const position = SunCalc.getPosition(date, latitude, longitude);
-        
+
         // All positions should be valid
         expect(typeof position.altitude).toBe('number');
         expect(typeof position.azimuth).toBe('number');
@@ -452,7 +463,7 @@ describe('useSunShadow', () => {
       // Light mode color
       const lightModeShadowColor = '#1F1F1F'; // PRIMARY_DARK in light mode
       expect(lightModeShadowColor).toBe('#1F1F1F');
-      
+
       // Dark mode color
       const darkModeShadowColor = '#C09A6B'; // TOAST_BROWN in dark mode
       expect(darkModeShadowColor).toBe('#C09A6B');
@@ -478,9 +489,8 @@ describe('useSunShadow', () => {
       const testAltitudes = [0, 30, 60, 90];
 
       testAltitudes.forEach(altitudeDeg => {
-        const shadowRadius = altitudeDeg > 0
-          ? Math.max(4, 12 - (altitudeDeg / 90) * 8)
-          : 4;
+        const shadowRadius =
+          altitudeDeg > 0 ? Math.max(4, 12 - (altitudeDeg / 90) * 8) : 4;
 
         expect(shadowRadius).toBeGreaterThan(0);
       });
