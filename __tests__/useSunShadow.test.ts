@@ -56,10 +56,13 @@ describe('useSunShadow', () => {
       expect(shadowResult).toHaveProperty('shadowOffset');
       expect(shadowResult).toHaveProperty('shadowOpacity');
       expect(shadowResult).toHaveProperty('shadowRadius');
+      expect(shadowResult).toHaveProperty('elevation');
       expect(shadowResult.shadowColor).toBe('#000000');
       expect(typeof shadowResult.shadowOpacity).toBe('number');
       expect(shadowResult.shadowOpacity).toBeGreaterThanOrEqual(0);
       expect(shadowResult.shadowOpacity).toBeLessThanOrEqual(1);
+      expect(typeof shadowResult.elevation).toBe('number');
+      expect(shadowResult.elevation).toBeGreaterThanOrEqual(0);
     });
 
     test('hook returns default shadow when location is unavailable', () => {
@@ -80,6 +83,7 @@ describe('useSunShadow', () => {
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
+        elevation: 8,
       });
     });
 
@@ -376,12 +380,14 @@ describe('useSunShadow', () => {
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
+        elevation: 8,
       };
 
       expect(defaultShadow).toHaveProperty('shadowColor');
       expect(defaultShadow).toHaveProperty('shadowOffset');
       expect(defaultShadow).toHaveProperty('shadowOpacity');
       expect(defaultShadow).toHaveProperty('shadowRadius');
+      expect(defaultShadow).toHaveProperty('elevation');
       expect(defaultShadow.shadowOffset).toHaveProperty('width');
       expect(defaultShadow.shadowOffset).toHaveProperty('height');
     });

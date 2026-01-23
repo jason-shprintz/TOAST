@@ -1,11 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet, ImageStyle, StyleProp } from 'react-native';
+import { Image, StyleSheet, ImageStyle, StyleProp, View, ViewStyle } from 'react-native';
 import { COLORS } from '../theme';
 
 type Props = {
   size?: number;
   style?: StyleProp<ImageStyle>;
-  shadowStyle?: Partial<ImageStyle>;
+  shadowStyle?: Partial<ViewStyle>;
 };
 
 /**
@@ -17,22 +17,32 @@ type Props = {
  * @returns A React element displaying the Toast logo.
  */
 export default function LogoHeader({ size = 120, style, shadowStyle }: Props) {
-  const dynamicStyle: StyleProp<ImageStyle> = [
-    styles.base,
+  const containerStyle: StyleProp<ViewStyle> = [
     {
       width: size,
       height: size,
       borderRadius: size / 2,
     },
     shadowStyle,
+  ];
+
+  const imageStyle: StyleProp<ImageStyle> = [
+    styles.base,
+    {
+      width: size,
+      height: size,
+      borderRadius: size / 2,
+    },
     style,
   ];
 
   return (
-    <Image
-      source={require('../../assets/toast-logo.png')}
-      style={dynamicStyle}
-    />
+    <View style={containerStyle}>
+      <Image
+        source={require('../../assets/toast-logo.png')}
+        style={imageStyle}
+      />
+    </View>
   );
 }
 

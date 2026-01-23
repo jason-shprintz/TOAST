@@ -10,6 +10,7 @@ interface SunShadowStyle {
   };
   shadowOpacity: number;
   shadowRadius: number;
+  elevation: number;
 }
 
 /**
@@ -33,6 +34,7 @@ export function useSunShadow(): SunShadowStyle {
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    elevation: 8,
   });
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export function useSunShadow(): SunShadowStyle {
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.3,
           shadowRadius: 8,
+          elevation: 8,
         });
         return;
       }
@@ -104,6 +107,9 @@ export function useSunShadow(): SunShadowStyle {
         ? Math.max(4, 12 - (altitudeDeg / 90) * 8)
         : 4;
 
+      // Calculate elevation for Android (based on opacity for consistency)
+      const elevation = opacity * 15; // Scale to 0-9 range
+
       setShadowStyle({
         shadowColor: '#000000',
         shadowOffset: {
@@ -112,6 +118,7 @@ export function useSunShadow(): SunShadowStyle {
         },
         shadowOpacity: opacity,
         shadowRadius: shadowRadius,
+        elevation: elevation,
       });
     };
 
