@@ -108,7 +108,8 @@ export function useSunShadow(): SunShadowStyle {
         : 4;
 
       // Calculate elevation for Android (based on opacity for consistency)
-      const elevation = opacity * 15; // Scale to 0-9 range
+      // Opacity ranges from 0-0.6, so elevation ranges from 0-9
+      const elevation = opacity * 15;
 
       setShadowStyle({
         shadowColor: '#000000',
