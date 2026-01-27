@@ -267,6 +267,7 @@ describe('DecibelMeterScreen', () => {
 
     test('stopping sets recording state to false', () => {
       let isGlobalRecording = true;
+      expect(isGlobalRecording).toBe(true);
       
       // Stop recording
       isGlobalRecording = false;
