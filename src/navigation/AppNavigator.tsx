@@ -13,6 +13,7 @@ import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import SearchScreen from '../screens/Common/SearchScreen';
 import DecibelMeterScreen from '../screens/DecibelMeter/DecibelMeterScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
+import DigitalWhistleScreen from '../screens/DigitalWhistle/DigitalWhistleScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
@@ -105,6 +106,10 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="NatoPhonetic" component={NatoPhoneticScreen} />
           <Stack.Screen name="DecibelMeter" component={DecibelMeterScreen} />
+          <Stack.Screen
+            name="DigitalWhistle"
+            component={DigitalWhistleScreen}
+          />
           {/* Core Module */}
           <Stack.Screen name="DeviceStatus" component={DeviceStatusScreen} />
           <Stack.Screen name="Flashlight" component={FlashlightScreen} />
