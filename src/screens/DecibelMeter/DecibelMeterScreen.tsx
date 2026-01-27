@@ -10,9 +10,7 @@ import {
   Animated,
   ScrollView,
 } from 'react-native';
-import AudioRecorderPlayer, {
-  type RecordBackType,
-} from 'react-native-audio-recorder-player';
+import Sound, { type RecordBackType } from 'react-native-nitro-sound';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -88,10 +86,10 @@ const DecibelMeterScreenImpl = () => {
       isGlobalRecording = true;
 
       // Start recording with metering enabled
-      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
+      await Sound.startRecorder(undefined, undefined, true);
 
       // Set up the recorder state listener to get real-time metering data
-      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+      Sound.addRecordBackListener((e: RecordBackType) => {
         if (!isGlobalRecording) return;
 
         // currentMetering provides actual dB levels from the microphone
@@ -135,8 +133,8 @@ const DecibelMeterScreenImpl = () => {
 
     try {
       isGlobalRecording = false;
-      await AudioRecorderPlayer.stopRecorder();
-      AudioRecorderPlayer.removeRecordBackListener();
+      await Sound.stopRecorder();
+      Sound.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
