@@ -21,19 +21,8 @@ import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
 
-// Global singleton audio recorder instance that persists across screen navigation
-let globalAudioRecorderPlayer: AudioRecorderPlayer | null = null;
+// Track if recording is active globally
 let isGlobalRecording = false;
-
-/**
- * Get or create the global audio recorder instance
- */
-const getAudioRecorderPlayer = (): AudioRecorderPlayer => {
-  if (!globalAudioRecorderPlayer) {
-    globalAudioRecorderPlayer = new AudioRecorderPlayer();
-  }
-  return globalAudioRecorderPlayer;
-};
 
 /**
  * DecibelMeterScreen component
@@ -97,13 +86,12 @@ const DecibelMeterScreenImpl = () => {
 
     try {
       isGlobalRecording = true;
-      const audioRecorderPlayer = getAudioRecorderPlayer();
 
       // Start recording with metering enabled
-      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
+      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
 
       // Set up the recorder state listener to get real-time metering data
-      audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
         if (!isGlobalRecording) return;
 
         // currentMetering provides actual dB levels from the microphone
@@ -147,9 +135,8 @@ const DecibelMeterScreenImpl = () => {
 
     try {
       isGlobalRecording = false;
-      const audioRecorderPlayer = getAudioRecorderPlayer();
-      await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
+      await AudioRecorderPlayer.stopRecorder();
+      AudioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
