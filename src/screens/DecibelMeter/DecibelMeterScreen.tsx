@@ -212,7 +212,7 @@ const DecibelMeterScreenImpl = () => {
         setIsActive(false);
       });
     }
-  }, [core.decibelMeterActive, startMonitoring]);
+  }, [core, core.decibelMeterActive, startMonitoring]);
 
   /**
    * Get color based on decibel level.
