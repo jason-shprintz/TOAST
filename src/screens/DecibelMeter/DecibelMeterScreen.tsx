@@ -226,8 +226,6 @@ const DecibelMeterScreenImpl = () => {
     return COLORS.ERROR; // Loud - red
   };
 
-  const levelColor = getLevelColor(decibelLevel);
-
   return (
     <ScreenBody>
       <SectionHeader>Decibel Meter</SectionHeader>
@@ -246,26 +244,6 @@ const DecibelMeterScreenImpl = () => {
               },
             ]}
           >
-            {/* Decibel Level Display */}
-            <View style={styles.levelDisplay}>
-              <Text
-                style={[
-                  styles.levelNumber,
-                  { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
-                ]}
-              >
-                {Math.round(decibelLevel)}
-              </Text>
-              <Text
-                style={[
-                  styles.levelUnit,
-                  { color: isActive ? levelColor : COLORS.PRIMARY_DARK },
-                ]}
-              >
-                dB
-              </Text>
-            </View>
-
             {/* Visual Bar Meter */}
             <View style={styles.barMeterContainer}>
               {[...Array(20)].map((_, i) => {
@@ -337,86 +315,6 @@ const DecibelMeterScreenImpl = () => {
                 </Text>
               </TouchableOpacity>
             )}
-          </View>
-
-          {/* Reference Levels */}
-          <View style={styles.referenceContainer}>
-            <Text
-              style={[
-                styles.referenceTitle,
-                {
-                  color: COLORS.PRIMARY_DARK,
-                  borderBottomColor: COLORS.SECONDARY_ACCENT,
-                },
-              ]}
-            >
-              Reference Sound Levels
-            </Text>
-            <View style={styles.referenceItem}>
-              <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
-                30 dB
-              </Text>
-              <Text
-                style={[
-                  styles.referenceDescription,
-                  { color: COLORS.PRIMARY_DARK },
-                ]}
-              >
-                Whisper, Quiet Library
-              </Text>
-            </View>
-            <View style={styles.referenceItem}>
-              <Text style={[styles.referenceLevel, { color: COLORS.SUCCESS }]}>
-                50 dB
-              </Text>
-              <Text
-                style={[
-                  styles.referenceDescription,
-                  { color: COLORS.PRIMARY_DARK },
-                ]}
-              >
-                Normal Conversation
-              </Text>
-            </View>
-            <View style={styles.referenceItem}>
-              <Text style={[styles.referenceLevel, { color: COLORS.ACCENT }]}>
-                70 dB
-              </Text>
-              <Text
-                style={[
-                  styles.referenceDescription,
-                  { color: COLORS.PRIMARY_DARK },
-                ]}
-              >
-                Busy Street Traffic
-              </Text>
-            </View>
-            <View style={styles.referenceItem}>
-              <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
-                85 dB
-              </Text>
-              <Text
-                style={[
-                  styles.referenceDescription,
-                  { color: COLORS.PRIMARY_DARK },
-                ]}
-              >
-                Heavy Traffic, Power Tools
-              </Text>
-            </View>
-            <View style={styles.referenceItem}>
-              <Text style={[styles.referenceLevel, { color: COLORS.ERROR }]}>
-                100 dB
-              </Text>
-              <Text
-                style={[
-                  styles.referenceDescription,
-                  { color: COLORS.PRIMARY_DARK },
-                ]}
-              >
-                Motorcycle, Chainsaw
-              </Text>
-            </View>
           </View>
         </ScrollView>
       </View>

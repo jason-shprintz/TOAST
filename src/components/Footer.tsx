@@ -195,24 +195,21 @@ const FooterImpl = () => {
                       key={i}
                       style={[
                         styles.decibelBar,
+                        isBarActive
+                          ? styles.decibelBarActive
+                          : styles.decibelBarInactive,
                         {
                           height: barHeight,
                           backgroundColor: isBarActive
                             ? barColor
                             : COLORS.BACKGROUND,
                           borderColor: COLORS.SECONDARY_ACCENT,
-                          opacity: isBarActive ? 1 : 0.3,
                         },
                       ]}
                     />
                   );
                 })}
               </View>
-              <Text
-                style={[styles.decibelText, { color: COLORS.PRIMARY_DARK }]}
-              >
-                {Math.round(core.currentDecibelLevel)} dB
-              </Text>
             </View>
           ) : (
             <Text
@@ -371,6 +368,12 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: 1,
     // Height is set dynamically based on bar level
+  },
+  decibelBarActive: {
+    opacity: 1,
+  },
+  decibelBarInactive: {
+    opacity: 0.3,
   },
   decibelText: {
     fontSize: 14,
