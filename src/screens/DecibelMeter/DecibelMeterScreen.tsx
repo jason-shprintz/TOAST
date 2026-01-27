@@ -42,6 +42,7 @@ const DecibelMeterScreenImpl = () => {
   const [isActive, setIsActive] = useState(core.decibelMeterActive);
   const [decibelLevel, setDecibelLevel] = useState(0);
   const animatedLevel = useRef(new Animated.Value(0)).current;
+  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const isRecordingRef = useRef(false);
 
   /**
@@ -81,10 +82,10 @@ const DecibelMeterScreenImpl = () => {
       isRecordingRef.current = true;
 
       // Start recording with metering enabled
-      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
+      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
 
       // Set up the recorder state listener to get real-time metering data
-      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+      audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
         if (!isRecordingRef.current) return;
 
         // currentMetering provides actual dB levels from the microphone
@@ -92,18 +93,26 @@ const DecibelMeterScreenImpl = () => {
         // On Android: provides amplitude value that we normalize
         const metering = e.currentMetering || -160;
 
-        // Convert metering to a 0-100 scale for display
-        // iOS metering ranges from -160 to 0, normalize to 0-100
-        // Add 160 to shift range, then map to 0-100
+        // Convert metering to a 0-100 scale for display with adjusted sensitivity
+        // Goal: Ambient noise at upper green (30-40), normal talking at orange (50-70), loud at red (70+)
         let normalizedLevel;
         if (Platform.OS === 'ios') {
           // iOS: -160 to 0 dB range
-          normalizedLevel = Math.max(0, Math.min(100, (metering + 160) / 1.6));
+          // Typical ranges: -60 to -40 dB (quiet), -40 to -20 dB (talking), -20 to 0 dB (loud)
+          // Apply adjusted mapping: use -80 to -10 dB range mapped to 0-100
+          // This makes the meter less sensitive to normal ambient sounds
+          const adjustedMetering = Math.max(-80, Math.min(-10, metering));
+          normalizedLevel = ((adjustedMetering + 80) / 70) * 100;
         } else {
           // Android: amplitude value, normalize to 0-100
           // Android provides values typically 0-32767
-          normalizedLevel = Math.max(0, Math.min(100, metering / 327.67));
+          // Reduce sensitivity by scaling down the amplitude range
+          const adjustedAmplitude = Math.min(metering, 16000); // Cap at half max
+          normalizedLevel = (adjustedAmplitude / 160);
         }
+
+        // Clamp to 0-100 range
+        normalizedLevel = Math.max(0, Math.min(100, normalizedLevel));
 
         setDecibelLevel(normalizedLevel);
         core.setCurrentDecibelLevel(normalizedLevel);
@@ -128,8 +137,8 @@ const DecibelMeterScreenImpl = () => {
   const stopMonitoring = async () => {
     try {
       isRecordingRef.current = false;
-      await AudioRecorderPlayer.stopRecorder();
-      AudioRecorderPlayer.removeRecordBackListener();
+      await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
@@ -180,8 +189,8 @@ const DecibelMeterScreenImpl = () => {
     return () => {
       // Stop the recorder when unmounting but don't change the active state
       if (isRecordingRef.current) {
-        AudioRecorderPlayer.stopRecorder().catch(console.error);
-        AudioRecorderPlayer.removeRecordBackListener();
+        audioRecorderPlayer.stopRecorder().catch(console.error);
+        audioRecorderPlayer.removeRecordBackListener();
         isRecordingRef.current = false;
       }
     };
