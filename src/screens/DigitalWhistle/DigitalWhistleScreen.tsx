@@ -7,19 +7,20 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 
-// Enable playback in silent mode
-Sound.setCategory('Playback');
-
 /**
  * DigitalWhistleScreen component
  *
  * Provides two types of whistles:
- * - Normal Whistle (3000 Hz)
- * - Dog Whistle (20000 Hz - high frequency)
+ * - Normal Whistle (using placeholder tone)
+ * - Dog Whistle (using placeholder tone)
+ *
+ * Note: Currently uses placeholder morse code sounds. Production implementation
+ * would use custom whistle sound files at appropriate frequencies (e.g., 3000 Hz
+ * for normal whistle and 20000 Hz for dog whistle).
  *
  * Each whistle has two modes:
- * - Short Burst: Plays for ~0.5 seconds
- * - Continuous: Plays until stopped
+ * - Short Burst: Plays once
+ * - Continuous: Loops until stopped
  *
  * @returns A React element rendering the digital whistle screen.
  */
@@ -29,17 +30,14 @@ export default function DigitalWhistleScreen() {
   const [isPlayingDog, setIsPlayingDog] = React.useState(false);
   const normalSoundRef = React.useRef<Sound | null>(null);
   const dogSoundRef = React.useRef<Sound | null>(null);
-  const normalIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(
-    null,
-  );
-  const dogIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(
-    null,
-  );
 
   /**
    * Initialize sounds on component mount
    */
   React.useEffect(() => {
+    // Enable playback in silent mode
+    Sound.setCategory('Playback');
+
     // Use the existing morse code sounds as a placeholder
     // In a real implementation, you would add custom whistle sound files
     normalSoundRef.current = new Sound(
@@ -62,22 +60,18 @@ export default function DigitalWhistleScreen() {
       },
     );
 
-    const normalInterval = normalIntervalRef;
-    const dogInterval = dogIntervalRef;
+    const normalInterval = normalSoundRef;
+    const dogInterval = dogSoundRef;
 
     return () => {
       // Cleanup on unmount
-      if (normalSoundRef.current) {
-        normalSoundRef.current.release();
-      }
-      if (dogSoundRef.current) {
-        dogSoundRef.current.release();
-      }
       if (normalInterval.current) {
-        clearInterval(normalInterval.current);
+        normalInterval.current.stop();
+        normalInterval.current.release();
       }
       if (dogInterval.current) {
-        clearInterval(dogInterval.current);
+        dogInterval.current.stop();
+        dogInterval.current.release();
       }
     };
   }, []);
@@ -104,12 +98,11 @@ export default function DigitalWhistleScreen() {
   }, []);
 
   /**
-   * Starts continuous whistle playback
+   * Starts continuous whistle playback using looping
    * @param isNormal - True for normal whistle, false for dog whistle
    */
   const startContinuous = React.useCallback((isNormal: boolean) => {
     const sound = isNormal ? normalSoundRef.current : dogSoundRef.current;
-    const intervalRef = isNormal ? normalIntervalRef : dogIntervalRef;
 
     if (!sound) {
       Alert.alert('Error', 'Sound not loaded yet. Please try again.');
@@ -117,27 +110,29 @@ export default function DigitalWhistleScreen() {
     }
 
     // Stop any existing playback
-    sound.stop();
+    sound.stop(() => {
+      // Set to loop continuously
+      sound.setNumberOfLoops(-1);
 
-    if (isNormal) {
-      setIsPlayingNormal(true);
-    } else {
-      setIsPlayingDog(true);
-    }
-
-    // Play continuously by repeating
-    const playLoop = () => {
+      // Start playing
       sound.play((success) => {
         if (!success) {
           console.error('Playback failed');
+          if (isNormal) {
+            setIsPlayingNormal(false);
+          } else {
+            setIsPlayingDog(false);
+          }
         }
       });
-    };
 
-    playLoop();
-
-    // Set interval to replay (adjust timing based on sound duration)
-    intervalRef.current = setInterval(playLoop, 200);
+      // Update state
+      if (isNormal) {
+        setIsPlayingNormal(true);
+      } else {
+        setIsPlayingDog(true);
+      }
+    });
   }, []);
 
   /**
@@ -146,15 +141,12 @@ export default function DigitalWhistleScreen() {
    */
   const stopContinuous = React.useCallback((isNormal: boolean) => {
     const sound = isNormal ? normalSoundRef.current : dogSoundRef.current;
-    const intervalRef = isNormal ? normalIntervalRef : dogIntervalRef;
 
     if (sound) {
-      sound.stop();
-    }
-
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+      sound.stop(() => {
+        // Reset loop count
+        sound.setNumberOfLoops(0);
+      });
     }
 
     if (isNormal) {
@@ -163,14 +155,6 @@ export default function DigitalWhistleScreen() {
       setIsPlayingDog(false);
     }
   }, []);
-
-  // Cleanup on unmount
-  React.useEffect(() => {
-    return () => {
-      stopContinuous(true);
-      stopContinuous(false);
-    };
-  }, [stopContinuous]);
 
   const styles = StyleSheet.create({
     container: {

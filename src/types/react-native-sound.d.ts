@@ -13,5 +13,6 @@ declare module 'react-native-sound' {
     stop(callback?: () => void): void;
     release(): void;
     setVolume(volume: number): void;
+    setNumberOfLoops(loops: number): void;
   }
 }
