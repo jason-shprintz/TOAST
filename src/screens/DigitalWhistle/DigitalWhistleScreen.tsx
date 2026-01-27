@@ -29,8 +29,12 @@ export default function DigitalWhistleScreen() {
   const [isPlayingDog, setIsPlayingDog] = React.useState(false);
   const normalSoundRef = React.useRef<Sound | null>(null);
   const dogSoundRef = React.useRef<Sound | null>(null);
-  const normalIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
-  const dogIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
+  const normalIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
+  const dogIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
 
   /**
    * Initialize sounds on component mount
