@@ -10,7 +10,9 @@ import {
   Animated,
   ScrollView,
 } from 'react-native';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, {
+  type RecordBackType,
+} from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -40,7 +42,6 @@ const DecibelMeterScreenImpl = () => {
   const [isActive, setIsActive] = useState(core.decibelMeterActive);
   const [decibelLevel, setDecibelLevel] = useState(0);
   const animatedLevel = useRef(new Animated.Value(0)).current;
-  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const isRecordingRef = useRef(false);
 
   /**
@@ -78,19 +79,19 @@ const DecibelMeterScreenImpl = () => {
   const startMonitoring = async () => {
     try {
       isRecordingRef.current = true;
-      
+
       // Start recording with metering enabled
-      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
-      
+      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
+
       // Set up the recorder state listener to get real-time metering data
-      audioRecorderPlayer.addRecordBackListener((e) => {
+      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
         if (!isRecordingRef.current) return;
-        
+
         // currentMetering provides actual dB levels from the microphone
         // On iOS: ranges from -160 dB (silence) to 0 dB (max)
         // On Android: provides amplitude value that we normalize
         const metering = e.currentMetering || -160;
-        
+
         // Convert metering to a 0-100 scale for display
         // iOS metering ranges from -160 to 0, normalize to 0-100
         // Add 160 to shift range, then map to 0-100
@@ -101,9 +102,9 @@ const DecibelMeterScreenImpl = () => {
         } else {
           // Android: amplitude value, normalize to 0-100
           // Android provides values typically 0-32767
-          normalizedLevel = Math.max(0, Math.min(100, (metering / 327.67)));
+          normalizedLevel = Math.max(0, Math.min(100, metering / 327.67));
         }
-        
+
         setDecibelLevel(normalizedLevel);
         core.setCurrentDecibelLevel(normalizedLevel);
 
@@ -127,8 +128,8 @@ const DecibelMeterScreenImpl = () => {
   const stopMonitoring = async () => {
     try {
       isRecordingRef.current = false;
-      await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
+      await AudioRecorderPlayer.stopRecorder();
+      AudioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
@@ -179,12 +180,11 @@ const DecibelMeterScreenImpl = () => {
     return () => {
       // Stop the recorder when unmounting but don't change the active state
       if (isRecordingRef.current) {
-        audioRecorderPlayer.stopRecorder().catch(console.error);
-        audioRecorderPlayer.removeRecordBackListener();
+        AudioRecorderPlayer.stopRecorder().catch(console.error);
+        AudioRecorderPlayer.removeRecordBackListener();
         isRecordingRef.current = false;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
