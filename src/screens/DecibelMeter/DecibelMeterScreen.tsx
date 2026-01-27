@@ -214,8 +214,7 @@ const DecibelMeterScreenImpl = () => {
         setIsActive(false);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [core.decibelMeterActive]);
+  }, [core.decibelMeterActive, startMonitoring]);
 
   /**
    * Get color based on decibel level.
