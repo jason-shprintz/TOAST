@@ -108,7 +108,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   },
   {
     name: 'Decibel Meter',
-    screen: 'ComingSoon',
+    screen: 'DecibelMeter',
     icon: 'volume-high-outline',
     id: 'comm_decibel_meter',
   },

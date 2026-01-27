@@ -41,8 +41,17 @@ const FooterImpl = () => {
   const sosProgressAnim = useRef(new Animated.Value(0)).current;
   const sosAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
 
-  // Determine the active item based on flashlight mode
+  // Determine the active item based on flashlight mode or decibel meter
   const getActiveItem = () => {
+    // Decibel meter takes priority if active
+    if (core.decibelMeterActive) {
+      return {
+        icon: 'volume-high-outline',
+        label: 'Decibel Meter',
+        type: 'decibel',
+      };
+    }
+
     const mode = core.flashlightMode;
     if (mode === FlashlightModes.ON) {
       return { icon: 'flashlight-outline', label: 'Flashlight', mode };
@@ -65,8 +74,14 @@ const FooterImpl = () => {
   // Handle active item press (turn off or navigate to nightvision)
   const handleActiveItemPress = () => {
     if (activeItem) {
-      // Turn off the active mode
-      core.setFlashlightMode(FlashlightModes.OFF);
+      // Check if it's the decibel meter (has 'type' property)
+      if ('type' in activeItem && activeItem.type === 'decibel') {
+        // Turn off the decibel meter
+        core.setDecibelMeterActive(false);
+      } else {
+        // Turn off the active flashlight mode
+        core.setFlashlightMode(FlashlightModes.OFF);
+      }
     } else {
       // Navigate to Nightvision
       // @ts-ignore - navigation types
@@ -160,11 +175,49 @@ const FooterImpl = () => {
 
         {/* Notification content */}
         <View style={styles.notificationSection}>
-          <Text
-            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
-          >
-            NOTIFICATION
-          </Text>
+          {core.decibelMeterActive ? (
+            // Decibel meter visualization
+            <View style={styles.decibelMeterContainer}>
+              <View style={styles.decibelMeterBars}>
+                {[...Array(10)].map((_, i) => {
+                  const barLevel = (i + 1) * 10; // Each bar represents 10 dB
+                  const isBarActive = core.currentDecibelLevel >= barLevel;
+                  const barColor =
+                    barLevel < 40
+                      ? COLORS.SUCCESS
+                      : barLevel < 70
+                        ? COLORS.ACCENT
+                        : COLORS.ERROR;
+                  const barHeight = ((i + 1) / 10) * 40; // Height scales from 4px to 40px
+
+                  return (
+                    <View
+                      key={i}
+                      style={[
+                        styles.decibelBar,
+                        isBarActive
+                          ? styles.decibelBarActive
+                          : styles.decibelBarInactive,
+                        {
+                          height: barHeight,
+                          backgroundColor: isBarActive
+                            ? barColor
+                            : COLORS.BACKGROUND,
+                          borderColor: COLORS.SECONDARY_ACCENT,
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+          ) : (
+            <Text
+              style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            >
+              NOTIFICATION
+            </Text>
+          )}
         </View>
       </View>
 
@@ -296,5 +349,34 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     marginTop: 4,
+  },
+  decibelMeterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  decibelMeterBars: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 40,
+    gap: 2,
+  },
+  decibelBar: {
+    width: 6,
+    borderRadius: 2,
+    borderWidth: 1,
+    // Height is set dynamically based on bar level
+  },
+  decibelBarActive: {
+    opacity: 1,
+  },
+  decibelBarInactive: {
+    opacity: 0.3,
+  },
+  decibelText: {
+    fontSize: 14,
+    fontWeight: '700',
   },
 });
