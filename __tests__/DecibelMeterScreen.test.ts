@@ -259,10 +259,8 @@ describe('DecibelMeterScreen', () => {
       expect(isGlobalRecording).toBe(true);
       
       // Attempt to start again should be skipped (idempotent)
-      if (isGlobalRecording) {
-        // Should return early
-        expect(isGlobalRecording).toBe(true);
-      }
+      // Since recording is already in progress, monitoring should not restart
+      expect(isGlobalRecording).toBe(true);
     });
 
     test('stopping sets recording state to false', () => {
