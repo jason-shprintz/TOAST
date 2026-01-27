@@ -216,8 +216,12 @@ const DecibelMeterScreenImpl = () => {
         setIsActive(false);
       });
     }
-  }, [core, core.decibelMeterActive, startMonitoring]);
 
+    // If the meter has been deactivated while recording, stop it
+    if (!core.decibelMeterActive && isGlobalRecording) {
+      stopMonitoring();
+    }
+  }, [core, core.decibelMeterActive, startMonitoring, stopMonitoring]);
   /**
    * Get color based on decibel level.
    */
