@@ -10,7 +10,7 @@ import {
   Animated,
   ScrollView,
 } from 'react-native';
-import { useSoundRecorder } from 'react-native-nitro-sound';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -40,7 +40,8 @@ const DecibelMeterScreenImpl = () => {
   const [isActive, setIsActive] = useState(core.decibelMeterActive);
   const [decibelLevel, setDecibelLevel] = useState(0);
   const animatedLevel = useRef(new Animated.Value(0)).current;
-  const recorderPathRef = useRef<string | null>(null);
+  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
+  const isRecordingRef = useRef(false);
 
   /**
    * Request audio recording permission for Android.
@@ -71,52 +72,63 @@ const DecibelMeterScreenImpl = () => {
   };
 
   /**
-   * Initialize the sound recorder with real-time audio metering.
-   * Uses the microphone to capture actual sound levels.
+   * Starts audio recording with real-time metering to get actual dB levels.
+   * Uses react-native-audio-recorder-player which exposes currentMetering.
    */
-  const { startRecorder, stopRecorder } = useSoundRecorder({
-    onRecord: (e) => {
-      // The onRecord callback provides metering data
-      // We can use currentPosition as a proxy for activity, but for real dB levels
-      // we need to calculate based on the audio amplitude
+  const startMonitoring = async () => {
+    try {
+      isRecordingRef.current = true;
+      
+      // Start recording with metering enabled
+      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
+      
+      // Set up the recorder state listener to get real-time metering data
+      audioRecorderPlayer.addRecordBackListener((e) => {
+        if (!isRecordingRef.current) return;
+        
+        // currentMetering provides actual dB levels from the microphone
+        // On iOS: ranges from -160 dB (silence) to 0 dB (max)
+        // On Android: provides amplitude value that we normalize
+        const metering = e.currentMetering || -160;
+        
+        // Convert metering to a 0-100 scale for display
+        // iOS metering ranges from -160 to 0, normalize to 0-100
+        // Add 160 to shift range, then map to 0-100
+        let normalizedLevel;
+        if (Platform.OS === 'ios') {
+          // iOS: -160 to 0 dB range
+          normalizedLevel = Math.max(0, Math.min(100, (metering + 160) / 1.6));
+        } else {
+          // Android: amplitude value, normalize to 0-100
+          // Android provides values typically 0-32767
+          normalizedLevel = Math.max(0, Math.min(100, (metering / 327.67)));
+        }
+        
+        setDecibelLevel(normalizedLevel);
+        core.setCurrentDecibelLevel(normalizedLevel);
 
-      // Note: react-native-nitro-sound doesn't directly expose decibel levels
-      // but we can use the recording activity to estimate levels
-      // For now, we'll use a more realistic simulation that responds to actual recording
-
-      // In a production app, you would need native module enhancements to get
-      // actual dB SPL values from the microphone
-
-      // For demonstration, we'll create a more responsive simulation
-      // that at least shows the meter is "listening" to the microphone
-      const time = e.currentPosition || 0;
-
-      // Use time-based variation with some randomness to simulate
-      // the meter responding to audio input
-      const variation = Math.sin(time / 1000) * 10 + Math.random() * 15;
-      const baseLevel = 30; // Quiet baseline
-      const newLevel = Math.max(20, Math.min(80, baseLevel + variation));
-
-      setDecibelLevel(newLevel);
-      core.setCurrentDecibelLevel(newLevel);
-
-      // Animate the level change
-      Animated.spring(animatedLevel, {
-        toValue: newLevel,
-        useNativeDriver: false,
-        friction: 10,
-        tension: 35,
-      }).start();
-    },
-  });
+        // Animate the level change
+        Animated.spring(animatedLevel, {
+          toValue: normalizedLevel,
+          useNativeDriver: false,
+          friction: 8,
+          tension: 40,
+        }).start();
+      });
+    } catch (error) {
+      console.error('Error starting monitoring:', error);
+      throw error;
+    }
+  };
 
   /**
    * Stops audio level monitoring by stopping the recorder.
    */
   const stopMonitoring = async () => {
     try {
-      await stopRecorder();
-      recorderPathRef.current = null;
+      isRecordingRef.current = false;
+      await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
@@ -141,10 +153,7 @@ const DecibelMeterScreenImpl = () => {
     try {
       setIsActive(true);
       core.setDecibelMeterActive(true);
-
-      // Start recording to access microphone for audio metering
-      const path = await startRecorder();
-      recorderPathRef.current = path;
+      await startMonitoring();
     } catch (error) {
       console.error('Error starting recorder:', error);
       Alert.alert('Error', 'Failed to start audio monitoring.');
@@ -169,9 +178,10 @@ const DecibelMeterScreenImpl = () => {
   useEffect(() => {
     return () => {
       // Stop the recorder when unmounting but don't change the active state
-      if (recorderPathRef.current) {
-        stopRecorder().catch(console.error);
-        recorderPathRef.current = null;
+      if (isRecordingRef.current) {
+        audioRecorderPlayer.stopRecorder().catch(console.error);
+        audioRecorderPlayer.removeRecordBackListener();
+        isRecordingRef.current = false;
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,16 +195,12 @@ const DecibelMeterScreenImpl = () => {
     setIsActive(core.decibelMeterActive);
 
     // If the meter is active (from core store) but not recording locally, start it
-    if (core.decibelMeterActive && !recorderPathRef.current) {
-      startRecorder()
-        .then((path) => {
-          recorderPathRef.current = path;
-        })
-        .catch((error) => {
-          console.error('Error restarting recorder:', error);
-          core.setDecibelMeterActive(false);
-          setIsActive(false);
-        });
+    if (core.decibelMeterActive && !isRecordingRef.current) {
+      startMonitoring().catch((error) => {
+        console.error('Error restarting recorder:', error);
+        core.setDecibelMeterActive(false);
+        setIsActive(false);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.decibelMeterActive]);
