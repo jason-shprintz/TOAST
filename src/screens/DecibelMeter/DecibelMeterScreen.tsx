@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -76,7 +76,7 @@ const DecibelMeterScreenImpl = () => {
    * Starts audio recording with real-time metering to get actual dB levels.
    * Uses react-native-audio-recorder-player which exposes currentMetering.
    */
-  const startMonitoring = async () => {
+  const startMonitoring = useCallback(async () => {
     if (isGlobalRecording) {
       // Already recording globally, just return
       return;
@@ -123,12 +123,12 @@ const DecibelMeterScreenImpl = () => {
       isGlobalRecording = false;
       throw error;
     }
-  };
+  }, [core]);
 
   /**
    * Stops audio level monitoring by stopping the recorder.
    */
-  const stopMonitoring = async () => {
+  const stopMonitoring = useCallback(async () => {
     if (!isGlobalRecording) return;
 
     try {
@@ -143,7 +143,7 @@ const DecibelMeterScreenImpl = () => {
       isGlobalRecording = false;
       core.setCurrentDecibelLevel(0);
     }
-  };
+  }, [core]);
 
   /**
    * Handles starting the decibel meter with real microphone input.
