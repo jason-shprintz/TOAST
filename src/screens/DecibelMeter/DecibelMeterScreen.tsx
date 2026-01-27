@@ -132,13 +132,17 @@ const DecibelMeterScreenImpl = () => {
     if (!isGlobalRecording) return;
 
     try {
-      isGlobalRecording = false;
       await Sound.stopRecorder();
       Sound.removeRecordBackListener();
+      // Only reset the flag after successful operations
+      isGlobalRecording = false;
+      core.setCurrentDecibelLevel(0);
     } catch (error) {
       console.error('Error stopping recorder:', error);
+      // On error, still try to reset state to avoid stuck state
+      isGlobalRecording = false;
+      core.setCurrentDecibelLevel(0);
     }
-    core.setCurrentDecibelLevel(0);
   };
 
   /**
