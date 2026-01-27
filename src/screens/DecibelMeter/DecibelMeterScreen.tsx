@@ -42,7 +42,6 @@ const DecibelMeterScreenImpl = () => {
   const [isActive, setIsActive] = useState(core.decibelMeterActive);
   const [decibelLevel, setDecibelLevel] = useState(0);
   const animatedLevel = useRef(new Animated.Value(0)).current;
-  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const isRecordingRef = useRef(false);
 
   /**
@@ -82,10 +81,10 @@ const DecibelMeterScreenImpl = () => {
       isRecordingRef.current = true;
 
       // Start recording with metering enabled
-      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
+      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
 
       // Set up the recorder state listener to get real-time metering data
-      audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
         if (!isRecordingRef.current) return;
 
         // currentMetering provides actual dB levels from the microphone
@@ -108,7 +107,7 @@ const DecibelMeterScreenImpl = () => {
           // Android provides values typically 0-32767
           // Reduce sensitivity by scaling down the amplitude range
           const adjustedAmplitude = Math.min(metering, 16000); // Cap at half max
-          normalizedLevel = (adjustedAmplitude / 160);
+          normalizedLevel = adjustedAmplitude / 160;
         }
 
         // Clamp to 0-100 range
@@ -137,8 +136,8 @@ const DecibelMeterScreenImpl = () => {
   const stopMonitoring = async () => {
     try {
       isRecordingRef.current = false;
-      await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
+      await AudioRecorderPlayer.stopRecorder();
+      AudioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
@@ -189,8 +188,8 @@ const DecibelMeterScreenImpl = () => {
     return () => {
       // Stop the recorder when unmounting but don't change the active state
       if (isRecordingRef.current) {
-        audioRecorderPlayer.stopRecorder().catch(console.error);
-        audioRecorderPlayer.removeRecordBackListener();
+        AudioRecorderPlayer.stopRecorder().catch(console.error);
+        AudioRecorderPlayer.removeRecordBackListener();
         isRecordingRef.current = false;
       }
     };
