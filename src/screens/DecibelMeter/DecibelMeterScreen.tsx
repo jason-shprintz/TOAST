@@ -93,18 +93,18 @@ const DecibelMeterScreenImpl = () => {
         const metering = e.currentMetering || -160;
 
         // Convert metering to a 0-100 scale for display with adjusted sensitivity
-        // Reduced sensitivity by half to prevent showing too high levels
+        // Sensitivity set to 75% of original (halfway between 100% and 50%)
         let normalizedLevel;
         if (Platform.OS === 'ios') {
           // iOS: -160 to 0 dB range
-          // Apply adjusted mapping: use -80 to -10 dB range mapped to 0-100, then reduce by half
+          // Apply adjusted mapping: use -80 to -10 dB range mapped to 0-100, then scale to 75%
           const adjustedMetering = Math.max(-80, Math.min(-10, metering));
-          normalizedLevel = ((adjustedMetering + 80) / 70) * 50; // Reduced from 100 to 50
+          normalizedLevel = ((adjustedMetering + 80) / 70) * 75; // 75% sensitivity (halfway between 100 and 50)
         } else {
           // Android: amplitude value, normalize to 0-100
-          // Reduce sensitivity by doubling the divisor
+          // Reduce sensitivity by scaling the divisor to 75% level
           const adjustedAmplitude = Math.min(metering, 16000); // Cap at half max
-          normalizedLevel = adjustedAmplitude / 320; // Reduced from 160 to 320
+          normalizedLevel = adjustedAmplitude / 240; // 75% sensitivity (halfway between 160 and 320)
         }
 
         // Clamp to 0-100 range
