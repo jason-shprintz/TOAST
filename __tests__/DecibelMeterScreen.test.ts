@@ -277,6 +277,8 @@ describe('DecibelMeterScreen', () => {
 
     test('decibel level resets to 0 when stopping', () => {
       let currentLevel = 55;
+      // Initial level should be non-zero before stopping
+      expect(currentLevel).toBe(55);
       
       // Stop monitoring
       currentLevel = 0;
