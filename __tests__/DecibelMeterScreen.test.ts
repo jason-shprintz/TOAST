@@ -16,10 +16,10 @@ describe('DecibelMeterScreen', () => {
       if (Platform.OS === 'android') {
         // Verify that the RECORD_AUDIO permission exists
         expect(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO).toBeDefined();
-        
+
         // Verify that the request function exists
         expect(typeof PermissionsAndroid.request).toBe('function');
-        
+
         // Verify that RESULTS object exists
         expect(PermissionsAndroid.RESULTS).toBeDefined();
         expect(PermissionsAndroid.RESULTS.GRANTED).toBeDefined();
@@ -28,18 +28,14 @@ describe('DecibelMeterScreen', () => {
 
     test('permission request returns expected results', () => {
       // Permission results should be one of the defined states
-      const validResults = [
-        'granted',
-        'denied',
-        'never_ask_again',
-      ];
-      
+      const validResults = ['granted', 'denied', 'never_ask_again'];
+
       // Verify GRANTED result exists
       if (Platform.OS === 'android') {
         expect(PermissionsAndroid.RESULTS.GRANTED).toBe('granted');
       }
-      
-      validResults.forEach(result => {
+
+      validResults.forEach((result) => {
         expect(typeof result).toBe('string');
       });
     });
@@ -49,7 +45,7 @@ describe('DecibelMeterScreen', () => {
     test('iOS metering values are correctly normalized', () => {
       // iOS provides dB values from -160 (silence) to 0 (max)
       // We map -80 to -10 dB range to 0-100 scale, then scale to 75%
-      
+
       const testValues = [
         { input: -160, expectedMin: 0 }, // Silence
         { input: -80, expected: 0 }, // Bottom of range
@@ -77,7 +73,7 @@ describe('DecibelMeterScreen', () => {
     test('Android amplitude values are correctly normalized', () => {
       // Android provides amplitude values that we normalize
       // We cap at 16000 and divide by 240 for 75% sensitivity
-      
+
       const testValues = [
         { input: 0, expected: 0 }, // Silence
         { input: 8000, expected: 33.33 }, // Mid range
@@ -96,25 +92,25 @@ describe('DecibelMeterScreen', () => {
 
     test('normalized values are always in 0-100 range', () => {
       const testInputs = [-200, -160, -80, -45, -10, 0, 100];
-      
-      testInputs.forEach(input => {
+
+      testInputs.forEach((input) => {
         // iOS normalization
         const adjustedMetering = Math.max(-80, Math.min(-10, input));
         const iosNormalized = ((adjustedMetering + 80) / 70) * 75;
         const iosClamped = Math.max(0, Math.min(100, iosNormalized));
-        
+
         expect(iosClamped).toBeGreaterThanOrEqual(0);
         expect(iosClamped).toBeLessThanOrEqual(100);
       });
 
       const amplitudeInputs = [0, 5000, 10000, 16000, 20000, 32767];
-      
-      amplitudeInputs.forEach(input => {
+
+      amplitudeInputs.forEach((input) => {
         // Android normalization
         const adjustedAmplitude = Math.min(input, 16000);
         const androidNormalized = adjustedAmplitude / 240;
         const androidClamped = Math.max(0, Math.min(100, androidNormalized));
-        
+
         expect(androidClamped).toBeGreaterThanOrEqual(0);
         expect(androidClamped).toBeLessThanOrEqual(100);
       });
@@ -123,13 +119,13 @@ describe('DecibelMeterScreen', () => {
     test('sensitivity calibration is at 75%', () => {
       // Verify that the 75% sensitivity is correctly applied
       // This is halfway between original 100% and reduced 50%
-      
+
       // iOS: multiplier should be 75
       const iosMultiplier = 75;
       expect(iosMultiplier).toBe(75);
       expect(iosMultiplier).toBeGreaterThan(50);
       expect(iosMultiplier).toBeLessThan(100);
-      
+
       // Android: divisor should be 240 (halfway between 160 and 320)
       const androidDivisor = 240;
       expect(androidDivisor).toBe(240);
@@ -141,8 +137,8 @@ describe('DecibelMeterScreen', () => {
   describe('Color Level Thresholds', () => {
     test('quiet levels return green color', () => {
       const quietLevels = [0, 10, 20, 30, 39];
-      
-      quietLevels.forEach(level => {
+
+      quietLevels.forEach((level) => {
         // Levels < 40 should be considered quiet (green)
         expect(level).toBeLessThan(40);
       });
@@ -150,8 +146,8 @@ describe('DecibelMeterScreen', () => {
 
     test('moderate levels return orange color', () => {
       const moderateLevels = [40, 45, 55, 65, 69];
-      
-      moderateLevels.forEach(level => {
+
+      moderateLevels.forEach((level) => {
         // Levels >= 40 and < 70 should be moderate (orange)
         expect(level).toBeGreaterThanOrEqual(40);
         expect(level).toBeLessThan(70);
@@ -160,8 +156,8 @@ describe('DecibelMeterScreen', () => {
 
     test('loud levels return red color', () => {
       const loudLevels = [70, 75, 85, 95, 100];
-      
-      loudLevels.forEach(level => {
+
+      loudLevels.forEach((level) => {
         // Levels >= 70 should be loud (red)
         expect(level).toBeGreaterThanOrEqual(70);
       });
@@ -170,7 +166,7 @@ describe('DecibelMeterScreen', () => {
     test('color thresholds are logically ordered', () => {
       const quietThreshold = 40;
       const moderateThreshold = 70;
-      
+
       expect(quietThreshold).toBeLessThan(moderateThreshold);
       expect(quietThreshold).toBeGreaterThan(0);
       expect(moderateThreshold).toBeLessThan(100);
@@ -180,7 +176,7 @@ describe('DecibelMeterScreen', () => {
   describe('Bar Meter Visualization', () => {
     test('meter has correct number of bars', () => {
       const barCount = 20;
-      
+
       expect(barCount).toBe(20);
       expect(barCount).toBeGreaterThan(0);
     });
@@ -189,7 +185,7 @@ describe('DecibelMeterScreen', () => {
       const dbPerBar = 5;
       const barCount = 20;
       const totalRange = dbPerBar * barCount;
-      
+
       expect(dbPerBar).toBe(5);
       expect(totalRange).toBe(100); // 0-100 scale
     });
@@ -197,16 +193,16 @@ describe('DecibelMeterScreen', () => {
     test('bar heights scale correctly', () => {
       const barCount = 20;
       const maxHeight = 120;
-      
+
       // Test a few bar heights
-      const bar1Height = ((1) / barCount) * maxHeight; // First bar
-      const bar10Height = ((10) / barCount) * maxHeight; // Middle bar
-      const bar20Height = ((20) / barCount) * maxHeight; // Last bar
-      
+      const bar1Height = (1 / barCount) * maxHeight; // First bar
+      const bar10Height = (10 / barCount) * maxHeight; // Middle bar
+      const bar20Height = (20 / barCount) * maxHeight; // Last bar
+
       expect(bar1Height).toBe(6); // Smallest bar
       expect(bar10Height).toBe(60); // Middle bar
       expect(bar20Height).toBe(120); // Tallest bar
-      
+
       // Verify heights increase linearly
       expect(bar1Height).toBeLessThan(bar10Height);
       expect(bar10Height).toBeLessThan(bar20Height);
@@ -220,7 +216,7 @@ describe('DecibelMeterScreen', () => {
         { level: 75, activeBars: 15 }, // 75/5 = 15 bars
         { level: 100, activeBars: 20 }, // 100/5 = 20 bars
       ];
-      
+
       testCases.forEach(({ level, activeBars }) => {
         // A bar at position i (1-indexed) should be active if level >= i * 5
         let activeCount = 0;
@@ -230,7 +226,7 @@ describe('DecibelMeterScreen', () => {
             activeCount++;
           }
         }
-        
+
         expect(activeCount).toBe(activeBars);
       });
     });
@@ -240,24 +236,24 @@ describe('DecibelMeterScreen', () => {
     test('recording state is tracked globally', () => {
       // Global recording flag should exist and be boolean
       let isGlobalRecording = false;
-      
+
       expect(typeof isGlobalRecording).toBe('boolean');
-      
+
       // State transitions
       isGlobalRecording = true;
       expect(isGlobalRecording).toBe(true);
-      
+
       isGlobalRecording = false;
       expect(isGlobalRecording).toBe(false);
     });
 
     test('monitoring should not start if already recording', () => {
       let isGlobalRecording = false;
-      
+
       // Start recording
       isGlobalRecording = true;
       expect(isGlobalRecording).toBe(true);
-      
+
       // Attempt to start again should be skipped (idempotent)
       // Since recording is already in progress, monitoring should not restart
       expect(isGlobalRecording).toBe(true);
@@ -266,10 +262,10 @@ describe('DecibelMeterScreen', () => {
     test('stopping sets recording state to false', () => {
       let isGlobalRecording = true;
       expect(isGlobalRecording).toBe(true);
-      
+
       // Stop recording
       isGlobalRecording = false;
-      
+
       expect(isGlobalRecording).toBe(false);
     });
 
@@ -277,10 +273,10 @@ describe('DecibelMeterScreen', () => {
       let currentLevel = 55;
       // Initial level should be non-zero before stopping
       expect(currentLevel).toBe(55);
-      
+
       // Stop monitoring
       currentLevel = 0;
-      
+
       expect(currentLevel).toBe(0);
     });
   });
@@ -288,7 +284,7 @@ describe('DecibelMeterScreen', () => {
   describe('Error Handling', () => {
     test('permission denial should be handled gracefully', () => {
       const permissionDenied = 'denied';
-      
+
       // Should not throw, just return false or show alert
       expect(permissionDenied).toBe('denied');
       expect(typeof permissionDenied).toBe('string');
@@ -340,7 +336,7 @@ describe('DecibelMeterScreen', () => {
       const iosMetering = -45;
       expect(iosMetering).toBeLessThanOrEqual(0);
       expect(iosMetering).toBeGreaterThanOrEqual(-160);
-      
+
       // Android uses amplitude values (positive numbers)
       const androidAmplitude = 8000;
       expect(androidAmplitude).toBeGreaterThanOrEqual(0);
@@ -353,18 +349,18 @@ describe('DecibelMeterScreen', () => {
       // Component should sync local isActive with core.decibelMeterActive
       let localActive = false;
       const coreActive = true;
-      
+
       // Sync
       localActive = coreActive;
-      
+
       expect(localActive).toBe(coreActive);
       expect(localActive).toBe(true);
     });
 
     test('decibel level state updates trigger animation', () => {
       const levels = [0, 25, 50, 75, 100];
-      
-      levels.forEach(level => {
+
+      levels.forEach((level) => {
         // Each level change should trigger animation
         expect(level).toBeGreaterThanOrEqual(0);
         expect(level).toBeLessThanOrEqual(100);
@@ -376,11 +372,11 @@ describe('DecibelMeterScreen', () => {
       const friction = 8;
       const tension = 40;
       const useNativeDriver = false;
-      
+
       expect(friction).toBe(8);
       expect(tension).toBe(40);
       expect(useNativeDriver).toBe(false);
-      
+
       // Friction and tension should be positive
       expect(friction).toBeGreaterThan(0);
       expect(tension).toBeGreaterThan(0);
@@ -391,7 +387,7 @@ describe('DecibelMeterScreen', () => {
     test('meter displays in footer when active', () => {
       const isActive = true;
       const currentLevel = 45;
-      
+
       if (isActive) {
         // Footer should show meter
         expect(currentLevel).toBeGreaterThanOrEqual(0);
@@ -403,14 +399,14 @@ describe('DecibelMeterScreen', () => {
       // Recording should continue when navigating away
       const recordingPersists = true;
       const meterActiveAfterNavigation = true;
-      
+
       expect(recordingPersists).toBe(true);
       expect(meterActiveAfterNavigation).toBe(true);
     });
 
     test('footer meter has 10 bars', () => {
       const footerBarCount = 10;
-      
+
       expect(footerBarCount).toBe(10);
       expect(footerBarCount).toBeLessThan(20); // Less than main screen
     });
@@ -418,10 +414,10 @@ describe('DecibelMeterScreen', () => {
     test('footer bar heights scale correctly', () => {
       const footerBarCount = 10;
       const footerMaxHeight = 40;
-      
-      const bar1Height = ((1) / footerBarCount) * footerMaxHeight;
-      const bar10Height = ((10) / footerBarCount) * footerMaxHeight;
-      
+
+      const bar1Height = (1 / footerBarCount) * footerMaxHeight;
+      const bar10Height = (10 / footerBarCount) * footerMaxHeight;
+
       expect(bar1Height).toBe(4); // Smallest
       expect(bar10Height).toBe(40); // Tallest
     });
@@ -430,14 +426,14 @@ describe('DecibelMeterScreen', () => {
   describe('UI Layout', () => {
     test('screen respects footer height', () => {
       const FOOTER_HEIGHT = 80; // From theme
-      
+
       expect(FOOTER_HEIGHT).toBeGreaterThan(0);
       expect(typeof FOOTER_HEIGHT).toBe('number');
     });
 
     test('scroll padding is applied', () => {
       const SCROLL_PADDING = 16; // From theme
-      
+
       expect(SCROLL_PADDING).toBeGreaterThan(0);
       expect(typeof SCROLL_PADDING).toBe('number');
     });
