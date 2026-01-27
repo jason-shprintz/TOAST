@@ -279,13 +279,13 @@ const DecibelMeterScreenImpl = () => {
                     key={i}
                     style={[
                       styles.bar,
+                      isBarActive ? styles.barActive : styles.barInactive,
                       {
                         height: barHeight,
                         backgroundColor: isBarActive
                           ? barColor
                           : COLORS.BACKGROUND,
                         borderColor: COLORS.SECONDARY_ACCENT,
-                        opacity: isBarActive ? 1 : 0.3,
                       },
                     ]}
                   />
@@ -479,6 +479,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     // Height is set dynamically based on bar level to create proper meter visualization
+  },
+  barActive: {
+    opacity: 1,
+  },
+  barInactive: {
+    opacity: 0.3,
   },
   controlsContainer: {
     paddingHorizontal: 16,
