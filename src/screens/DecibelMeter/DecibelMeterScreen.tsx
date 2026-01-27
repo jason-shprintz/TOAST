@@ -21,6 +21,20 @@ import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
 
+// Global singleton audio recorder instance that persists across screen navigation
+let globalAudioRecorderPlayer: AudioRecorderPlayer | null = null;
+let isGlobalRecording = false;
+
+/**
+ * Get or create the global audio recorder instance
+ */
+const getAudioRecorderPlayer = (): AudioRecorderPlayer => {
+  if (!globalAudioRecorderPlayer) {
+    globalAudioRecorderPlayer = new AudioRecorderPlayer();
+  }
+  return globalAudioRecorderPlayer;
+};
+
 /**
  * DecibelMeterScreen component
  *
@@ -42,7 +56,6 @@ const DecibelMeterScreenImpl = () => {
   const [isActive, setIsActive] = useState(core.decibelMeterActive);
   const [decibelLevel, setDecibelLevel] = useState(0);
   const animatedLevel = useRef(new Animated.Value(0)).current;
-  const isRecordingRef = useRef(false);
 
   /**
    * Request audio recording permission for Android.
@@ -77,15 +90,21 @@ const DecibelMeterScreenImpl = () => {
    * Uses react-native-audio-recorder-player which exposes currentMetering.
    */
   const startMonitoring = async () => {
+    if (isGlobalRecording) {
+      // Already recording globally, just return
+      return;
+    }
+
     try {
-      isRecordingRef.current = true;
+      isGlobalRecording = true;
+      const audioRecorderPlayer = getAudioRecorderPlayer();
 
       // Start recording with metering enabled
-      await AudioRecorderPlayer.startRecorder(undefined, undefined, true);
+      await audioRecorderPlayer.startRecorder(undefined, undefined, true);
 
       // Set up the recorder state listener to get real-time metering data
-      AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
-        if (!isRecordingRef.current) return;
+      audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+        if (!isGlobalRecording) return;
 
         // currentMetering provides actual dB levels from the microphone
         // On iOS: ranges from -160 dB (silence) to 0 dB (max)
@@ -110,19 +129,12 @@ const DecibelMeterScreenImpl = () => {
         // Clamp to 0-100 range
         normalizedLevel = Math.max(0, Math.min(100, normalizedLevel));
 
-        setDecibelLevel(normalizedLevel);
+        // Update core store so footer can display the level
         core.setCurrentDecibelLevel(normalizedLevel);
-
-        // Animate the level change
-        Animated.spring(animatedLevel, {
-          toValue: normalizedLevel,
-          useNativeDriver: false,
-          friction: 8,
-          tension: 40,
-        }).start();
       });
     } catch (error) {
       console.error('Error starting monitoring:', error);
+      isGlobalRecording = false;
       throw error;
     }
   };
@@ -131,16 +143,17 @@ const DecibelMeterScreenImpl = () => {
    * Stops audio level monitoring by stopping the recorder.
    */
   const stopMonitoring = async () => {
+    if (!isGlobalRecording) return;
+
     try {
-      isRecordingRef.current = false;
-      await AudioRecorderPlayer.stopRecorder();
-      AudioRecorderPlayer.removeRecordBackListener();
+      isGlobalRecording = false;
+      const audioRecorderPlayer = getAudioRecorderPlayer();
+      await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
     } catch (error) {
       console.error('Error stopping recorder:', error);
     }
-    setDecibelLevel(0);
     core.setCurrentDecibelLevel(0);
-    animatedLevel.setValue(0);
   };
 
   /**
@@ -178,31 +191,38 @@ const DecibelMeterScreenImpl = () => {
   };
 
   /**
-   * Cleanup on unmount - stop the recorder but keep the meter state active
-   * so it persists when navigating away from the screen.
+   * Sync local decibel level with core store for animation
+   */
+  useEffect(() => {
+    setDecibelLevel(core.currentDecibelLevel);
+    Animated.spring(animatedLevel, {
+      toValue: core.currentDecibelLevel,
+      useNativeDriver: false,
+      friction: 8,
+      tension: 40,
+    }).start();
+  }, [core.currentDecibelLevel, animatedLevel]);
+
+  /**
+   * Cleanup on unmount - DON'T stop the recorder, it should persist globally
    */
   useEffect(() => {
     return () => {
-      // Stop the recorder when unmounting but don't change the active state
-      if (isRecordingRef.current) {
-        AudioRecorderPlayer.stopRecorder().catch(console.error);
-        AudioRecorderPlayer.removeRecordBackListener();
-        isRecordingRef.current = false;
-      }
+      // Don't stop the recorder on unmount - it should persist across screens
+      // The recorder will only stop when the user explicitly stops the meter
     };
   }, []);
 
   /**
-   * Sync local state with core store and restart monitoring if meter is active.
-   * This ensures the monitoring resumes when returning to the screen.
+   * Sync local state with core store and start/stop monitoring based on active state.
    */
   useEffect(() => {
     setIsActive(core.decibelMeterActive);
 
-    // If the meter is active (from core store) but not recording locally, start it
-    if (core.decibelMeterActive && !isRecordingRef.current) {
+    // If the meter is active but not recording, start it
+    if (core.decibelMeterActive && !isGlobalRecording) {
       startMonitoring().catch((error) => {
-        console.error('Error restarting recorder:', error);
+        console.error('Error starting recorder:', error);
         core.setDecibelMeterActive(false);
         setIsActive(false);
       });
