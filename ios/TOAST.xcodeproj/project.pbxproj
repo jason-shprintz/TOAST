@@ -10,6 +10,7 @@
 		0C80B921A6F3F58F76C31292 /* libPods-TOAST.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-TOAST.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		166107751750241844042215 /* sos_dot.wav in Resources */ = {isa = PBXBuildFile; fileRef = 277094793541951660255410 /* sos_dot.wav */; };
+		25D2856FDF67CCA012839549 /* dog_whistle.wav in Resources */ = {isa = PBXBuildFile; fileRef = 92814D2CACF231B03395868E /* dog_whistle.wav */; };
 		3EC99D404F4F4FBF9D0FB0EF /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E8D28AB9190422A8B6C99EC /* BootSplash.storyboard */; };
 		559699633168642720008767 /* sos_dash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 286498949515769630633473 /* sos_dash.wav */; };
 		63E5E6A34BE1E9F2A7DE56E3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
@@ -32,6 +33,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-TOAST.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TOAST.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TOAST/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TOAST/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		92814D2CACF231B03395868E /* dog_whistle.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; name = dog_whistle.wav; path = TOAST/dog_whistle.wav; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 				533563A249BD4DF28B4D934D /* Colors.xcassets */,
 				277094793541951660255410 /* sos_dot.wav */,
 				286498949515769630633473 /* sos_dash.wav */,
+				92814D2CACF231B03395868E /* dog_whistle.wav */,
 			);
 			name = TOAST;
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 				D57498DF1A2744A298C44FBB /* Colors.xcassets in Resources */,
 				166107751750241844042215 /* sos_dot.wav in Resources */,
 				559699633168642720008767 /* sos_dash.wav in Resources */,
+				25D2856FDF67CCA012839549 /* dog_whistle.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

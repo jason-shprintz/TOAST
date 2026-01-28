@@ -102,7 +102,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   },
   {
     name: 'Digital Whistle',
-    screen: 'ComingSoon',
+    screen: 'DigitalWhistle',
     icon: 'musical-notes-outline',
     id: 'comm_digital_whistle',
   },

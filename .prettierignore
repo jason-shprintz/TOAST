@@ -1,0 +1,2 @@
+# Ignore markdownlint config to avoid trailing comma issues with JSONC
+.markdownlint.jsonc
