@@ -63,18 +63,15 @@ export default function DigitalWhistleScreen() {
       },
     );
 
-    const normalInterval = normalSoundRef;
-    const dogInterval = dogSoundRef;
-
     return () => {
       // Cleanup on unmount
-      if (normalInterval.current) {
-        normalInterval.current.stop();
-        normalInterval.current.release();
+      if (normalSoundRef.current) {
+        normalSoundRef.current.stop();
+        normalSoundRef.current.release();
       }
-      if (dogInterval.current) {
-        dogInterval.current.stop();
-        dogInterval.current.release();
+      if (dogSoundRef.current) {
+        dogSoundRef.current.stop();
+        dogSoundRef.current.release();
       }
     };
   }, []);
@@ -92,6 +89,8 @@ export default function DigitalWhistleScreen() {
     }
 
     sound.stop(() => {
+      // Reset loop count to ensure short burst plays once
+      sound.setNumberOfLoops(0);
       sound.play((success) => {
         if (!success) {
           console.error('Playback failed');

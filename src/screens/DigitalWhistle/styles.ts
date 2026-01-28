@@ -60,12 +60,4 @@ export const createStyles = (COLORS: ColorScheme) =>
       marginVertical: 20,
       opacity: 0.3,
     },
-    note: {
-      fontSize: 12,
-      color: COLORS.PRIMARY_DARK,
-      fontStyle: 'italic',
-      textAlign: 'center',
-      marginTop: 20,
-      paddingHorizontal: 20,
-    },
   });
