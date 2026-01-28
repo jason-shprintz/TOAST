@@ -9,4 +9,12 @@ module.exports = {
   bracketSpacing: true,
   arrowParens: 'always',
   endOfLine: 'lf',
+  overrides: [
+    {
+      files: '.markdownlint.jsonc',
+      options: {
+        trailingComma: 'none',
+      },
+    },
+  ],
 };

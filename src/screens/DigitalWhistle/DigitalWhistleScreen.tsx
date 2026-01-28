@@ -1,11 +1,12 @@
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
+import { createStyles } from './styles';
 
 /**
  * DigitalWhistleScreen component
@@ -30,11 +31,12 @@ export default function DigitalWhistleScreen() {
   const [isPlayingDog, setIsPlayingDog] = React.useState(false);
   const normalSoundRef = React.useRef<Sound | null>(null);
   const dogSoundRef = React.useRef<Sound | null>(null);
+  const styles = createStyles(COLORS);
 
   /**
    * Initialize sounds on component mount
    */
-  React.useEffect(() => {
+  useEffect(() => {
     // Enable playback in silent mode
     Sound.setCategory('Playback');
 
@@ -50,8 +52,9 @@ export default function DigitalWhistleScreen() {
       },
     );
 
+    // 18kHz tone for dog whistle - high frequency audible to dogs
     dogSoundRef.current = new Sound(
-      'sos_dot.wav',
+      'dog_whistle.wav',
       Sound.MAIN_BUNDLE,
       (error) => {
         if (error) {
@@ -156,69 +159,6 @@ export default function DigitalWhistleScreen() {
     }
   }, []);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      width: '100%',
-      paddingHorizontal: 14,
-      paddingTop: 10,
-    },
-    whistleSection: {
-      marginBottom: 30,
-    },
-    whistleTitle: {
-      fontSize: 20,
-      fontWeight: '700',
-      color: COLORS.PRIMARY_DARK,
-      marginBottom: 12,
-      textAlign: 'center',
-    },
-    whistleDescription: {
-      fontSize: 14,
-      color: COLORS.SECONDARY_ACCENT,
-      marginBottom: 16,
-      textAlign: 'center',
-    },
-    buttonRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      gap: 12,
-    },
-    button: {
-      flex: 1,
-      backgroundColor: COLORS.ACCENT,
-      paddingVertical: 16,
-      paddingHorizontal: 20,
-      borderRadius: 12,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      gap: 8,
-    },
-    buttonActive: {
-      backgroundColor: COLORS.TOAST_BROWN,
-    },
-    buttonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: COLORS.PRIMARY_LIGHT,
-    },
-    separator: {
-      height: 2,
-      backgroundColor: COLORS.TOAST_BROWN,
-      marginVertical: 20,
-      opacity: 0.3,
-    },
-    note: {
-      fontSize: 12,
-      color: COLORS.SECONDARY_ACCENT,
-      fontStyle: 'italic',
-      textAlign: 'center',
-      marginTop: 20,
-      paddingHorizontal: 20,
-    },
-  });
-
   return (
     <ScreenBody>
       <SectionHeader>Digital Whistle</SectionHeader>
@@ -309,11 +249,6 @@ export default function DigitalWhistleScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
-        <Text style={styles.note}>
-          Note: Currently using placeholder tones. Custom whistle sounds would
-          be added in a production implementation.
-        </Text>
       </View>
     </ScreenBody>
   );
