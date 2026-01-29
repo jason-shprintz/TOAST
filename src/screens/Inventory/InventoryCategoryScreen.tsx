@@ -7,8 +7,9 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Displays all inventory items for a specific category.
@@ -23,6 +24,7 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const inventory = useInventoryStore();
+  const COLORS = useTheme();
 
   const { category } = route.params || {};
   const isValidCategory = category && inventory.categories.includes(category);
@@ -52,13 +54,15 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
       <SectionHeader>{category}</SectionHeader>
       <View style={styles.actionBar}>
         <TouchableOpacity
-          style={styles.addButton}
+          style={[styles.addButton, { backgroundColor: COLORS.ACCENT }]}
           onPress={handleAddItem}
           accessibilityLabel="Add Item"
           accessibilityRole="button"
         >
           <Ionicons name="add-outline" size={24} color={COLORS.PRIMARY_LIGHT} />
-          <Text style={styles.addButtonText}>Add Item</Text>
+          <Text style={[styles.addButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+            Add Item
+          </Text>
         </TouchableOpacity>
       </View>
       <HorizontalRule />
@@ -75,7 +79,13 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
           {sortedItems.map((item) => (
             <TouchableOpacity
               key={item.id}
-              style={styles.itemCard}
+              style={[
+                styles.itemCard,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
               onPress={() => handleItemPress(item)}
               accessibilityLabel={`View ${item.name}`}
               accessibilityRole="button"
@@ -86,15 +96,22 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
                   size={24}
                   color={COLORS.PRIMARY_DARK}
                 />
-                <Text style={styles.itemName}>{item.name}</Text>
+                <Text style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}>
+                  {item.name}
+                </Text>
               </View>
               <View style={styles.itemDetails}>
-                <Text style={styles.itemQuantity}>
+                <Text
+                  style={[styles.itemQuantity, { color: COLORS.PRIMARY_DARK }]}
+                >
                   Quantity: {item.quantity}
                   {item.unit ? ` ${item.unit}` : ''}
                 </Text>
                 {item.notes && (
-                  <Text style={styles.itemNotes} numberOfLines={2}>
+                  <Text
+                    style={[styles.itemNotes, { color: COLORS.PRIMARY_DARK }]}
+                    numberOfLines={2}
+                  >
                     {item.notes}
                   </Text>
                 )}
@@ -123,14 +140,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     gap: 8,
   },
   addButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -152,8 +167,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   itemCard: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     padding: 12,
@@ -168,7 +181,6 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     flex: 1,
   },
   itemDetails: {
@@ -176,12 +188,10 @@ const styles = StyleSheet.create({
   },
   itemQuantity: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     fontWeight: '500',
   },
   itemNotes: {
     fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
   },
 });

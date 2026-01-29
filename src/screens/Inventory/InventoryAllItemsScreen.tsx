@@ -7,8 +7,9 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Displays all inventory items from all categories, sorted alphabetically by name.
@@ -21,6 +22,7 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
 export default observer(function InventoryAllItemsScreen(): React.JSX.Element {
   const navigation = useNavigation<any>();
   const inventory = useInventoryStore();
+  const COLORS = useTheme();
 
   const allItems = inventory.allItemsSorted;
 
@@ -45,7 +47,13 @@ export default observer(function InventoryAllItemsScreen(): React.JSX.Element {
           {allItems.map((item) => (
             <TouchableOpacity
               key={item.id}
-              style={styles.itemCard}
+              style={[
+                styles.itemCard,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                },
+              ]}
               onPress={() => handleItemPress(item)}
               accessibilityLabel={`View ${item.name}`}
               accessibilityRole="button"
@@ -57,17 +65,28 @@ export default observer(function InventoryAllItemsScreen(): React.JSX.Element {
                   color={COLORS.PRIMARY_DARK}
                 />
                 <View style={styles.itemHeaderText}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemCategory}>{item.category}</Text>
+                  <Text style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}>
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={[styles.itemCategory, { color: COLORS.PRIMARY_DARK }]}
+                  >
+                    {item.category}
+                  </Text>
                 </View>
               </View>
               <View style={styles.itemDetails}>
-                <Text style={styles.itemQuantity}>
+                <Text
+                  style={[styles.itemQuantity, { color: COLORS.PRIMARY_DARK }]}
+                >
                   Quantity: {item.quantity}
                   {item.unit ? ` ${item.unit}` : ''}
                 </Text>
                 {item.notes && (
-                  <Text style={styles.itemNotes} numberOfLines={2}>
+                  <Text
+                    style={[styles.itemNotes, { color: COLORS.PRIMARY_DARK }]}
+                    numberOfLines={2}
+                  >
                     {item.notes}
                   </Text>
                 )}
@@ -105,8 +124,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   itemCard: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     padding: 12,
@@ -124,11 +141,9 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
   },
   itemCategory: {
     fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.6,
     marginTop: 2,
   },
@@ -137,12 +152,10 @@ const styles = StyleSheet.create({
   },
   itemQuantity: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     fontWeight: '500',
   },
   itemNotes: {
     fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
   },
 });

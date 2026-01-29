@@ -19,6 +19,8 @@ export interface InventoryItem {
   quantity: number;
   unit?: string; // e.g., "pieces", "lbs", "gallons"
   notes?: string;
+  expirationMonth?: number; // 1-12
+  expirationYear?: number; // e.g., 2024, 2025
   createdAt: number; // epoch ms
   updatedAt: number; // epoch ms
 }
@@ -124,6 +126,8 @@ export class InventoryStore {
           'quantity REAL NOT NULL, ' +
           'unit TEXT, ' +
           'notes TEXT, ' +
+          'expirationMonth INTEGER, ' +
+          'expirationYear INTEGER, ' +
           'createdAt INTEGER NOT NULL, ' +
           'updatedAt INTEGER NOT NULL' +
           ')',
@@ -185,6 +189,55 @@ export class InventoryStore {
     for (const category of defaultCategories) {
       await this.addCategory(category);
     }
+    // Add default items
+    await this.createDefaultItems();
+  }
+
+  /**
+   * Creates default inventory items for the default categories.
+   */
+  private async createDefaultItems(): Promise<void> {
+    // Default items for Home Base
+    const homeBaseItems = [
+      { name: 'Water (gallons)', quantity: 10, unit: 'gallons' },
+      { name: 'Canned Food', quantity: 20, unit: 'cans' },
+      { name: 'Batteries (AA)', quantity: 24, unit: 'pieces' },
+      { name: 'First Aid Kit', quantity: 1, unit: 'kit' },
+      { name: 'Flashlight', quantity: 3, unit: 'pieces' },
+    ];
+
+    // Default items for Main Vehicle
+    const mainVehicleItems = [
+      { name: 'Emergency Road Kit', quantity: 1, unit: 'kit' },
+      { name: 'Jumper Cables', quantity: 1, unit: 'set' },
+      { name: 'Spare Tire', quantity: 1, unit: 'piece' },
+      { name: 'Water Bottles', quantity: 6, unit: 'bottles' },
+      { name: 'Blanket', quantity: 2, unit: 'pieces' },
+    ];
+
+    try {
+      for (const item of homeBaseItems) {
+        await this.createItem(
+          item.name,
+          'Home Base',
+          item.quantity,
+          item.unit,
+          undefined,
+        );
+      }
+
+      for (const item of mainVehicleItems) {
+        await this.createItem(
+          item.name,
+          'Main Vehicle',
+          item.quantity,
+          item.unit,
+          undefined,
+        );
+      }
+    } catch (error) {
+      console.error('Failed to create default items:', error);
+    }
   }
 
   /**
@@ -209,6 +262,8 @@ export class InventoryStore {
             quantity: row.quantity,
             unit: row.unit || undefined,
             notes: row.notes || undefined,
+            expirationMonth: row.expirationMonth || undefined,
+            expirationYear: row.expirationYear || undefined,
             createdAt: row.createdAt,
             updatedAt: row.updatedAt,
           });
@@ -313,6 +368,8 @@ export class InventoryStore {
     quantity: number,
     unit?: string,
     notes?: string,
+    expirationMonth?: number,
+    expirationYear?: number,
   ): Promise<InventoryItem> {
     const trimmedName = name.trim();
     if (!trimmedName) {
@@ -333,6 +390,8 @@ export class InventoryStore {
       quantity,
       unit: unit?.trim() || undefined,
       notes: notes?.trim() || undefined,
+      expirationMonth,
+      expirationYear,
       createdAt: now,
       updatedAt: now,
     };
@@ -340,7 +399,7 @@ export class InventoryStore {
     if (this.inventoryDb) {
       try {
         await this.inventoryDb.executeSql(
-          'INSERT INTO inventory_items (id, name, category, quantity, unit, notes, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
           [
             item.id,
             item.name,
@@ -348,6 +407,8 @@ export class InventoryStore {
             item.quantity,
             item.unit || null,
             item.notes || null,
+            item.expirationMonth || null,
+            item.expirationYear || null,
             item.createdAt,
             item.updatedAt,
           ],
@@ -393,13 +454,15 @@ export class InventoryStore {
     if (this.inventoryDb) {
       try {
         await this.inventoryDb.executeSql(
-          'UPDATE inventory_items SET name = ?, category = ?, quantity = ?, unit = ?, notes = ?, updatedAt = ? WHERE id = ?',
+          'UPDATE inventory_items SET name = ?, category = ?, quantity = ?, unit = ?, notes = ?, expirationMonth = ?, expirationYear = ?, updatedAt = ? WHERE id = ?',
           [
             updatedItem.name,
             updatedItem.category,
             updatedItem.quantity,
             updatedItem.unit || null,
             updatedItem.notes || null,
+            updatedItem.expirationMonth || null,
+            updatedItem.expirationYear || null,
             updatedItem.updatedAt,
             id,
           ],

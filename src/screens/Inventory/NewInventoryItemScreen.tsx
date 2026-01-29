@@ -12,8 +12,9 @@ import {
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Screen for adding a new inventory item.
@@ -23,6 +24,7 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
  * - Set quantity (required, default 1)
  * - Specify unit (optional, e.g., "pieces", "lbs", "gallons")
  * - Add notes (optional)
+ * - Set expiration date (optional, month and year)
  *
  * @returns {React.JSX.Element} The rendered new inventory item screen component.
  */
@@ -30,12 +32,72 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const inventory = useInventoryStore();
+  const COLORS = useTheme();
 
   const { category } = route.params || {};
   const [name, setName] = useState<string>('');
   const [quantity, setQuantity] = useState<string>('1');
   const [unit, setUnit] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
+  const [expirationMonth, setExpirationMonth] = useState<number | undefined>();
+  const [expirationYear, setExpirationYear] = useState<number | undefined>();
+
+  const months = [
+    { label: 'January', value: 1 },
+    { label: 'February', value: 2 },
+    { label: 'March', value: 3 },
+    { label: 'April', value: 4 },
+    { label: 'May', value: 5 },
+    { label: 'June', value: 6 },
+    { label: 'July', value: 7 },
+    { label: 'August', value: 8 },
+    { label: 'September', value: 9 },
+    { label: 'October', value: 10 },
+    { label: 'November', value: 11 },
+    { label: 'December', value: 12 },
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
+
+  const showMonthPicker = () => {
+    const options = ['None', ...months.map((m) => m.label)];
+    Alert.alert('Select Month', '', [
+      ...options.map((option, index) => ({
+        text: option,
+        onPress: () => {
+          if (index === 0) {
+            setExpirationMonth(undefined);
+          } else {
+            setExpirationMonth(months[index - 1].value);
+          }
+        },
+      })),
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
+  const showYearPicker = () => {
+    const options = ['None', ...years.map((y) => y.toString())];
+    Alert.alert('Select Year', '', [
+      ...options.map((option, index) => ({
+        text: option,
+        onPress: () => {
+          if (index === 0) {
+            setExpirationYear(undefined);
+          } else {
+            setExpirationYear(years[index - 1]);
+          }
+        },
+      })),
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
+  const getMonthLabel = () => {
+    if (!expirationMonth) return 'Select Month';
+    return months.find((m) => m.value === expirationMonth)?.label || 'Select Month';
+  };
 
   const handleSave = async () => {
     const trimmedName = name.trim();
@@ -57,6 +119,8 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
         quantityNum,
         unit.trim() || undefined,
         notes.trim() || undefined,
+        expirationMonth,
+        expirationYear,
       );
       Alert.alert('Success', 'Item added successfully', [
         {
@@ -78,9 +142,18 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Item Name *</Text>
+            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+              Item Name *
+            </Text>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                  color: COLORS.PRIMARY_DARK,
+                },
+              ]}
               placeholder="Enter item name..."
               placeholderTextColor={COLORS.PRIMARY_DARK}
               value={name}
@@ -91,9 +164,18 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Quantity *</Text>
+            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+              Quantity *
+            </Text>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                  color: COLORS.PRIMARY_DARK,
+                },
+              ]}
               placeholder="Enter quantity..."
               placeholderTextColor={COLORS.PRIMARY_DARK}
               value={quantity}
@@ -104,9 +186,18 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Unit (optional)</Text>
+            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+              Unit (optional)
+            </Text>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                  color: COLORS.PRIMARY_DARK,
+                },
+              ]}
               placeholder="e.g., pieces, lbs, gallons..."
               placeholderTextColor={COLORS.PRIMARY_DARK}
               value={unit}
@@ -116,9 +207,55 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Notes (optional)</Text>
+            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+              Expiration Date (optional)
+            </Text>
+            <View style={styles.expirationRow}>
+              <TouchableOpacity
+                style={[
+                  styles.pickerButton,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                  },
+                ]}
+                onPress={showMonthPicker}
+              >
+                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                  {getMonthLabel()}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.pickerButton,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                  },
+                ]}
+                onPress={showYearPicker}
+              >
+                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                  {expirationYear || 'Select Year'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+              Notes (optional)
+            </Text>
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[
+                styles.input,
+                styles.textArea,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.SECONDARY_ACCENT,
+                  color: COLORS.PRIMARY_DARK,
+                },
+              ]}
               placeholder="Enter notes..."
               placeholderTextColor={COLORS.PRIMARY_DARK}
               value={notes}
@@ -132,21 +269,35 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.cancelButton}
+              style={[
+                styles.cancelButton,
+                {
+                  backgroundColor: COLORS.PRIMARY_LIGHT,
+                  borderColor: COLORS.PRIMARY_DARK,
+                },
+              ]}
               onPress={() => navigation.goBack()}
               accessibilityLabel="Cancel"
               accessibilityRole="button"
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={[styles.cancelButtonText, { color: COLORS.PRIMARY_DARK }]}>
+                Cancel
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.saveButton, !name.trim() && styles.disabledButton]}
+              style={[
+                styles.saveButton,
+                { backgroundColor: COLORS.PRIMARY_DARK },
+                !name.trim() && styles.disabledButton,
+              ]}
               onPress={handleSave}
               disabled={!name.trim()}
               accessibilityLabel="Save item"
               accessibilityRole="button"
             >
-              <Text style={styles.saveButtonText}>Save</Text>
+              <Text style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+                Save
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -176,22 +327,33 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
   },
   textArea: {
     minHeight: 100,
     paddingTop: 10,
+  },
+  expirationRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  pickerButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    justifyContent: 'center',
+  },
+  pickerText: {
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -200,21 +362,17 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.PRIMARY_DARK,
     borderWidth: 1,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
     fontWeight: '600',
   },
   saveButton: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: 'center',
@@ -223,7 +381,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   saveButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
