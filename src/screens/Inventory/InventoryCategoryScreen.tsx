@@ -7,9 +7,8 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore } from '../../stores';
-import { FOOTER_HEIGHT } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Displays all inventory items for a specific category.
@@ -24,7 +23,6 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const inventory = useInventoryStore();
-  const COLORS = useTheme();
 
   const { category } = route.params || {};
   const isValidCategory = category && inventory.categories.includes(category);
@@ -125,14 +123,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     gap: 8,
   },
   addButtonText: {
-    color: '#f5f5dc',
+    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -154,8 +152,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   itemCard: {
-    backgroundColor: '#f5f5dc',
-    borderColor: '#8b7355',
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     padding: 12,
@@ -170,7 +168,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: COLORS.PRIMARY_DARK,
     flex: 1,
   },
   itemDetails: {
@@ -178,12 +176,12 @@ const styles = StyleSheet.create({
   },
   itemQuantity: {
     fontSize: 14,
-    color: '#1a1a1a',
+    color: COLORS.PRIMARY_DARK,
     fontWeight: '500',
   },
   itemNotes: {
     fontSize: 13,
-    color: '#1a1a1a',
+    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
   },
 });

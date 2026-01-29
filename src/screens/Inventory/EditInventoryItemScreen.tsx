@@ -1,6 +1,6 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -39,15 +39,6 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
   );
   const [unit, setUnit] = useState<string>(item?.unit || '');
   const [notes, setNotes] = useState<string>(item?.notes || '');
-
-  useEffect(() => {
-    if (item) {
-      setName(item.name);
-      setQuantity(item.quantity.toString());
-      setUnit(item.unit || '');
-      setNotes(item.notes || '');
-    }
-  }, [item]);
 
   const handleSave = async () => {
     const trimmedName = name.trim();
