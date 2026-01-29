@@ -12,8 +12,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Screen for managing inventory categories.
@@ -28,6 +29,7 @@ import { COLORS, FOOTER_HEIGHT } from '../../theme';
 export default observer(
   function ManageInventoryCategoriesScreen(): React.JSX.Element {
     const inventory = useInventoryStore();
+    const COLORS = useTheme();
     const [newCategoryName, setNewCategoryName] = useState<string>('');
     const [isAdding, setIsAdding] = useState<boolean>(false);
 
@@ -134,7 +136,7 @@ export default observer(
         <View style={styles.container}>
           <View style={styles.headerSection}>
             <TouchableOpacity
-              style={styles.addButton}
+              style={[styles.addButton, { backgroundColor: COLORS.PRIMARY_DARK }]}
               onPress={() => setIsAdding(!isAdding)}
               accessibilityLabel="Add new category"
               accessibilityRole="button"
@@ -144,7 +146,7 @@ export default observer(
                 size={24}
                 color={COLORS.PRIMARY_LIGHT}
               />
-              <Text style={styles.addButtonText}>
+              <Text style={[styles.addButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
                 {isAdding ? 'Cancel' : 'Add Category'}
               </Text>
             </TouchableOpacity>
@@ -153,7 +155,14 @@ export default observer(
           {isAdding && (
             <View style={styles.addCategoryForm}>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                    color: COLORS.PRIMARY_DARK,
+                  },
+                ]}
                 placeholder="Category name..."
                 placeholderTextColor={COLORS.PRIMARY_DARK}
                 value={newCategoryName}
@@ -164,6 +173,7 @@ export default observer(
               <TouchableOpacity
                 style={[
                   styles.saveButton,
+                  { backgroundColor: COLORS.PRIMARY_DARK },
                   !newCategoryName.trim() && styles.disabledButton,
                 ]}
                 onPress={handleAddCategory}
@@ -171,7 +181,9 @@ export default observer(
                 accessibilityLabel="Save new category"
                 accessibilityRole="button"
               >
-                <Text style={styles.saveButtonText}>Save</Text>
+                <Text style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+                  Save
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -186,7 +198,16 @@ export default observer(
               inventory.categories.map((category) => {
                 const itemCount = inventory.getCategoryItemCount(category);
                 return (
-                  <View key={category} style={styles.categoryItem}>
+                  <View
+                    key={category}
+                    style={[
+                      styles.categoryItem,
+                      {
+                        backgroundColor: COLORS.PRIMARY_LIGHT,
+                        borderColor: COLORS.SECONDARY_ACCENT,
+                      },
+                    ]}
+                  >
                     <View style={styles.categoryInfo}>
                       <Icon
                         name="folder-outline"
@@ -195,8 +216,10 @@ export default observer(
                         style={styles.categoryIcon}
                       />
                       <View style={styles.categoryTextContainer}>
-                        <Text style={styles.categoryName}>{category}</Text>
-                        <Text style={styles.categoryCount}>
+                        <Text style={[styles.categoryName, { color: COLORS.PRIMARY_DARK }]}>
+                          {category}
+                        </Text>
+                        <Text style={[styles.categoryCount, { color: COLORS.PRIMARY_DARK }]}>
                           {itemCount} item{itemCount !== 1 ? 's' : ''}
                         </Text>
                       </View>
@@ -239,14 +262,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     gap: 8,
   },
   addButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -259,17 +280,13 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
   },
   saveButton: {
-    backgroundColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -279,7 +296,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   saveButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -293,7 +309,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
     textAlign: 'center',
     marginTop: 24,
@@ -302,8 +317,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 1,
     borderRadius: 8,
     paddingVertical: 12,
@@ -324,12 +337,10 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 2,
   },
   categoryCount: {
     fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.7,
   },
   deleteButton: {
