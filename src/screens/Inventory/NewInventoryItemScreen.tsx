@@ -140,10 +140,7 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.saveButton,
-                !name.trim() && styles.disabledButton,
-              ]}
+              style={[styles.saveButton, !name.trim() && styles.disabledButton]}
               onPress={handleSave}
               disabled={!name.trim()}
               accessibilityLabel="Save item"

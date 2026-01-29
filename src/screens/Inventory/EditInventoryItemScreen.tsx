@@ -14,7 +14,6 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useInventoryStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
-import type { InventoryItem } from '../../stores/InventoryStore';
 
 /**
  * Screen for editing an existing inventory item.
@@ -189,10 +188,7 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.saveButton,
-                !name.trim() && styles.disabledButton,
-              ]}
+              style={[styles.saveButton, !name.trim() && styles.disabledButton]}
               onPress={handleSave}
               disabled={!name.trim()}
               accessibilityLabel="Save changes"

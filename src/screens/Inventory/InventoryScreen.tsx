@@ -44,11 +44,7 @@ export default observer(function InventoryScreen() {
           accessibilityLabel="View All Items"
           accessibilityRole="button"
         >
-          <Ionicons
-            name="list-outline"
-            size={30}
-            color={COLORS.PRIMARY_DARK}
-          />
+          <Ionicons name="list-outline" size={30} color={COLORS.PRIMARY_DARK} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.inventoryButton}

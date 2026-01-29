@@ -260,10 +260,7 @@ export class InventoryStore {
   /**
    * Deletes a category and optionally moves items to a fallback category.
    */
-  async deleteCategory(
-    name: string,
-    fallbackCategory?: string,
-  ): Promise<void> {
+  async deleteCategory(name: string, fallbackCategory?: string): Promise<void> {
     if (this.categories.length <= 1) {
       throw new Error('Cannot delete the last category');
     }
@@ -272,9 +269,7 @@ export class InventoryStore {
       throw new Error('Category does not exist');
     }
 
-    const itemsInCategory = this.items.filter(
-      (item) => item.category === name,
-    );
+    const itemsInCategory = this.items.filter((item) => item.category === name);
 
     // If there are items, we need a fallback category
     if (itemsInCategory.length > 0) {

@@ -1,20 +1,14 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useInventoryStore } from '../../stores';
 import { useTheme } from '../../hooks/useTheme';
+import { useInventoryStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 
 /**
@@ -33,11 +27,9 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
   const COLORS = useTheme();
 
   const { category } = route.params || {};
-  const isValidCategory =
-    category && inventory.categories.includes(category);
+  const isValidCategory = category && inventory.categories.includes(category);
   const items = useMemo(
-    () =>
-      isValidCategory ? (inventory.itemsByCategory[category] ?? []) : [],
+    () => (isValidCategory ? (inventory.itemsByCategory[category] ?? []) : []),
     [isValidCategory, category, inventory.itemsByCategory],
   );
 

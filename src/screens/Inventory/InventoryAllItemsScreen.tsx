@@ -7,8 +7,8 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useInventoryStore } from '../../stores';
 import { useTheme } from '../../hooks/useTheme';
+import { useInventoryStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 
 /**
