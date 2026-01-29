@@ -74,9 +74,9 @@ describe('InventoryStore', () => {
       while (store.categories.length > 1) {
         await store.deleteCategory(store.categories[0]);
       }
-      await expect(
-        store.deleteCategory(store.categories[0]),
-      ).rejects.toThrow('Cannot delete the last category');
+      await expect(store.deleteCategory(store.categories[0])).rejects.toThrow(
+        'Cannot delete the last category',
+      );
     });
   });
 
@@ -105,9 +105,9 @@ describe('InventoryStore', () => {
     });
 
     it('should not create item with empty name', async () => {
-      await expect(
-        store.createItem('   ', 'Home Base', 1),
-      ).rejects.toThrow('Item name cannot be empty');
+      await expect(store.createItem('   ', 'Home Base', 1)).rejects.toThrow(
+        'Item name cannot be empty',
+      );
     });
 
     it('should not create item with negative quantity', async () => {
@@ -123,7 +123,12 @@ describe('InventoryStore', () => {
     });
 
     it('should update an item', async () => {
-      const item = await store.createItem('Water', 'Main Vehicle', 10, 'gallons');
+      const item = await store.createItem(
+        'Water',
+        'Main Vehicle',
+        10,
+        'gallons',
+      );
       await store.updateItem(item.id, { quantity: 15 });
       expect(store.items[0].quantity).toBe(15);
     });
@@ -135,9 +140,9 @@ describe('InventoryStore', () => {
     });
 
     it('should not delete non-existent item', async () => {
-      await expect(
-        store.deleteItem('non-existent-id'),
-      ).rejects.toThrow('Item not found');
+      await expect(store.deleteItem('non-existent-id')).rejects.toThrow(
+        'Item not found',
+      );
     });
   });
 
@@ -189,15 +194,17 @@ describe('InventoryStore', () => {
       await store.deleteCategory('Home Base', 'Main Vehicle');
 
       expect(store.categories).not.toContain('Home Base');
-      expect(store.items.every((item) => item.category === 'Main Vehicle')).toBe(true);
+      expect(
+        store.items.every((item) => item.category === 'Main Vehicle'),
+      ).toBe(true);
     });
 
     it('should require fallback category when deleting category with items', async () => {
       await store.createItem('Item1', 'Home Base', 1);
 
-      await expect(
-        store.deleteCategory('Home Base'),
-      ).rejects.toThrow('Fallback category required when category has items');
+      await expect(store.deleteCategory('Home Base')).rejects.toThrow(
+        'Fallback category required when category has items',
+      );
     });
   });
 });
