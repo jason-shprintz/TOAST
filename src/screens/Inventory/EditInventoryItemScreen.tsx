@@ -24,6 +24,7 @@ import { FOOTER_HEIGHT } from '../../theme';
  * - Update quantity
  * - Change unit
  * - Modify notes
+ * - Set expiration date (optional, month and year)
  * - Delete the item
  *
  * @returns {React.JSX.Element} The rendered edit inventory item screen component.

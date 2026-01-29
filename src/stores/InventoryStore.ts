@@ -132,8 +132,41 @@ export class InventoryStore {
           'updatedAt INTEGER NOT NULL' +
           ')',
       );
+
+      await this.migrateDatabase();
     } catch (error) {
       console.error('Failed to create inventory tables:', error);
+    }
+  }
+
+  /**
+   * Migrates existing database schema to support new columns.
+   */
+  private async migrateDatabase(): Promise<void> {
+    if (!this.inventoryDb) return;
+
+    try {
+      const [results] = await this.inventoryDb.executeSql(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='inventory_items'",
+      );
+
+      if (results.rows.length > 0) {
+        const tableSchema = results.rows.item(0).sql as string;
+        
+        if (!tableSchema.includes('expirationMonth')) {
+          await this.inventoryDb.executeSql(
+            'ALTER TABLE inventory_items ADD COLUMN expirationMonth INTEGER',
+          );
+        }
+        
+        if (!tableSchema.includes('expirationYear')) {
+          await this.inventoryDb.executeSql(
+            'ALTER TABLE inventory_items ADD COLUMN expirationYear INTEGER',
+          );
+        }
+      }
+    } catch (error) {
+      console.log('Database migration completed or not needed');
     }
   }
 
