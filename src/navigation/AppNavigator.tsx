@@ -17,6 +17,12 @@ import DigitalWhistleScreen from '../screens/DigitalWhistle/DigitalWhistleScreen
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import EditInventoryItemScreen from '../screens/Inventory/EditInventoryItemScreen';
+import InventoryAllItemsScreen from '../screens/Inventory/InventoryAllItemsScreen';
+import InventoryCategoryScreen from '../screens/Inventory/InventoryCategoryScreen';
+import InventoryScreen from '../screens/Inventory/InventoryScreen';
+import ManageInventoryCategoriesScreen from '../screens/Inventory/ManageInventoryCategoriesScreen';
+import NewInventoryItemScreen from '../screens/Inventory/NewInventoryItemScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
@@ -152,6 +158,28 @@ function NavigatorContent(): JSX.Element {
               gestureEnabled: true,
               gestureDirection: 'vertical',
             }}
+          />
+          {/* Inventory */}
+          <Stack.Screen name="Inventory" component={InventoryScreen} />
+          <Stack.Screen
+            name="InventoryCategory"
+            component={InventoryCategoryScreen}
+          />
+          <Stack.Screen
+            name="InventoryAllItems"
+            component={InventoryAllItemsScreen}
+          />
+          <Stack.Screen
+            name="ManageInventoryCategories"
+            component={ManageInventoryCategoriesScreen}
+          />
+          <Stack.Screen
+            name="NewInventoryItem"
+            component={NewInventoryItemScreen}
+          />
+          <Stack.Screen
+            name="EditInventoryItem"
+            component={EditInventoryItemScreen}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
