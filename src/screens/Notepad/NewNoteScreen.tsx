@@ -27,8 +27,8 @@ import SketchCanvas, {
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
-import { MAX_TITLE_LENGTH } from './constants';
 import { pickPhoto } from '../../utils/photoPicker';
+import { MAX_TITLE_LENGTH } from './constants';
 
 type NewNoteScreenNavigationProp = NativeStackNavigationProp<any>;
 
