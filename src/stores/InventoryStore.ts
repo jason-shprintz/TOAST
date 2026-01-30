@@ -160,13 +160,13 @@ export class InventoryStore {
 
       if (results.rows.length > 0) {
         const tableSchema = results.rows.item(0).sql as string;
-        
+
         if (!tableSchema.includes('expirationMonth')) {
           await this.inventoryDb.executeSql(
             'ALTER TABLE inventory_items ADD COLUMN expirationMonth INTEGER',
           );
         }
-        
+
         if (!tableSchema.includes('expirationYear')) {
           await this.inventoryDb.executeSql(
             'ALTER TABLE inventory_items ADD COLUMN expirationYear INTEGER',
@@ -174,7 +174,7 @@ export class InventoryStore {
         }
       }
     } catch (error) {
-      console.log('Database migration completed or not needed');
+      console.log('Database migration completed or not needed', error);
     }
   }
 
