@@ -136,7 +136,10 @@ export default observer(
         <View style={styles.container}>
           <View style={styles.headerSection}>
             <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: COLORS.PRIMARY_DARK }]}
+              style={[
+                styles.addButton,
+                { backgroundColor: COLORS.PRIMARY_DARK },
+              ]}
               onPress={() => setIsAdding(!isAdding)}
               accessibilityLabel="Add new category"
               accessibilityRole="button"
@@ -146,7 +149,9 @@ export default observer(
                 size={24}
                 color={COLORS.PRIMARY_LIGHT}
               />
-              <Text style={[styles.addButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+              <Text
+                style={[styles.addButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+              >
                 {isAdding ? 'Cancel' : 'Add Category'}
               </Text>
             </TouchableOpacity>
@@ -181,7 +186,12 @@ export default observer(
                 accessibilityLabel="Save new category"
                 accessibilityRole="button"
               >
-                <Text style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+                <Text
+                  style={[
+                    styles.saveButtonText,
+                    { color: COLORS.PRIMARY_LIGHT },
+                  ]}
+                >
                   Save
                 </Text>
               </TouchableOpacity>
@@ -216,10 +226,20 @@ export default observer(
                         style={styles.categoryIcon}
                       />
                       <View style={styles.categoryTextContainer}>
-                        <Text style={[styles.categoryName, { color: COLORS.PRIMARY_DARK }]}>
+                        <Text
+                          style={[
+                            styles.categoryName,
+                            { color: COLORS.PRIMARY_DARK },
+                          ]}
+                        >
                           {category}
                         </Text>
-                        <Text style={[styles.categoryCount, { color: COLORS.PRIMARY_DARK }]}>
+                        <Text
+                          style={[
+                            styles.categoryCount,
+                            { color: COLORS.PRIMARY_DARK },
+                          ]}
+                        >
                           {itemCount} item{itemCount !== 1 ? 's' : ''}
                         </Text>
                       </View>

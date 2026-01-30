@@ -42,8 +42,12 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
   );
   const [unit, setUnit] = useState<string>(item?.unit || '');
   const [notes, setNotes] = useState<string>(item?.notes || '');
-  const [expirationMonth, setExpirationMonth] = useState<number | undefined>(item?.expirationMonth);
-  const [expirationYear, setExpirationYear] = useState<number | undefined>(item?.expirationYear);
+  const [expirationMonth, setExpirationMonth] = useState<number | undefined>(
+    item?.expirationMonth,
+  );
+  const [expirationYear, setExpirationYear] = useState<number | undefined>(
+    item?.expirationYear,
+  );
 
   const months = [
     { label: 'January', value: 1 },
@@ -102,7 +106,9 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
 
   const getMonthLabel = () => {
     if (!expirationMonth) return 'Select Month';
-    return months.find((m) => m.value === expirationMonth)?.label || 'Select Month';
+    return (
+      months.find((m) => m.value === expirationMonth)?.label || 'Select Month'
+    );
   };
 
   const handleSave = async () => {
@@ -170,7 +176,11 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
       <ScreenBody>
         <SectionHeader>Edit Item</SectionHeader>
         <View style={styles.container}>
-          <Text style={[styles.errorText, { color: COLORS.ERROR || '#d32f2f' }]}>Item not found</Text>
+          <Text
+            style={[styles.errorText, { color: COLORS.ERROR || '#d32f2f' }]}
+          >
+            Item not found
+          </Text>
         </View>
       </ScreenBody>
     );
@@ -259,7 +269,9 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
                 ]}
                 onPress={showMonthPicker}
               >
-                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                <Text
+                  style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}
+                >
                   {getMonthLabel()}
                 </Text>
               </TouchableOpacity>
@@ -273,7 +285,9 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
                 ]}
                 onPress={showYearPicker}
               >
-                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                <Text
+                  style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}
+                >
                   {expirationYear || 'Select Year'}
                 </Text>
               </TouchableOpacity>
@@ -318,7 +332,12 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
               accessibilityLabel="Cancel"
               accessibilityRole="button"
             >
-              <Text style={[styles.cancelButtonText, { color: COLORS.PRIMARY_DARK }]}>
+              <Text
+                style={[
+                  styles.cancelButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -333,7 +352,9 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
               accessibilityLabel="Save changes"
               accessibilityRole="button"
             >
-              <Text style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+              <Text
+                style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+              >
                 Save
               </Text>
             </TouchableOpacity>
@@ -348,7 +369,9 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
             accessibilityLabel="Delete item"
             accessibilityRole="button"
           >
-            <Text style={[styles.deleteButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+            <Text
+              style={[styles.deleteButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+            >
               Delete Item
             </Text>
           </TouchableOpacity>

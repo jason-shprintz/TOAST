@@ -65,11 +65,16 @@ export default observer(function InventoryAllItemsScreen(): React.JSX.Element {
                   color={COLORS.PRIMARY_DARK}
                 />
                 <View style={styles.itemHeaderText}>
-                  <Text style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}>
+                  <Text
+                    style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}
+                  >
                     {item.name}
                   </Text>
                   <Text
-                    style={[styles.itemCategory, { color: COLORS.PRIMARY_DARK }]}
+                    style={[
+                      styles.itemCategory,
+                      { color: COLORS.PRIMARY_DARK },
+                    ]}
                   >
                     {item.category}
                   </Text>

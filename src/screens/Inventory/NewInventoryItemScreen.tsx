@@ -99,7 +99,9 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
 
   const getMonthLabel = () => {
     if (!expirationMonth) return 'Select Month';
-    return months.find((m) => m.value === expirationMonth)?.label || 'Select Month';
+    return (
+      months.find((m) => m.value === expirationMonth)?.label || 'Select Month'
+    );
   };
 
   const handleSave = async () => {
@@ -174,6 +176,7 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
               <TextInput
                 style={[
                   styles.input,
+                  styles.inputQuantity,
                   {
                     backgroundColor: COLORS.PRIMARY_LIGHT,
                     borderColor: COLORS.SECONDARY_ACCENT,
@@ -190,6 +193,7 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
               <TextInput
                 style={[
                   styles.input,
+                  styles.inputUnit,
                   {
                     backgroundColor: COLORS.PRIMARY_LIGHT,
                     borderColor: COLORS.SECONDARY_ACCENT,
@@ -220,7 +224,9 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
                 ]}
                 onPress={showMonthPicker}
               >
-                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                <Text
+                  style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}
+                >
                   {getMonthLabel()}
                 </Text>
               </TouchableOpacity>
@@ -234,7 +240,9 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
                 ]}
                 onPress={showYearPicker}
               >
-                <Text style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}>
+                <Text
+                  style={[styles.pickerText, { color: COLORS.PRIMARY_DARK }]}
+                >
                   {expirationYear || 'Select Year'}
                 </Text>
               </TouchableOpacity>
@@ -279,7 +287,12 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
               accessibilityLabel="Cancel"
               accessibilityRole="button"
             >
-              <Text style={[styles.cancelButtonText, { color: COLORS.PRIMARY_DARK }]}>
+              <Text
+                style={[
+                  styles.cancelButtonText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+              >
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -294,7 +307,9 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
               accessibilityLabel="Save item"
               accessibilityRole="button"
             >
-              <Text style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
+              <Text
+                style={[styles.saveButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+              >
                 Save
               </Text>
             </TouchableOpacity>
@@ -334,6 +349,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
+  },
+  inputQuantity: {
+    minWidth: 60,
+  },
+  inputUnit: {
+    flex: 1,
   },
   textArea: {
     minHeight: 100,
