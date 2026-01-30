@@ -544,7 +544,9 @@ export class PantryStore {
         updates.expirationYear < currentYear ||
         updates.expirationYear > currentYear + 50
       ) {
-        throw new Error('Expiration year must be valid');
+        throw new Error(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
       }
     }
 
