@@ -6,7 +6,7 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
-import { useInventoryStore } from '../../stores';
+import { usePantryStore } from '../../stores';
 import {
   FormInput,
   FormTextArea,
@@ -15,10 +15,10 @@ import {
   QuantityUnitRow,
   ExpirationDatePicker,
 } from '../Shared/Prepper';
-import { inventoryFormStyles as styles } from './inventoryFormStyles';
+import { pantryFormStyles as styles } from './pantryFormStyles';
 
 /**
- * Screen for editing an existing inventory item.
+ * Screen for editing an existing pantry item.
  *
  * Allows users to:
  * - Edit item name
@@ -28,12 +28,12 @@ import { inventoryFormStyles as styles } from './inventoryFormStyles';
  * - Set expiration date (optional, month and year)
  * - Delete the item
  *
- * @returns {React.JSX.Element} The rendered edit inventory item screen component.
+ * @returns {React.JSX.Element} The rendered edit pantry item screen component.
  */
-export default observer(function EditInventoryItemScreen(): React.JSX.Element {
+export default observer(function EditPantryItemScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const inventory = useInventoryStore();
+  const pantry = usePantryStore();
   const COLORS = useTheme();
 
   const { item } = route.params || {};
@@ -64,7 +64,7 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
     }
 
     try {
-      await inventory.updateItem(item.id, {
+      await pantry.updateItem(item.id, {
         name: trimmedName,
         quantity: quantityNum,
         unit: unit.trim() || undefined,
@@ -94,7 +94,7 @@ export default observer(function EditInventoryItemScreen(): React.JSX.Element {
           style: 'destructive',
           onPress: async () => {
             try {
-              await inventory.deleteItem(item.id);
+              await pantry.deleteItem(item.id);
               Alert.alert('Success', 'Item deleted successfully', [
                 {
                   text: 'OK',

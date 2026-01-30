@@ -38,6 +38,12 @@ import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import NoteCategoryScreen from '../screens/Notepad/Shared/NoteCategoryScreen';
 import NoteEntryScreen from '../screens/Notepad/Shared/NoteEntryScreen';
+import EditPantryItemScreen from '../screens/Pantry/EditPantryItemScreen';
+import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategoriesScreen';
+import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
+import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
+import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
+import PantryScreen from '../screens/Pantry/PantryScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -180,6 +186,25 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="EditInventoryItem"
             component={EditInventoryItemScreen}
+          />
+          {/* Pantry */}
+          <Stack.Screen name="Pantry" component={PantryScreen} />
+          <Stack.Screen
+            name="PantryCategory"
+            component={PantryCategoryScreen}
+          />
+          <Stack.Screen
+            name="PantryAllItems"
+            component={PantryAllItemsScreen}
+          />
+          <Stack.Screen
+            name="ManagePantryCategories"
+            component={ManagePantryCategoriesScreen}
+          />
+          <Stack.Screen name="NewPantryItem" component={NewPantryItemScreen} />
+          <Stack.Screen
+            name="EditPantryItem"
+            component={EditPantryItemScreen}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />

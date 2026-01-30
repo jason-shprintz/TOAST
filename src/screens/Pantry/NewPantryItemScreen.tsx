@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { useInventoryStore } from '../../stores';
+import { usePantryStore } from '../../stores';
 import {
   FormInput,
   FormTextArea,
@@ -12,10 +12,10 @@ import {
   QuantityUnitRow,
   ExpirationDatePicker,
 } from '../Shared/Prepper';
-import { inventoryFormStyles as styles } from './inventoryFormStyles';
+import { pantryFormStyles as styles } from './pantryFormStyles';
 
 /**
- * Screen for adding a new inventory item.
+ * Screen for adding a new pantry item.
  *
  * Allows users to:
  * - Enter item name (required)
@@ -24,12 +24,12 @@ import { inventoryFormStyles as styles } from './inventoryFormStyles';
  * - Add notes (optional)
  * - Set expiration date (optional, month and year)
  *
- * @returns {React.JSX.Element} The rendered new inventory item screen component.
+ * @returns {React.JSX.Element} The rendered new pantry item screen component.
  */
-export default observer(function NewInventoryItemScreen(): React.JSX.Element {
+export default observer(function NewPantryItemScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const inventory = useInventoryStore();
+  const pantry = usePantryStore();
 
   const { category } = route.params || {};
   const [name, setName] = useState<string>('');
@@ -46,6 +46,11 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
       return;
     }
 
+    if (!category || !pantry.categories.includes(category)) {
+      Alert.alert('Error', 'Invalid category');
+      return;
+    }
+
     const quantityNum = parseFloat(quantity);
     if (isNaN(quantityNum) || quantityNum < 0) {
       Alert.alert('Error', 'Please enter a valid quantity (0 or greater)');
@@ -53,7 +58,7 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
     }
 
     try {
-      await inventory.createItem(
+      await pantry.createItem(
         trimmedName,
         category,
         quantityNum,
