@@ -201,4 +201,211 @@ describe('PantryStore', () => {
       );
     });
   });
+
+  describe('Expiration Date Validation', () => {
+    beforeEach(async () => {
+      await store.initDatabase();
+    });
+
+    describe('createItem validation', () => {
+      it('should reject invalid expiration month - zero', async () => {
+        await expect(
+          store.createItem('Test Item', 'Canned Goods', 1, 'cans', '', 0, 2025),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject invalid expiration month - negative', async () => {
+        await expect(
+          store.createItem('Test Item', 'Canned Goods', 1, 'cans', '', -1, 2025),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject invalid expiration month - too high', async () => {
+        await expect(
+          store.createItem('Test Item', 'Canned Goods', 1, 'cans', '', 13, 2025),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject expiration year in the past', async () => {
+        const currentYear = new Date().getFullYear();
+        const pastYear = currentYear - 1;
+        await expect(
+          store.createItem(
+            'Test Item',
+            'Canned Goods',
+            1,
+            'cans',
+            '',
+            6,
+            pastYear,
+          ),
+        ).rejects.toThrow(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
+      });
+
+      it('should reject expiration year too far in the future', async () => {
+        const currentYear = new Date().getFullYear();
+        const farFutureYear = currentYear + 51;
+        await expect(
+          store.createItem(
+            'Test Item',
+            'Canned Goods',
+            1,
+            'cans',
+            '',
+            6,
+            farFutureYear,
+          ),
+        ).rejects.toThrow(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
+      });
+
+      it('should accept valid expiration dates - current year', async () => {
+        const currentYear = new Date().getFullYear();
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+          '',
+          6,
+          currentYear,
+        );
+        expect(item.expirationMonth).toBe(6);
+        expect(item.expirationYear).toBe(currentYear);
+      });
+
+      it('should accept valid expiration dates - future year', async () => {
+        const currentYear = new Date().getFullYear();
+        const futureYear = currentYear + 10;
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+          '',
+          12,
+          futureYear,
+        );
+        expect(item.expirationMonth).toBe(12);
+        expect(item.expirationYear).toBe(futureYear);
+      });
+
+      it('should accept valid expiration dates - edge month 1', async () => {
+        const currentYear = new Date().getFullYear();
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+          '',
+          1,
+          currentYear,
+        );
+        expect(item.expirationMonth).toBe(1);
+      });
+
+      it('should accept valid expiration dates - edge month 12', async () => {
+        const currentYear = new Date().getFullYear();
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+          '',
+          12,
+          currentYear,
+        );
+        expect(item.expirationMonth).toBe(12);
+      });
+
+      it('should accept items without expiration dates', async () => {
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+        );
+        expect(item.expirationMonth).toBeUndefined();
+        expect(item.expirationYear).toBeUndefined();
+      });
+    });
+
+    describe('updateItem validation', () => {
+      it('should reject invalid expiration month - zero', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        await expect(
+          store.updateItem(item.id, { expirationMonth: 0 }),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject invalid expiration month - negative', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        await expect(
+          store.updateItem(item.id, { expirationMonth: -1 }),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject invalid expiration month - too high', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        await expect(
+          store.updateItem(item.id, { expirationMonth: 13 }),
+        ).rejects.toThrow('Expiration month must be between 1 and 12');
+      });
+
+      it('should reject expiration year in the past', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        const currentYear = new Date().getFullYear();
+        const pastYear = currentYear - 1;
+        await expect(
+          store.updateItem(item.id, { expirationYear: pastYear }),
+        ).rejects.toThrow(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
+      });
+
+      it('should reject expiration year too far in the future', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        const currentYear = new Date().getFullYear();
+        const farFutureYear = currentYear + 51;
+        await expect(
+          store.updateItem(item.id, { expirationYear: farFutureYear }),
+        ).rejects.toThrow(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
+      });
+
+      it('should accept valid expiration date updates', async () => {
+        const item = await store.createItem('Test Item', 'Canned Goods', 1);
+        const currentYear = new Date().getFullYear();
+        await store.updateItem(item.id, {
+          expirationMonth: 6,
+          expirationYear: currentYear + 5,
+        });
+        expect(store.items[0].expirationMonth).toBe(6);
+        expect(store.items[0].expirationYear).toBe(currentYear + 5);
+      });
+
+      it('should accept clearing expiration dates', async () => {
+        const currentYear = new Date().getFullYear();
+        const item = await store.createItem(
+          'Test Item',
+          'Canned Goods',
+          1,
+          'cans',
+          '',
+          6,
+          currentYear,
+        );
+        await store.updateItem(item.id, {
+          expirationMonth: undefined,
+          expirationYear: undefined,
+        });
+        expect(store.items[0].expirationMonth).toBeUndefined();
+        expect(store.items[0].expirationYear).toBeUndefined();
+      });
+    });
+  });
 });
