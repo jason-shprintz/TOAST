@@ -207,7 +207,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   },
   {
     name: 'Inventory',
-    screen: 'ComingSoon',
+    screen: 'Inventory',
     icon: 'cube-outline',
     id: 'prepper_inventory',
   },
