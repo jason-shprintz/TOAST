@@ -457,6 +457,15 @@ export class PantryStore {
     if (quantity < 0) {
       throw new Error('Quantity cannot be negative');
     }
+    if (expirationMonth !== undefined && (expirationMonth < 1 || expirationMonth > 12)) {
+      throw new Error('Expiration month must be between 1 and 12');
+    }
+    if (expirationYear !== undefined) {
+      const currentYear = new Date().getFullYear();
+      if (expirationYear < currentYear || expirationYear > currentYear + 50) {
+        throw new Error('Expiration year must be valid');
+      }
+    }
 
     const now = Date.now();
     const item: PantryItem = {
@@ -519,6 +528,15 @@ export class PantryStore {
     }
     if (updates.quantity !== undefined && updates.quantity < 0) {
       throw new Error('Quantity cannot be negative');
+    }
+    if (updates.expirationMonth !== undefined && (updates.expirationMonth < 1 || updates.expirationMonth > 12)) {
+      throw new Error('Expiration month must be between 1 and 12');
+    }
+    if (updates.expirationYear !== undefined) {
+      const currentYear = new Date().getFullYear();
+      if (updates.expirationYear < currentYear || updates.expirationYear > currentYear + 50) {
+        throw new Error('Expiration year must be valid');
+      }
     }
 
     const updatedItem: PantryItem = {

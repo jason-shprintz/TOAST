@@ -42,8 +42,24 @@ export default observer(function PantryCategoryScreen(): React.JSX.Element {
   );
 
   const handleAddItem = () => {
+    if (!isValidCategory) {
+      return;
+    }
     navigation.navigate('NewPantryItem', { category });
   };
+
+  if (!isValidCategory) {
+    return (
+      <ScreenBody>
+        <SectionHeader>Category Not Found</SectionHeader>
+        <View style={styles.container}>
+          <Text style={[styles.helperText, { color: COLORS.PRIMARY_DARK }]}>
+            The requested category does not exist.
+          </Text>
+        </View>
+      </ScreenBody>
+    );
+  }
 
   const handleItemPress = (item: any) => {
     navigation.navigate('EditPantryItem', { item });

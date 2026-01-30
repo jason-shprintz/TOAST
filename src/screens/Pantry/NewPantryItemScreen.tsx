@@ -46,6 +46,11 @@ export default observer(function NewPantryItemScreen(): React.JSX.Element {
       return;
     }
 
+    if (!category || !pantry.categories.includes(category)) {
+      Alert.alert('Error', 'Invalid category');
+      return;
+    }
+
     const quantityNum = parseFloat(quantity);
     if (isNaN(quantityNum) || quantityNum < 0) {
       Alert.alert('Error', 'Please enter a valid quantity (0 or greater)');
