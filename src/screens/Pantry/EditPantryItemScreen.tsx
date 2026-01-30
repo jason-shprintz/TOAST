@@ -14,7 +14,7 @@ import {
   DeleteButton,
   QuantityUnitRow,
   ExpirationDatePicker,
-} from '../Inventory/components';
+} from '../Shared/Prepper';
 import { pantryFormStyles as styles } from './pantryFormStyles';
 
 /**

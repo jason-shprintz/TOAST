@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import { useTheme } from '../../../hooks/useTheme';
-import { inventoryFormStyles as styles } from '../inventoryFormStyles';
+import { inventoryFormStyles as styles } from '../../Inventory/inventoryFormStyles';
 
 interface FormTextAreaProps extends Omit<TextInputProps, 'style'> {
   label: string;

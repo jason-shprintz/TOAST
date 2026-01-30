@@ -11,7 +11,7 @@ import {
   FormButtonRow,
   QuantityUnitRow,
   ExpirationDatePicker,
-} from './components';
+} from '../Shared/Prepper';
 import { inventoryFormStyles as styles } from './inventoryFormStyles';
 
 /**
