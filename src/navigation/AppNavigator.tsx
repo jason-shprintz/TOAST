@@ -23,12 +23,6 @@ import InventoryCategoryScreen from '../screens/Inventory/InventoryCategoryScree
 import InventoryScreen from '../screens/Inventory/InventoryScreen';
 import ManageInventoryCategoriesScreen from '../screens/Inventory/ManageInventoryCategoriesScreen';
 import NewInventoryItemScreen from '../screens/Inventory/NewInventoryItemScreen';
-import EditPantryItemScreen from '../screens/Pantry/EditPantryItemScreen';
-import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategoriesScreen';
-import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
-import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
-import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
-import PantryScreen from '../screens/Pantry/PantryScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
@@ -44,6 +38,12 @@ import NotepadScreen from '../screens/Notepad/NotepadScreen';
 import RecentNotesScreen from '../screens/Notepad/RecentNotesScreen';
 import NoteCategoryScreen from '../screens/Notepad/Shared/NoteCategoryScreen';
 import NoteEntryScreen from '../screens/Notepad/Shared/NoteEntryScreen';
+import EditPantryItemScreen from '../screens/Pantry/EditPantryItemScreen';
+import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategoriesScreen';
+import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
+import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
+import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
+import PantryScreen from '../screens/Pantry/PantryScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -201,10 +201,7 @@ function NavigatorContent(): JSX.Element {
             name="ManagePantryCategories"
             component={ManagePantryCategoriesScreen}
           />
-          <Stack.Screen
-            name="NewPantryItem"
-            component={NewPantryItemScreen}
-          />
+          <Stack.Screen name="NewPantryItem" component={NewPantryItemScreen} />
           <Stack.Screen
             name="EditPantryItem"
             component={EditPantryItemScreen}

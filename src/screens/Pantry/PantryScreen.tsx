@@ -32,8 +32,8 @@ export default observer(function PantryScreen() {
   const categoryIcons: Record<string, string> = {
     'Canned Goods': 'flask-outline',
     'Dry Goods': 'nutrition-outline',
-    'Frozen': 'snow-outline',
-    'Fresh': 'leaf-outline',
+    Frozen: 'snow-outline',
+    Fresh: 'leaf-outline',
   };
 
   return (

@@ -28,7 +28,12 @@ describe('PantryStore', () => {
 
     it('should load default categories', async () => {
       await store.initDatabase();
-      expect(store.categories).toEqual(['Canned Goods', 'Dry Goods', 'Frozen', 'Fresh']);
+      expect(store.categories).toEqual([
+        'Canned Goods',
+        'Dry Goods',
+        'Frozen',
+        'Fresh',
+      ]);
     });
 
     it('should add a new category', async () => {
@@ -114,12 +119,7 @@ describe('PantryStore', () => {
     });
 
     it('should update an item', async () => {
-      const item = await store.createItem(
-        'Rice',
-        'Dry Goods',
-        5,
-        'lbs',
-      );
+      const item = await store.createItem('Rice', 'Dry Goods', 5, 'lbs');
       await store.updateItem(item.id, { quantity: 10 });
       expect(store.items[0].quantity).toBe(10);
     });
@@ -185,9 +185,9 @@ describe('PantryStore', () => {
       await store.deleteCategory('Canned Goods', 'Dry Goods');
 
       expect(store.categories).not.toContain('Canned Goods');
-      expect(
-        store.items.every((item) => item.category === 'Dry Goods'),
-      ).toBe(true);
+      expect(store.items.every((item) => item.category === 'Dry Goods')).toBe(
+        true,
+      );
     });
 
     it('should require fallback category when deleting category with items', async () => {

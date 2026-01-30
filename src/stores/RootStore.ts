@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { CoreStore } from './CoreStore';
 import { InventoryStore } from './InventoryStore';
-import { PantryStore } from './PantryStore';
 import { NavigationStore } from './NavigationStore';
+import { PantryStore } from './PantryStore';
 import { ReferenceStore } from './ReferenceStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
