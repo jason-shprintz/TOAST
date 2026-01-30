@@ -58,7 +58,10 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
   ];
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
+  const years = Array.from(
+    { length: 2099 - currentYear + 1 },
+    (_, i) => currentYear + i,
+  );
 
   const showMonthPicker = () => {
     const options = ['None', ...months.map((m) => m.label)];
@@ -165,45 +168,41 @@ export default observer(function NewInventoryItemScreen(): React.JSX.Element {
 
           <View style={styles.formGroup}>
             <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
-              Quantity *
+              Quantity & Unit *
             </Text>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: COLORS.PRIMARY_LIGHT,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                  color: COLORS.PRIMARY_DARK,
-                },
-              ]}
-              placeholder="Enter quantity..."
-              placeholderTextColor={COLORS.PRIMARY_DARK}
-              value={quantity}
-              onChangeText={setQuantity}
-              keyboardType="numeric"
-              accessibilityLabel="Quantity"
-            />
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
-              Unit (optional)
-            </Text>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: COLORS.PRIMARY_LIGHT,
-                  borderColor: COLORS.SECONDARY_ACCENT,
-                  color: COLORS.PRIMARY_DARK,
-                },
-              ]}
-              placeholder="e.g., pieces, lbs, gallons..."
-              placeholderTextColor={COLORS.PRIMARY_DARK}
-              value={unit}
-              onChangeText={setUnit}
-              accessibilityLabel="Unit"
-            />
+            <View style={styles.expirationRow}>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                    color: COLORS.PRIMARY_DARK,
+                  },
+                ]}
+                placeholder="Quantity..."
+                placeholderTextColor={COLORS.PRIMARY_DARK}
+                value={quantity}
+                onChangeText={setQuantity}
+                keyboardType="numeric"
+                accessibilityLabel="Quantity"
+              />
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                    color: COLORS.PRIMARY_DARK,
+                  },
+                ]}
+                placeholder="Unit (optional)..."
+                placeholderTextColor={COLORS.PRIMARY_DARK}
+                value={unit}
+                onChangeText={setUnit}
+                accessibilityLabel="Unit"
+              />
+            </View>
           </View>
 
           <View style={styles.formGroup}>

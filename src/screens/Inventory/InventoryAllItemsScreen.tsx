@@ -40,7 +40,7 @@ export default observer(function InventoryAllItemsScreen(): React.JSX.Element {
           contentContainerStyle={styles.scrollContent}
         >
           {allItems.length === 0 && (
-            <Text style={styles.helperText}>
+            <Text style={[styles.helperText, { color: COLORS.PRIMARY_DARK }]}>
               No inventory items yet. Add items from a category.
             </Text>
           )}

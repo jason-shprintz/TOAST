@@ -72,7 +72,7 @@ export default observer(function InventoryCategoryScreen(): React.JSX.Element {
           contentContainerStyle={styles.scrollContent}
         >
           {sortedItems.length === 0 && (
-            <Text style={styles.helperText}>
+            <Text style={[styles.helperText, { color: COLORS.PRIMARY_DARK }]}>
               No items in this category yet.
             </Text>
           )}

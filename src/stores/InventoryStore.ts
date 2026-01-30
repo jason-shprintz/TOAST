@@ -304,6 +304,14 @@ export class InventoryStore {
         runInAction(() => {
           this.items = loadedItems;
         });
+      } else {
+        // If no items exist and we have default categories, create default items
+        if (
+          this.categories.includes('Home Base') &&
+          this.categories.includes('Main Vehicle')
+        ) {
+          await this.createDefaultItems();
+        }
       }
     } catch (error) {
       console.error('Failed to load inventory items:', error);
