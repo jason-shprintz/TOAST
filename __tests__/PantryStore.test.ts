@@ -216,13 +216,29 @@ describe('PantryStore', () => {
 
       it('should reject invalid expiration month - negative', async () => {
         await expect(
-          store.createItem('Test Item', 'Canned Goods', 1, 'cans', '', -1, 2025),
+          store.createItem(
+            'Test Item',
+            'Canned Goods',
+            1,
+            'cans',
+            '',
+            -1,
+            2025,
+          ),
         ).rejects.toThrow('Expiration month must be between 1 and 12');
       });
 
       it('should reject invalid expiration month - too high', async () => {
         await expect(
-          store.createItem('Test Item', 'Canned Goods', 1, 'cans', '', 13, 2025),
+          store.createItem(
+            'Test Item',
+            'Canned Goods',
+            1,
+            'cans',
+            '',
+            13,
+            2025,
+          ),
         ).rejects.toThrow('Expiration month must be between 1 and 12');
       });
 
