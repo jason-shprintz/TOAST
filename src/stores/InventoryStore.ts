@@ -1,5 +1,4 @@
 import { makeAutoObservable, runInAction, computed } from 'mobx';
-import { v4 as uuidv4 } from 'uuid';
 import { SQLiteDatabase } from '../types/database-types';
 
 let SQLite: any;
@@ -42,6 +41,15 @@ export class InventoryStore {
       },
       { autoBind: true },
     );
+  }
+
+  /**
+   * Generates a unique ID using timestamp and random string.
+   * This avoids the need for crypto.getRandomValues() which isn't available in React Native.
+   * @private
+   */
+  private generateId(): string {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
   /**
@@ -425,7 +433,7 @@ export class InventoryStore {
 
     const now = Date.now();
     const item: InventoryItem = {
-      id: uuidv4(),
+      id: this.generateId(),
       name: trimmedName,
       category,
       quantity,
