@@ -8,6 +8,9 @@ jest.mock('react-native-sqlite-storage', () => {
   return null;
 });
 
+// Silence the expected "SQLite not available" warning in tests
+jest.spyOn(console, 'warn').mockImplementation(() => {});
+
 import { PantryStore } from '../src/stores/PantryStore';
 
 describe('PantryStore', () => {
