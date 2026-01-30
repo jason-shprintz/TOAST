@@ -4,17 +4,8 @@
  */
 
 jest.mock('react-native-sqlite-storage', () => {
-  const mockExecuteSql = jest.fn(() =>
-    Promise.resolve([{ rows: { length: 0, item: () => null, raw: () => [] } }]),
-  );
-
-  return {
-    openDatabase: jest.fn(() =>
-      Promise.resolve({
-        executeSql: mockExecuteSql,
-      }),
-    ),
-  };
+  // Return null to force in-memory storage mode (no default items created)
+  return null;
 });
 
 import { InventoryStore } from '../src/stores/InventoryStore';
