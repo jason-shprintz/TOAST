@@ -466,7 +466,7 @@ export class PantryStore {
     if (expirationYear !== undefined) {
       const currentYear = new Date().getFullYear();
       if (expirationYear < currentYear || expirationYear > currentYear + 50) {
-        throw new Error('Expiration year must be valid');
+        throw new Error(`Expiration year must be between ${currentYear} and ${currentYear + 50}`);
       }
     }
 
