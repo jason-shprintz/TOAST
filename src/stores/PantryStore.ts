@@ -343,8 +343,12 @@ export class PantryStore {
           this.items = loadedItems;
         });
       } else {
-        // If no items exist and we have default categories, create default items
-        if (this.categories.length > 0) {
+        // If no items exist and we have the default categories, create default items
+        const defaultCategories = ['Canned Goods', 'Dry Goods', 'Frozen', 'Fresh'];
+        const hasDefaultCategories = defaultCategories.every((category) =>
+          this.categories.includes(category),
+        );
+        if (hasDefaultCategories) {
           await this.createDefaultItems();
         }
       }
