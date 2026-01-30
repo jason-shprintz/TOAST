@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { CoreStore } from './CoreStore';
 import { InventoryStore } from './InventoryStore';
+import { PantryStore } from './PantryStore';
 import { NavigationStore } from './NavigationStore';
 import { ReferenceStore } from './ReferenceStore';
 import { SettingsStore } from './SettingsStore';
@@ -9,6 +10,7 @@ import { SignalsStore } from './SignalsStore';
 export class RootStore {
   coreStore: CoreStore;
   inventoryStore: InventoryStore;
+  pantryStore: PantryStore;
   navigationStore: NavigationStore;
   referenceStore: ReferenceStore;
   settingsStore: SettingsStore;
@@ -18,6 +20,7 @@ export class RootStore {
     makeAutoObservable(this);
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
+    this.pantryStore = new PantryStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();
@@ -36,8 +39,9 @@ export class RootStore {
       await this.coreStore.loadCategories();
       await this.settingsStore.loadSettings(this.coreStore.notesDb);
     }
-    // Initialize inventory database
+    // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
+    await this.pantryStore.initDatabase();
   }
 
   // Global app state
@@ -51,8 +55,10 @@ export class RootStore {
   reset() {
     this.coreStore.dispose();
     this.inventoryStore.dispose();
+    this.pantryStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
+    this.pantryStore = new PantryStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();

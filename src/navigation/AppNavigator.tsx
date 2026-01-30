@@ -23,6 +23,12 @@ import InventoryCategoryScreen from '../screens/Inventory/InventoryCategoryScree
 import InventoryScreen from '../screens/Inventory/InventoryScreen';
 import ManageInventoryCategoriesScreen from '../screens/Inventory/ManageInventoryCategoriesScreen';
 import NewInventoryItemScreen from '../screens/Inventory/NewInventoryItemScreen';
+import EditPantryItemScreen from '../screens/Pantry/EditPantryItemScreen';
+import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategoriesScreen';
+import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
+import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
+import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
+import PantryScreen from '../screens/Pantry/PantryScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
@@ -180,6 +186,28 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="EditInventoryItem"
             component={EditInventoryItemScreen}
+          />
+          {/* Pantry */}
+          <Stack.Screen name="Pantry" component={PantryScreen} />
+          <Stack.Screen
+            name="PantryCategory"
+            component={PantryCategoryScreen}
+          />
+          <Stack.Screen
+            name="PantryAllItems"
+            component={PantryAllItemsScreen}
+          />
+          <Stack.Screen
+            name="ManagePantryCategories"
+            component={ManagePantryCategoriesScreen}
+          />
+          <Stack.Screen
+            name="NewPantryItem"
+            component={NewPantryItemScreen}
+          />
+          <Stack.Screen
+            name="EditPantryItem"
+            component={EditPantryItemScreen}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />

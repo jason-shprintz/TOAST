@@ -201,7 +201,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   },
   {
     name: 'Pantry',
-    screen: 'ComingSoon',
+    screen: 'Pantry',
     icon: 'restaurant-outline',
     id: 'prepper_pantry',
   },
