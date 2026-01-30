@@ -344,7 +344,12 @@ export class PantryStore {
         });
       } else {
         // If no items exist and we have the default categories, create default items
-        const defaultCategories = ['Canned Goods', 'Dry Goods', 'Frozen', 'Fresh'];
+        const defaultCategories = [
+          'Canned Goods',
+          'Dry Goods',
+          'Frozen',
+          'Fresh',
+        ];
         const hasDefaultCategories = defaultCategories.every((category) =>
           this.categories.includes(category),
         );
@@ -470,7 +475,9 @@ export class PantryStore {
     if (expirationYear !== undefined) {
       const currentYear = new Date().getFullYear();
       if (expirationYear < currentYear || expirationYear > currentYear + 50) {
-        throw new Error(`Expiration year must be between ${currentYear} and ${currentYear + 50}`);
+        throw new Error(
+          `Expiration year must be between ${currentYear} and ${currentYear + 50}`,
+        );
       }
     }
 
