@@ -879,6 +879,7 @@ export class CoreStore {
     title?: string;
     text?: string;
     sketchDataUri?: string;
+    photoUris?: string[];
   }) {
     let latitude: number | undefined;
     let longitude: number | undefined;
@@ -913,7 +914,7 @@ export class CoreStore {
       text: params.text,
       bookmarked: false,
       sketchDataUri: params.sketchDataUri,
-      photoUris: [],
+      photoUris: params.photoUris || [],
     };
 
     runInAction(() => {
@@ -1027,6 +1028,7 @@ export class CoreStore {
       text?: string;
       category?: NoteCategory;
       sketchDataUri?: string;
+      photoUris?: string[];
     },
   ) {
     const note = this.notes.find((n) => n.id === noteId);
@@ -1043,6 +1045,9 @@ export class CoreStore {
         }
         if (params.sketchDataUri !== undefined) {
           note.sketchDataUri = params.sketchDataUri;
+        }
+        if (params.photoUris !== undefined) {
+          note.photoUris = params.photoUris;
         }
       });
       await this.updateNote(note);
