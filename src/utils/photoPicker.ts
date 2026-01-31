@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import RNFS from 'react-native-fs';
 import {
   launchCamera,
   launchImageLibrary,
@@ -9,10 +10,20 @@ import {
 
 /**
  * Opens a photo picker dialog allowing the user to select from camera or photo library.
- * @returns A promise that resolves to the selected image URI or undefined if cancelled
+ * The selected image is copied to app-controlled storage to ensure it persists.
+ * @returns A promise that resolves to the selected image URI in app storage or undefined if cancelled
  */
 export async function pickPhoto(): Promise<string | undefined> {
   return new Promise((resolve) => {
+    let settled = false;
+
+    const safeResolve = (value: string | undefined) => {
+      if (!settled) {
+        settled = true;
+        resolve(value);
+      }
+    };
+
     Alert.alert(
       'Add Photo',
       'Choose a photo source',
@@ -21,30 +32,59 @@ export async function pickPhoto(): Promise<string | undefined> {
           text: 'Camera',
           onPress: async () => {
             const result = await openCamera();
-            resolve(result);
+            safeResolve(result);
           },
         },
         {
           text: 'Photo Library',
           onPress: async () => {
             const result = await openPhotoLibrary();
-            resolve(result);
+            safeResolve(result);
           },
         },
         {
           text: 'Cancel',
           style: 'cancel',
-          onPress: () => resolve(undefined),
+          onPress: () => safeResolve(undefined),
         },
       ],
-      { cancelable: true, onDismiss: () => resolve(undefined) },
+      { cancelable: true },
     );
   });
 }
 
 /**
+ * Copies a temporary image file to app-controlled document storage.
+ * @param sourceUri - The temporary URI from the image picker
+ * @returns The permanent URI in app storage
+ */
+async function copyToAppStorage(sourceUri: string): Promise<string> {
+  try {
+    // Generate a unique filename using timestamp and random string
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const extension = sourceUri.split('.').pop() || 'jpg';
+    const filename = `photo_${timestamp}_${randomStr}.${extension}`;
+
+    // Use the app's document directory for permanent storage
+    const destPath = `${RNFS.DocumentDirectoryPath}/${filename}`;
+
+    // Copy the file from temporary location to permanent storage
+    await RNFS.copyFile(sourceUri, destPath);
+
+    // Return the file:// URI for the permanent location
+    return `file://${destPath}`;
+  } catch (error) {
+    console.error('Error copying image to app storage:', error);
+    // If copy fails, return the original URI as fallback
+    return sourceUri;
+  }
+}
+
+/**
  * Opens the device camera to take a photo.
- * @returns A promise that resolves to the captured image URI or undefined if cancelled
+ * The captured photo is copied to app-controlled storage for persistence.
+ * @returns A promise that resolves to the permanent image URI or undefined if cancelled
  */
 async function openCamera(): Promise<string | undefined> {
   const options: CameraOptions = {
@@ -68,7 +108,10 @@ async function openCamera(): Promise<string | undefined> {
 
     if (response.assets && response.assets.length > 0) {
       const asset = response.assets[0];
-      return asset.uri;
+      if (asset.uri) {
+        // Copy to app storage for persistence
+        return await copyToAppStorage(asset.uri);
+      }
     }
 
     return undefined;
@@ -81,7 +124,8 @@ async function openCamera(): Promise<string | undefined> {
 
 /**
  * Opens the device photo library to select a photo.
- * @returns A promise that resolves to the selected image URI or undefined if cancelled
+ * The selected photo is copied to app-controlled storage for persistence.
+ * @returns A promise that resolves to the permanent image URI or undefined if cancelled
  */
 async function openPhotoLibrary(): Promise<string | undefined> {
   const options: ImageLibraryOptions = {
@@ -105,7 +149,10 @@ async function openPhotoLibrary(): Promise<string | undefined> {
 
     if (response.assets && response.assets.length > 0) {
       const asset = response.assets[0];
-      return asset.uri;
+      if (asset.uri) {
+        // Copy to app storage for persistence
+        return await copyToAppStorage(asset.uri);
+      }
     }
 
     return undefined;
