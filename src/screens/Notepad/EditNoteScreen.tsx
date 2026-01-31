@@ -193,7 +193,7 @@ export default observer(function EditNoteScreen() {
                     }
                   }}
                   accessibilityLabel="Attach photo"
-                  accessibilityHint="Opens camera to attach a photo to your note"
+                  accessibilityHint="Choose from camera or photo library to attach a photo to your note"
                   accessibilityRole="button"
                 >
                   <Icon
