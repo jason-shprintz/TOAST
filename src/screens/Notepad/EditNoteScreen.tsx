@@ -389,7 +389,7 @@ export default observer(function EditNoteScreen() {
                     style={styles.photosScroll}
                   >
                     {photoUris.map((uri, index) => (
-                      <View key={uri} style={styles.photoWrapper}>
+                      <View key={`${uri}-${index}`} style={styles.photoWrapper}>
                         <Image source={{ uri }} style={styles.photoThumb} />
                         <TouchableOpacity
                           style={styles.removePhotoButton}
