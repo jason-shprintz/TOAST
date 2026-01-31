@@ -48,7 +48,7 @@ export async function pickPhoto(): Promise<string | undefined> {
           onPress: () => safeResolve(undefined),
         },
       ],
-      { cancelable: true },
+      { cancelable: true, onDismiss: () => safeResolve(undefined) },
     );
   });
 }
@@ -63,7 +63,19 @@ async function copyToAppStorage(sourceUri: string): Promise<string> {
     // Generate a unique filename using timestamp and random string
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8);
-    const extension = sourceUri.split('.').pop() || 'jpg';
+
+    // Extract extension from URI, handling query parameters and edge cases
+    let extension = 'jpg'; // default extension
+    const uriWithoutParams = sourceUri.split('?')[0]; // Remove query parameters
+    const parts = uriWithoutParams.split('.');
+    if (parts.length > 1) {
+      const ext = parts[parts.length - 1].toLowerCase();
+      // Validate it's a reasonable image extension
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'].includes(ext)) {
+        extension = ext;
+      }
+    }
+
     const filename = `photo_${timestamp}_${randomStr}.${extension}`;
 
     // Use the app's document directory for permanent storage
