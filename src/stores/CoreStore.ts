@@ -868,8 +868,10 @@ export class CoreStore {
    * @param params - The parameters for creating the note.
    * @param params.category - The category of the note (optional, defaults to 'General').
    * @param params.type - The type of input for the note.
+   * @param params.title - The title of the note (optional).
    * @param params.text - The text content of the note (optional).
    * @param params.sketchDataUri - The data URI for a sketch associated with the note (optional).
+   * @param params.photoUris - An array of URIs for photos attached to the note (optional).
    *
    * @returns A promise that resolves when the note has been created and persisted.
    */
@@ -879,6 +881,7 @@ export class CoreStore {
     title?: string;
     text?: string;
     sketchDataUri?: string;
+    photoUris?: string[];
   }) {
     let latitude: number | undefined;
     let longitude: number | undefined;
@@ -913,7 +916,7 @@ export class CoreStore {
       text: params.text,
       bookmarked: false,
       sketchDataUri: params.sketchDataUri,
-      photoUris: [],
+      photoUris: params.photoUris || [],
     };
 
     runInAction(() => {
@@ -1027,6 +1030,7 @@ export class CoreStore {
       text?: string;
       category?: NoteCategory;
       sketchDataUri?: string;
+      photoUris?: string[];
     },
   ) {
     const note = this.notes.find((n) => n.id === noteId);
@@ -1043,6 +1047,9 @@ export class CoreStore {
         }
         if (params.sketchDataUri !== undefined) {
           note.sketchDataUri = params.sketchDataUri;
+        }
+        if (params.photoUris !== undefined) {
+          note.photoUris = params.photoUris;
         }
       });
       await this.updateNote(note);

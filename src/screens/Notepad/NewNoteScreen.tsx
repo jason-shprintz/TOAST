@@ -14,6 +14,8 @@ import {
   Alert,
   Animated,
   Easing,
+  Image,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
@@ -25,6 +27,7 @@ import SketchCanvas, {
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { pickPhoto } from '../../utils/photoPicker';
 import { MAX_TITLE_LENGTH } from './constants';
 
 type NewNoteScreenNavigationProp = NativeStackNavigationProp<any>;
@@ -71,6 +74,7 @@ export default observer(function NewNoteScreen() {
   const [noteType, setNoteType] = useState<'text' | 'sketch'>('text');
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const [photoUris, setPhotoUris] = useState<string[]>([]);
   const { isKeyboardVisible } = useKeyboardStatus();
   const hasContent: boolean =
     noteType === 'text'
@@ -179,8 +183,11 @@ export default observer(function NewNoteScreen() {
 
                 <TouchableOpacity
                   style={styles.iconButton}
-                  onPress={() => {
-                    /* placeholder attach photo */
+                  onPress={async () => {
+                    const uri = await pickPhoto();
+                    if (uri) {
+                      setPhotoUris((prev) => [...prev, uri]);
+                    }
                   }}
                   accessibilityLabel="Attach photo"
                   accessibilityHint="Opens camera to attach a photo to your note"
@@ -227,10 +234,12 @@ export default observer(function NewNoteScreen() {
                         text?: string;
                         sketchDataUri?: string;
                         category: string;
+                        photoUris?: string[];
                       } = {
                         type: noteType,
                         title,
                         category,
+                        photoUris,
                       };
 
                       if (noteType === 'text') {
@@ -335,6 +344,39 @@ export default observer(function NewNoteScreen() {
                 onChangeText={setTitle}
                 maxLength={MAX_TITLE_LENGTH}
               />
+
+              {photoUris.length > 0 && (
+                <View style={styles.photosContainer}>
+                  <Text style={styles.label}>Attached Photos</Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.photosScroll}
+                  >
+                    {photoUris.map((uri, index) => (
+                      <View key={`${uri}-${index}`} style={styles.photoWrapper}>
+                        <Image source={{ uri }} style={styles.photoThumb} />
+                        <TouchableOpacity
+                          style={styles.removePhotoButton}
+                          onPress={() => {
+                            setPhotoUris((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            );
+                          }}
+                          accessibilityLabel={`Remove photo ${index + 1}`}
+                          accessibilityRole="button"
+                        >
+                          <Icon
+                            name="close-circle"
+                            size={24}
+                            color={COLORS.PRIMARY_DARK}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
 
               <Text style={styles.label}>
                 {noteType === 'text' ? 'Text' : 'Sketch'}
@@ -516,5 +558,29 @@ const styles = StyleSheet.create({
   },
   iconButtonDisabled: {
     opacity: 0.3,
+  },
+  photosContainer: {
+    marginBottom: 12,
+  },
+  photosScroll: {
+    maxHeight: 100,
+  },
+  photoWrapper: {
+    marginRight: 8,
+    position: 'relative',
+  },
+  photoThumb: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.SECONDARY_ACCENT,
+  },
+  removePhotoButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderRadius: 12,
   },
 });

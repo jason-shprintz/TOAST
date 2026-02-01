@@ -14,6 +14,8 @@ import {
   Alert,
   Animated,
   Easing,
+  Image,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
@@ -25,6 +27,7 @@ import SketchCanvas, {
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
 import { useCoreStore, Note } from '../../stores';
 import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { pickPhoto } from '../../utils/photoPicker';
 import { MAX_TITLE_LENGTH } from './constants';
 
 type EditNoteScreenRouteProp = RouteProp<
@@ -76,6 +79,7 @@ export default observer(function EditNoteScreen() {
   const [category, setCategory] = useState(
     note?.category || core.categories[0] || 'General',
   );
+  const [photoUris, setPhotoUris] = useState<string[]>(note?.photoUris || []);
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const { isKeyboardVisible } = useKeyboardStatus();
   const noteType = note?.type || 'text';
@@ -93,6 +97,7 @@ export default observer(function EditNoteScreen() {
       setSketchDataUri(note.sketchDataUri);
       setHasDrawn(!!note.sketchDataUri);
       setCategory(note.category || core.categories[0] || 'General');
+      setPhotoUris(note.photoUris || []);
     } else {
       // Reset form if note is no longer available (e.g., deleted)
       setTitle('');
@@ -100,6 +105,7 @@ export default observer(function EditNoteScreen() {
       setSketchDataUri(undefined);
       setHasDrawn(false);
       setCategory(core.categories[0] || 'General');
+      setPhotoUris([]);
     }
   }, [note, core.categories]);
 
@@ -177,6 +183,25 @@ export default observer(function EditNoteScreen() {
                     </View>
                   )}
                 </View>
+
+                <TouchableOpacity
+                  style={styles.iconButton}
+                  onPress={async () => {
+                    const uri = await pickPhoto();
+                    if (uri) {
+                      setPhotoUris((prev) => [...prev, uri]);
+                    }
+                  }}
+                  accessibilityLabel="Attach photo"
+                  accessibilityHint="Choose from camera or photo library to attach a photo to your note"
+                  accessibilityRole="button"
+                >
+                  <Icon
+                    name="camera-outline"
+                    size={22}
+                    color={COLORS.PRIMARY_DARK}
+                  />
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inline}>
@@ -215,9 +240,11 @@ export default observer(function EditNoteScreen() {
                         text?: string;
                         sketchDataUri?: string;
                         category: string;
+                        photoUris?: string[];
                       } = {
                         title,
                         category,
+                        photoUris,
                       };
 
                       if (noteType === 'text') {
@@ -352,6 +379,39 @@ export default observer(function EditNoteScreen() {
                 onChangeText={setTitle}
                 maxLength={MAX_TITLE_LENGTH}
               />
+
+              {photoUris.length > 0 && (
+                <View style={styles.photosContainer}>
+                  <Text style={styles.label}>Attached Photos</Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.photosScroll}
+                  >
+                    {photoUris.map((uri, index) => (
+                      <View key={`${uri}-${index}`} style={styles.photoWrapper}>
+                        <Image source={{ uri }} style={styles.photoThumb} />
+                        <TouchableOpacity
+                          style={styles.removePhotoButton}
+                          onPress={() => {
+                            setPhotoUris((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            );
+                          }}
+                          accessibilityLabel={`Remove photo ${index + 1}`}
+                          accessibilityRole="button"
+                        >
+                          <Icon
+                            name="close-circle"
+                            size={24}
+                            color={COLORS.PRIMARY_DARK}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
 
               <Text style={styles.label}>
                 {noteType === 'text' ? 'Text' : 'Sketch'}
@@ -533,5 +593,29 @@ const styles = StyleSheet.create({
   },
   iconButtonDisabled: {
     opacity: 0.3,
+  },
+  photosContainer: {
+    marginBottom: 12,
+  },
+  photosScroll: {
+    maxHeight: 100,
+  },
+  photoWrapper: {
+    marginRight: 8,
+    position: 'relative',
+  },
+  photoThumb: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.SECONDARY_ACCENT,
+  },
+  removePhotoButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderRadius: 12,
   },
 });
