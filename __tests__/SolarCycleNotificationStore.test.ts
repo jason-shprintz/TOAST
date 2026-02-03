@@ -304,6 +304,22 @@ describe('SolarCycleNotificationStore', () => {
         }
       });
     });
+
+    test('generates dynamic notification messages based on time remaining', async () => {
+      await store.initDatabase(mockDb as any);
+      await store.setEnabled(true);
+
+      const latitude = 40.7128;
+      const longitude = -74.006;
+
+      store.updateNotifications(latitude, longitude);
+
+      const nextNotification = store.getNextNotification();
+      if (nextNotification) {
+        const message = store.getNotificationMessage(nextNotification);
+        expect(message).toMatch(/(Sunrise|Sunset) in \d+/);
+      }
+    });
   });
 
   describe('Disposal', () => {

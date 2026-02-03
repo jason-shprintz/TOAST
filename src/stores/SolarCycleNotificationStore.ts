@@ -328,6 +328,7 @@ export class SolarCycleNotificationStore {
 
   /**
    * Get the next pending notification that should be shown.
+   * Returns the next upcoming notification (not yet dismissed).
    * @returns The next notification to display, or null if none.
    */
   getNextNotification(): SolarNotification | null {
@@ -337,14 +338,40 @@ export class SolarCycleNotificationStore {
 
     const now = new Date();
 
-    // Find the first non-dismissed notification whose notification time has passed
-    for (const notification of this.activeNotifications) {
-      if (!notification.dismissed && notification.notificationTime <= now) {
-        return notification;
-      }
+    // Find the next non-dismissed notification (either active or upcoming)
+    // Sort by notification time to get the earliest one
+    const sortedNotifications = [...this.activeNotifications]
+      .filter((n) => !n.dismissed && n.eventTime > now)
+      .sort((a, b) => a.eventTime.getTime() - b.eventTime.getTime());
+
+    if (sortedNotifications.length > 0) {
+      return sortedNotifications[0];
     }
 
     return null;
+  }
+
+  /**
+   * Get a dynamic message for a notification based on time remaining.
+   * @param notification - The notification to get the message for
+   * @returns A formatted message string
+   */
+  getNotificationMessage(notification: SolarNotification): string {
+    const now = new Date();
+    const timeUntilEvent = notification.eventTime.getTime() - now.getTime();
+    const minutesUntilEvent = Math.floor(timeUntilEvent / (60 * 1000));
+    const hoursUntilEvent = Math.floor(minutesUntilEvent / 60);
+
+    const eventName =
+      notification.eventType === 'sunrise' ? 'Sunrise' : 'Sunset';
+
+    if (hoursUntilEvent > 1) {
+      return `${eventName} in ${hoursUntilEvent}h ${minutesUntilEvent % 60}m`;
+    } else if (minutesUntilEvent > 0) {
+      return `${eventName} in ${minutesUntilEvent}m`;
+    } else {
+      return `${eventName} now`;
+    }
   }
 
   /**

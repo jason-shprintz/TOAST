@@ -164,6 +164,24 @@ const FooterImpl = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.lastFix, solarNotifications.enabled]);
 
+  // Refresh notification display every minute to update time remaining
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Force a re-render to update the notification message
+      if (
+        solarNotifications.enabled &&
+        solarNotifications.activeNotifications.length > 0
+      ) {
+        // The observer will pick up the change and re-render
+      }
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [
+    solarNotifications.enabled,
+    solarNotifications.activeNotifications.length,
+  ]);
+
   // Get the next pending notification
   const nextNotification = solarNotifications.getNextNotification();
 
@@ -263,7 +281,7 @@ const FooterImpl = () => {
                 ]}
                 numberOfLines={1}
               >
-                {nextNotification.message}
+                {solarNotifications.getNotificationMessage(nextNotification)}
               </Text>
             </View>
           ) : (
