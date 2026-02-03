@@ -4,6 +4,10 @@ import { SQLiteDatabase } from '../types/database-types';
 
 export type SolarEventType = 'sunrise' | 'sunset';
 
+// Constants for buffer time limits
+const MIN_BUFFER_MINUTES = 0;
+const MAX_BUFFER_MINUTES = 60;
+
 export interface SolarNotificationSettings {
   enabled: boolean;
   sunriseEnabled: boolean;
@@ -204,7 +208,10 @@ export class SolarCycleNotificationStore {
    */
   async setBufferMinutes(minutes: number) {
     runInAction(() => {
-      this.bufferMinutes = Math.max(0, Math.min(60, minutes)); // Clamp to 0-60 minutes
+      this.bufferMinutes = Math.max(
+        MIN_BUFFER_MINUTES,
+        Math.min(MAX_BUFFER_MINUTES, minutes),
+      ); // Clamp to valid range
     });
     await this.persistSettings();
   }

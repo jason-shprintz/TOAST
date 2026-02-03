@@ -160,7 +160,9 @@ const FooterImpl = () => {
       const { latitude, longitude } = core.lastFix.coords;
       solarNotifications.updateNotifications(latitude, longitude);
     }
-  }, [core.lastFix, solarNotifications, solarNotifications.enabled]);
+    // Only depend on core.lastFix and enabled flag, not the entire solarNotifications object
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [core.lastFix, solarNotifications.enabled]);
 
   // Get the next pending notification
   const nextNotification = solarNotifications.getNextNotification();

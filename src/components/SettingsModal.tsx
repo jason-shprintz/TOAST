@@ -298,6 +298,10 @@ export const SettingsModal = observer(
                             ]}
                             value={solarNotifications.bufferMinutes.toString()}
                             onChangeText={(text) => {
+                              // Handle empty string by keeping current value
+                              if (text === '') {
+                                return;
+                              }
                               const value = parseInt(text, 10);
                               if (!isNaN(value)) {
                                 solarNotifications.setBufferMinutes(value);
