@@ -6,6 +6,7 @@ export { NavigationStore } from './NavigationStore';
 export { ReferenceStore } from './ReferenceStore';
 export { SettingsStore } from './SettingsStore';
 export { SignalsStore } from './SignalsStore';
+export { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
 export {
   StoreProvider,
   useStores,
@@ -16,4 +17,5 @@ export {
   useReferenceStore,
   useSettingsStore,
   useSignalsStore,
+  useSolarCycleNotificationStore,
 } from './StoreContext';
