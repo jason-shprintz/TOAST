@@ -29,8 +29,9 @@ export interface SolarNotification {
  * Calculates daily sun times based on device location and manages notification state.
  */
 export class SolarCycleNotificationStore {
-  // Settings
-  enabled: boolean = false;
+  // Settings - Solar cycle notifications are always enabled
+  // These settings are not exposed to users but kept for potential future expansion
+  enabled: boolean = true; // Always enabled
   sunriseEnabled: boolean = true;
   sunsetEnabled: boolean = true;
   bufferMinutes: number = 15; // Notify 15 minutes before event
@@ -62,7 +63,7 @@ export class SolarCycleNotificationStore {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS solar_notification_settings (
             id INTEGER PRIMARY KEY,
-            enabled INTEGER NOT NULL DEFAULT 0,
+            enabled INTEGER NOT NULL DEFAULT 1,
             sunrise_enabled INTEGER NOT NULL DEFAULT 1,
             sunset_enabled INTEGER NOT NULL DEFAULT 1,
             buffer_minutes INTEGER NOT NULL DEFAULT 15
@@ -72,7 +73,7 @@ export class SolarCycleNotificationStore {
             // Insert default settings if table is empty
             tx.executeSql(
               `INSERT OR IGNORE INTO solar_notification_settings (id, enabled, sunrise_enabled, sunset_enabled, buffer_minutes)
-               VALUES (1, 0, 1, 1, 15);`,
+               VALUES (1, 1, 1, 1, 15);`,
               [],
               () => {
                 resolve();

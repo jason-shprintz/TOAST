@@ -156,41 +156,27 @@ const FooterImpl = () => {
 
   // Update solar cycle notifications when location changes
   useEffect(() => {
-    if (core.lastFix && solarNotifications.enabled) {
+    if (core.lastFix) {
       const { latitude, longitude } = core.lastFix.coords;
       solarNotifications.updateNotifications(latitude, longitude);
     }
-    // Only depend on core.lastFix and enabled flag, not the entire solarNotifications object
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [core.lastFix, solarNotifications.enabled]);
+  }, [core.lastFix]);
 
   // Refresh notification display every minute to update time remaining
   useEffect(() => {
     const interval = setInterval(() => {
       // Force a re-render to update the notification message
-      if (
-        solarNotifications.enabled &&
-        solarNotifications.activeNotifications.length > 0
-      ) {
+      if (solarNotifications.activeNotifications.length > 0) {
         // The observer will pick up the change and re-render
       }
     }, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [
-    solarNotifications.enabled,
-    solarNotifications.activeNotifications.length,
-  ]);
+  }, [solarNotifications.activeNotifications.length]);
 
   // Get the next pending notification
   const nextNotification = solarNotifications.getNextNotification();
-
-  // Handle notification dismiss
-  const handleNotificationDismiss = () => {
-    if (nextNotification) {
-      solarNotifications.dismissNotification(nextNotification.id);
-    }
-  };
 
   return (
     <View style={styles.footer}>
@@ -216,15 +202,7 @@ const FooterImpl = () => {
         )}
 
         {/* Notification content */}
-        <TouchableOpacity
-          style={styles.notificationSection}
-          onPress={handleNotificationDismiss}
-          disabled={!nextNotification}
-          accessibilityLabel={
-            nextNotification ? 'Dismiss notification' : 'No notifications'
-          }
-          accessibilityRole="button"
-        >
+        <View style={styles.notificationSection}>
           {core.decibelMeterActive ? (
             // Decibel meter visualization
             <View style={styles.decibelMeterContainer}>
@@ -291,7 +269,7 @@ const FooterImpl = () => {
               NOTIFICATION
             </Text>
           )}
-        </TouchableOpacity>
+        </View>
       </View>
 
       {/* Right middle section: Active item or Nightvision (50%-75%) */}

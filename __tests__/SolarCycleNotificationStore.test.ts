@@ -47,7 +47,7 @@ describe('SolarCycleNotificationStore', () => {
 
   describe('Initialization', () => {
     test('initializes with default settings', () => {
-      expect(store.enabled).toBe(false);
+      expect(store.enabled).toBe(true); // Solar cycle notifications are always enabled
       expect(store.sunriseEnabled).toBe(true);
       expect(store.sunsetEnabled).toBe(true);
       expect(store.bufferMinutes).toBe(15);
@@ -163,17 +163,6 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.activeNotifications.length).toBeLessThanOrEqual(2);
     });
 
-    test('does not create notifications when disabled', () => {
-      store.setEnabled(false);
-
-      const latitude = 40.7128;
-      const longitude = -74.006;
-
-      store.updateNotifications(latitude, longitude);
-
-      expect(store.activeNotifications).toEqual([]);
-    });
-
     test('respects sunrise notification toggle', async () => {
       await store.setSunriseEnabled(false);
       await store.setSunsetEnabled(true);
@@ -229,11 +218,6 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.activeNotifications).toEqual([]);
     });
 
-    test('getNextNotification returns null when disabled', () => {
-      store.setEnabled(false);
-      expect(store.getNextNotification()).toBeNull();
-    });
-
     test('getNextNotification returns null when no notifications', () => {
       store.clearAllNotifications();
       expect(store.getNextNotification()).toBeNull();
@@ -243,7 +227,6 @@ describe('SolarCycleNotificationStore', () => {
   describe('Location Tracking', () => {
     beforeEach(async () => {
       await store.initDatabase(mockDb as any);
-      await store.setEnabled(true);
     });
 
     test('tracks last calculation date and location', () => {
@@ -287,7 +270,6 @@ describe('SolarCycleNotificationStore', () => {
   describe('Notification Messages', () => {
     test('creates appropriate notification messages', async () => {
       await store.initDatabase(mockDb as any);
-      await store.setEnabled(true);
       await store.setBufferMinutes(20);
 
       const latitude = 40.7128;
@@ -307,7 +289,6 @@ describe('SolarCycleNotificationStore', () => {
 
     test('generates dynamic notification messages based on time remaining', async () => {
       await store.initDatabase(mockDb as any);
-      await store.setEnabled(true);
 
       const latitude = 40.7128;
       const longitude = -74.006;

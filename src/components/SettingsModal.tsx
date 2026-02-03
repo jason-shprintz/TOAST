@@ -8,12 +8,10 @@ import {
   View,
   ScrollView,
   Text as RNText,
-  Switch,
-  TextInput,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
-import { useSettingsStore, useSolarCycleNotificationStore } from '../stores';
+import { useSettingsStore } from '../stores';
 import { FontSize, ThemeMode } from '../stores/SettingsStore';
 
 interface SettingsModalProps {
@@ -35,7 +33,6 @@ const preventClose = () => {};
 export const SettingsModal = observer(
   ({ visible, onClose }: SettingsModalProps) => {
     const settingsStore = useSettingsStore();
-    const solarNotifications = useSolarCycleNotificationStore();
     const COLORS = useTheme();
 
     const fontSizeOptions: { value: FontSize; label: string }[] = [
@@ -194,137 +191,6 @@ export const SettingsModal = observer(
                       ))}
                     </View>
                   </View>
-
-                  {/* Solar Cycle Notifications Section */}
-                  <View style={styles.section}>
-                    <RNText
-                      style={[
-                        styles.sectionTitle,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      Solar Cycle Notifications
-                    </RNText>
-
-                    {/* Enable/Disable Toggle */}
-                    <View style={styles.toggleRow}>
-                      <RNText
-                        style={[
-                          styles.toggleLabel,
-                          { color: COLORS.PRIMARY_DARK },
-                        ]}
-                      >
-                        Enable Notifications
-                      </RNText>
-                      <Switch
-                        value={solarNotifications.enabled}
-                        onValueChange={(value) =>
-                          solarNotifications.setEnabled(value)
-                        }
-                        trackColor={{
-                          false: COLORS.BACKGROUND,
-                          true: COLORS.TOAST_BROWN,
-                        }}
-                        thumbColor={COLORS.PRIMARY_LIGHT}
-                      />
-                    </View>
-
-                    {solarNotifications.enabled && (
-                      <>
-                        {/* Sunrise Toggle */}
-                        <View style={styles.toggleRow}>
-                          <RNText
-                            style={[
-                              styles.toggleLabel,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            Sunrise Notifications
-                          </RNText>
-                          <Switch
-                            value={solarNotifications.sunriseEnabled}
-                            onValueChange={(value) =>
-                              solarNotifications.setSunriseEnabled(value)
-                            }
-                            trackColor={{
-                              false: COLORS.BACKGROUND,
-                              true: COLORS.TOAST_BROWN,
-                            }}
-                            thumbColor={COLORS.PRIMARY_LIGHT}
-                          />
-                        </View>
-
-                        {/* Sunset Toggle */}
-                        <View style={styles.toggleRow}>
-                          <RNText
-                            style={[
-                              styles.toggleLabel,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            Sunset Notifications
-                          </RNText>
-                          <Switch
-                            value={solarNotifications.sunsetEnabled}
-                            onValueChange={(value) =>
-                              solarNotifications.setSunsetEnabled(value)
-                            }
-                            trackColor={{
-                              false: COLORS.BACKGROUND,
-                              true: COLORS.TOAST_BROWN,
-                            }}
-                            thumbColor={COLORS.PRIMARY_LIGHT}
-                          />
-                        </View>
-
-                        {/* Buffer Time Input */}
-                        <View style={styles.inputRow}>
-                          <RNText
-                            style={[
-                              styles.toggleLabel,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            Notify Before (minutes)
-                          </RNText>
-                          <TextInput
-                            style={[
-                              styles.input,
-                              {
-                                color: COLORS.PRIMARY_DARK,
-                                borderColor: COLORS.TOAST_BROWN,
-                                backgroundColor: COLORS.BACKGROUND,
-                              },
-                            ]}
-                            value={solarNotifications.bufferMinutes.toString()}
-                            onChangeText={(text) => {
-                              // Handle empty string by keeping current value
-                              if (text === '') {
-                                return;
-                              }
-                              const value = parseInt(text, 10);
-                              if (!isNaN(value)) {
-                                solarNotifications.setBufferMinutes(value);
-                              }
-                            }}
-                            keyboardType="number-pad"
-                            maxLength={2}
-                          />
-                        </View>
-
-                        <RNText
-                          style={[
-                            styles.helperText,
-                            { color: COLORS.PRIMARY_DARK },
-                          ]}
-                        >
-                          Receive notifications{' '}
-                          {solarNotifications.bufferMinutes} minutes before
-                          sunrise/sunset
-                        </RNText>
-                      </>
-                    )}
-                  </View>
                 </ScrollView>
               </View>
             </TouchableWithoutFeedback>
@@ -392,38 +258,5 @@ const styles = StyleSheet.create({
   },
   optionTextSelected: {
     fontWeight: '800',
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  input: {
-    width: 60,
-    height: 40,
-    borderWidth: 2,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  helperText: {
-    fontSize: 14,
-    fontWeight: '500',
-    fontStyle: 'italic',
-    marginTop: 8,
-    opacity: 0.7,
   },
 });
