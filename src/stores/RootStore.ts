@@ -6,6 +6,7 @@ import { PantryStore } from './PantryStore';
 import { ReferenceStore } from './ReferenceStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
+import { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
 
 export class RootStore {
   coreStore: CoreStore;
@@ -15,6 +16,7 @@ export class RootStore {
   referenceStore: ReferenceStore;
   settingsStore: SettingsStore;
   signalsStore: SignalsStore;
+  solarCycleNotificationStore: SolarCycleNotificationStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -25,6 +27,7 @@ export class RootStore {
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
+    this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.initializeSettings();
   }
 
@@ -38,6 +41,11 @@ export class RootStore {
       // Load categories first to ensure dependent logic sees a consistent category list
       await this.coreStore.loadCategories();
       await this.settingsStore.loadSettings(this.coreStore.notesDb);
+      // Initialize solar cycle notification store with same database
+      await this.solarCycleNotificationStore.initDatabase(
+        this.coreStore.notesDb,
+      );
+      await this.solarCycleNotificationStore.loadSettings();
     }
     // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
@@ -56,6 +64,7 @@ export class RootStore {
     this.coreStore.dispose();
     this.inventoryStore.dispose();
     this.pantryStore.dispose();
+    this.solarCycleNotificationStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -63,6 +72,7 @@ export class RootStore {
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
+    this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB
