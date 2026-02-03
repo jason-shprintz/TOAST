@@ -260,11 +260,16 @@ describe('SolarCycleNotificationStore', () => {
     });
 
     test('recalculates when location changes significantly', () => {
+      jest.useFakeTimers();
+
       const initialLat = 40.7128;
       const initialLon = -74.006;
 
       store.updateNotifications(initialLat, initialLon);
       const firstCalculationDate = store.lastCalculationDate;
+
+      // Advance time to ensure new Date() returns a different value
+      jest.advanceTimersByTime(1000);
 
       // Move significantly (more than 0.1 degrees)
       const newLat = 41.0;
@@ -274,6 +279,8 @@ describe('SolarCycleNotificationStore', () => {
 
       // Should have recalculated
       expect(store.lastCalculationDate).not.toEqual(firstCalculationDate);
+
+      jest.useRealTimers();
     });
   });
 
