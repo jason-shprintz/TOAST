@@ -27,7 +27,7 @@ import {
 } from '../navigation/NavigationHistoryContext';
 import canGoBack, { goBack } from '../navigation/navigationRef';
 import { FOOTER_HEIGHT } from '../theme';
-import Footer from './Footer';
+import Footer from './Footer/Footer';
 import { HelpModal } from './HelpModal';
 import { HorizontalRule } from './HorizontalRule';
 import LogoHeader from './LogoHeader';
