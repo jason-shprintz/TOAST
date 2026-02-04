@@ -96,7 +96,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   },
   {
     name: 'Radio Frequency References',
-    screen: 'ComingSoon',
+    screen: 'RadioFrequencies',
     icon: 'cellular-outline',
     id: 'comm_radio_frequency',
   },

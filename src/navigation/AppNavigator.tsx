@@ -44,6 +44,7 @@ import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
 import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
 import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
 import PantryScreen from '../screens/Pantry/PantryScreen';
+import RadioFrequenciesScreen from '../screens/RadioFrequencies/RadioFrequenciesScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -117,6 +118,10 @@ function NavigatorContent(): JSX.Element {
             component={MorseTrainerLevelScreen}
           />
           <Stack.Screen name="NatoPhonetic" component={NatoPhoneticScreen} />
+          <Stack.Screen
+            name="RadioFrequencies"
+            component={RadioFrequenciesScreen}
+          />
           <Stack.Screen name="DecibelMeter" component={DecibelMeterScreen} />
           <Stack.Screen
             name="DigitalWhistle"
