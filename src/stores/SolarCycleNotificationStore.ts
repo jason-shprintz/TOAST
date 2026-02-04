@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import * as SunCalc from 'suncalc';
 import { SQLiteDatabase } from '../types/database-types';
 
-export type SolarEventType = 'sunrise' | 'sunset';
+export type SolarEventType = 'sunrise' | 'sunset' | 'dawn' | 'dusk';
 
 // Location change threshold for recalculating sun times
 // Set to 0.01 degrees (~1.1km at equator) to balance accuracy with performance
@@ -14,6 +14,8 @@ export interface SolarNotificationSettings {
   enabled: boolean;
   sunriseEnabled: boolean;
   sunsetEnabled: boolean;
+  dawnEnabled: boolean;
+  duskEnabled: boolean;
   bufferMinutes: number; // Minutes before event to notify
 }
 
@@ -37,6 +39,8 @@ export class SolarCycleNotificationStore {
   enabled: boolean = true; // Always enabled, not user-configurable
   sunriseEnabled: boolean = true; // Always track sunrise
   sunsetEnabled: boolean = true; // Always track sunset
+  dawnEnabled: boolean = true; // Always track dawn
+  duskEnabled: boolean = true; // Always track dusk
   bufferMinutes: number = 15; // Internal default, not user-configurable
 
   // Current notifications
@@ -85,7 +89,7 @@ export class SolarCycleNotificationStore {
   calculateSunTimes(
     latitude: number,
     longitude: number,
-  ): { sunrise: Date; sunset: Date } | null {
+  ): { sunrise: Date; sunset: Date; dawn: Date; dusk: Date } | null {
     // Validate coordinates
     if (
       typeof latitude !== 'number' ||
@@ -105,9 +109,35 @@ export class SolarCycleNotificationStore {
       const now = new Date();
       const times = SunCalc.getTimes(now, latitude, longitude);
 
+      const { sunrise, sunset, dawn, dusk } = times;
+
+      // Validate that all returned times are valid Date objects.
+      // In polar regions during certain times of year, suncalc may return
+      // Invalid Date objects when the sun doesn't rise, set, or experience dawn/dusk.
+      const events: Array<{ name: SolarEventType; value: Date }> = [
+        { name: 'sunrise', value: sunrise },
+        { name: 'sunset', value: sunset },
+        { name: 'dawn', value: dawn },
+        { name: 'dusk', value: dusk },
+      ];
+
+      for (const event of events) {
+        if (!(event.value instanceof Date) || isNaN(event.value.getTime())) {
+          console.warn('Invalid sun time calculated:', {
+            event: event.name,
+            latitude,
+            longitude,
+            value: event.value,
+          });
+          return null;
+        }
+      }
+
       return {
-        sunrise: times.sunrise,
-        sunset: times.sunset,
+        sunrise,
+        sunset,
+        dawn,
+        dusk,
       };
     } catch (error) {
       console.error('Error calculating sun times:', error);
@@ -182,8 +212,9 @@ export class SolarCycleNotificationStore {
     if (this.sunriseEnabled) {
       const sunriseTime = sunTimes.sunrise;
 
-      // Create notification if the event itself is in the future
-      if (sunriseTime > now) {
+      // Validate that sunrise time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when sunrise doesn't occur
+      if (!isNaN(sunriseTime.getTime()) && sunriseTime > now) {
         const notificationTime = new Date(
           sunriseTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
@@ -203,8 +234,9 @@ export class SolarCycleNotificationStore {
     if (this.sunsetEnabled) {
       const sunsetTime = sunTimes.sunset;
 
-      // Create notification if the event itself is in the future
-      if (sunsetTime > now) {
+      // Validate that sunset time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when sunset doesn't occur
+      if (!isNaN(sunsetTime.getTime()) && sunsetTime > now) {
         const notificationTime = new Date(
           sunsetTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
@@ -213,6 +245,50 @@ export class SolarCycleNotificationStore {
           id: `sunset-${sunsetTime.getTime()}`,
           eventType: 'sunset',
           eventTime: sunsetTime,
+          notificationTime: notificationTime,
+          message: '', // Message is generated dynamically
+          dismissed: false,
+        });
+      }
+    }
+
+    // Dawn notification - create if event time is in the future
+    if (this.dawnEnabled) {
+      const dawnTime = sunTimes.dawn;
+
+      // Validate that dawn time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when dawn doesn't occur
+      if (!isNaN(dawnTime.getTime()) && dawnTime > now) {
+        const notificationTime = new Date(
+          dawnTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
+        newNotifications.push({
+          id: `dawn-${dawnTime.getTime()}`,
+          eventType: 'dawn',
+          eventTime: dawnTime,
+          notificationTime: notificationTime,
+          message: '', // Message is generated dynamically
+          dismissed: false,
+        });
+      }
+    }
+
+    // Dusk notification - create if event time is in the future
+    if (this.duskEnabled) {
+      const duskTime = sunTimes.dusk;
+
+      // Validate that dusk time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when dusk doesn't occur
+      if (!isNaN(duskTime.getTime()) && duskTime > now) {
+        const notificationTime = new Date(
+          duskTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
+        newNotifications.push({
+          id: `dusk-${duskTime.getTime()}`,
+          eventType: 'dusk',
+          eventTime: duskTime,
           notificationTime: notificationTime,
           message: '', // Message is generated dynamically
           dismissed: false,
@@ -263,8 +339,14 @@ export class SolarCycleNotificationStore {
     const minutesUntilEvent = Math.floor(timeUntilEvent / (60 * 1000));
     const hoursUntilEvent = Math.floor(minutesUntilEvent / 60);
 
-    const eventName =
-      notification.eventType === 'sunrise' ? 'Sunrise' : 'Sunset';
+    const eventNameMap: Record<SolarEventType, string> = {
+      sunrise: 'Sunrise',
+      sunset: 'Sunset',
+      dawn: 'Dawn',
+      dusk: 'Dusk',
+    };
+
+    const eventName = eventNameMap[notification.eventType];
 
     if (hoursUntilEvent > 1) {
       return `${eventName} in ${hoursUntilEvent}h ${minutesUntilEvent % 60}m`;

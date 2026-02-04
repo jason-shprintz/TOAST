@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../../hooks/useTheme';
+import { SolarEventType } from '../../../stores/SolarCycleNotificationStore';
 import {
   useCoreStore,
   useSolarCycleNotificationStore,
@@ -56,14 +57,18 @@ const SolarCycleNotification = () => {
     );
   }
 
+  // Map event types to icon names
+  const iconMap: Record<SolarEventType, string> = {
+    sunrise: 'sunny-outline',
+    sunset: 'moon-outline',
+    dawn: 'partly-sunny-outline',
+    dusk: 'moon',
+  };
+
   return (
     <View style={styles.notificationContent}>
       <Ionicons
-        name={
-          nextNotification.eventType === 'sunrise'
-            ? 'sunny-outline'
-            : 'moon-outline'
-        }
+        name={iconMap[nextNotification.eventType] || 'sunny-outline'}
         size={20}
         color={COLORS.ACCENT}
         style={styles.notificationIcon}
