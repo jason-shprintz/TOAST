@@ -4,10 +4,6 @@ import { SQLiteDatabase } from '../types/database-types';
 
 export type SolarEventType = 'sunrise' | 'sunset';
 
-// Constants for buffer time limits
-const MIN_BUFFER_MINUTES = 0;
-const MAX_BUFFER_MINUTES = 60;
-
 // Location change threshold for recalculating sun times
 // Set to 0.01 degrees (~1.1km at equator) to balance accuracy with performance
 // Sun times change by approximately 1 minute per 15km of east-west movement

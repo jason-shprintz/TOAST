@@ -56,7 +56,8 @@ describe('SolarCycleNotificationStore', () => {
 
     test('can initialize database', async () => {
       await store.initDatabase(mockDb as any);
-      expect(mockDb.transaction).toHaveBeenCalled();
+      // Database is initialized but no transaction is called for always-on settings
+      expect(store.enabled).toBe(true);
     });
 
     test('can load settings from database', async () => {
@@ -129,7 +130,7 @@ describe('SolarCycleNotificationStore', () => {
   describe('Notification Management', () => {
     beforeEach(async () => {
       await store.initDatabase(mockDb as any);
-      await store.setEnabled(true);
+      // Store is always enabled by design, no setEnabled needed
     });
 
     test('creates notifications when enabled', () => {
@@ -292,19 +293,24 @@ describe('SolarCycleNotificationStore', () => {
     });
 
     test('handles date boundary crossings correctly', () => {
-      // Test month boundary
-      const dec31 = new Date('2024-12-31T23:00:00Z');
-      const jan1 = new Date('2025-01-01T01:00:00Z');
+      // Test dates with same UTC day but different calendar dates
+      // Using noon times to avoid timezone issues
+      const dec31 = new Date('2024-12-31T12:00:00Z');
+      const jan1 = new Date('2025-01-01T12:00:00Z');
 
-      expect(dec31.toDateString()).not.toBe(jan1.toDateString());
+      // Verify they are different dates using getUTCDate
+      expect(dec31.getUTCDate()).not.toBe(jan1.getUTCDate());
 
       // Test year boundary is detected
-      const lastYear = new Date('2024-12-31');
-      const newYear = new Date('2025-01-01');
-      expect(lastYear.toDateString()).not.toBe(newYear.toDateString());
+      expect(dec31.getUTCFullYear()).toBe(2024);
+      expect(jan1.getUTCFullYear()).toBe(2025);
     });
 
     test('creates notification when event time is in future but notification time has passed', async () => {
+      // Use fake timers set to early morning to guarantee both sunrise and sunset are in future
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2025-06-15T04:00:00'));
+
       await store.initDatabase(mockDb as any);
 
       // This simulates the case where user opens app after notification time
@@ -314,11 +320,13 @@ describe('SolarCycleNotificationStore', () => {
 
       store.updateNotifications(latitude, longitude);
 
-      // Should still create notifications for future events
+      // Should create notifications for future events (sunrise and/or sunset)
       const futureEvents = store.activeNotifications.filter(
         (n) => n.eventTime > new Date(),
       );
       expect(futureEvents.length).toBeGreaterThan(0);
+
+      jest.useRealTimers();
     });
   });
 
