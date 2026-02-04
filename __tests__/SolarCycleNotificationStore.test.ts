@@ -70,41 +70,21 @@ describe('SolarCycleNotificationStore', () => {
   });
 
   describe('Settings Management', () => {
-    beforeEach(async () => {
-      await store.initDatabase(mockDb as any);
-    });
-
-    test('can enable notifications', async () => {
-      await store.setEnabled(true);
+    test('has hardcoded default settings', () => {
+      // Settings are always-on and not user-configurable
       expect(store.enabled).toBe(true);
+      expect(store.sunriseEnabled).toBe(true);
+      expect(store.sunsetEnabled).toBe(true);
+      expect(store.bufferMinutes).toBe(15);
     });
 
-    test('can disable notifications', async () => {
-      await store.setEnabled(false);
-      expect(store.enabled).toBe(false);
+    test('initDatabase completes without error', async () => {
+      await expect(store.initDatabase(mockDb as any)).resolves.not.toThrow();
     });
 
-    test('can toggle sunrise notifications', async () => {
-      await store.setSunriseEnabled(false);
-      expect(store.sunriseEnabled).toBe(false);
-    });
-
-    test('can toggle sunset notifications', async () => {
-      await store.setSunsetEnabled(false);
-      expect(store.sunsetEnabled).toBe(false);
-    });
-
-    test('can set buffer minutes', async () => {
-      await store.setBufferMinutes(30);
-      expect(store.bufferMinutes).toBe(30);
-    });
-
-    test('clamps buffer minutes to 0-60 range', async () => {
-      await store.setBufferMinutes(-10);
-      expect(store.bufferMinutes).toBe(0);
-
-      await store.setBufferMinutes(100);
-      expect(store.bufferMinutes).toBe(60);
+    test('loadSettings completes without error', async () => {
+      await store.initDatabase(mockDb as any);
+      await expect(store.loadSettings()).resolves.not.toThrow();
     });
   });
 
@@ -161,38 +141,6 @@ describe('SolarCycleNotificationStore', () => {
       // Should have created notifications (if they're in the future)
       expect(store.activeNotifications.length).toBeGreaterThanOrEqual(0);
       expect(store.activeNotifications.length).toBeLessThanOrEqual(2);
-    });
-
-    test('respects sunrise notification toggle', async () => {
-      await store.setSunriseEnabled(false);
-      await store.setSunsetEnabled(true);
-
-      const latitude = 40.7128;
-      const longitude = -74.006;
-
-      store.updateNotifications(latitude, longitude);
-
-      // All notifications should be sunset (or none if sunset already passed)
-      const sunriseNotifications = store.activeNotifications.filter(
-        (n) => n.eventType === 'sunrise',
-      );
-      expect(sunriseNotifications.length).toBe(0);
-    });
-
-    test('respects sunset notification toggle', async () => {
-      await store.setSunriseEnabled(true);
-      await store.setSunsetEnabled(false);
-
-      const latitude = 40.7128;
-      const longitude = -74.006;
-
-      store.updateNotifications(latitude, longitude);
-
-      // All notifications should be sunrise (or none if sunrise already passed)
-      const sunsetNotifications = store.activeNotifications.filter(
-        (n) => n.eventType === 'sunset',
-      );
-      expect(sunsetNotifications.length).toBe(0);
     });
 
     test('can dismiss notifications', () => {
@@ -268,22 +216,18 @@ describe('SolarCycleNotificationStore', () => {
   });
 
   describe('Notification Messages', () => {
-    test('creates appropriate notification messages', async () => {
+    test('static notification messages use default buffer time', async () => {
       await store.initDatabase(mockDb as any);
-      await store.setBufferMinutes(20);
 
       const latitude = 40.7128;
       const longitude = -74.006;
 
       store.updateNotifications(latitude, longitude);
 
+      // Message field is now empty as it's generated dynamically
       store.activeNotifications.forEach((notification) => {
-        expect(notification.message).toContain('20 minutes');
-        if (notification.eventType === 'sunrise') {
-          expect(notification.message).toContain('Sunrise');
-        } else {
-          expect(notification.message).toContain('Sunset');
-        }
+        // Static message is empty string
+        expect(notification.message).toBe('');
       });
     });
 

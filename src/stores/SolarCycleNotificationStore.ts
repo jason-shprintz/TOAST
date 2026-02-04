@@ -30,11 +30,12 @@ export interface SolarNotification {
  */
 export class SolarCycleNotificationStore {
   // Settings - Solar cycle notifications are always enabled
-  // These settings are not exposed to users but kept for potential future expansion
-  enabled: boolean = true; // Always enabled
-  sunriseEnabled: boolean = true;
-  sunsetEnabled: boolean = true;
-  bufferMinutes: number = 15; // Notify 15 minutes before event
+  // These internal settings are not user-configurable but kept for code flexibility
+  // Future expansion: if settings become configurable, add setters and UI
+  enabled: boolean = true; // Always enabled, not user-configurable
+  sunriseEnabled: boolean = true; // Always track sunrise
+  sunsetEnabled: boolean = true; // Always track sunset
+  bufferMinutes: number = 15; // Internal default, not user-configurable
 
   // Current notifications
   activeNotifications: SolarNotification[] = [];
@@ -54,170 +55,23 @@ export class SolarCycleNotificationStore {
   }
 
   /**
-   * Initialize the database table for solar cycle notification settings.
+   * Initialize the database (currently not used for settings persistence).
+   * Reserved for future expansion if settings become user-configurable.
    * @param database - The SQLite database instance
    */
   async initDatabase(database: SQLiteDatabase) {
     this.db = database;
-
-    return new Promise<void>((resolve, reject) => {
-      this.db!.transaction((tx: any) => {
-        // Create settings table
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS solar_notification_settings (
-            id INTEGER PRIMARY KEY,
-            enabled INTEGER NOT NULL DEFAULT 1,
-            sunrise_enabled INTEGER NOT NULL DEFAULT 1,
-            sunset_enabled INTEGER NOT NULL DEFAULT 1,
-            buffer_minutes INTEGER NOT NULL DEFAULT 15
-          );`,
-          [],
-          () => {
-            // Insert default settings if table is empty
-            tx.executeSql(
-              `INSERT OR IGNORE INTO solar_notification_settings (id, enabled, sunrise_enabled, sunset_enabled, buffer_minutes)
-               VALUES (1, 1, 1, 1, 15);`,
-              [],
-              () => {
-                resolve();
-              },
-              (_: any, error: any) => {
-                console.error(
-                  'Error inserting default solar notification settings:',
-                  error,
-                );
-                reject(error);
-                return false;
-              },
-            );
-          },
-          (_: any, error: any) => {
-            console.error(
-              'Error creating solar notification settings table:',
-              error,
-            );
-            reject(error);
-            return false;
-          },
-        );
-      });
-    });
+    // Database initialization simplified - settings are not persisted
+    // since they are always-on and not user-configurable
   }
 
   /**
-   * Load settings from the database.
+   * Load settings (currently no-op since settings are hardcoded).
+   * Reserved for future expansion if settings become user-configurable.
    */
   async loadSettings() {
-    if (!this.db) {
-      console.warn('Database not initialized for solar notification settings');
-      return;
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      this.db!.transaction((tx: any) => {
-        tx.executeSql(
-          'SELECT * FROM solar_notification_settings WHERE id = 1;',
-          [],
-          (_: any, results: any) => {
-            if (results.rows.length > 0) {
-              const row = results.rows.item(0);
-              runInAction(() => {
-                this.enabled = row.enabled === 1;
-                this.sunriseEnabled = row.sunrise_enabled === 1;
-                this.sunsetEnabled = row.sunset_enabled === 1;
-                this.bufferMinutes = row.buffer_minutes;
-              });
-            }
-            resolve();
-          },
-          (_: any, error: any) => {
-            console.error('Error loading solar notification settings:', error);
-            reject(error);
-            return false;
-          },
-        );
-      });
-    });
-  }
-
-  /**
-   * Persist current settings to the database.
-   */
-  private async persistSettings() {
-    if (!this.db) {
-      console.warn('Database not initialized for solar notification settings');
-      return;
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      this.db!.transaction((tx: any) => {
-        tx.executeSql(
-          `UPDATE solar_notification_settings 
-           SET enabled = ?, sunrise_enabled = ?, sunset_enabled = ?, buffer_minutes = ?
-           WHERE id = 1;`,
-          [
-            this.enabled ? 1 : 0,
-            this.sunriseEnabled ? 1 : 0,
-            this.sunsetEnabled ? 1 : 0,
-            this.bufferMinutes,
-          ],
-          () => {
-            resolve();
-          },
-          (_: any, error: any) => {
-            console.error(
-              'Error persisting solar notification settings:',
-              error,
-            );
-            reject(error);
-            return false;
-          },
-        );
-      });
-    });
-  }
-
-  /**
-   * Enable or disable solar cycle notifications.
-   */
-  async setEnabled(enabled: boolean) {
-    runInAction(() => {
-      this.enabled = enabled;
-    });
-    await this.persistSettings();
-  }
-
-  /**
-   * Enable or disable sunrise notifications.
-   */
-  async setSunriseEnabled(enabled: boolean) {
-    runInAction(() => {
-      this.sunriseEnabled = enabled;
-    });
-    await this.persistSettings();
-  }
-
-  /**
-   * Enable or disable sunset notifications.
-   */
-  async setSunsetEnabled(enabled: boolean) {
-    runInAction(() => {
-      this.sunsetEnabled = enabled;
-    });
-    await this.persistSettings();
-  }
-
-  /**
-   * Set the buffer time in minutes before the event to notify.
-   */
-  async setBufferMinutes(minutes: number) {
-    runInAction(() => {
-      this.bufferMinutes = Math.max(
-        MIN_BUFFER_MINUTES,
-        Math.min(MAX_BUFFER_MINUTES, minutes),
-      ); // Clamp to valid range
-    });
-    await this.persistSettings();
+    // No-op: Settings are hardcoded as always-on
+    // This method is kept for API compatibility with RootStore
   }
 
   /**
