@@ -54,3 +54,5 @@ export const useNavigationStore = () => useStores().navigationStore;
 export const useReferenceStore = () => useStores().referenceStore;
 export const useSettingsStore = () => useStores().settingsStore;
 export const useSignalsStore = () => useStores().signalsStore;
+export const useSolarCycleNotificationStore = () =>
+  useStores().solarCycleNotificationStore;

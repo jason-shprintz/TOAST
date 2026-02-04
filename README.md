@@ -4,8 +4,14 @@ Tactical Operations And Survival Toolkit (TOAST) is a React Native app providing
 
 ## Features
 
-- Modules: Core, Navigation, Reference, Signals
-- Offline-first design
+- **Modules**: Core, Navigation, Reference, Signals
+- **Offline-first design**: All functionality works without internet connection
+- **Solar Cycle Notifications**: Automatic sunrise and sunset notifications based on your location
+  - Always-on notifications that cannot be disabled
+  - Dynamic time-remaining display (e.g., "Sunrise in 2h 30m")
+  - Updates automatically when location changes
+- **Sun Time Display**: View calculated sunrise, sunset, dawn, dusk, solar noon, and golden hour times
+- **Dynamic Sun Shadows**: UI shadows that update based on real sun position throughout the day
 
 ## Getting Started
 

@@ -12,7 +12,10 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FlashlightModes } from '../../constants';
 import { useTheme } from '../hooks/useTheme';
-import { useCoreStore } from '../stores/StoreContext';
+import {
+  useCoreStore,
+  useSolarCycleNotificationStore,
+} from '../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../theme';
 import { Text } from './ScaledText';
 
@@ -34,6 +37,7 @@ import { Text } from './ScaledText';
  */
 const FooterImpl = () => {
   const core = useCoreStore();
+  const solarNotifications = useSolarCycleNotificationStore();
   const navigation = useNavigation();
   const COLORS = useTheme();
   const [isSOSPressing, setIsSOSPressing] = useState(false);
@@ -150,6 +154,28 @@ const FooterImpl = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Update solar cycle notifications when location changes
+  useEffect(() => {
+    if (core.lastFix) {
+      const { latitude, longitude } = core.lastFix.coords;
+      solarNotifications.updateNotifications(latitude, longitude);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [core.lastFix]);
+
+  // Refresh notification display every minute to update time remaining
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Update the observable currentTime in the store to trigger re-renders
+      solarNotifications.updateCurrentTime();
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [solarNotifications]);
+
+  // Get the next pending notification
+  const nextNotification = solarNotifications.getNextNotification();
+
   return (
     <View style={styles.footer}>
       {/* Left section: Notifications (0%-50%) with fuse timer */}
@@ -210,6 +236,29 @@ const FooterImpl = () => {
                   );
                 })}
               </View>
+            </View>
+          ) : nextNotification ? (
+            // Solar cycle notification
+            <View style={styles.notificationContent}>
+              <Ionicons
+                name={
+                  nextNotification.eventType === 'sunrise'
+                    ? 'sunny-outline'
+                    : 'moon-outline'
+                }
+                size={20}
+                color={COLORS.ACCENT}
+                style={styles.notificationIcon}
+              />
+              <Text
+                style={[
+                  styles.notificationText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
+                numberOfLines={1}
+              >
+                {solarNotifications.getNotificationMessage(nextNotification)}
+              </Text>
             </View>
           ) : (
             <Text
@@ -322,9 +371,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: 2,
   },
+  notificationContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    width: '100%',
+  },
+  notificationIcon: {
+    flexShrink: 0,
+  },
   notificationText: {
     fontSize: 14,
     fontWeight: '600',
+    flexShrink: 1,
   },
   activeItemSection: {
     width: '25%',
