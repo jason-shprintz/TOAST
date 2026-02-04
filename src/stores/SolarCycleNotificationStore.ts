@@ -109,11 +109,35 @@ export class SolarCycleNotificationStore {
       const now = new Date();
       const times = SunCalc.getTimes(now, latitude, longitude);
 
+      const { sunrise, sunset, dawn, dusk } = times;
+
+      // Validate that all returned times are valid Date objects.
+      // In polar regions during certain times of year, suncalc may return
+      // Invalid Date objects when the sun doesn't rise, set, or experience dawn/dusk.
+      const events: Array<{ name: SolarEventType; value: Date }> = [
+        { name: 'sunrise', value: sunrise },
+        { name: 'sunset', value: sunset },
+        { name: 'dawn', value: dawn },
+        { name: 'dusk', value: dusk },
+      ];
+
+      for (const event of events) {
+        if (!(event.value instanceof Date) || isNaN(event.value.getTime())) {
+          console.warn('Invalid sun time calculated:', {
+            event: event.name,
+            latitude,
+            longitude,
+            value: event.value,
+          });
+          return null;
+        }
+      }
+
       return {
-        sunrise: times.sunrise,
-        sunset: times.sunset,
-        dawn: times.dawn,
-        dusk: times.dusk,
+        sunrise,
+        sunset,
+        dawn,
+        dusk,
       };
     } catch (error) {
       console.error('Error calculating sun times:', error);
@@ -188,8 +212,9 @@ export class SolarCycleNotificationStore {
     if (this.sunriseEnabled) {
       const sunriseTime = sunTimes.sunrise;
 
-      // Create notification if the event itself is in the future
-      if (sunriseTime > now) {
+      // Validate that sunrise time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when sunrise doesn't occur
+      if (!isNaN(sunriseTime.getTime()) && sunriseTime > now) {
         const notificationTime = new Date(
           sunriseTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
@@ -209,8 +234,9 @@ export class SolarCycleNotificationStore {
     if (this.sunsetEnabled) {
       const sunsetTime = sunTimes.sunset;
 
-      // Create notification if the event itself is in the future
-      if (sunsetTime > now) {
+      // Validate that sunset time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when sunset doesn't occur
+      if (!isNaN(sunsetTime.getTime()) && sunsetTime > now) {
         const notificationTime = new Date(
           sunsetTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
@@ -230,8 +256,9 @@ export class SolarCycleNotificationStore {
     if (this.dawnEnabled) {
       const dawnTime = sunTimes.dawn;
 
-      // Create notification if the event itself is in the future
-      if (dawnTime > now) {
+      // Validate that dawn time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when dawn doesn't occur
+      if (!isNaN(dawnTime.getTime()) && dawnTime > now) {
         const notificationTime = new Date(
           dawnTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
@@ -251,8 +278,9 @@ export class SolarCycleNotificationStore {
     if (this.duskEnabled) {
       const duskTime = sunTimes.dusk;
 
-      // Create notification if the event itself is in the future
-      if (duskTime > now) {
+      // Validate that dusk time is a valid Date object
+      // In polar regions, suncalc may return Invalid Date when dusk doesn't occur
+      if (!isNaN(duskTime.getTime()) && duskTime > now) {
         const notificationTime = new Date(
           duskTime.getTime() - this.bufferMinutes * 60 * 1000,
         );
