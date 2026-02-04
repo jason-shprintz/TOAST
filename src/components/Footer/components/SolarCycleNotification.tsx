@@ -61,7 +61,7 @@ const SolarCycleNotification = () => {
     sunrise: 'sunny-outline',
     sunset: 'moon-outline',
     dawn: 'partly-sunny-outline',
-    dusk: 'moon-outline',
+    dusk: 'moon',
   };
 
   return (

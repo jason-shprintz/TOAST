@@ -370,9 +370,9 @@ describe('SolarCycleNotificationStore', () => {
     });
 
     test('creates notification when event time is in future but notification time has passed', async () => {
-      // Use fake timers set to midnight to guarantee all events are in future
+      // Use fake timers set to midnight UTC to guarantee all events are in future
       jest.useFakeTimers();
-      jest.setSystemTime(new Date('2025-06-15T00:00:00'));
+      jest.setSystemTime(new Date('2025-06-15T00:00:00Z'));
 
       await store.initDatabase(mockDb as any);
 
