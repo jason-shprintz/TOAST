@@ -8,6 +8,12 @@ export type SolarEventType = 'sunrise' | 'sunset';
 const MIN_BUFFER_MINUTES = 0;
 const MAX_BUFFER_MINUTES = 60;
 
+// Location change threshold for recalculating sun times
+// Set to 0.01 degrees (~1.1km at equator) to balance accuracy with performance
+// Sun times change by approximately 1 minute per 15km of east-west movement
+// and 4 minutes per degree of north-south movement at mid-latitudes
+const LOCATION_CHANGE_THRESHOLD_DEGREES = 0.01;
+
 export interface SolarNotificationSettings {
   enabled: boolean;
   sunriseEnabled: boolean;
@@ -153,12 +159,15 @@ export class SolarCycleNotificationStore {
     }
 
     // Check if we need to recalculate (new day or significant location change)
+    // Location threshold is ~1.1km to provide accurate times while minimizing recalculations
     const needsRecalculation =
       !this.lastCalculationDate ||
       this.lastCalculationDate.toDateString() !== now.toDateString() ||
       !this.lastCalculationLocation ||
-      Math.abs(this.lastCalculationLocation.latitude - latitude) > 0.1 ||
-      Math.abs(this.lastCalculationLocation.longitude - longitude) > 0.1;
+      Math.abs(this.lastCalculationLocation.latitude - latitude) >
+        LOCATION_CHANGE_THRESHOLD_DEGREES ||
+      Math.abs(this.lastCalculationLocation.longitude - longitude) >
+        LOCATION_CHANGE_THRESHOLD_DEGREES;
 
     if (!needsRecalculation) {
       return;
