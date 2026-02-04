@@ -44,6 +44,9 @@ export class SolarCycleNotificationStore {
   lastCalculationLocation: { latitude: number; longitude: number } | null =
     null;
 
+  // Observable timestamp to trigger re-renders for dynamic messages
+  currentTime: Date = new Date();
+
   private db: SQLiteDatabase | null = null;
 
   constructor() {
@@ -219,13 +222,29 @@ export class SolarCycleNotificationStore {
 
   /**
    * Calculate sun times for today based on current location.
-   * @param latitude - Device latitude
-   * @param longitude - Device longitude
+   * @param latitude - Device latitude (-90 to 90)
+   * @param longitude - Device longitude (-180 to 180)
+   * @returns Sun times or null if invalid coordinates
    */
   calculateSunTimes(
     latitude: number,
     longitude: number,
   ): { sunrise: Date; sunset: Date } | null {
+    // Validate coordinates
+    if (
+      typeof latitude !== 'number' ||
+      typeof longitude !== 'number' ||
+      !isFinite(latitude) ||
+      !isFinite(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      console.error('Invalid coordinates:', { latitude, longitude });
+      return null;
+    }
+
     try {
       const now = new Date();
       const times = SunCalc.getTimes(now, latitude, longitude);
@@ -243,10 +262,28 @@ export class SolarCycleNotificationStore {
   /**
    * Update notifications based on current location and time.
    * Should be called when location changes or periodically.
-   * @param latitude - Device latitude
-   * @param longitude - Device longitude
+   * @param latitude - Device latitude (-90 to 90)
+   * @param longitude - Device longitude (-180 to 180)
    */
   updateNotifications(latitude: number, longitude: number) {
+    // Validate coordinates
+    if (
+      typeof latitude !== 'number' ||
+      typeof longitude !== 'number' ||
+      !isFinite(latitude) ||
+      !isFinite(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      console.error('Invalid coordinates provided to updateNotifications:', {
+        latitude,
+        longitude,
+      });
+      return;
+    }
+
     if (!this.enabled) {
       runInAction(() => {
         this.activeNotifications = [];
@@ -264,7 +301,7 @@ export class SolarCycleNotificationStore {
     // Check if we need to recalculate (new day or significant location change)
     const needsRecalculation =
       !this.lastCalculationDate ||
-      this.lastCalculationDate.getDate() !== now.getDate() ||
+      this.lastCalculationDate.toDateString() !== now.toDateString() ||
       !this.lastCalculationLocation ||
       Math.abs(this.lastCalculationLocation.latitude - latitude) > 0.1 ||
       Math.abs(this.lastCalculationLocation.longitude - longitude) > 0.1;
@@ -282,41 +319,43 @@ export class SolarCycleNotificationStore {
     // Create new notifications
     const newNotifications: SolarNotification[] = [];
 
-    // Sunrise notification
+    // Sunrise notification - create if event time is in the future
     if (this.sunriseEnabled) {
       const sunriseTime = sunTimes.sunrise;
-      const notificationTime = new Date(
-        sunriseTime.getTime() - this.bufferMinutes * 60 * 1000,
-      );
 
-      // Only create notification if it's in the future
-      if (notificationTime > now) {
+      // Create notification if the event itself is in the future
+      if (sunriseTime > now) {
+        const notificationTime = new Date(
+          sunriseTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
         newNotifications.push({
           id: `sunrise-${sunriseTime.getTime()}`,
           eventType: 'sunrise',
           eventTime: sunriseTime,
           notificationTime: notificationTime,
-          message: `Sunrise in ${this.bufferMinutes} minutes`,
+          message: '', // Message is generated dynamically
           dismissed: false,
         });
       }
     }
 
-    // Sunset notification
+    // Sunset notification - create if event time is in the future
     if (this.sunsetEnabled) {
       const sunsetTime = sunTimes.sunset;
-      const notificationTime = new Date(
-        sunsetTime.getTime() - this.bufferMinutes * 60 * 1000,
-      );
 
-      // Only create notification if it's in the future
-      if (notificationTime > now) {
+      // Create notification if the event itself is in the future
+      if (sunsetTime > now) {
+        const notificationTime = new Date(
+          sunsetTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
         newNotifications.push({
           id: `sunset-${sunsetTime.getTime()}`,
           eventType: 'sunset',
           eventTime: sunsetTime,
           notificationTime: notificationTime,
-          message: `Sunset in ${this.bufferMinutes} minutes`,
+          message: '', // Message is generated dynamically
           dismissed: false,
         });
       }
@@ -354,11 +393,13 @@ export class SolarCycleNotificationStore {
 
   /**
    * Get a dynamic message for a notification based on time remaining.
+   * Uses the currentTime observable to ensure reactivity.
    * @param notification - The notification to get the message for
    * @returns A formatted message string
    */
   getNotificationMessage(notification: SolarNotification): string {
-    const now = new Date();
+    // Access currentTime to create a dependency for MobX observer
+    const now = this.currentTime;
     const timeUntilEvent = notification.eventTime.getTime() - now.getTime();
     const minutesUntilEvent = Math.floor(timeUntilEvent / (60 * 1000));
     const hoursUntilEvent = Math.floor(minutesUntilEvent / 60);
@@ -373,6 +414,16 @@ export class SolarCycleNotificationStore {
     } else {
       return `${eventName} now`;
     }
+  }
+
+  /**
+   * Update the current time to trigger re-renders of dynamic messages.
+   * Should be called periodically (e.g., every minute).
+   */
+  updateCurrentTime() {
+    runInAction(() => {
+      this.currentTime = new Date();
+    });
   }
 
   /**

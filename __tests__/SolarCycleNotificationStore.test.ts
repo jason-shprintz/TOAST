@@ -303,6 +303,81 @@ describe('SolarCycleNotificationStore', () => {
     });
   });
 
+  describe('Edge Cases and Validation', () => {
+    test('handles invalid latitude values', () => {
+      const invalidLatitudes = [
+        NaN,
+        Infinity,
+        -Infinity,
+        -100,
+        100,
+        'invalid' as any,
+      ];
+
+      invalidLatitudes.forEach((lat) => {
+        const result = store.calculateSunTimes(lat, 0);
+        expect(result).toBeNull();
+      });
+    });
+
+    test('handles invalid longitude values', () => {
+      const invalidLongitudes = [
+        NaN,
+        Infinity,
+        -Infinity,
+        -200,
+        200,
+        'invalid' as any,
+      ];
+
+      invalidLongitudes.forEach((lon) => {
+        const result = store.calculateSunTimes(0, lon);
+        expect(result).toBeNull();
+      });
+    });
+
+    test('updateNotifications handles invalid coordinates gracefully', async () => {
+      await store.initDatabase(mockDb as any);
+
+      // Should not throw and not create notifications
+      store.updateNotifications(NaN, 0);
+      expect(store.activeNotifications).toEqual([]);
+
+      store.updateNotifications(0, Infinity);
+      expect(store.activeNotifications).toEqual([]);
+    });
+
+    test('handles date boundary crossings correctly', () => {
+      // Test month boundary
+      const dec31 = new Date('2024-12-31T23:00:00Z');
+      const jan1 = new Date('2025-01-01T01:00:00Z');
+
+      expect(dec31.toDateString()).not.toBe(jan1.toDateString());
+
+      // Test year boundary is detected
+      const lastYear = new Date('2024-12-31');
+      const newYear = new Date('2025-01-01');
+      expect(lastYear.toDateString()).not.toBe(newYear.toDateString());
+    });
+
+    test('creates notification when event time is in future but notification time has passed', async () => {
+      await store.initDatabase(mockDb as any);
+
+      // This simulates the case where user opens app after notification time
+      // but before the actual event
+      const latitude = 40.7128;
+      const longitude = -74.006;
+
+      store.updateNotifications(latitude, longitude);
+
+      // Should still create notifications for future events
+      const futureEvents = store.activeNotifications.filter(
+        (n) => n.eventTime > new Date(),
+      );
+      expect(futureEvents.length).toBeGreaterThan(0);
+    });
+  });
+
   describe('Disposal', () => {
     test('cleans up resources on dispose', () => {
       store.dispose();

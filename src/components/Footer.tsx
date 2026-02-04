@@ -166,14 +166,12 @@ const FooterImpl = () => {
   // Refresh notification display every minute to update time remaining
   useEffect(() => {
     const interval = setInterval(() => {
-      // Force a re-render to update the notification message
-      if (solarNotifications.activeNotifications.length > 0) {
-        // The observer will pick up the change and re-render
-      }
+      // Update the observable currentTime in the store to trigger re-renders
+      solarNotifications.updateCurrentTime();
     }, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [solarNotifications.activeNotifications.length]);
+  }, [solarNotifications]);
 
   // Get the next pending notification
   const nextNotification = solarNotifications.getNextNotification();
