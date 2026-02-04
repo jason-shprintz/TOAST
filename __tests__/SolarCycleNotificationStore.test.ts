@@ -2,7 +2,10 @@
  * @format
  */
 
-import { SolarCycleNotificationStore } from '../src/stores/SolarCycleNotificationStore';
+import {
+  SolarCycleNotificationStore,
+  SolarNotification,
+} from '../src/stores/SolarCycleNotificationStore';
 
 // Mock SQLite
 const mockDb = {
@@ -50,6 +53,8 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.enabled).toBe(true); // Solar cycle notifications are always enabled
       expect(store.sunriseEnabled).toBe(true);
       expect(store.sunsetEnabled).toBe(true);
+      expect(store.dawnEnabled).toBe(true);
+      expect(store.duskEnabled).toBe(true);
       expect(store.bufferMinutes).toBe(15);
       expect(store.activeNotifications).toEqual([]);
     });
@@ -66,6 +71,8 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.enabled).toBe(true);
       expect(store.sunriseEnabled).toBe(true);
       expect(store.sunsetEnabled).toBe(true);
+      expect(store.dawnEnabled).toBe(true);
+      expect(store.duskEnabled).toBe(true);
       expect(store.bufferMinutes).toBe(15);
     });
   });
@@ -76,6 +83,8 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.enabled).toBe(true);
       expect(store.sunriseEnabled).toBe(true);
       expect(store.sunsetEnabled).toBe(true);
+      expect(store.dawnEnabled).toBe(true);
+      expect(store.duskEnabled).toBe(true);
       expect(store.bufferMinutes).toBe(15);
     });
 
@@ -99,6 +108,8 @@ describe('SolarCycleNotificationStore', () => {
       expect(sunTimes).not.toBeNull();
       expect(sunTimes!.sunrise).toBeInstanceOf(Date);
       expect(sunTimes!.sunset).toBeInstanceOf(Date);
+      expect(sunTimes!.dawn).toBeInstanceOf(Date);
+      expect(sunTimes!.dusk).toBeInstanceOf(Date);
       expect(sunTimes!.sunrise.getTime()).toBeLessThan(
         sunTimes!.sunset.getTime(),
       );
@@ -116,6 +127,8 @@ describe('SolarCycleNotificationStore', () => {
         expect(sunTimes).not.toBeNull();
         expect(sunTimes!.sunrise).toBeInstanceOf(Date);
         expect(sunTimes!.sunset).toBeInstanceOf(Date);
+        expect(sunTimes!.dawn).toBeInstanceOf(Date);
+        expect(sunTimes!.dusk).toBeInstanceOf(Date);
       });
     });
 
@@ -124,6 +137,8 @@ describe('SolarCycleNotificationStore', () => {
       expect(sunTimes).not.toBeNull();
       expect(sunTimes!.sunrise).toBeInstanceOf(Date);
       expect(sunTimes!.sunset).toBeInstanceOf(Date);
+      expect(sunTimes!.dawn).toBeInstanceOf(Date);
+      expect(sunTimes!.dusk).toBeInstanceOf(Date);
     });
   });
 
@@ -141,7 +156,7 @@ describe('SolarCycleNotificationStore', () => {
 
       // Should have created notifications (if they're in the future)
       expect(store.activeNotifications.length).toBeGreaterThanOrEqual(0);
-      expect(store.activeNotifications.length).toBeLessThanOrEqual(2);
+      expect(store.activeNotifications.length).toBeLessThanOrEqual(4);
     });
 
     test('can dismiss notifications', () => {
@@ -243,8 +258,56 @@ describe('SolarCycleNotificationStore', () => {
       const nextNotification = store.getNextNotification();
       if (nextNotification) {
         const message = store.getNotificationMessage(nextNotification);
-        expect(message).toMatch(/(Sunrise|Sunset) in \d+/);
+        expect(message).toMatch(/(Sunrise|Sunset|Dawn|Dusk) in \d+/);
       }
+    });
+
+    test('supports all four event types (sunrise, sunset, dawn, dusk)', () => {
+      // Test that the store supports all four event types
+      // by verifying the type definition and message generation
+      const mockNotifications: SolarNotification[] = [
+        {
+          id: 'dawn-1',
+          eventType: 'dawn',
+          eventTime: new Date(Date.now() + 3600000), // 1 hour from now
+          notificationTime: new Date(Date.now() + 2700000), // 45 min from now
+          message: '',
+          dismissed: false,
+        },
+        {
+          id: 'sunrise-1',
+          eventType: 'sunrise',
+          eventTime: new Date(Date.now() + 5400000), // 1.5 hours from now
+          notificationTime: new Date(Date.now() + 4500000), // 1.25 hours from now
+          message: '',
+          dismissed: false,
+        },
+        {
+          id: 'sunset-1',
+          eventType: 'sunset',
+          eventTime: new Date(Date.now() + 43200000), // 12 hours from now
+          notificationTime: new Date(Date.now() + 42300000),
+          message: '',
+          dismissed: false,
+        },
+        {
+          id: 'dusk-1',
+          eventType: 'dusk',
+          eventTime: new Date(Date.now() + 46800000), // 13 hours from now
+          notificationTime: new Date(Date.now() + 45900000),
+          message: '',
+          dismissed: false,
+        },
+      ];
+
+      // Verify message generation works for all event types
+      mockNotifications.forEach((notification) => {
+        const message = store.getNotificationMessage(notification);
+        const eventName =
+          notification.eventType.charAt(0).toUpperCase() +
+          notification.eventType.slice(1);
+        expect(message).toContain(eventName);
+      });
     });
   });
 
@@ -307,9 +370,9 @@ describe('SolarCycleNotificationStore', () => {
     });
 
     test('creates notification when event time is in future but notification time has passed', async () => {
-      // Use fake timers set to early morning to guarantee both sunrise and sunset are in future
+      // Use fake timers set to midnight to guarantee all events are in future
       jest.useFakeTimers();
-      jest.setSystemTime(new Date('2025-06-15T04:00:00'));
+      jest.setSystemTime(new Date('2025-06-15T00:00:00'));
 
       await store.initDatabase(mockDb as any);
 
@@ -320,7 +383,7 @@ describe('SolarCycleNotificationStore', () => {
 
       store.updateNotifications(latitude, longitude);
 
-      // Should create notifications for future events (sunrise and/or sunset)
+      // Should create notifications for future events
       const futureEvents = store.activeNotifications.filter(
         (n) => n.eventTime > new Date(),
       );

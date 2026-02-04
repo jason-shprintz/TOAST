@@ -56,14 +56,18 @@ const SolarCycleNotification = () => {
     );
   }
 
+  // Map event types to icon names
+  const iconMap: Record<string, string> = {
+    sunrise: 'sunny-outline',
+    sunset: 'moon-outline',
+    dawn: 'partly-sunny-outline',
+    dusk: 'moon-outline',
+  };
+
   return (
     <View style={styles.notificationContent}>
       <Ionicons
-        name={
-          nextNotification.eventType === 'sunrise'
-            ? 'sunny-outline'
-            : 'moon-outline'
-        }
+        name={iconMap[nextNotification.eventType] || 'sunny-outline'}
         size={20}
         color={COLORS.ACCENT}
         style={styles.notificationIcon}

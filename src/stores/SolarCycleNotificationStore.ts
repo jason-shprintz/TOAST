@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import * as SunCalc from 'suncalc';
 import { SQLiteDatabase } from '../types/database-types';
 
-export type SolarEventType = 'sunrise' | 'sunset';
+export type SolarEventType = 'sunrise' | 'sunset' | 'dawn' | 'dusk';
 
 // Location change threshold for recalculating sun times
 // Set to 0.01 degrees (~1.1km at equator) to balance accuracy with performance
@@ -14,6 +14,8 @@ export interface SolarNotificationSettings {
   enabled: boolean;
   sunriseEnabled: boolean;
   sunsetEnabled: boolean;
+  dawnEnabled: boolean;
+  duskEnabled: boolean;
   bufferMinutes: number; // Minutes before event to notify
 }
 
@@ -37,6 +39,8 @@ export class SolarCycleNotificationStore {
   enabled: boolean = true; // Always enabled, not user-configurable
   sunriseEnabled: boolean = true; // Always track sunrise
   sunsetEnabled: boolean = true; // Always track sunset
+  dawnEnabled: boolean = true; // Always track dawn
+  duskEnabled: boolean = true; // Always track dusk
   bufferMinutes: number = 15; // Internal default, not user-configurable
 
   // Current notifications
@@ -85,7 +89,7 @@ export class SolarCycleNotificationStore {
   calculateSunTimes(
     latitude: number,
     longitude: number,
-  ): { sunrise: Date; sunset: Date } | null {
+  ): { sunrise: Date; sunset: Date; dawn: Date; dusk: Date } | null {
     // Validate coordinates
     if (
       typeof latitude !== 'number' ||
@@ -108,6 +112,8 @@ export class SolarCycleNotificationStore {
       return {
         sunrise: times.sunrise,
         sunset: times.sunset,
+        dawn: times.dawn,
+        dusk: times.dusk,
       };
     } catch (error) {
       console.error('Error calculating sun times:', error);
@@ -220,6 +226,48 @@ export class SolarCycleNotificationStore {
       }
     }
 
+    // Dawn notification - create if event time is in the future
+    if (this.dawnEnabled) {
+      const dawnTime = sunTimes.dawn;
+
+      // Create notification if the event itself is in the future
+      if (dawnTime > now) {
+        const notificationTime = new Date(
+          dawnTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
+        newNotifications.push({
+          id: `dawn-${dawnTime.getTime()}`,
+          eventType: 'dawn',
+          eventTime: dawnTime,
+          notificationTime: notificationTime,
+          message: '', // Message is generated dynamically
+          dismissed: false,
+        });
+      }
+    }
+
+    // Dusk notification - create if event time is in the future
+    if (this.duskEnabled) {
+      const duskTime = sunTimes.dusk;
+
+      // Create notification if the event itself is in the future
+      if (duskTime > now) {
+        const notificationTime = new Date(
+          duskTime.getTime() - this.bufferMinutes * 60 * 1000,
+        );
+
+        newNotifications.push({
+          id: `dusk-${duskTime.getTime()}`,
+          eventType: 'dusk',
+          eventTime: duskTime,
+          notificationTime: notificationTime,
+          message: '', // Message is generated dynamically
+          dismissed: false,
+        });
+      }
+    }
+
     runInAction(() => {
       this.activeNotifications = newNotifications;
     });
@@ -263,8 +311,14 @@ export class SolarCycleNotificationStore {
     const minutesUntilEvent = Math.floor(timeUntilEvent / (60 * 1000));
     const hoursUntilEvent = Math.floor(minutesUntilEvent / 60);
 
-    const eventName =
-      notification.eventType === 'sunrise' ? 'Sunrise' : 'Sunset';
+    const eventNameMap: Record<SolarEventType, string> = {
+      sunrise: 'Sunrise',
+      sunset: 'Sunset',
+      dawn: 'Dawn',
+      dusk: 'Dusk',
+    };
+
+    const eventName = eventNameMap[notification.eventType];
 
     if (hoursUntilEvent > 1) {
       return `${eventName} in ${hoursUntilEvent}h ${minutesUntilEvent % 60}m`;
