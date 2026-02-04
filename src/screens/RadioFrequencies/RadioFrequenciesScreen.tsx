@@ -6,6 +6,14 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { FOOTER_HEIGHT } from '../../theme';
 
+const radioCategories = [
+  { id: 'ham', title: 'HAM', icon: 'radio-outline' },
+  { id: 'cb', title: 'CB', icon: 'chatbubbles-outline' },
+  { id: 'gmrs', title: 'GMRS', icon: 'wifi-outline' },
+  { id: 'frs', title: 'FRS', icon: 'phone-portrait-outline' },
+  { id: 'murs', title: 'MURS', icon: 'headset-outline' },
+];
+
 /**
  * Displays radio frequency categories for different communication systems.
  *
@@ -17,17 +25,8 @@ import { FOOTER_HEIGHT } from '../../theme';
  * @returns {JSX.Element} The rendered radio frequencies screen.
  */
 export default function RadioFrequenciesScreen(): JSX.Element {
-  const radioCategories = [
-    { id: 'ham', title: 'HAM', icon: 'radio-outline' },
-    { id: 'cb', title: 'CB', icon: 'chatbubbles-outline' },
-    { id: 'gmrs', title: 'GMRS', icon: 'wifi-outline' },
-    { id: 'frs', title: 'FRS', icon: 'phone-portrait-outline' },
-    { id: 'murs', title: 'MURS', icon: 'headset-outline' },
-  ];
-
-  const handleCategoryPress = (categoryId: string) => {
-    // Placeholder - will be implemented in future
-    console.log(`Selected category: ${categoryId}`);
+  const handleCategoryPress = (_categoryId: string) => {
+    // TODO: Implement navigation to detail screen for the selected radio frequency category.
   };
 
   return (
