@@ -49,6 +49,28 @@ const SolarCycleNotification = () => {
 
   const nextNotification = solarNotifications.getNextNotification();
 
+  // Check if all solar events are complete - if so, show lunar cycle
+  if (!nextNotification && solarNotifications.allSolarEventsComplete()) {
+    const lunarCycle = solarNotifications.getCurrentLunarCycle();
+
+    return (
+      <View style={styles.notificationContent}>
+        <Ionicons
+          name="moon"
+          size={20}
+          color={COLORS.ACCENT}
+          style={styles.notificationIcon}
+        />
+        <Text
+          style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+          numberOfLines={1}
+        >
+          {`${lunarCycle.phaseName} (${lunarCycle.illumination}%)`}
+        </Text>
+      </View>
+    );
+  }
+
   if (!nextNotification) {
     return (
       <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>

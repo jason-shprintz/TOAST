@@ -302,6 +302,54 @@ export class SolarCycleNotificationStore {
   }
 
   /**
+   * Check if all solar events for the day have passed.
+   * This determines if we should show lunar cycle information.
+   * @returns true if all solar events have passed, false otherwise
+   */
+  allSolarEventsComplete(): boolean {
+    if (!this.enabled || this.activeNotifications.length === 0) {
+      return false;
+    }
+
+    const now = new Date();
+
+    // Check if all notifications have passed (event time is in the past)
+    const allPassed = this.activeNotifications.every((n) => n.eventTime <= now);
+
+    return allPassed;
+  }
+
+  /**
+   * Get the current lunar phase name based on the phase value.
+   * @param phase - Phase value from 0 to 1 (0/1 = new moon, 0.5 = full moon)
+   * @returns The name of the lunar phase
+   */
+  getLunarPhaseName(phase: number): string {
+    if (phase < 0.03 || phase > 0.97) return 'New Moon';
+    if (phase < 0.22) return 'Waxing Crescent';
+    if (phase < 0.28) return 'First Quarter';
+    if (phase < 0.47) return 'Waxing Gibbous';
+    if (phase < 0.53) return 'Full Moon';
+    if (phase < 0.72) return 'Waning Gibbous';
+    if (phase < 0.78) return 'Last Quarter';
+    return 'Waning Crescent';
+  }
+
+  /**
+   * Get the current lunar cycle information.
+   * @returns Object with lunar phase name and illumination percentage
+   */
+  getCurrentLunarCycle(): { phaseName: string; illumination: number } {
+    const now = new Date();
+    const moonIllum = SunCalc.getMoonIllumination(now);
+
+    return {
+      phaseName: this.getLunarPhaseName(moonIllum.phase),
+      illumination: Math.round(moonIllum.fraction * 100),
+    };
+  }
+
+  /**
    * Get the next pending notification that should be shown.
    * Returns the next upcoming notification (not yet dismissed).
    * @returns The next notification to display, or null if none.
