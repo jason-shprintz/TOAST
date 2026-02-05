@@ -218,7 +218,7 @@ describe('LunarCyclesScreen', () => {
         hour: 'numeric',
         minute: 'numeric',
       };
-      const formattedDateTime = testDate.toLocaleDateString(undefined, options);
+      const formattedDateTime = testDate.toLocaleString(undefined, options);
 
       expect(typeof formattedDateTime).toBe('string');
       expect(formattedDateTime.length).toBeGreaterThan(0);
