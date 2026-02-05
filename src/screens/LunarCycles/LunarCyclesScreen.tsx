@@ -5,7 +5,8 @@ import * as SunCalc from 'suncalc';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 interface MoonPhase {
   date: Date;
@@ -34,6 +35,7 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
  */
 
 function LunarCyclesScreen() {
+  const COLORS = useTheme();
   const [currentPhase, setCurrentPhase] = useState<MoonPhase | null>(null);
   const [nextFullMoon, setNextFullMoon] = useState<MoonPhase | null>(null);
   const [nextFirstQuarter, setNextFirstQuarter] = useState<MoonPhase | null>(
@@ -44,6 +46,132 @@ function LunarCyclesScreen() {
   );
   const [nextNewMoon, setNextNewMoon] = useState<MoonPhase | null>(null);
   const [dailyPhases, setDailyPhases] = useState<MoonPhase[]>([]);
+
+  // Create styles with theme colors
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      alignSelf: 'stretch',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      width: '100%',
+      alignItems: 'center',
+      paddingTop: 8,
+      paddingBottom: 24,
+    },
+    section: {
+      width: '90%',
+      marginTop: 16,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      color: COLORS.PRIMARY_DARK,
+      fontWeight: 'bold',
+      marginBottom: 12,
+    },
+    currentCard: {
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      padding: 24,
+      overflow: 'hidden',
+      alignItems: 'center',
+    },
+    currentEmoji: {
+      fontSize: 64,
+      marginBottom: 12,
+    },
+    currentPhase: {
+      fontSize: 24,
+      color: COLORS.PRIMARY_DARK,
+      fontWeight: 'bold',
+      marginBottom: 8,
+    },
+    currentIllumination: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.8,
+    },
+    keyCard: {
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      padding: 16,
+      marginTop: 12,
+      overflow: 'hidden',
+    },
+    keyCardContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    keyCardEmoji: {
+      fontSize: 40,
+      marginRight: 16,
+    },
+    keyCardText: {
+      flex: 1,
+    },
+    keyLabel: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+      fontWeight: 'bold',
+      marginBottom: 4,
+    },
+    keyDate: {
+      fontSize: 14,
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 2,
+    },
+    keyIllumination: {
+      fontSize: 12,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+    },
+    dailyCard: {
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      padding: 12,
+      marginTop: 8,
+      overflow: 'hidden',
+    },
+    dailyCardContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    dailyEmoji: {
+      fontSize: 28,
+      marginRight: 12,
+    },
+    dailyCardText: {
+      flex: 1,
+    },
+    dailyDate: {
+      fontSize: 13,
+      color: COLORS.PRIMARY_DARK,
+      fontWeight: '600',
+      marginBottom: 2,
+    },
+    dailyPhase: {
+      fontSize: 12,
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 2,
+    },
+    dailyIllumination: {
+      fontSize: 11,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+    },
+    cardBackground: {
+      ...StyleSheet.absoluteFill,
+    },
+  });
 
   useEffect(() => {
     const now = new Date();
@@ -283,128 +411,3 @@ function LunarCyclesScreen() {
 }
 
 export default LunarCyclesScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignSelf: 'stretch',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    width: '100%',
-    alignItems: 'center',
-    paddingTop: 8,
-    paddingBottom: 24,
-  },
-  section: {
-    width: '90%',
-    marginTop: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  currentCard: {
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 24,
-    overflow: 'hidden',
-    alignItems: 'center',
-  },
-  currentEmoji: {
-    fontSize: 64,
-    marginBottom: 12,
-  },
-  currentPhase: {
-    fontSize: 24,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  currentIllumination: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.8,
-  },
-  keyCard: {
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 16,
-    marginTop: 12,
-    overflow: 'hidden',
-  },
-  keyCardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  keyCardEmoji: {
-    fontSize: 40,
-    marginRight: 16,
-  },
-  keyCardText: {
-    flex: 1,
-  },
-  keyLabel: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  keyDate: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 2,
-  },
-  keyIllumination: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-  },
-  dailyCard: {
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 12,
-    marginTop: 8,
-    overflow: 'hidden',
-  },
-  dailyCardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dailyEmoji: {
-    fontSize: 28,
-    marginRight: 12,
-  },
-  dailyCardText: {
-    flex: 1,
-  },
-  dailyDate: {
-    fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  dailyPhase: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 2,
-  },
-  dailyIllumination: {
-    fontSize: 11,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-  },
-  cardBackground: {
-    ...StyleSheet.absoluteFill,
-  },
-});
