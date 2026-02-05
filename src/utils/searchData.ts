@@ -93,11 +93,11 @@ function noteToSearchableItem(note: Note): SearchableItem {
     id: note.id,
     title: note.title || `Note from ${new Date(note.createdAt).toLocaleDateString()}`,
     type: 'note',
-    screen: 'NoteDetail',
+    screen: 'NoteEntry',
     icon: 'document-text-outline',
     searchText,
     category: note.category,
-    data: { noteId: note.id },
+    data: { note },
   };
 }
 
@@ -120,10 +120,10 @@ function checklistToSearchableItem(
     id: checklist.id,
     title: checklist.name,
     type: 'checklist',
-    screen: 'ChecklistDetail',
+    screen: 'ChecklistEntry',
     icon: 'checkmark-circle-outline',
     searchText,
-    data: { checklistId: checklist.id },
+    data: { checklist },
   };
 }
 
@@ -150,7 +150,7 @@ function inventoryItemToSearchableItem(item: InventoryItem): SearchableItem {
     icon: 'cube-outline',
     searchText,
     category: item.category,
-    data: { categoryName: item.category },
+    data: { category: item.category },
   };
 }
 
@@ -177,7 +177,7 @@ function pantryItemToSearchableItem(item: PantryItem): SearchableItem {
     icon: 'restaurant-outline',
     searchText,
     category: item.category,
-    data: { categoryName: item.category },
+    data: { category: item.category },
   };
 }
 

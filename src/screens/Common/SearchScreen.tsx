@@ -19,14 +19,15 @@ import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
 import { useStores } from '../../stores/StoreContext';
 import { observer } from 'mobx-react-lite';
+import { Note, Checklist } from '../../stores/CoreStore';
 
 type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ComingSoon: { title: string; icon: string };
   Entry: { entry: ReferenceEntryType };
-  NoteDetail: { noteId: string };
-  ChecklistDetail: { checklistId: string };
-  InventoryCategory: { categoryName: string };
-  PantryCategory: { categoryName: string };
+  NoteEntry: { note: Note };
+  ChecklistEntry: { checklist: Checklist };
+  InventoryCategory: { category: string };
+  PantryCategory: { category: string };
   [key: string]: undefined | object;
 }>;
 
@@ -74,12 +75,12 @@ const SearchScreen = observer((): JSX.Element => {
       } else if (item.screen === 'Entry') {
         // For reference entries, pass the entry data
         navigation.navigate('Entry', item.data);
-      } else if (item.screen === 'NoteDetail') {
-        // For notes, navigate to note detail
-        navigation.navigate('NoteDetail', item.data);
-      } else if (item.screen === 'ChecklistDetail') {
-        // For checklists, navigate to checklist detail
-        navigation.navigate('ChecklistDetail', item.data);
+      } else if (item.screen === 'NoteEntry') {
+        // For notes, navigate to note entry with the note object
+        navigation.navigate('NoteEntry', item.data);
+      } else if (item.screen === 'ChecklistEntry') {
+        // For checklists, navigate to checklist entry with the checklist object
+        navigation.navigate('ChecklistEntry', item.data);
       } else if (item.screen === 'InventoryCategory') {
         // For inventory items, navigate to the inventory category
         navigation.navigate('InventoryCategory', item.data);
