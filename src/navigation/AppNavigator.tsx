@@ -23,6 +23,7 @@ import InventoryCategoryScreen from '../screens/Inventory/InventoryCategoryScree
 import InventoryScreen from '../screens/Inventory/InventoryScreen';
 import ManageInventoryCategoriesScreen from '../screens/Inventory/ManageInventoryCategoriesScreen';
 import NewInventoryItemScreen from '../screens/Inventory/NewInventoryItemScreen';
+import LunarCyclesScreen from '../screens/LunarCycles/LunarCyclesScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
@@ -156,6 +157,7 @@ function NavigatorContent(): JSX.Element {
             component={ChecklistEntryScreen}
           />
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
+          <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
           {/* Unit Conversion */}
           <Stack.Screen
             name="UnitConversion"
