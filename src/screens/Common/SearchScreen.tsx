@@ -17,10 +17,16 @@ import { useTheme } from '../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
+import { useStores } from '../../stores/StoreContext';
+import { observer } from 'mobx-react-lite';
 
 type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ComingSoon: { title: string; icon: string };
   Entry: { entry: ReferenceEntryType };
+  NoteDetail: { noteId: string };
+  ChecklistDetail: { checklistId: string };
+  InventoryCategory: { categoryName: string };
+  PantryCategory: { categoryName: string };
   [key: string]: undefined | object;
 }>;
 
@@ -32,18 +38,28 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
  * - Shows appropriate message when no results found
  * - Results sorted alphabetically
  * - Swipe back navigation supported
+ * - Searches notes (titles and content), checklists (names and items), 
+ *   inventory items, and pantry items
  */
-export default function SearchScreen(): JSX.Element {
+const SearchScreen = observer((): JSX.Element => {
   const navigation = useNavigation<SearchScreenNavigationProp>();
   const COLORS = useTheme();
+  const { coreStore, inventoryStore, pantryStore } = useStores();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
   const handleSearch = useCallback((text: string) => {
     setQuery(text);
-    const searchResults = searchItems(text);
+    const searchResults = searchItems(
+      text,
+      coreStore.notes,
+      coreStore.checklists,
+      coreStore.checklistItems,
+      inventoryStore.items,
+      pantryStore.items,
+    );
     setResults(searchResults);
-  }, []);
+  }, [coreStore.notes, coreStore.checklists, coreStore.checklistItems, inventoryStore.items, pantryStore.items]);
 
   const handleItemPress = useCallback(
     (item: SearchableItem) => {
@@ -55,6 +71,18 @@ export default function SearchScreen(): JSX.Element {
       } else if (item.screen === 'Entry') {
         // For reference entries, pass the entry data
         navigation.navigate('Entry', item.data);
+      } else if (item.screen === 'NoteDetail') {
+        // For notes, navigate to note detail
+        navigation.navigate('NoteDetail', item.data);
+      } else if (item.screen === 'ChecklistDetail') {
+        // For checklists, navigate to checklist detail
+        navigation.navigate('ChecklistDetail', item.data);
+      } else if (item.screen === 'InventoryCategory') {
+        // For inventory items, navigate to the inventory category
+        navigation.navigate('InventoryCategory', item.data);
+      } else if (item.screen === 'PantryCategory') {
+        // For pantry items, navigate to the pantry category
+        navigation.navigate('PantryCategory', item.data);
       } else {
         navigation.navigate(item.screen);
       }
@@ -149,7 +177,9 @@ export default function SearchScreen(): JSX.Element {
       </View>
     </ScreenBody>
   );
-}
+});
+
+export default SearchScreen;
 
 const styles = StyleSheet.create({
   searchContainer: {
