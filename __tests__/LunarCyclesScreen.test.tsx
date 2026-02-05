@@ -4,6 +4,9 @@
 
 import * as SunCalc from 'suncalc';
 
+// Constants
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
 describe('LunarCyclesScreen', () => {
   describe('Moon Phase Calculations', () => {
     test('calculates moon illumination correctly using suncalc', () => {
@@ -31,7 +34,7 @@ describe('LunarCyclesScreen', () => {
 
       // Collect phases over 30 days (approximate lunar month)
       for (let i = 0; i < 30; i++) {
-        const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(startDate.getTime() + i * MILLISECONDS_PER_DAY);
         const moonIllum = SunCalc.getMoonIllumination(date);
         phases.push(moonIllum.phase);
       }
@@ -169,7 +172,7 @@ describe('LunarCyclesScreen', () => {
       const futureDates: Date[] = [];
 
       for (let i = 0; i <= 30; i++) {
-        const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(now.getTime() + i * MILLISECONDS_PER_DAY);
         futureDates.push(date);
       }
 
@@ -180,14 +183,16 @@ describe('LunarCyclesScreen', () => {
       expect(futureDates[0].getTime()).toBe(now.getTime());
 
       // Last date should be 30 days in the future
-      const expectedLastDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const expectedLastDate = new Date(
+        now.getTime() + 30 * MILLISECONDS_PER_DAY,
+      );
       expect(futureDates[30].getTime()).toBe(expectedLastDate.getTime());
 
       // Each subsequent date should be 1 day later
       for (let i = 1; i < futureDates.length; i++) {
         const dayDiff =
           (futureDates[i].getTime() - futureDates[i - 1].getTime()) /
-          (24 * 60 * 60 * 1000);
+          MILLISECONDS_PER_DAY;
         expect(dayDiff).toBe(1);
       }
     });
@@ -242,7 +247,7 @@ describe('LunarCyclesScreen', () => {
       };
 
       for (let i = 0; i <= 30; i++) {
-        const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(now.getTime() + i * MILLISECONDS_PER_DAY);
         const illum = SunCalc.getMoonIllumination(date);
 
         if (!foundFullMoon && isFullMoon(illum.phase)) {
@@ -282,7 +287,7 @@ describe('LunarCyclesScreen', () => {
       const startDate = new Date('2024-01-01T00:00:00Z');
 
       for (let i = 0; i < 60; i++) {
-        const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(startDate.getTime() + i * MILLISECONDS_PER_DAY);
         const moonIllum = SunCalc.getMoonIllumination(date);
 
         if (moonIllum.phase >= 0.47 && moonIllum.phase <= 0.53) {
@@ -298,7 +303,7 @@ describe('LunarCyclesScreen', () => {
       const startDate = new Date('2024-01-01T00:00:00Z');
 
       for (let i = 0; i < 60; i++) {
-        const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(startDate.getTime() + i * MILLISECONDS_PER_DAY);
         const moonIllum = SunCalc.getMoonIllumination(date);
 
         if (moonIllum.phase < 0.03 || moonIllum.phase > 0.97) {

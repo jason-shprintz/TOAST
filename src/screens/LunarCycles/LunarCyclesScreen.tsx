@@ -14,6 +14,9 @@ interface MoonPhase {
   phaseValue: number;
 }
 
+// Constants
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
 /**
  * LunarCyclesScreen
  *
@@ -63,7 +66,7 @@ function LunarCyclesScreen() {
 
       // Calculate phases for the next 30 days
       for (let i = 0; i <= 30; i++) {
-        const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
+        const date = new Date(now.getTime() + i * MILLISECONDS_PER_DAY);
         const illum = SunCalc.getMoonIllumination(date);
         const phaseName = getMoonPhaseName(illum.phase);
 
@@ -167,7 +170,7 @@ function LunarCyclesScreen() {
       hour: 'numeric',
       minute: 'numeric',
     };
-    return date.toLocaleDateString(undefined, options);
+    return date.toLocaleString(undefined, options);
   };
 
   const renderKeyPhaseCard = (
