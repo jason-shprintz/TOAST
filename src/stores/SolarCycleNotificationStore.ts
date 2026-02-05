@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import * as SunCalc from 'suncalc';
 import { SQLiteDatabase } from '../types/database-types';
+import { getLunarPhaseName } from '../utils/lunarPhase';
 
 export type SolarEventType = 'sunrise' | 'sunset' | 'dawn' | 'dusk';
 
@@ -299,6 +300,51 @@ export class SolarCycleNotificationStore {
     runInAction(() => {
       this.activeNotifications = newNotifications;
     });
+  }
+
+  /**
+   * Check if all solar events for the day have passed.
+   * This determines if we should show lunar cycle information.
+   * @returns true if all solar events have passed, false otherwise
+   */
+  allSolarEventsComplete(): boolean {
+    if (!this.enabled) {
+      return false;
+    }
+
+    // If we don't have location data, we can't determine if events are complete
+    if (!this.lastCalculationLocation) {
+      return false;
+    }
+
+    const now = new Date();
+
+    // Calculate today's sun times to check if dusk (the last event) has passed
+    const sunTimes = this.calculateSunTimes(
+      this.lastCalculationLocation.latitude,
+      this.lastCalculationLocation.longitude,
+    );
+
+    if (!sunTimes) {
+      return false;
+    }
+
+    // Check if dusk (the last solar event of the day) has passed
+    return now > sunTimes.dusk;
+  }
+
+  /**
+   * Get the current lunar cycle information.
+   * @returns Object with lunar phase name and illumination percentage
+   */
+  getCurrentLunarCycle(): { phaseName: string; illumination: number } {
+    const now = new Date();
+    const moonIllum = SunCalc.getMoonIllumination(now);
+
+    return {
+      phaseName: getLunarPhaseName(moonIllum.phase),
+      illumination: Math.round(moonIllum.fraction * 100),
+    };
   }
 
   /**

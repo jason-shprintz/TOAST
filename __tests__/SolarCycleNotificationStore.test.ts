@@ -6,6 +6,7 @@ import {
   SolarCycleNotificationStore,
   SolarNotification,
 } from '../src/stores/SolarCycleNotificationStore';
+import { getLunarPhaseName } from '../src/utils/lunarPhase';
 
 // Mock SQLite
 const mockDb = {
@@ -400,6 +401,116 @@ describe('SolarCycleNotificationStore', () => {
       expect(store.activeNotifications).toEqual([]);
       expect(store.lastCalculationDate).toBeNull();
       expect(store.lastCalculationLocation).toBeNull();
+    });
+  });
+
+  describe('Lunar Cycle Integration', () => {
+    test('allSolarEventsComplete returns false when no notifications', () => {
+      store.clearAllNotifications();
+      expect(store.allSolarEventsComplete()).toBe(false);
+    });
+
+    test('allSolarEventsComplete returns false when events are in future', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2025-06-15T00:00:00Z')); // Midnight
+
+      await store.initDatabase(mockDb as any);
+
+      const latitude = 40.7128;
+      const longitude = -74.006;
+
+      store.updateNotifications(latitude, longitude);
+
+      // At midnight, all solar events (dawn, sunrise, sunset, dusk) should be in the future
+      expect(store.allSolarEventsComplete()).toBe(false);
+
+      jest.useRealTimers();
+    });
+
+    test('allSolarEventsComplete returns true when all events have passed', async () => {
+      jest.useFakeTimers();
+      // Set time to 4:00 AM UTC the next day, which is definitely after dusk
+      // For New York (UTC-4 in summer), this is midnight local time
+      jest.setSystemTime(new Date('2025-06-16T04:00:00Z'));
+
+      await store.initDatabase(mockDb as any);
+
+      const latitude = 40.7128;
+      const longitude = -74.006;
+
+      store.updateNotifications(latitude, longitude);
+
+      // Calculate yesterday's dusk time to verify our assertion
+      const yesterday = new Date('2025-06-15T12:00:00Z');
+      jest.setSystemTime(yesterday);
+      const sunTimes = store.calculateSunTimes(latitude, longitude);
+      expect(sunTimes).not.toBeNull();
+
+      // Now set time back to 4:00 AM and verify dusk has passed
+      jest.setSystemTime(new Date('2025-06-16T04:00:00Z'));
+      const now = new Date('2025-06-16T04:00:00Z');
+      expect(now.getTime()).toBeGreaterThan(sunTimes!.dusk.getTime());
+
+      // Update notifications at the current time (4 AM next day)
+      store.updateNotifications(latitude, longitude);
+
+      // Now verify allSolarEventsComplete returns true
+      const allComplete = store.allSolarEventsComplete();
+      expect(allComplete).toBe(true);
+
+      jest.useRealTimers();
+    });
+
+    test('getLunarPhaseName returns correct names', () => {
+      expect(getLunarPhaseName(0.0)).toBe('New Moon');
+      expect(getLunarPhaseName(0.01)).toBe('New Moon');
+      expect(getLunarPhaseName(0.98)).toBe('New Moon');
+      expect(getLunarPhaseName(0.1)).toBe('Waxing Crescent');
+      expect(getLunarPhaseName(0.25)).toBe('First Quarter');
+      expect(getLunarPhaseName(0.35)).toBe('Waxing Gibbous');
+      expect(getLunarPhaseName(0.5)).toBe('Full Moon');
+      expect(getLunarPhaseName(0.6)).toBe('Waning Gibbous');
+      expect(getLunarPhaseName(0.75)).toBe('Last Quarter');
+      expect(getLunarPhaseName(0.9)).toBe('Waning Crescent');
+    });
+
+    test('getCurrentLunarCycle returns valid lunar data', () => {
+      const lunarCycle = store.getCurrentLunarCycle();
+
+      expect(lunarCycle).toHaveProperty('phaseName');
+      expect(lunarCycle).toHaveProperty('illumination');
+
+      // Phase name should be one of the valid phases
+      const validPhases = [
+        'New Moon',
+        'Waxing Crescent',
+        'First Quarter',
+        'Waxing Gibbous',
+        'Full Moon',
+        'Waning Gibbous',
+        'Last Quarter',
+        'Waning Crescent',
+      ];
+      expect(validPhases).toContain(lunarCycle.phaseName);
+
+      // Illumination should be between 0 and 100
+      expect(lunarCycle.illumination).toBeGreaterThanOrEqual(0);
+      expect(lunarCycle.illumination).toBeLessThanOrEqual(100);
+    });
+
+    test('getCurrentLunarCycle returns consistent data over time', () => {
+      const cycle1 = store.getCurrentLunarCycle();
+
+      // Wait a tiny bit (should be same phase)
+      const cycle2 = store.getCurrentLunarCycle();
+
+      // Phase name should be the same within milliseconds
+      expect(cycle1.phaseName).toBe(cycle2.phaseName);
+
+      // Illumination should be very close (possibly same due to rounding)
+      expect(Math.abs(cycle1.illumination - cycle2.illumination)).toBeLessThan(
+        2,
+      );
     });
   });
 });
