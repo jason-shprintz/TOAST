@@ -6,6 +6,7 @@ import {
   SolarCycleNotificationStore,
   SolarNotification,
 } from '../src/stores/SolarCycleNotificationStore';
+import { getLunarPhaseName } from '../src/utils/lunarPhase';
 
 // Mock SQLite
 const mockDb = {
@@ -428,8 +429,9 @@ describe('SolarCycleNotificationStore', () => {
 
     test('allSolarEventsComplete returns true when all events have passed', async () => {
       jest.useFakeTimers();
-      // Set time to late evening (23:00 UTC), after all solar events
-      jest.setSystemTime(new Date('2025-06-15T23:00:00Z'));
+      // Set time to 4:00 AM UTC the next day, which is definitely after dusk
+      // For New York (UTC-4 in summer), this is midnight local time
+      jest.setSystemTime(new Date('2025-06-16T04:00:00Z'));
 
       await store.initDatabase(mockDb as any);
 
@@ -438,29 +440,38 @@ describe('SolarCycleNotificationStore', () => {
 
       store.updateNotifications(latitude, longitude);
 
-      // At 23:00, all solar events for the day should have passed
-      // Note: This might vary by location and time of year, but typically
-      // dusk is the last event and happens before 23:00 in most locations
-      const allComplete = store.allSolarEventsComplete();
+      // Calculate yesterday's dusk time to verify our assertion
+      const yesterday = new Date('2025-06-15T12:00:00Z');
+      jest.setSystemTime(yesterday);
+      const sunTimes = store.calculateSunTimes(latitude, longitude);
+      expect(sunTimes).not.toBeNull();
 
-      // Since we can't guarantee the exact time of dusk, we just verify
-      // the method executes without error
-      expect(typeof allComplete).toBe('boolean');
+      // Now set time back to 4:00 AM and verify dusk has passed
+      jest.setSystemTime(new Date('2025-06-16T04:00:00Z'));
+      const now = new Date('2025-06-16T04:00:00Z');
+      expect(now.getTime()).toBeGreaterThan(sunTimes!.dusk.getTime());
+
+      // Update notifications at the current time (4 AM next day)
+      store.updateNotifications(latitude, longitude);
+
+      // Now verify allSolarEventsComplete returns true
+      const allComplete = store.allSolarEventsComplete();
+      expect(allComplete).toBe(true);
 
       jest.useRealTimers();
     });
 
     test('getLunarPhaseName returns correct names', () => {
-      expect(store.getLunarPhaseName(0.0)).toBe('New Moon');
-      expect(store.getLunarPhaseName(0.01)).toBe('New Moon');
-      expect(store.getLunarPhaseName(0.98)).toBe('New Moon');
-      expect(store.getLunarPhaseName(0.1)).toBe('Waxing Crescent');
-      expect(store.getLunarPhaseName(0.25)).toBe('First Quarter');
-      expect(store.getLunarPhaseName(0.35)).toBe('Waxing Gibbous');
-      expect(store.getLunarPhaseName(0.5)).toBe('Full Moon');
-      expect(store.getLunarPhaseName(0.6)).toBe('Waning Gibbous');
-      expect(store.getLunarPhaseName(0.75)).toBe('Last Quarter');
-      expect(store.getLunarPhaseName(0.9)).toBe('Waning Crescent');
+      expect(getLunarPhaseName(0.0)).toBe('New Moon');
+      expect(getLunarPhaseName(0.01)).toBe('New Moon');
+      expect(getLunarPhaseName(0.98)).toBe('New Moon');
+      expect(getLunarPhaseName(0.1)).toBe('Waxing Crescent');
+      expect(getLunarPhaseName(0.25)).toBe('First Quarter');
+      expect(getLunarPhaseName(0.35)).toBe('Waxing Gibbous');
+      expect(getLunarPhaseName(0.5)).toBe('Full Moon');
+      expect(getLunarPhaseName(0.6)).toBe('Waning Gibbous');
+      expect(getLunarPhaseName(0.75)).toBe('Last Quarter');
+      expect(getLunarPhaseName(0.9)).toBe('Waning Crescent');
     });
 
     test('getCurrentLunarCycle returns valid lunar data', () => {

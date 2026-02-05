@@ -7,6 +7,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../theme';
+import { getLunarPhaseName } from '../../utils/lunarPhase';
 
 interface MoonPhase {
   date: Date;
@@ -19,17 +20,6 @@ interface MoonPhase {
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 // Helper functions for moon phase calculations
-const getMoonPhaseName = (phase: number): string => {
-  if (phase < 0.03 || phase > 0.97) return 'New Moon';
-  if (phase < 0.22) return 'Waxing Crescent';
-  if (phase < 0.28) return 'First Quarter';
-  if (phase < 0.47) return 'Waxing Gibbous';
-  if (phase < 0.53) return 'Full Moon';
-  if (phase < 0.72) return 'Waning Gibbous';
-  if (phase < 0.78) return 'Last Quarter';
-  return 'Waning Crescent';
-};
-
 const isFullMoon = (phase: number): boolean => {
   return phase >= 0.47 && phase <= 0.53;
 };
@@ -129,7 +119,7 @@ function LunarCyclesScreen() {
 
       // Calculate current phase
       const currentIllum = SunCalc.getMoonIllumination(now);
-      const currentPhaseName = getMoonPhaseName(currentIllum.phase);
+      const currentPhaseName = getLunarPhaseName(currentIllum.phase);
       setCurrentPhase({
         date: now,
         phaseName: currentPhaseName,
@@ -141,7 +131,7 @@ function LunarCyclesScreen() {
       for (let i = 0; i <= 30; i++) {
         const date = new Date(now.getTime() + i * MILLISECONDS_PER_DAY);
         const illum = SunCalc.getMoonIllumination(date);
-        const phaseName = getMoonPhaseName(illum.phase);
+        const phaseName = getLunarPhaseName(illum.phase);
 
         const moonPhase: MoonPhase = {
           date,

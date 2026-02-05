@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import * as SunCalc from 'suncalc';
 import { SQLiteDatabase } from '../types/database-types';
+import { getLunarPhaseName } from '../utils/lunarPhase';
 
 export type SolarEventType = 'sunrise' | 'sunset' | 'dawn' | 'dusk';
 
@@ -307,32 +308,29 @@ export class SolarCycleNotificationStore {
    * @returns true if all solar events have passed, false otherwise
    */
   allSolarEventsComplete(): boolean {
-    if (!this.enabled || this.activeNotifications.length === 0) {
+    if (!this.enabled) {
+      return false;
+    }
+
+    // If we don't have location data, we can't determine if events are complete
+    if (!this.lastCalculationLocation) {
       return false;
     }
 
     const now = new Date();
 
-    // Check if all notifications have passed (event time is in the past)
-    const allPassed = this.activeNotifications.every((n) => n.eventTime <= now);
+    // Calculate today's sun times to check if dusk (the last event) has passed
+    const sunTimes = this.calculateSunTimes(
+      this.lastCalculationLocation.latitude,
+      this.lastCalculationLocation.longitude,
+    );
 
-    return allPassed;
-  }
+    if (!sunTimes) {
+      return false;
+    }
 
-  /**
-   * Get the current lunar phase name based on the phase value.
-   * @param phase - Phase value from 0 to 1 (0/1 = new moon, 0.5 = full moon)
-   * @returns The name of the lunar phase
-   */
-  getLunarPhaseName(phase: number): string {
-    if (phase < 0.03 || phase > 0.97) return 'New Moon';
-    if (phase < 0.22) return 'Waxing Crescent';
-    if (phase < 0.28) return 'First Quarter';
-    if (phase < 0.47) return 'Waxing Gibbous';
-    if (phase < 0.53) return 'Full Moon';
-    if (phase < 0.72) return 'Waning Gibbous';
-    if (phase < 0.78) return 'Last Quarter';
-    return 'Waning Crescent';
+    // Check if dusk (the last solar event of the day) has passed
+    return now > sunTimes.dusk;
   }
 
   /**
@@ -344,7 +342,7 @@ export class SolarCycleNotificationStore {
     const moonIllum = SunCalc.getMoonIllumination(now);
 
     return {
-      phaseName: this.getLunarPhaseName(moonIllum.phase),
+      phaseName: getLunarPhaseName(moonIllum.phase),
       illumination: Math.round(moonIllum.fraction * 100),
     };
   }

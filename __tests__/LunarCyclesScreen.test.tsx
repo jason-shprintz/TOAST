@@ -3,6 +3,7 @@
  */
 
 import * as SunCalc from 'suncalc';
+import { getLunarPhaseName } from '../src/utils/lunarPhase';
 
 // Constants
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -107,25 +108,14 @@ describe('LunarCyclesScreen', () => {
     });
 
     test('assigns correct moon phase names', () => {
-      const getMoonPhaseName = (phase: number): string => {
-        if (phase < 0.03 || phase > 0.97) return 'New Moon';
-        if (phase < 0.22) return 'Waxing Crescent';
-        if (phase < 0.28) return 'First Quarter';
-        if (phase < 0.47) return 'Waxing Gibbous';
-        if (phase < 0.53) return 'Full Moon';
-        if (phase < 0.72) return 'Waning Gibbous';
-        if (phase < 0.78) return 'Last Quarter';
-        return 'Waning Crescent';
-      };
-
-      expect(getMoonPhaseName(0.0)).toBe('New Moon');
-      expect(getMoonPhaseName(0.1)).toBe('Waxing Crescent');
-      expect(getMoonPhaseName(0.25)).toBe('First Quarter');
-      expect(getMoonPhaseName(0.35)).toBe('Waxing Gibbous');
-      expect(getMoonPhaseName(0.5)).toBe('Full Moon');
-      expect(getMoonPhaseName(0.6)).toBe('Waning Gibbous');
-      expect(getMoonPhaseName(0.75)).toBe('Last Quarter');
-      expect(getMoonPhaseName(0.9)).toBe('Waning Crescent');
+      expect(getLunarPhaseName(0.0)).toBe('New Moon');
+      expect(getLunarPhaseName(0.1)).toBe('Waxing Crescent');
+      expect(getLunarPhaseName(0.25)).toBe('First Quarter');
+      expect(getLunarPhaseName(0.35)).toBe('Waxing Gibbous');
+      expect(getLunarPhaseName(0.5)).toBe('Full Moon');
+      expect(getLunarPhaseName(0.6)).toBe('Waning Gibbous');
+      expect(getLunarPhaseName(0.75)).toBe('Last Quarter');
+      expect(getLunarPhaseName(0.9)).toBe('Waning Crescent');
     });
   });
 
