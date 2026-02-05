@@ -79,6 +79,12 @@ export const CORE_TOOLS: ToolType[] = [
     icon: 'sunny-outline',
     id: 'core_sun_time',
   },
+  {
+    name: 'Lunar Cycles',
+    screen: 'LunarCycles',
+    icon: 'moon-outline',
+    id: 'core_lunar_cycles',
+  },
 ];
 
 export const COMMUNICATION_TOOLS: ToolType[] = [
