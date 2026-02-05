@@ -48,18 +48,21 @@ const SearchScreen = observer((): JSX.Element => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
-  const handleSearch = useCallback((text: string) => {
-    setQuery(text);
-    const searchResults = searchItems(
-      text,
-      coreStore.notes,
-      coreStore.checklists,
-      coreStore.checklistItems,
-      inventoryStore.items,
-      pantryStore.items,
-    );
-    setResults(searchResults);
-  }, [coreStore.notes, coreStore.checklists, coreStore.checklistItems, inventoryStore.items, pantryStore.items]);
+  const handleSearch = useCallback(
+    (text: string) => {
+      setQuery(text);
+      const searchResults = searchItems(
+        text,
+        coreStore.notes,
+        coreStore.checklists,
+        coreStore.checklistItems,
+        inventoryStore.items,
+        pantryStore.items,
+      );
+      setResults(searchResults);
+    },
+    [coreStore, inventoryStore, pantryStore],
+  );
 
   const handleItemPress = useCallback(
     (item: SearchableItem) => {

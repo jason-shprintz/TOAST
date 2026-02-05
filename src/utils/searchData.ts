@@ -113,7 +113,7 @@ function checklistToSearchableItem(
   const checklistItems = items
     .filter((item) => item.checklistId === checklist.id)
     .map((item) => item.text);
-  
+
   const searchText = [checklist.name, ...checklistItems].join(' ').toLowerCase();
 
   return {
