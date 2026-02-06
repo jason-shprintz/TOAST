@@ -51,7 +51,9 @@ export default function RadioFrequenciesScreen(): JSX.Element {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {disclaimer && <SectionSubHeader>{disclaimer}</SectionSubHeader>}
+          {disclaimer.trim().length > 0 && (
+            <SectionSubHeader>{disclaimer}</SectionSubHeader>
+          )}
           <Grid>
             {radioCategories.map((category) => (
               <CardTopic
