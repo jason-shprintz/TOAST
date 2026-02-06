@@ -16,7 +16,7 @@ import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { useTheme } from '../../hooks/useTheme';
 import { Note, Checklist } from '../../stores/CoreStore';
-import { useStores } from '../../stores/StoreContext';
+import { useCoreStore, useInventoryStore, usePantryStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
@@ -42,10 +42,12 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
  * - Searches notes (titles and content), checklists (names and items),
  *   inventory items, and pantry items
  */
-const SearchScreen = observer((): JSX.Element => {
+export default observer(function SearchScreen(): JSX.Element {
   const navigation = useNavigation<SearchScreenNavigationProp>();
   const COLORS = useTheme();
-  const { coreStore, inventoryStore, pantryStore } = useStores();
+  const coreStore = useCoreStore();
+  const inventoryStore = useInventoryStore();
+  const pantryStore = usePantryStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
@@ -182,8 +184,6 @@ const SearchScreen = observer((): JSX.Element => {
     </ScreenBody>
   );
 });
-
-export default SearchScreen;
 
 const styles = StyleSheet.create({
   searchContainer: {
