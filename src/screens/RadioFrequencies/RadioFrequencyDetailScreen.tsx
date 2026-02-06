@@ -11,7 +11,7 @@ type Channel = {
   name: string;
   frequency: string;
   mode: string;
-  notes: string;
+  notes?: string;
 };
 
 type FrequencyData = {
