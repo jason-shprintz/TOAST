@@ -14,8 +14,9 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Displays a single checklist with its items.
@@ -29,6 +30,7 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const COLORS = useTheme();
   const [newItemText, setNewItemText] = useState<string>('');
   const [isAddingItem, setIsAddingItem] = useState<boolean>(false);
 
