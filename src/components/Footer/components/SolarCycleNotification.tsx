@@ -63,7 +63,7 @@ const SolarCycleNotification = () => {
         />
         <Text
           style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
-          numberOfLines={1}
+          numberOfLines={2}
         >
           {`${lunarCycle.phaseName} (${lunarCycle.illumination}%)`}
         </Text>
@@ -97,7 +97,7 @@ const SolarCycleNotification = () => {
       />
       <Text
         style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
-        numberOfLines={1}
+        numberOfLines={2}
       >
         {solarNotifications.getNotificationMessage(nextNotification)}
       </Text>
