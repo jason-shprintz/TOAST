@@ -8,8 +8,8 @@ import Grid from '../../components/Grid';
 import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { COLORS } from '../../theme';
 
 /**
  * Checklist landing screen.
@@ -26,6 +26,7 @@ import { COLORS } from '../../theme';
 export default observer(function ChecklistScreen() {
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const COLORS = useTheme();
 
   const checklistIcons: Record<string, string> = {
     'Bug-out bag': 'bag-outline',

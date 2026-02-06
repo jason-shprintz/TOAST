@@ -14,8 +14,9 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Displays a single checklist with its items.
@@ -29,17 +30,24 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const core = useCoreStore();
+  const COLORS = useTheme();
   const [newItemText, setNewItemText] = useState<string>('');
   const [isAddingItem, setIsAddingItem] = useState<boolean>(false);
 
   const { checklist } = route.params || {};
 
+  // Reusable container theme styles
+  const containerThemeStyle = {
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+  };
+
   if (!checklist) {
     return (
       <ScreenBody>
         <SectionHeader>Checklist Not Found</SectionHeader>
-        <View style={styles.container}>
-          <Text style={styles.errorText}>
+        <View style={[styles.container, containerThemeStyle]}>
+          <Text style={[styles.errorText, { color: COLORS.PRIMARY_DARK }]}>
             The requested checklist could not be found.
           </Text>
         </View>
@@ -115,7 +123,7 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
         </TouchableOpacity>
       </View>
       <HorizontalRule />
-      <View style={styles.container}>
+      <View style={[styles.container, containerThemeStyle]}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -127,17 +135,36 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
                 size={48}
                 color={COLORS.PRIMARY_DARK}
               />
-              <Text style={styles.emptyText}>No items yet</Text>
-              <Text style={styles.emptySubtext}>
+              <Text style={[styles.emptyText, { color: COLORS.PRIMARY_DARK }]}>
+                No items yet
+              </Text>
+              <Text
+                style={[
+                  styles.emptySubtext,
+                  { color: COLORS.PRIMARY_DARK + '80' },
+                ]}
+              >
                 Tap the + button to add items
               </Text>
             </View>
           )}
 
           {isAddingItem && (
-            <View style={styles.addItemRow}>
+            <View
+              style={[
+                styles.addItemRow,
+                { borderBottomColor: COLORS.SECONDARY_ACCENT + '40' },
+              ]}
+            >
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    color: COLORS.PRIMARY_DARK,
+                    borderColor: COLORS.SECONDARY_ACCENT,
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                  },
+                ]}
                 value={newItemText}
                 onChangeText={setNewItemText}
                 placeholder="Enter item text..."
@@ -176,7 +203,13 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
           )}
 
           {items.map((item) => (
-            <View key={item.id} style={styles.itemRow}>
+            <View
+              key={item.id}
+              style={[
+                styles.itemRow,
+                { borderBottomColor: COLORS.SECONDARY_ACCENT + '40' },
+              ]}
+            >
               <TouchableOpacity
                 style={styles.checkbox}
                 onPress={() => core.toggleChecklistItem(item.id)}
@@ -194,7 +227,11 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
               <Text
                 style={[
                   styles.itemText,
-                  item.checked && styles.itemTextChecked,
+                  { color: COLORS.PRIMARY_DARK },
+                  item.checked && [
+                    styles.itemTextChecked,
+                    { color: COLORS.PRIMARY_DARK + '60' },
+                  ],
                 ]}
               >
                 {item.text}
@@ -223,10 +260,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderWidth: 2,
     borderRadius: 12,
-    borderColor: COLORS.SECONDARY_ACCENT,
     alignSelf: 'stretch',
     marginTop: 12,
     marginBottom: FOOTER_HEIGHT + 12,
@@ -251,7 +286,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
     padding: 20,
   },
@@ -263,12 +297,10 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginTop: 12,
   },
   emptySubtext: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK + '80',
     marginTop: 4,
   },
   itemRow: {
@@ -276,7 +308,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.SECONDARY_ACCENT + '40',
   },
   checkbox: {
     marginRight: 12,
@@ -284,11 +315,9 @@ const styles = StyleSheet.create({
   itemText: {
     flex: 1,
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
   },
   itemTextChecked: {
     textDecorationLine: 'line-through',
-    color: COLORS.PRIMARY_DARK + '60',
   },
   deleteButton: {
     marginLeft: 8,
@@ -298,18 +327,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.SECONDARY_ACCENT + '40',
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
     borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
   },
   addButton: {
     marginLeft: 8,
