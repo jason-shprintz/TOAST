@@ -2,12 +2,99 @@
  * @format
  */
 
+import { Note, Checklist, ChecklistItem } from '../src/stores/CoreStore';
+import { InventoryItem } from '../src/stores/InventoryStore';
+import { PantryItem } from '../src/stores/PantryStore';
 import { searchItems, getAllSearchableItems } from '../src/utils/searchData';
 
 describe('Search Functionality', () => {
+  // Mock data for testing
+  const mockNotes: Note[] = [
+    {
+      id: 'note1',
+      createdAt: Date.now(),
+      category: 'General',
+      type: 'text',
+      title: 'Test Note About Fire Safety',
+      text: 'This is a note about fire safety',
+      photoUris: [],
+    },
+  ];
+
+  const mockChecklists: Checklist[] = [
+    {
+      id: 'checklist1',
+      name: 'Emergency Checklist',
+      createdAt: Date.now(),
+      isDefault: false,
+    },
+  ];
+
+  const mockChecklistItems: ChecklistItem[] = [
+    {
+      id: 'item1',
+      checklistId: 'checklist1',
+      text: 'Check fire extinguisher',
+      checked: false,
+      order: 0,
+    },
+  ];
+
+  const mockInventoryItems: InventoryItem[] = [
+    {
+      id: 'inv1',
+      name: 'Water Bottles',
+      category: 'Home Base',
+      quantity: 10,
+      unit: 'bottles',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+  ];
+
+  const mockPantryItems: PantryItem[] = [
+    {
+      id: 'pantry1',
+      name: 'Canned Beans',
+      category: 'Canned Goods',
+      quantity: 5,
+      unit: 'cans',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+  ];
+
   test('getAllSearchableItems returns non-empty array', () => {
     const items = getAllSearchableItems();
     expect(items.length).toBeGreaterThan(0);
+  });
+
+  test('getAllSearchableItems includes notes when provided', () => {
+    const items = getAllSearchableItems(mockNotes);
+    const noteItem = items.find((item) => item.type === 'note');
+    expect(noteItem).toBeDefined();
+    expect(noteItem?.title).toContain('Test Note');
+  });
+
+  test('getAllSearchableItems includes checklists when provided', () => {
+    const items = getAllSearchableItems([], mockChecklists, mockChecklistItems);
+    const checklistItem = items.find((item) => item.type === 'checklist');
+    expect(checklistItem).toBeDefined();
+    expect(checklistItem?.title).toBe('Emergency Checklist');
+  });
+
+  test('getAllSearchableItems includes inventory items when provided', () => {
+    const items = getAllSearchableItems([], [], [], mockInventoryItems);
+    const inventoryItem = items.find((item) => item.type === 'inventory');
+    expect(inventoryItem).toBeDefined();
+    expect(inventoryItem?.title).toContain('Water Bottles');
+  });
+
+  test('getAllSearchableItems includes pantry items when provided', () => {
+    const items = getAllSearchableItems([], [], [], [], mockPantryItems);
+    const pantryItem = items.find((item) => item.type === 'pantry');
+    expect(pantryItem).toBeDefined();
+    expect(pantryItem?.title).toContain('Canned Beans');
   });
 
   test('searchItems returns empty array for empty query', () => {
@@ -52,6 +139,39 @@ describe('Search Functionality', () => {
       (item) => item.type === 'reference' && item.searchText.includes('fire'),
     );
     expect(fireEntry).toBeDefined();
+  });
+
+  test('searchItems finds notes', () => {
+    const results = searchItems('fire safety', mockNotes);
+    expect(results.length).toBeGreaterThan(0);
+    const noteResult = results.find((item) => item.type === 'note');
+    expect(noteResult).toBeDefined();
+  });
+
+  test('searchItems finds checklist items', () => {
+    const results = searchItems(
+      'extinguisher',
+      [],
+      mockChecklists,
+      mockChecklistItems,
+    );
+    expect(results.length).toBeGreaterThan(0);
+    const checklistResult = results.find((item) => item.type === 'checklist');
+    expect(checklistResult).toBeDefined();
+  });
+
+  test('searchItems finds inventory items', () => {
+    const results = searchItems('water', [], [], [], mockInventoryItems);
+    expect(results.length).toBeGreaterThan(0);
+    const inventoryResult = results.find((item) => item.type === 'inventory');
+    expect(inventoryResult).toBeDefined();
+  });
+
+  test('searchItems finds pantry items', () => {
+    const results = searchItems('beans', [], [], [], [], mockPantryItems);
+    expect(results.length).toBeGreaterThan(0);
+    const pantryResult = results.find((item) => item.type === 'pantry');
+    expect(pantryResult).toBeDefined();
   });
 
   test('searchItems returns results sorted alphabetically', () => {

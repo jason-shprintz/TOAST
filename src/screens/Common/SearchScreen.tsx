@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react-lite';
 import React, { JSX, useState, useCallback } from 'react';
 import {
   StyleSheet,
@@ -14,6 +15,8 @@ import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { useTheme } from '../../hooks/useTheme';
+import { Note, Checklist } from '../../stores/CoreStore';
+import { useCoreStore, useInventoryStore, usePantryStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
@@ -21,6 +24,10 @@ import { searchItems, SearchableItem } from '../../utils/searchData';
 type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ComingSoon: { title: string; icon: string };
   Entry: { entry: ReferenceEntryType };
+  NoteEntry: { note: Note };
+  ChecklistEntry: { checklist: Checklist };
+  InventoryCategory: { category: string };
+  PantryCategory: { category: string };
   [key: string]: undefined | object;
 }>;
 
@@ -32,18 +39,33 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
  * - Shows appropriate message when no results found
  * - Results sorted alphabetically
  * - Swipe back navigation supported
+ * - Searches notes (titles and content), checklists (names and items),
+ *   inventory items, and pantry items
  */
-export default function SearchScreen(): JSX.Element {
+export default observer(function SearchScreen(): JSX.Element {
   const navigation = useNavigation<SearchScreenNavigationProp>();
   const COLORS = useTheme();
+  const coreStore = useCoreStore();
+  const inventoryStore = useInventoryStore();
+  const pantryStore = usePantryStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchableItem[]>([]);
 
-  const handleSearch = useCallback((text: string) => {
-    setQuery(text);
-    const searchResults = searchItems(text);
-    setResults(searchResults);
-  }, []);
+  const handleSearch = useCallback(
+    (text: string) => {
+      setQuery(text);
+      const searchResults = searchItems(
+        text,
+        coreStore.notes,
+        coreStore.checklists,
+        coreStore.checklistItems,
+        inventoryStore.items,
+        pantryStore.items,
+      );
+      setResults(searchResults);
+    },
+    [coreStore, inventoryStore, pantryStore],
+  );
 
   const handleItemPress = useCallback(
     (item: SearchableItem) => {
@@ -55,6 +77,18 @@ export default function SearchScreen(): JSX.Element {
       } else if (item.screen === 'Entry') {
         // For reference entries, pass the entry data
         navigation.navigate('Entry', item.data);
+      } else if (item.screen === 'NoteEntry') {
+        // For notes, navigate to note entry with the note object
+        navigation.navigate('NoteEntry', item.data);
+      } else if (item.screen === 'ChecklistEntry') {
+        // For checklists, navigate to checklist entry with the checklist object
+        navigation.navigate('ChecklistEntry', item.data);
+      } else if (item.screen === 'InventoryCategory') {
+        // For inventory items, navigate to the inventory category
+        navigation.navigate('InventoryCategory', item.data);
+      } else if (item.screen === 'PantryCategory') {
+        // For pantry items, navigate to the pantry category
+        navigation.navigate('PantryCategory', item.data);
       } else {
         navigation.navigate(item.screen);
       }
@@ -149,7 +183,7 @@ export default function SearchScreen(): JSX.Element {
       </View>
     </ScreenBody>
   );
-}
+});
 
 const styles = StyleSheet.create({
   searchContainer: {
