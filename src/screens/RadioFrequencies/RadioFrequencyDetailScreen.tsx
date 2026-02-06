@@ -116,7 +116,12 @@ export default function RadioFrequencyDetailScreen(): JSX.Element {
             </Text>
 
             {/* Table Header */}
-            <View style={styles.tableHeader}>
+            <View
+              style={[
+                styles.tableHeader,
+                { borderBottomColor: COLORS.TOAST_BROWN },
+              ]}
+            >
               <View style={styles.tableCell}>
                 <Text
                   style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}
@@ -255,7 +260,6 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     borderBottomWidth: 2,
-    borderBottomColor: '#C09A6B',
     paddingBottom: 8,
     marginBottom: 8,
   },

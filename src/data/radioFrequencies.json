@@ -7,7 +7,7 @@
   },
   "frequencies": {
     "HAM": {
-      "id": "ham",
+      "id": "HAM",
       "title": "HAM (Amateur Radio)",
       "requiresLicense": true,
       "licenseInfo": "⚠️ LICENSE REQUIRED: You must have an FCC Amateur Radio License (Technician, General, or Amateur Extra) to transmit on amateur radio frequencies. Unlicensed transmission is illegal and subject to penalties.",
@@ -58,7 +58,7 @@
       ]
     },
     "CB": {
-      "id": "cb",
+      "id": "CB",
       "title": "CB (Citizens Band)",
       "requiresLicense": false,
       "licenseInfo": "✓ NO LICENSE REQUIRED: CB radio can be used by anyone in the United States without a license. Maximum power: 4 watts AM, 12 watts SSB.",
@@ -109,7 +109,7 @@
       ]
     },
     "GMRS": {
-      "id": "gmrs",
+      "id": "GMRS",
       "title": "GMRS (General Mobile Radio Service)",
       "requiresLicense": true,
       "licenseInfo": "⚠️ LICENSE REQUIRED: GMRS requires an FCC license. The license covers you and your immediate family members. No exam required, but license fee applies.",
@@ -166,7 +166,7 @@
       ]
     },
     "FRS": {
-      "id": "frs",
+      "id": "FRS",
       "title": "FRS (Family Radio Service)",
       "requiresLicense": false,
       "licenseInfo": "✓ NO LICENSE REQUIRED: FRS radios can be used without a license. Maximum power: 2 watts on channels 1-7 and 15-22, 0.5 watts on channels 8-14.",
@@ -235,7 +235,7 @@
       ]
     },
     "MURS": {
-      "id": "murs",
+      "id": "MURS",
       "title": "MURS (Multi-Use Radio Service)",
       "requiresLicense": false,
       "licenseInfo": "✓ NO LICENSE REQUIRED: MURS can be used without a license. Maximum power: 2 watts. External antennas are permitted, unlike FRS.",
