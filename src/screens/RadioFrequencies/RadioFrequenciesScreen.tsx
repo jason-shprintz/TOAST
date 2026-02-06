@@ -1,17 +1,20 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
+import radioFrequenciesData from '../../data/radioFrequencies.json';
 import { FOOTER_HEIGHT } from '../../theme';
 
 const radioCategories = [
-  { id: 'ham', title: 'HAM', icon: 'radio-outline' },
-  { id: 'cb', title: 'CB', icon: 'chatbubbles-outline' },
-  { id: 'gmrs', title: 'GMRS', icon: 'wifi-outline' },
-  { id: 'frs', title: 'FRS', icon: 'phone-portrait-outline' },
-  { id: 'murs', title: 'MURS', icon: 'headset-outline' },
+  { id: 'HAM', title: 'HAM', icon: 'radio-outline' },
+  { id: 'CB', title: 'CB', icon: 'chatbubbles-outline' },
+  { id: 'GMRS', title: 'GMRS', icon: 'wifi-outline' },
+  { id: 'FRS', title: 'FRS', icon: 'phone-portrait-outline' },
+  { id: 'MURS', title: 'MURS', icon: 'headset-outline' },
 ];
 
 /**
@@ -25,8 +28,18 @@ const radioCategories = [
  * @returns {JSX.Element} The rendered radio frequencies screen.
  */
 export default function RadioFrequenciesScreen(): JSX.Element {
-  const handleCategoryPress = (_categoryId: string) => {
-    // TODO: Implement navigation to detail screen for the selected radio frequency category.
+  const navigation = useNavigation<any>();
+  const disclaimer: string = radioFrequenciesData.metadata?.disclaimer ?? '';
+
+  const handleCategoryPress = (categoryId: string) => {
+    const frequencyData =
+      radioFrequenciesData.frequencies[
+        categoryId as keyof typeof radioFrequenciesData.frequencies
+      ];
+
+    if (frequencyData) {
+      navigation.navigate('RadioFrequencyDetail', { frequencyData });
+    }
   };
 
   return (
@@ -38,6 +51,9 @@ export default function RadioFrequenciesScreen(): JSX.Element {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
+          {disclaimer.trim().length > 0 && (
+            <SectionSubHeader>{disclaimer}</SectionSubHeader>
+          )}
           <Grid>
             {radioCategories.map((category) => (
               <CardTopic
