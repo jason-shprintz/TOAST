@@ -2,10 +2,10 @@
  * @format
  */
 
-import { searchItems, getAllSearchableItems } from '../src/utils/searchData';
 import { Note, Checklist, ChecklistItem } from '../src/stores/CoreStore';
 import { InventoryItem } from '../src/stores/InventoryStore';
 import { PantryItem } from '../src/stores/PantryStore';
+import { searchItems, getAllSearchableItems } from '../src/utils/searchData';
 
 describe('Search Functionality', () => {
   // Mock data for testing
@@ -77,11 +77,7 @@ describe('Search Functionality', () => {
   });
 
   test('getAllSearchableItems includes checklists when provided', () => {
-    const items = getAllSearchableItems(
-      [],
-      mockChecklists,
-      mockChecklistItems,
-    );
+    const items = getAllSearchableItems([], mockChecklists, mockChecklistItems);
     const checklistItem = items.find((item) => item.type === 'checklist');
     expect(checklistItem).toBeDefined();
     expect(checklistItem?.title).toBe('Emergency Checklist');

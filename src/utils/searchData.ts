@@ -11,15 +11,22 @@ import healthData from '../data/health.json';
 import survivalData from '../data/survival.json';
 import toolsData from '../data/tools.json';
 import weatherData from '../data/weather.json';
-import ReferenceEntryType from '../types/data-type';
 import { Note, Checklist, ChecklistItem } from '../stores/CoreStore';
 import { InventoryItem } from '../stores/InventoryStore';
 import { PantryItem } from '../stores/PantryStore';
+import ReferenceEntryType from '../types/data-type';
 
 export type SearchableItem = {
   id: string;
   title: string;
-  type: 'tool' | 'module' | 'reference' | 'note' | 'checklist' | 'inventory' | 'pantry';
+  type:
+    | 'tool'
+    | 'module'
+    | 'reference'
+    | 'note'
+    | 'checklist'
+    | 'inventory'
+    | 'pantry';
   screen: string;
   icon: string;
   searchText: string; // Combined text for searching
@@ -91,7 +98,9 @@ function noteToSearchableItem(note: Note): SearchableItem {
 
   return {
     id: note.id,
-    title: note.title || `Note from ${new Date(note.createdAt).toLocaleDateString()}`,
+    title:
+      note.title ||
+      `Note from ${new Date(note.createdAt).toLocaleDateString()}`,
     type: 'note',
     screen: 'NoteEntry',
     icon: 'document-text-outline',
@@ -114,7 +123,9 @@ function checklistToSearchableItem(
     .filter((item) => item.checklistId === checklist.id)
     .map((item) => item.text);
 
-  const searchText = [checklist.name, ...checklistItems].join(' ').toLowerCase();
+  const searchText = [checklist.name, ...checklistItems]
+    .join(' ')
+    .toLowerCase();
 
   return {
     id: checklist.id,

@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react-lite';
 import React, { JSX, useState, useCallback } from 'react';
 import {
   StyleSheet,
@@ -14,12 +15,11 @@ import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { useTheme } from '../../hooks/useTheme';
+import { Note, Checklist } from '../../stores/CoreStore';
+import { useStores } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 import ReferenceEntryType from '../../types/data-type';
 import { searchItems, SearchableItem } from '../../utils/searchData';
-import { useStores } from '../../stores/StoreContext';
-import { observer } from 'mobx-react-lite';
-import { Note, Checklist } from '../../stores/CoreStore';
 
 type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ComingSoon: { title: string; icon: string };
@@ -39,7 +39,7 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
  * - Shows appropriate message when no results found
  * - Results sorted alphabetically
  * - Swipe back navigation supported
- * - Searches notes (titles and content), checklists (names and items), 
+ * - Searches notes (titles and content), checklists (names and items),
  *   inventory items, and pantry items
  */
 const SearchScreen = observer((): JSX.Element => {
