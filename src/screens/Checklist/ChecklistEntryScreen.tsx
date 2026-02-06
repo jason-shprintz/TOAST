@@ -36,19 +36,17 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
 
   const { checklist } = route.params || {};
 
+  // Reusable container theme styles
+  const containerThemeStyle = {
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    borderColor: COLORS.SECONDARY_ACCENT,
+  };
+
   if (!checklist) {
     return (
       <ScreenBody>
         <SectionHeader>Checklist Not Found</SectionHeader>
-        <View
-          style={[
-            styles.container,
-            {
-              backgroundColor: COLORS.PRIMARY_LIGHT,
-              borderColor: COLORS.SECONDARY_ACCENT,
-            },
-          ]}
-        >
+        <View style={[styles.container, containerThemeStyle]}>
           <Text style={[styles.errorText, { color: COLORS.PRIMARY_DARK }]}>
             The requested checklist could not be found.
           </Text>
@@ -125,15 +123,7 @@ export default observer(function ChecklistEntryScreen(): React.JSX.Element {
         </TouchableOpacity>
       </View>
       <HorizontalRule />
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: COLORS.PRIMARY_LIGHT,
-            borderColor: COLORS.SECONDARY_ACCENT,
-          },
-        ]}
-      >
+      <View style={[styles.container, containerThemeStyle]}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
