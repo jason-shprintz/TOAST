@@ -46,6 +46,7 @@ import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
 import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
 import PantryScreen from '../screens/Pantry/PantryScreen';
 import RadioFrequenciesScreen from '../screens/RadioFrequencies/RadioFrequenciesScreen';
+import RadioFrequencyDetailScreen from '../screens/RadioFrequencies/RadioFrequencyDetailScreen';
 import BookmarkScreen from '../screens/Reference/BookmarkScreen';
 import EmergencyScreen from '../screens/Reference/EmergencyScreen';
 import HealthScreen from '../screens/Reference/HealthScreen';
@@ -122,6 +123,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="RadioFrequencies"
             component={RadioFrequenciesScreen}
+          />
+          <Stack.Screen
+            name="RadioFrequencyDetail"
+            component={RadioFrequencyDetailScreen}
           />
           <Stack.Screen name="DecibelMeter" component={DecibelMeterScreen} />
           <Stack.Screen
