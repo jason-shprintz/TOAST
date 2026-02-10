@@ -100,11 +100,12 @@ export default function CardTopic({
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 65,
+    minHeight: 65,
     borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
+    paddingVertical: 12,
     marginBottom: 12,
     elevation: 2,
     overflow: 'hidden',
