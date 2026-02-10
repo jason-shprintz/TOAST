@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { JSX, useEffect, useMemo, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import CardTopic from '../../components/CardTopic';
 import Grid from '../../components/Grid';
@@ -51,16 +51,18 @@ export default function ScenarioBookmarksScreen(): JSX.Element {
     );
   }, []);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const list = await getBookmarks();
-    setItems(list);
-  };
+    // Filter to only show bookmarks that exist in scenario data
+    const scenarioBookmarks = list.filter((item) => scenarioMap.has(item.id));
+    setItems(scenarioBookmarks);
+  }, [scenarioMap]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', load);
     load();
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, load]);
 
   /**
    * Opens the bookmarked scenario associated with the given bookmark item.
