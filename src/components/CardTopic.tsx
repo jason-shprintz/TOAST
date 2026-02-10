@@ -99,13 +99,14 @@ export default function CardTopic({
 
 const styles = StyleSheet.create({
   card: {
-    width: '40%',
-    minWidth: 150,
-    height: 130,
+    width: '100%',
+    minHeight: 65,
     borderRadius: 14,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 12,
     elevation: 2,
     overflow: 'hidden',
     borderWidth: 2,
@@ -114,12 +115,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   icon: {
-    marginBottom: 8,
+    marginRight: 12,
   },
   title: {
     fontSize: 18,
     fontWeight: '700',
-    textAlign: 'center',
-    paddingHorizontal: 6,
+    flex: 1,
   },
 });

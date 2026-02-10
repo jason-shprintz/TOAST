@@ -18,9 +18,7 @@ export default function Grid({ style, children }: PropsWithChildren<Props>) {
 const styles = StyleSheet.create({
   grid: {
     width: '90%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     paddingTop: 20,
   },
 });
