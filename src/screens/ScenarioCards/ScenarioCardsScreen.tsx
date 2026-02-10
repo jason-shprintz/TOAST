@@ -4,7 +4,6 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/scenarioCards.json';
 import { CategoryType } from '../../types/common-types';
-import { ScenarioCardType } from '../../types/data-type';
 
 const categoryMap: Record<string, string> = {
   'Power & Infrastructure': 'Power & Infrastructure',

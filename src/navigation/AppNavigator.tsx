@@ -231,10 +231,7 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
           <Stack.Screen name="Emergency" component={EmergencyScreen} />
           {/* Scenario Cards */}
-          <Stack.Screen
-            name="ScenarioCards"
-            component={ScenarioCardsScreen}
-          />
+          <Stack.Screen name="ScenarioCards" component={ScenarioCardsScreen} />
           <Stack.Screen
             name="ScenarioCategory"
             component={ScenarioCategoryScreen}
