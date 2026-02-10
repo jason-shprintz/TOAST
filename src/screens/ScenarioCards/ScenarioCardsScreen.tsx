@@ -1,8 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { JSX } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import CategoryList from '../../components/CategoryList';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/scenarioCards.json';
+import { useTheme } from '../../hooks/useTheme';
 import { CategoryType } from '../../types/common-types';
 
 const categoryMap: Record<string, string> = {
@@ -75,14 +80,33 @@ const scenarioCategories: CategoryType[] = [
  * each represented by a CardTopic component. Selecting a topic navigates to the 'ScenarioCategory' screen
  * with the corresponding category data.
  *
+ * Includes an action bar with a bookmark icon to access bookmarked scenarios.
+ *
  * @returns {JSX.Element} The rendered ScenarioCardsScreen component.
  */
 export default function ScenarioCardsScreen(): JSX.Element {
+  const navigation = useNavigation<any>();
   const disclaimer: string = data?.metadata?.disclaimer ?? '';
+  const COLORS = useTheme();
 
   return (
     <ScreenBody>
       <SectionHeader>Scenario Cards</SectionHeader>
+      <View style={styles.actionBar}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('ScenarioBookmarks')}
+          accessibilityLabel="Bookmarked Scenarios"
+          accessibilityRole="button"
+        >
+          <Ionicons
+            name="bookmark-outline"
+            size={30}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
+      </View>
+      <HorizontalRule />
       <CategoryList
         disclaimer={disclaimer}
         categories={scenarioCategories}
@@ -91,3 +115,15 @@ export default function ScenarioCardsScreen(): JSX.Element {
     </ScreenBody>
   );
 }
+
+const styles = StyleSheet.create({
+  actionBar: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  actionButton: {
+    paddingVertical: 6,
+  },
+});

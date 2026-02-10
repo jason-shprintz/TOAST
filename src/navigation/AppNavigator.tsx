@@ -55,6 +55,7 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import ScenarioBookmarksScreen from '../screens/ScenarioCards/ScenarioBookmarksScreen';
 import ScenarioCardsScreen from '../screens/ScenarioCards/ScenarioCardsScreen';
 import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScreen';
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
@@ -239,6 +240,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="ScenarioDetail"
             component={ScenarioDetailScreen}
+          />
+          <Stack.Screen
+            name="ScenarioBookmarks"
+            component={ScenarioBookmarksScreen}
           />
         </Stack.Navigator>
       </AppShell>
