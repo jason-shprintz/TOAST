@@ -957,11 +957,7 @@
       "difficulty": "basic",
       "tags": ["gas", "safety", "emergency"],
       "situation": "You smell gas but can't confirm the source.",
-      "immediate_risks": [
-        "Explosion",
-        "Fire",
-        "Poisoning"
-      ],
+      "immediate_risks": ["Explosion", "Fire", "Poisoning"],
       "first_5_minutes": [
         "DO NOT use anything that could create spark: light switches, phones, appliances",
         "Open windows and doors immediately",
