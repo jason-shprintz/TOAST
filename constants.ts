@@ -161,12 +161,6 @@ export const NAVIGATION_TOOLS: ToolType[] = [
 
 export const REFERENCE_TOOLS: ToolType[] = [
   {
-    name: 'Bookmark',
-    screen: 'Bookmark',
-    icon: 'bookmark-outline',
-    id: 'ref_bookmark',
-  },
-  {
     name: 'Health',
     screen: 'Health',
     icon: 'medkit-outline',
