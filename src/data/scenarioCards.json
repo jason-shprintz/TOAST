@@ -1,0 +1,1140 @@
+{
+  "metadata": {
+    "name": "TOAST Scenario Cards",
+    "version": "1.0.0",
+    "last_updated": "2026-02-10",
+    "disclaimer": "These scenarios are training exercises to help you think through emergency situations. They are not a substitute for professional emergency response training or real emergency services. Always contact appropriate authorities in actual emergencies.",
+    "categories": [
+      "Power & Infrastructure",
+      "Natural Disasters",
+      "Medical & Health",
+      "Urban Survival",
+      "Wilderness & Travel",
+      "Psychological & Decision",
+      "Quick Thinking"
+    ]
+  },
+  "entries": [
+    {
+      "id": "power_extended_outage_24h",
+      "category": "Power & Infrastructure",
+      "title": "Extended Power Outage (24h)",
+      "summary": "Power is out across your city due to grid failure. No ETA on restoration.",
+      "difficulty": "basic",
+      "tags": ["power", "electricity", "grid", "outage"],
+      "situation": "Power is out across your city due to grid failure. No ETA on restoration.",
+      "immediate_risks": [
+        "Loss of refrigeration and food spoilage",
+        "Phone battery depletion",
+        "Loss of heating/cooling",
+        "Medical devices requiring power"
+      ],
+      "first_5_minutes": [
+        "Check if outage is localized or widespread",
+        "Turn off major appliances to prevent power surge damage when electricity returns",
+        "Locate flashlights and emergency lighting",
+        "Check phone battery level and begin conservation mode"
+      ],
+      "first_hour": [
+        "Inventory perishable foods in refrigerator",
+        "Keep fridge and freezer doors closed to maintain temperature",
+        "Set up alternative lighting in key areas",
+        "Charge essential devices using any available power sources",
+        "Check on neighbors, especially elderly or those with medical needs"
+      ],
+      "first_day": [
+        "Prioritize eating foods that will spoil first",
+        "Move items from fridge to cooler if available",
+        "Conserve phone battery - use airplane mode when not needed",
+        "Stay informed via battery radio if available",
+        "Plan meals around shelf-stable foods"
+      ],
+      "watch_for": [
+        "Signs of heat exhaustion or hypothermia depending on season",
+        "Food spoilage indicators",
+        "Battery levels on critical devices",
+        "Updates from utility companies or emergency services"
+      ],
+      "notes": [
+        "A full freezer can keep food frozen for 48 hours if door stays closed",
+        "Refrigerator keeps food safe for about 4 hours without power",
+        "Know which foods spoil first and consume those early"
+      ]
+    },
+    {
+      "id": "power_extended_outage_72h",
+      "category": "Power & Infrastructure",
+      "title": "Extended Power Outage (72h)",
+      "summary": "Power is out across your city due to grid failure. No ETA on restoration. Day 3.",
+      "difficulty": "intermediate",
+      "tags": ["power", "electricity", "grid", "outage", "extended"],
+      "situation": "Power has been out for 72 hours with no restoration timeline.",
+      "immediate_risks": [
+        "All refrigerated food likely spoiled",
+        "Limited communication options",
+        "Sanitation concerns without running water pumps",
+        "Depleted battery reserves"
+      ],
+      "first_5_minutes": [
+        "Assess remaining power reserves in devices",
+        "Check water supply status",
+        "Evaluate remaining food supplies",
+        "Determine if evacuation to powered location is necessary"
+      ],
+      "first_hour": [
+        "Discard any spoiled food to prevent illness",
+        "Ration remaining charged devices",
+        "Establish water conservation protocols",
+        "Connect with neighbors for resource sharing"
+      ],
+      "first_day": [
+        "Focus on shelf-stable meal planning",
+        "Minimize device usage to essential communications only",
+        "Establish routine using daylight hours",
+        "Consider alternative locations if situation becomes untenable"
+      ],
+      "watch_for": [
+        "Signs of foodborne illness",
+        "Dehydration",
+        "Mental fatigue and decision-making capacity",
+        "Official updates on restoration timeline"
+      ],
+      "notes": [
+        "After 72 hours, most perishables should be discarded",
+        "Community cooperation becomes increasingly important",
+        "Mental resilience and routine help maintain morale"
+      ]
+    },
+    {
+      "id": "power_extended_outage_7day",
+      "category": "Power & Infrastructure",
+      "title": "Extended Power Outage (7 Days)",
+      "summary": "Power is out across your city due to grid failure. No ETA on restoration. Week 1.",
+      "difficulty": "advanced",
+      "tags": ["power", "electricity", "grid", "outage", "long-term"],
+      "situation": "Power has been out for 7 days with no clear restoration timeline.",
+      "immediate_risks": [
+        "Critical supply shortages",
+        "Sanitation and hygiene breakdown",
+        "Security concerns",
+        "Medical needs for chronic conditions"
+      ],
+      "first_5_minutes": [
+        "Evaluate whether staying in place is still viable",
+        "Check remaining food and water supplies",
+        "Assess security of current location",
+        "Consider evacuation options"
+      ],
+      "first_hour": [
+        "Take inventory of all remaining resources",
+        "Establish contact with support network if possible",
+        "Review evacuation routes and destinations",
+        "Secure your location if staying in place"
+      ],
+      "first_day": [
+        "Implement strict rationing of all supplies",
+        "Establish routine for water acquisition and treatment",
+        "Coordinate with neighbors for shared resources and security",
+        "Make decision about evacuation vs. shelter-in-place"
+      ],
+      "watch_for": [
+        "Civil unrest or security threats",
+        "Water supply contamination",
+        "Signs of illness from poor sanitation",
+        "Opportunities for resupply or evacuation"
+      ],
+      "notes": [
+        "Extended outages may require fundamental changes in daily routine",
+        "Community organization becomes critical",
+        "Have alternative locations and evacuation plans ready"
+      ]
+    },
+    {
+      "id": "infrastructure_water_interruption",
+      "category": "Power & Infrastructure",
+      "title": "Water Service Interruption",
+      "summary": "Municipal water pressure drops or stops entirely.",
+      "difficulty": "intermediate",
+      "tags": ["water", "utilities", "sanitation"],
+      "situation": "Municipal water pressure drops or stops entirely.",
+      "immediate_risks": [
+        "No water for drinking or sanitation",
+        "Toilet systems non-functional",
+        "Fire suppression compromised",
+        "Hygiene deterioration"
+      ],
+      "first_5_minutes": [
+        "Fill bathtubs and large containers with any remaining water",
+        "Inventory all stored water",
+        "Stop all non-essential water use immediately",
+        "Check if neighbors are affected (local vs. widespread)"
+      ],
+      "first_hour": [
+        "Calculate how much potable water you have available",
+        "Identify nearby water sources (stores, natural sources)",
+        "Set up water conservation protocols",
+        "Designate water for drinking vs. sanitation"
+      ],
+      "first_day": [
+        "Ration water: drinking priority, hygiene second, sanitation third",
+        "Use greywater for toilet flushing if available",
+        "Seek information on water distribution points",
+        "Consider water treatment methods for alternative sources"
+      ],
+      "watch_for": [
+        "Signs of dehydration",
+        "Water quality issues if using alternative sources",
+        "Duration estimate from authorities",
+        "Community water distribution announcements"
+      ],
+      "notes": [
+        "Average person needs 1 gallon per day for drinking",
+        "Additional water needed for sanitation and cooking",
+        "Greywater from washing can be used for toilet flushing",
+        "Know how to treat water if using alternative sources"
+      ]
+    },
+    {
+      "id": "infrastructure_network_down",
+      "category": "Power & Infrastructure",
+      "title": "Internet & Cell Network Down",
+      "summary": "Data and voice networks are down, SMS unreliable.",
+      "difficulty": "basic",
+      "tags": ["communication", "network", "internet", "cell"],
+      "situation": "Data and voice networks are down, SMS unreliable.",
+      "immediate_risks": [
+        "Loss of communication with family/friends",
+        "No access to online information",
+        "Emergency services may be unreachable by phone",
+        "Navigation apps unavailable"
+      ],
+      "first_5_minutes": [
+        "Try to send SMS messages (may work when calls don't)",
+        "Check radio for information",
+        "Assess if this is local or widespread",
+        "Locate physical maps if navigation needed"
+      ],
+      "first_hour": [
+        "Make list of important contacts and their locations",
+        "Tune to local AM/FM radio stations for updates",
+        "Check if Wi-Fi networks are available",
+        "Consider physically checking on priority contacts"
+      ],
+      "first_day": [
+        "Establish routine check-in times at predetermined locations",
+        "Use battery-powered radio for information",
+        "Rely on face-to-face communication",
+        "Follow pre-established family emergency plans"
+      ],
+      "watch_for": [
+        "Official announcements via radio or public address",
+        "Network restoration (test periodically but conserve battery)",
+        "Alternative communication methods becoming available"
+      ],
+      "notes": [
+        "SMS may work when voice calls don't",
+        "AM radio signals travel farther than FM",
+        "Having a predetermined rally point with family is crucial",
+        "Know how to access emergency services without cell phones"
+      ]
+    },
+    {
+      "id": "disaster_severe_storm",
+      "category": "Natural Disasters",
+      "title": "Severe Storm / Tornado Warning",
+      "summary": "Tornado warning issued. 15 minutes until impact.",
+      "difficulty": "intermediate",
+      "tags": ["tornado", "storm", "severe weather", "shelter"],
+      "situation": "Tornado warning issued. 15 minutes until impact.",
+      "immediate_risks": [
+        "Flying debris and structural damage",
+        "Injury from broken glass",
+        "Being caught outdoors or in vehicle",
+        "Power lines and gas leaks post-storm"
+      ],
+      "first_5_minutes": [
+        "Move immediately to the lowest level of your building",
+        "Get to an interior room away from windows (bathroom, closet, hallway)",
+        "If in a vehicle, do NOT try to outrun - seek shelter in a sturdy building",
+        "Grab emergency kit if immediately accessible"
+      ],
+      "first_hour": [
+        "Stay in shelter location until all-clear is given",
+        "Cover yourself with heavy blankets, sleeping bags, or mattress",
+        "Monitor weather radio or emergency alerts",
+        "After storm passes, wait for official all-clear before exiting"
+      ],
+      "first_day": [
+        "Once safe, check for injuries",
+        "Inspect home for damage: gas leaks, electrical hazards, structural issues",
+        "Avoid downed power lines",
+        "Take photos of damage for insurance",
+        "Check on neighbors"
+      ],
+      "watch_for": [
+        "Sound of freight train or sudden silence (tornado approaching)",
+        "Gas smells or hissing sounds",
+        "Electrical hazards from damaged wiring",
+        "Aftereffects: more severe weather, flooding"
+      ],
+      "notes": [
+        "If no basement, go to center of lowest floor in interior room",
+        "Mobile homes are unsafe - seek alternative shelter",
+        "Highway overpasses are NOT safe shelter",
+        "Know the difference between watch (possible) and warning (happening now)"
+      ]
+    },
+    {
+      "id": "disaster_wildfire_evacuation",
+      "category": "Natural Disasters",
+      "title": "Wildfire Evacuation",
+      "summary": "Mandatory evacuation in 30 minutes. Roads congested.",
+      "difficulty": "advanced",
+      "tags": ["wildfire", "fire", "evacuation", "emergency"],
+      "situation": "Mandatory evacuation in 30 minutes. Roads congested.",
+      "immediate_risks": [
+        "Being trapped by fast-moving fire",
+        "Smoke inhalation",
+        "Traffic accidents during evacuation",
+        "Leaving critical items behind"
+      ],
+      "first_5_minutes": [
+        "Start loading pre-packed bug-out bags into vehicle",
+        "Grab essential documents, medications, and phone chargers",
+        "Alert family members and ensure everyone is ready to leave",
+        "Do NOT wait to gather non-essentials"
+      ],
+      "first_hour": [
+        "Leave immediately via primary evacuation route",
+        "If primary route blocked, use predetermined alternate route",
+        "Stay low if driving through smoke (better air near ground)",
+        "Communicate your route and destination to out-of-area contact",
+        "Do not return for forgotten items"
+      ],
+      "first_day": [
+        "Proceed to designated evacuation center or pre-planned safe location",
+        "Check in with family and emergency contacts",
+        "Register with Red Cross or emergency services",
+        "Monitor official channels for re-entry information",
+        "Do NOT return until officially permitted"
+      ],
+      "watch_for": [
+        "Sudden wind changes (can change fire direction rapidly)",
+        "Blocked evacuation routes",
+        "Panicked drivers and traffic hazards",
+        "Signs of smoke inhalation: difficulty breathing, confusion"
+      ],
+      "notes": [
+        "Never wait until fire is visible to evacuate",
+        "Keep car windows closed and AC on recirculate in smoke",
+        "Have go-bag and important documents pre-packed",
+        "Know multiple evacuation routes from your area",
+        "Have out-of-area contact as communication hub"
+      ]
+    },
+    {
+      "id": "disaster_flash_flood",
+      "category": "Natural Disasters",
+      "title": "Flash Flood",
+      "summary": "Sudden flooding after heavy rain. Roads underwater.",
+      "difficulty": "intermediate",
+      "tags": ["flood", "water", "emergency", "evacuation"],
+      "situation": "Sudden flooding after heavy rain. Roads underwater.",
+      "immediate_risks": [
+        "Swift water can sweep away vehicles and people",
+        "Hidden hazards underwater",
+        "Contaminated floodwater",
+        "Structural collapse"
+      ],
+      "first_5_minutes": [
+        "Move to higher ground immediately",
+        "Do NOT attempt to cross flowing water on foot or in vehicle",
+        "If trapped in vehicle in rising water, exit immediately and move to roof",
+        "Stay away from downed power lines"
+      ],
+      "first_hour": [
+        "Continue moving to highest available ground",
+        "Stay out of floodwater (contains sewage, chemicals, debris)",
+        "Signal for help if stranded",
+        "Monitor weather radio for flash flood warnings",
+        "Do not return to home until water recedes and deemed safe"
+      ],
+      "first_day": [
+        "Wait for official all-clear before returning home",
+        "Document flood damage with photos",
+        "Do not walk through floodwater if avoidable",
+        "Check home for structural damage before entering",
+        "Discard any food that contacted floodwater"
+      ],
+      "watch_for": [
+        "Rapidly rising water levels",
+        "Strong currents - even 6 inches can knock you over",
+        "Debris in water",
+        "Continued rain and potential for more flooding",
+        "Contamination and waterborne illness after flood"
+      ],
+      "notes": [
+        "Just 12 inches of water can carry away most vehicles",
+        "Never drive through flooded roads - turn around, don't drown",
+        "Floodwater may be contaminated with sewage",
+        "Most flood deaths occur in vehicles",
+        "Flash floods can occur within minutes of heavy rain"
+      ]
+    },
+    {
+      "id": "disaster_extreme_heat",
+      "category": "Natural Disasters",
+      "title": "Extreme Heat Wave",
+      "summary": "Power out + 110°F+ temperatures.",
+      "difficulty": "intermediate",
+      "tags": ["heat", "temperature", "emergency", "health"],
+      "situation": "Power is out during extreme heat, temperatures exceeding 110°F.",
+      "immediate_risks": [
+        "Heat stroke and heat exhaustion",
+        "Dehydration",
+        "Vulnerable populations at high risk",
+        "Pets at risk"
+      ],
+      "first_5_minutes": [
+        "Move to coolest area of home (basement if available)",
+        "Close blinds and curtains to block sun",
+        "Start drinking water before you feel thirsty",
+        "Remove or loosen tight clothing"
+      ],
+      "first_hour": [
+        "Take cool (not cold) shower or bath if water available",
+        "Apply wet towels to neck, wrists, ankles",
+        "Limit physical activity",
+        "Check on elderly, young children, and those with medical conditions",
+        "Move pets to coolest area with access to water"
+      ],
+      "first_day": [
+        "Stay hydrated: drink water regularly even if not thirsty",
+        "Seek cooling centers or public buildings with AC if available",
+        "Avoid going outside during hottest parts of day (10am-4pm)",
+        "Eat small, light meals",
+        "Monitor yourself and others for signs of heat illness"
+      ],
+      "watch_for": [
+        "Heat exhaustion signs: heavy sweating, weakness, dizziness, nausea",
+        "Heat stroke signs: no sweating, confusion, rapid pulse, loss of consciousness",
+        "Dehydration: dry mouth, dark urine, fatigue",
+        "Pets showing distress: excessive panting, drooling, lethargy"
+      ],
+      "notes": [
+        "Heat stroke is life-threatening - call 911 if someone stops sweating during heat",
+        "Fans are ineffective above 95°F and may increase dehydration",
+        "Elderly, very young, and those on certain medications are at highest risk",
+        "Never leave pets in vehicles even briefly",
+        "Wet clothing and air flow help cool through evaporation"
+      ]
+    },
+    {
+      "id": "medical_serious_injury",
+      "category": "Medical & Health",
+      "title": "Serious Injury, No EMS",
+      "summary": "Someone has a deep laceration. EMS unavailable.",
+      "difficulty": "advanced",
+      "tags": ["injury", "bleeding", "first aid", "trauma"],
+      "situation": "Someone has a deep laceration and EMS is unavailable.",
+      "immediate_risks": [
+        "Severe blood loss",
+        "Shock",
+        "Infection",
+        "Inadequate wound care"
+      ],
+      "first_5_minutes": [
+        "Apply direct pressure to wound with clean cloth",
+        "Have injured person lie down to prevent shock",
+        "Do NOT remove embedded objects",
+        "Elevate injury above heart if possible (and no fracture suspected)"
+      ],
+      "first_hour": [
+        "Maintain continuous direct pressure for 10-15 minutes",
+        "If bleeding soaks through, add more cloth on top (don't remove original)",
+        "Watch for signs of shock: pale skin, rapid pulse, confusion",
+        "If severe bleeding continues despite pressure, consider tourniquet (last resort)",
+        "Keep person warm with blanket"
+      ],
+      "first_day": [
+        "Once bleeding controlled, clean wound gently with clean water",
+        "Apply antibiotic ointment if available",
+        "Cover with sterile bandage",
+        "Monitor for infection: increased pain, redness, swelling, warmth, or pus",
+        "Keep wound clean and dry",
+        "Seek medical care as soon as it becomes available"
+      ],
+      "watch_for": [
+        "Continued heavy bleeding despite direct pressure",
+        "Signs of shock: pale/clammy skin, rapid breathing, weakness, confusion",
+        "Loss of feeling or movement near wound",
+        "Signs of infection: fever, red streaks from wound, pus, worsening pain",
+        "Wound not showing signs of healing"
+      ],
+      "notes": [
+        "Direct pressure stops most bleeding",
+        "Tourniquets are for life-threatening limb bleeding only",
+        "Never remove embedded objects - stabilize them in place",
+        "Human bite wounds have high infection risk",
+        "Deep wounds may require stitches within 6-8 hours for best healing",
+        "When in doubt, seek professional medical care"
+      ]
+    },
+    {
+      "id": "medical_prescription_disruption",
+      "category": "Medical & Health",
+      "title": "Prescription Disruption",
+      "summary": "Pharmacy access cut off for 7 days.",
+      "difficulty": "intermediate",
+      "tags": ["medication", "prescription", "health", "chronic"],
+      "situation": "Pharmacy access cut off for 7 days due to emergency.",
+      "immediate_risks": [
+        "Running out of critical medications",
+        "Withdrawal symptoms",
+        "Worsening of chronic conditions",
+        "Medical emergency from missed doses"
+      ],
+      "first_5_minutes": [
+        "Inventory all medications and their quantities",
+        "Calculate how many days each medication will last",
+        "Identify which medications are absolutely critical",
+        "Check if any family members or neighbors have same medications"
+      ],
+      "first_hour": [
+        "Call pharmacy or use app to request emergency refills if possible",
+        "Contact your doctor about missed doses and alternatives",
+        "Research if any medications can be temporarily substituted or doses reduced safely",
+        "Check for 24-hour pharmacies or hospital pharmacies that may be accessible"
+      ],
+      "first_day": [
+        "Prioritize critical medications (heart, diabetes, seizure, blood thinners, etc.)",
+        "For less critical medications, consider if temporary discontinuation is safe",
+        "Never share prescription medications with others",
+        "Document any changes in condition related to missed medications",
+        "Continue seeking access to pharmacy or medical care"
+      ],
+      "watch_for": [
+        "Withdrawal symptoms from suddenly stopping medications",
+        "Worsening of chronic conditions",
+        "New or worsening symptoms",
+        "Blood sugar changes if diabetic",
+        "Blood pressure changes if hypertensive",
+        "Seizure activity if on anti-seizure medications"
+      ],
+      "notes": [
+        "Some medications are dangerous to stop suddenly - never stop without medical advice",
+        "Critical medications: insulin, heart medications, seizure medications, blood thinners",
+        "Keep a 30-day supply of all medications if possible",
+        "Know generic names of your medications (useful when seeking alternatives)",
+        "Hospital emergency rooms can provide emergency refills of critical medications",
+        "Many pharmacies can transfer prescriptions in emergencies"
+      ]
+    },
+    {
+      "id": "medical_infectious_illness",
+      "category": "Medical & Health",
+      "title": "Infectious Illness in Household",
+      "summary": "One person becomes highly contagious.",
+      "difficulty": "intermediate",
+      "tags": ["illness", "contagious", "quarantine", "isolation"],
+      "situation": "One household member becomes highly contagious.",
+      "immediate_risks": [
+        "Spread to other household members",
+        "Contaminated surfaces",
+        "Inadequate isolation",
+        "Waste disposal issues"
+      ],
+      "first_5_minutes": [
+        "Move ill person to separate room if possible",
+        "Ensure ill person wears mask when around others",
+        "Open windows for ventilation if weather permits",
+        "Wash hands thoroughly"
+      ],
+      "first_hour": [
+        "Designate separate bathroom for ill person if possible",
+        "Gather supplies for ill person (tissues, trash bag, water, medications)",
+        "Remove shared items from sick room (books, electronics)",
+        "Establish schedule for checking on ill person while minimizing contact",
+        "All household members should wear masks when interacting with ill person"
+      ],
+      "first_day": [
+        "Maintain isolation protocols",
+        "Disinfect high-touch surfaces regularly (doorknobs, light switches, counters)",
+        "Use separate dishes/utensils for ill person or use disposables",
+        "Handle ill person's laundry separately with hot water",
+        "Dispose of tissues and trash carefully using gloves",
+        "Monitor other household members for symptoms"
+      ],
+      "watch_for": [
+        "Symptoms appearing in other household members",
+        "Worsening of ill person's condition",
+        "Difficulty breathing or high fever requiring medical attention",
+        "Breakdown in isolation protocols"
+      ],
+      "notes": [
+        "Ventilation is critical - open windows if possible",
+        "Wear mask and gloves when cleaning sick areas",
+        "Wash hands frequently with soap for 20+ seconds",
+        "Disinfect surfaces ill person touches",
+        "Keep ill person hydrated and rested",
+        "Seek medical care if condition worsens",
+        "Some illnesses contagious before symptoms appear"
+      ]
+    },
+    {
+      "id": "urban_civil_unrest",
+      "category": "Urban Survival",
+      "title": "Civil Unrest / Riots Nearby",
+      "summary": "Protests escalate near your neighborhood.",
+      "difficulty": "advanced",
+      "tags": ["civil unrest", "riots", "security", "safety"],
+      "situation": "Protests escalate near your neighborhood.",
+      "immediate_risks": [
+        "Violence spreading to your area",
+        "Looting and property damage",
+        "Being caught in the open",
+        "Emergency services delayed"
+      ],
+      "first_5_minutes": [
+        "Monitor news and social media for real-time updates",
+        "Assess how close the unrest is to your location",
+        "Decide quickly: shelter in place or relocate to safer area",
+        "Bring family members inside immediately"
+      ],
+      "first_hour": [
+        "If sheltering in place: lock all doors and windows",
+        "Close curtains and blinds",
+        "Move to interior rooms away from windows",
+        "Avoid posting on social media that could draw attention to your location",
+        "Have bug-out bag ready in case you need to evacuate quickly"
+      ],
+      "first_day": [
+        "Keep low profile - lights minimal at night",
+        "Monitor situation constantly but don't go outside to observe",
+        "Avoid confrontation if approached",
+        "Maintain communication with family, friends, and neighbors",
+        "Stay away from windows",
+        "Have emergency route planned if evacuation becomes necessary"
+      ],
+      "watch_for": [
+        "Unrest spreading closer to your location",
+        "Fire or smoke in the area",
+        "Groups of people moving through neighborhood",
+        "Official evacuation orders",
+        "Sounds of violence or property destruction"
+      ],
+      "notes": [
+        "Most civil unrest stays in commercial areas, but can spread",
+        "Do not attempt to defend property at risk of personal safety",
+        "Avoid drawing attention to your home (lights, sounds)",
+        "If you must evacuate, have a pre-planned route and destination",
+        "Do not share real-time location on social media during crisis",
+        "Cooperate with authorities",
+        "Insurance can replace property - stay safe"
+      ]
+    },
+    {
+      "id": "urban_shelter_in_place",
+      "category": "Urban Survival",
+      "title": "Shelter-in-Place Order",
+      "summary": "Authorities order residents indoors for unknown reasons.",
+      "difficulty": "intermediate",
+      "tags": ["shelter", "lockdown", "authorities", "emergency"],
+      "situation": "Authorities order residents indoors for unknown reasons.",
+      "immediate_risks": [
+        "Unknown external threat",
+        "Limited information",
+        "Potential for extended duration",
+        "Supply limitations"
+      ],
+      "first_5_minutes": [
+        "Get inside immediately",
+        "Bring pets inside",
+        "Lock all doors and windows",
+        "Turn on TV or radio for official information"
+      ],
+      "first_hour": [
+        "Seal windows and doors with plastic and tape if air contamination is concern",
+        "Turn off ventilation systems that bring in outside air",
+        "Gather all household members in interior room",
+        "Inventory food, water, and essential supplies",
+        "Charge all electronic devices"
+      ],
+      "first_day": [
+        "Stay indoors and away from windows",
+        "Monitor official channels for updates and instructions",
+        "Verify information sources - beware of rumors",
+        "Conserve food and water until duration is known",
+        "Maintain routine to manage stress",
+        "Keep children and pets calm and occupied"
+      ],
+      "watch_for": [
+        "Official updates on the nature of the threat",
+        "All-clear announcements",
+        "Evacuation orders (be ready to leave quickly if ordered)",
+        "Changes in air quality or unusual smells (chemical threat)",
+        "Duration estimates from officials"
+      ],
+      "notes": [
+        "Shelter-in-place orders usually have specific duration or threat",
+        "For chemical threats, interior room on upper floor is often safest",
+        "For radiation: basement or center of building",
+        "Trust official sources over rumors",
+        "Have physical copies of emergency contact numbers",
+        "Follow official instructions exactly",
+        "Do not leave until authorities say it's safe"
+      ]
+    },
+    {
+      "id": "urban_stranded_away",
+      "category": "Urban Survival",
+      "title": "Stranded Away From Home",
+      "summary": "You're 25 miles from home when transport shuts down.",
+      "difficulty": "intermediate",
+      "tags": ["stranded", "travel", "transportation", "emergency"],
+      "situation": "You're 25 miles from home when all transportation suddenly shuts down.",
+      "immediate_risks": [
+        "Long distance to cover on foot",
+        "Limited supplies",
+        "Unknown duration of situation",
+        "Safety while traveling"
+      ],
+      "first_5_minutes": [
+        "Stop and assess the situation",
+        "Check your phone for information and map your location",
+        "Inventory what you have with you (water, food, cash, charger)",
+        "Contact family to let them know your situation and plan"
+      ],
+      "first_hour": [
+        "Decide: wait for transport to resume or start walking home",
+        "If walking: plan route using offline maps or landmarks you know",
+        "Conserve phone battery (airplane mode, reduce brightness)",
+        "Look for sheltering options: stores, libraries, churches",
+        "Team up with others heading same direction if safe to do so"
+      ],
+      "first_day": [
+        "If walking: pace yourself, take breaks, stay hydrated",
+        "Walk on populated roads when possible for safety",
+        "In darkness, prioritize safety over speed - consider sheltering until daylight",
+        "Use landmarks and main roads for navigation",
+        "Avoid shortcuts through isolated areas",
+        "Seek temporary shelter if weather is dangerous"
+      ],
+      "watch_for": [
+        "Signs of exhaustion or dehydration",
+        "Weather changes",
+        "Unsafe areas or situations",
+        "Updates about transport resuming",
+        "Opportunities for safe shelter or assistance"
+      ],
+      "notes": [
+        "Average person walks 3 mph - 25 miles is 8+ hours of walking",
+        "Walking at night is more dangerous - weigh the risks",
+        "Main roads safer than shortcuts through unfamiliar areas",
+        "Know major landmarks and roads to navigate without GPS",
+        "Keep everyday carry bag (EDC) with basics: water, snacks, charger, cash",
+        "Churches, fire stations, and police stations may offer shelter",
+        "Working together with others is safer but choose companions carefully"
+      ]
+    },
+    {
+      "id": "wilderness_lost_hiking",
+      "category": "Wilderness & Travel",
+      "title": "Lost While Hiking",
+      "summary": "Trail markers disappear. Nightfall in 2 hours.",
+      "difficulty": "intermediate",
+      "tags": ["hiking", "lost", "wilderness", "survival"],
+      "situation": "Trail markers disappear. Nightfall in 2 hours.",
+      "immediate_risks": [
+        "Hypothermia when temperature drops at night",
+        "Injury from traveling in darkness",
+        "Getting more lost by wandering",
+        "Dehydration and hunger"
+      ],
+      "first_5_minutes": [
+        "STOP - don't panic and don't wander aimlessly",
+        "Check your phone for GPS signal or offline maps",
+        "Look for high ground to get your bearings",
+        "Assess what supplies you have"
+      ],
+      "first_hour": [
+        "If you know general direction to trailhead and it's safe, proceed carefully",
+        "If unsure, stay put - rescuers will backtrack your route",
+        "Find or create shelter before dark",
+        "Signal location: whistle, mirror, bright clothing visible from above",
+        "Conserve phone battery but use it to try to contact help"
+      ],
+      "first_day": [
+        "If staying put: improve shelter, gather materials for warmth",
+        "Stay hydrated - find water source if needed",
+        "Create signal: three of anything (rocks, piles, fires) means distress",
+        "Make noise periodically (whistle, yell) to help rescuers find you",
+        "Stay visible from air if possible",
+        "Conserve energy"
+      ],
+      "watch_for": [
+        "Signs of hypothermia: shivering, confusion, slurred speech",
+        "Dangerous terrain: cliffs, fast water",
+        "Weather changes",
+        "Search and rescue teams",
+        "Aircraft overhead - signal them"
+      ],
+      "notes": [
+        "Most lost hikers are found within 24 hours",
+        "Staying put is usually safer than wandering when truly lost",
+        "Three whistle blasts is universal distress signal",
+        "Shelter and warmth are top priorities as night approaches",
+        "Water from streams should be treated/filtered but dehydration is immediate risk",
+        "Tell someone your plans before hiking (who, where, when back)",
+        "Carry 10 essentials: navigation, sun protection, insulation, illumination, first aid, fire, repair kit, nutrition, hydration, emergency shelter"
+      ]
+    },
+    {
+      "id": "wilderness_vehicle_breakdown",
+      "category": "Wilderness & Travel",
+      "title": "Vehicle Breakdown in Remote Area",
+      "summary": "Car disabled, no cell signal.",
+      "difficulty": "intermediate",
+      "tags": ["vehicle", "breakdown", "stranded", "remote"],
+      "situation": "Car disabled in remote area with no cell signal.",
+      "immediate_risks": [
+        "Exposure to elements",
+        "Dehydration",
+        "Getting lost if leaving vehicle",
+        "Limited supplies"
+      ],
+      "first_5_minutes": [
+        "Turn on hazard lights if battery has power",
+        "Try cell phone - even weak signal may allow SOS call",
+        "Assess your situation: where are you, how far to help, what supplies do you have",
+        "Decide: stay with vehicle or walk for help"
+      ],
+      "first_hour": [
+        "In most cases: STAY WITH VEHICLE - it's easier to find than a person",
+        "Vehicle provides shelter from weather",
+        "Set out visible signals: hood up, bright cloth tied to antenna, SOS in rocks",
+        "Inventory all supplies: water, food, clothing, tools",
+        "Ration what you have"
+      ],
+      "first_day": [
+        "Continue signaling: honk horn periodically, flash lights at night",
+        "Conserve water - drink small amounts regularly",
+        "Stay in shade during hot weather, use car for shelter at night",
+        "If you have enough water, write HELP in large letters on ground using rocks or branches",
+        "Only leave vehicle if you're certain help is close and you have supplies to get there"
+      ],
+      "watch_for": [
+        "Signs of approaching vehicles or aircraft",
+        "Weather changes",
+        "Signs of dehydration: dry mouth, dark urine, dizziness",
+        "Hypothermia or heat exhaustion depending on conditions"
+      ],
+      "notes": [
+        "Vehicle is your best shelter and most visible signal",
+        "Most people can survive 3 days without water, 3 weeks without food",
+        "Walking for help is risky - only do if you're certain of location and distance",
+        "Mirror or shiny object can signal aircraft from miles away",
+        "Running engine for heat uses fuel - only run periodically, watch for carbon monoxide",
+        "Never run engine in enclosed space",
+        "Tell someone your route and expected arrival time before traveling remote areas"
+      ]
+    },
+    {
+      "id": "psychological_information_overload",
+      "category": "Psychological & Decision",
+      "title": "Information Overload",
+      "summary": "Conflicting reports from radio, neighbors, social media.",
+      "difficulty": "advanced",
+      "tags": ["information", "decision making", "stress", "credibility"],
+      "situation": "Conflicting reports from multiple sources during crisis.",
+      "immediate_risks": [
+        "Making wrong decision based on bad information",
+        "Panic from sensationalized reports",
+        "Paralysis from information overload",
+        "Missing critical accurate information"
+      ],
+      "first_5_minutes": [
+        "Stop consuming all sources momentarily",
+        "Take deep breaths to reduce stress response",
+        "Identify what decisions need to be made right now vs. later",
+        "Write down what you know for certain"
+      ],
+      "first_hour": [
+        "Prioritize official sources: emergency management, police, government",
+        "Cross-check information across multiple credible sources",
+        "Distinguish between facts and speculation",
+        "Ignore rumors and unverified social media posts",
+        "Focus on information relevant to your safety decisions"
+      ],
+      "first_day": [
+        "Establish routine for checking official sources at set intervals",
+        "Limit social media consumption - it amplifies fear and misinformation",
+        "Verify information before sharing or acting on it",
+        "Trust direct observations when possible",
+        "Make decisions based on best available information, not perfect information",
+        "Accept that some uncertainty is unavoidable"
+      ],
+      "watch_for": [
+        "Emotional manipulation in messages (designed to provoke fear or anger)",
+        "Sources that confirm what you already believe (confirmation bias)",
+        "Information that seems too good or too bad to be true",
+        "Posts lacking attribution or evidence",
+        "Your own decision-making capability declining from stress"
+      ],
+      "notes": [
+        "In crisis, misinformation spreads faster than facts",
+        "Official sources may be slower but are more reliable",
+        "Perfect information is rarely available - make best decision with what you have",
+        "Rumors multiply during communication blackouts",
+        "Verify before you trust, especially on social media",
+        "Ask: Who said this? How do they know? What's their source?",
+        "Taking action on incomplete information is often better than paralysis",
+        "Limit news consumption to reduce anxiety while staying informed"
+      ]
+    },
+    {
+      "id": "psychological_group_conflict",
+      "category": "Psychological & Decision",
+      "title": "Group Conflict Over Limited Supplies",
+      "summary": "Limited supplies causing tension among people.",
+      "difficulty": "advanced",
+      "tags": ["conflict", "supplies", "group dynamics", "rationing"],
+      "situation": "Limited supplies causing tension among people sheltering together.",
+      "immediate_risks": [
+        "Violence over resources",
+        "Group splitting up (reducing survival chances)",
+        "Unfair distribution harming vulnerable members",
+        "Trust breakdown"
+      ],
+      "first_5_minutes": [
+        "Acknowledge the problem openly before it escalates",
+        "Call a group meeting in calm moment, not during argument",
+        "Take inventory of all supplies together transparently",
+        "Let everyone see what's available"
+      ],
+      "first_hour": [
+        "Establish fair rationing system together",
+        "Account for special needs (medical conditions, children)",
+        "Assign roles - who manages food, water, etc.",
+        "Create schedule for distribution",
+        "Get agreement from everyone on the system",
+        "Write down the plan"
+      ],
+      "first_day": [
+        "Follow the agreed-upon system consistently",
+        "Hold daily brief check-ins to address concerns early",
+        "Recognize everyone's contributions",
+        "Share tasks and responsibilities equally",
+        "Maintain transparency about supplies",
+        "Adjust system if fair issues arise",
+        "Keep focus on common goal: everyone's survival"
+      ],
+      "watch_for": [
+        "Hoarding or hiding supplies",
+        "Unequal portions being taken",
+        "Cliques forming within group",
+        "Verbal aggression escalating",
+        "People withdrawing from group",
+        "Special needs being ignored"
+      ],
+      "notes": [
+        "Fairness and transparency prevent most conflicts",
+        "Establish rules before scarcity becomes critical",
+        "Everyone needs to feel heard and respected",
+        "Children and those with medical needs may require different portions",
+        "Keep group cohesion - survival odds better together",
+        "Document decisions to prevent disputes about what was agreed",
+        "Leadership role may need to rotate to maintain trust",
+        "Address conflicts early before they escalate",
+        "Focus on objective criteria for rationing, not personal preferences"
+      ]
+    },
+    {
+      "id": "quick_gas_smell",
+      "category": "Quick Thinking",
+      "title": "Gas Smell",
+      "summary": "You smell gas but can't confirm the source.",
+      "difficulty": "basic",
+      "tags": ["gas", "safety", "emergency"],
+      "situation": "You smell gas but can't confirm the source.",
+      "immediate_risks": [
+        "Explosion",
+        "Fire",
+        "Poisoning"
+      ],
+      "first_5_minutes": [
+        "DO NOT use anything that could create spark: light switches, phones, appliances",
+        "Open windows and doors immediately",
+        "Evacuate building immediately",
+        "Once outside and safe distance away, call gas company and 911"
+      ],
+      "first_hour": [
+        "Stay away from building until professionals clear it",
+        "Do not re-enter to get belongings",
+        "Alert neighbors to stay away",
+        "Wait for gas company to inspect and clear"
+      ],
+      "first_day": [],
+      "watch_for": [
+        "Hissing sounds",
+        "Dead vegetation near gas lines",
+        "Bubbles in standing water"
+      ],
+      "notes": [
+        "Natural gas is lighter than air - rises up",
+        "Propane is heavier than air - sinks to low spots",
+        "Gas companies add smell to normally odorless gas"
+      ]
+    },
+    {
+      "id": "quick_asking_for_water",
+      "category": "Quick Thinking",
+      "title": "Someone Asking for Water",
+      "summary": "Someone knocks asking for water.",
+      "difficulty": "basic",
+      "tags": ["security", "resources", "decision"],
+      "situation": "Someone knocks asking for water during emergency.",
+      "immediate_risks": [
+        "Depleting your limited resources",
+        "Security threat",
+        "Setting precedent"
+      ],
+      "first_5_minutes": [
+        "Assess situation from safe position - don't open door immediately",
+        "Evaluate: Do you know them? Do they appear genuinely in need? Are they alone?",
+        "Consider your own supply situation"
+      ],
+      "first_hour": [
+        "If helping: provide water through closed door or in neutral location, don't invite inside",
+        "If declining: be firm but not confrontational",
+        "Consider directing them to official aid locations if you know of any"
+      ],
+      "first_day": [],
+      "watch_for": [
+        "Multiple people when one appeared first",
+        "Attempts to see inside your home",
+        "Aggressive behavior",
+        "Same person returning repeatedly"
+      ],
+      "notes": [
+        "Your first duty is to your household's survival",
+        "Trust your instincts about safety",
+        "Consider community aid if you have surplus, but protect your security"
+      ]
+    },
+    {
+      "id": "quick_sirens_no_alerts",
+      "category": "Quick Thinking",
+      "title": "Unexplained Sirens",
+      "summary": "You hear sirens approaching but no official alerts.",
+      "difficulty": "basic",
+      "tags": ["emergency", "awareness", "response"],
+      "situation": "You hear sirens approaching but no official alerts on phone or media.",
+      "immediate_risks": [
+        "Nearby emergency",
+        "Potential danger spreading",
+        "Being in the way of emergency vehicles"
+      ],
+      "first_5_minutes": [
+        "Look outside safely to assess situation",
+        "Check local news, social media, and emergency apps",
+        "If sirens are close and continuous, move away from windows"
+      ],
+      "first_hour": [
+        "Monitor situation without putting yourself at risk",
+        "Be ready to evacuate if situation warrants",
+        "Clear any vehicles from street if emergency vehicles need access"
+      ],
+      "first_day": [],
+      "watch_for": [
+        "Fire or smoke",
+        "Chemical smells",
+        "Police or fire activity in area",
+        "Crowds gathering"
+      ],
+      "notes": [
+        "Sirens usually indicate localized emergency",
+        "Stay out of the way of emergency responders",
+        "Be ready to follow any instructions from authorities"
+      ]
+    },
+    {
+      "id": "quick_flashlight_dies",
+      "category": "Quick Thinking",
+      "title": "Flashlight Dies",
+      "summary": "Your flashlight dies unexpectedly in darkness.",
+      "difficulty": "basic",
+      "tags": ["lighting", "navigation", "emergency"],
+      "situation": "Your flashlight dies unexpectedly in darkness.",
+      "immediate_risks": [
+        "Navigation difficulty",
+        "Tripping hazard",
+        "Inability to see threats"
+      ],
+      "first_5_minutes": [
+        "Stop moving immediately to prevent injury",
+        "Let eyes adjust to darkness (takes several minutes)",
+        "Try phone light if available (conserve battery)",
+        "Feel your way to safe location"
+      ],
+      "first_hour": [
+        "Replace batteries if available",
+        "Create improvised lighting (phone, glow sticks, candles if safe)",
+        "Stay put until you have safe lighting if in dangerous area"
+      ],
+      "first_day": [],
+      "watch_for": [
+        "Trip hazards",
+        "Steps or drop-offs",
+        "Other people or obstacles"
+      ],
+      "notes": [
+        "Always carry backup batteries and backup light source",
+        "Phone can be emergency light but drains battery",
+        "Eyes adjust to darkness in 20-30 minutes",
+        "Peripheral vision better than direct in low light"
+      ]
+    },
+    {
+      "id": "quick_pet_panics",
+      "category": "Quick Thinking",
+      "title": "Pet Panics in Storm",
+      "summary": "Your pet panics during a storm.",
+      "difficulty": "basic",
+      "tags": ["pet", "storm", "stress"],
+      "situation": "Your pet panics during a storm.",
+      "immediate_risks": [
+        "Pet running away",
+        "Pet injuring itself",
+        "Pet becoming aggressive from fear",
+        "Distraction during emergency"
+      ],
+      "first_5_minutes": [
+        "Secure pet in safe interior room away from windows",
+        "Close doors and secure exits so pet can't escape",
+        "Speak calmly and reassuringly",
+        "Remove pet from stimuli if possible (close curtains, reduce noise)"
+      ],
+      "first_hour": [
+        "Stay with pet if safe to do so",
+        "Provide familiar comfort items (favorite blanket, toy)",
+        "Consider covering crate with blanket to create den-like space",
+        "Keep pet leashed if they might bolt"
+      ],
+      "first_day": [],
+      "watch_for": [
+        "Signs of injury from panic (scratches, broken nails)",
+        "Refusal to eat or drink (stress response)",
+        "Attempts to hide in dangerous locations",
+        "Aggressive behavior from fear"
+      ],
+      "notes": [
+        "Never leave panicked pet loose during storm - they may run",
+        "Have pet emergency kit ready: leash, carrier, food, meds, records",
+        "Some pets respond well to anxiety wraps or calming music",
+        "Your calm behavior helps calm your pet",
+        "Include pets in evacuation plans - never leave them behind"
+      ]
+    }
+  ]
+}

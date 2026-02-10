@@ -10,6 +10,7 @@ import SectionSubHeader from './SectionSubHeader';
 type CategoryListProps = {
   categories: CategoryType[];
   disclaimer?: string;
+  categoryScreen?: string;
 };
 
 /**
@@ -23,6 +24,7 @@ type CategoryListProps = {
 export default function CategoryList({
   categories,
   disclaimer = '',
+  categoryScreen = 'Category',
 }: CategoryListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
@@ -49,7 +51,7 @@ export default function CategoryList({
                 title={category.title}
                 icon={category.icon}
                 onPress={() =>
-                  navigation.navigate('Category', {
+                  navigation.navigate(categoryScreen, {
                     title: category.title,
                     data: category.data,
                     disclaimer: disclaimer,

@@ -1,0 +1,94 @@
+import { useRoute, useNavigation } from '@react-navigation/native';
+import React, { JSX, useMemo } from 'react';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import CardTopic from '../../components/CardTopic';
+import Grid from '../../components/Grid';
+import { Text } from '../../components/ScaledText';
+import ScreenBody from '../../components/ScreenBody';
+import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
+import { FOOTER_HEIGHT } from '../../theme';
+import { ScenarioCardType } from '../../types/data-type';
+
+/**
+ * Displays a list of scenario cards filtered by category.
+ *
+ * This screen retrieves the `title` and `data` from the navigation route parameters,
+ * filters the entries to only those matching the selected category, and displays them in a grid layout.
+ * If no entries are found for the category, a helper message is shown.
+ *
+ * @returns {JSX.Element} The rendered scenario category screen component.
+ *
+ * @remarks
+ * - Navigates to the 'ScenarioDetail' screen when a topic card is pressed, passing the selected scenario as a parameter.
+ * - Expects `route.params` to contain `title` (category name) and `data` (ScenarioCardType[]).
+ */
+export default function ScenarioCategoryScreen(): JSX.Element {
+  const route = useRoute<any>();
+  const navigation = useNavigation<any>();
+  const { title, data, disclaimer } = route.params || {};
+
+  const entries = useMemo(() => {
+    return (data ?? []).filter((e: ScenarioCardType) => e.category === title);
+  }, [title, data]);
+
+  return (
+    <ScreenBody>
+      <SectionHeader>{title}</SectionHeader>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {entries.length === 0 && (
+            <Text style={styles.helperText}>No scenarios found.</Text>
+          )}
+          {disclaimer ? (
+            <SectionSubHeader>{disclaimer}</SectionSubHeader>
+          ) : null}
+          <Grid>
+            {entries
+              .slice()
+              .sort((a: ScenarioCardType, b: ScenarioCardType) =>
+                a.title.localeCompare(b.title),
+              )
+              .map((item: ScenarioCardType) => (
+                <CardTopic
+                  key={item.id}
+                  title={item.title}
+                  icon="document-text-outline"
+                  onPress={() =>
+                    navigation.navigate('ScenarioDetail', { scenario: item })
+                  }
+                />
+              ))}
+          </Grid>
+        </ScrollView>
+      </View>
+    </ScreenBody>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    width: '100%',
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
+  helperText: {
+    fontSize: 16,
+    opacity: 0.8,
+    marginHorizontal: 6,
+    marginBottom: 12,
+  },
+});

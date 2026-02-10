@@ -55,6 +55,9 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import ScenarioCardsScreen from '../screens/ScenarioCards/ScenarioCardsScreen';
+import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScreen';
+import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
@@ -227,6 +230,19 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="Weather" component={WeatherScreen} />
           <Stack.Screen name="ToolsAndKnots" component={ToolsAndKnotsScreen} />
           <Stack.Screen name="Emergency" component={EmergencyScreen} />
+          {/* Scenario Cards */}
+          <Stack.Screen
+            name="ScenarioCards"
+            component={ScenarioCardsScreen}
+          />
+          <Stack.Screen
+            name="ScenarioCategory"
+            component={ScenarioCategoryScreen}
+          />
+          <Stack.Screen
+            name="ScenarioDetail"
+            component={ScenarioDetailScreen}
+          />
         </Stack.Navigator>
       </AppShell>
     </NavigationContainer>

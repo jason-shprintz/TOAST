@@ -219,7 +219,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   },
   {
     name: 'Scenario Cards',
-    screen: 'ComingSoon',
+    screen: 'ScenarioCards',
     icon: 'albums-outline',
     id: 'prepper_scenario_cards',
   },
