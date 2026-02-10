@@ -74,7 +74,7 @@ export default function ScenarioDetailScreen(): JSX.Element {
       await addBookmark({
         id: resolvedScenario.id,
         title: resolvedScenario.title,
-        category: routeScenario?.category || '',
+        category: resolvedScenario.category,
       });
       setBookmarked(true);
     }

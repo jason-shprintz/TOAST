@@ -8,7 +8,6 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import data from '../../data/scenarioCards.json';
 import { useTheme } from '../../hooks/useTheme';
-import { CategoryType } from '../../types/common-types';
 
 const categoryMap: Record<string, string> = {
   'Power & Infrastructure': 'Power & Infrastructure',
@@ -20,55 +19,55 @@ const categoryMap: Record<string, string> = {
   'Quick Thinking': 'Quick Thinking',
 };
 
-const scenarioCategories: CategoryType[] = [
+const scenarioCategories = [
   {
     title: 'Power & Infrastructure',
     icon: 'flash-off-outline',
     id: 'scenario_power',
     category: categoryMap['Power & Infrastructure'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Natural Disasters',
     icon: 'thunderstorm-outline',
     id: 'scenario_disasters',
     category: categoryMap['Natural Disasters'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Medical & Health',
     icon: 'medical-outline',
     id: 'scenario_medical',
     category: categoryMap['Medical & Health'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Urban Survival',
     icon: 'business-outline',
     id: 'scenario_urban',
     category: categoryMap['Urban Survival'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Wilderness & Travel',
     icon: 'navigate-outline',
     id: 'scenario_wilderness',
     category: categoryMap['Wilderness & Travel'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Psychological & Decision',
     icon: 'people-outline',
     id: 'scenario_psychological',
     category: categoryMap['Psychological & Decision'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
   {
     title: 'Quick Thinking',
     icon: 'flash-outline',
     id: 'scenario_quick',
     category: categoryMap['Quick Thinking'],
-    data: data.entries as unknown as CategoryType['data'],
+    data: data.entries,
   },
 ];
 
