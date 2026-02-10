@@ -10,19 +10,23 @@ import SectionSubHeader from './SectionSubHeader';
 type CategoryListProps = {
   categories: CategoryType[];
   disclaimer?: string;
+  categoryScreen?: string;
 };
 
 /**
  * Renders a scrollable list of category cards using the provided categories.
  * Each card displays the category's title and icon, and navigates to the
- * 'Category' screen with the selected category's data when pressed.
+ * specified screen (default: 'Category') with the selected category's data when pressed.
  *
  * @param categories - An array of category objects to display in the list.
+ * @param disclaimer - Optional disclaimer text to display above the category list.
+ * @param categoryScreen - Optional screen name to navigate to (default: 'Category').
  * @returns A JSX element containing the scrollable grid of category cards.
  */
 export default function CategoryList({
   categories,
   disclaimer = '',
+  categoryScreen = 'Category',
 }: CategoryListProps): JSX.Element {
   const navigation = useNavigation<any>();
 
@@ -49,7 +53,7 @@ export default function CategoryList({
                 title={category.title}
                 icon={category.icon}
                 onPress={() =>
-                  navigation.navigate('Category', {
+                  navigation.navigate(categoryScreen, {
                     title: category.title,
                     data: category.data,
                     disclaimer: disclaimer,

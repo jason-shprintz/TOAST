@@ -6,67 +6,57 @@ import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import emergencyData from '../../data/emergency.json';
-import healthData from '../../data/health.json';
-import survivalData from '../../data/survival.json';
-import toolsData from '../../data/tools.json';
-import weatherData from '../../data/weather.json';
+import scenarioData from '../../data/scenarioCards.json';
 import {
   getBookmarks,
   BookmarkItem,
   clearBookmarks,
 } from '../../stores/BookmarksStore';
 import { FOOTER_HEIGHT } from '../../theme';
-import ReferenceEntryType from '../../types/data-type';
+import { ScenarioCardType } from '../../types/data-type';
 
 /**
- * Displays a list of bookmarked health entries for the user.
+ * Displays a list of bookmarked scenario cards for the user.
  *
  * - Fetches bookmarks using `getBookmarks` and displays them in a grid.
- * - Navigates to the detailed view of a health entry when a bookmark is selected.
+ * - Navigates to the detailed view of a scenario when a bookmark is selected.
  * - Shows a helper message if there are no bookmarks.
  * - Reloads bookmarks whenever the screen gains focus.
  *
  * @component
- * @returns {JSX.Element} The rendered bookmark screen.
+ * @returns {JSX.Element} The rendered scenario bookmarks screen.
  */
-export default function BookmarkScreen(): JSX.Element {
+export default function ScenarioBookmarksScreen(): JSX.Element {
   const navigation = useNavigation<any>();
   const [items, setItems] = useState<BookmarkItem[]>([]);
 
   // Create a Map for O(1) lookup performance instead of O(n) for each find operation
   // Using useMemo to lazily initialize only when component mounts
-  const entryMap = useMemo(() => {
-    const allEntries = [
-      ...emergencyData.entries,
-      ...healthData.entries,
-      ...survivalData.entries,
-      ...toolsData.entries,
-      ...weatherData.entries,
-    ];
+  const scenarioMap = useMemo(() => {
+    const allScenarios = scenarioData.entries;
 
     // Development-time check for duplicate IDs
     if (__DEV__) {
-      const ids = allEntries.map((entry) => entry.id);
+      const ids = allScenarios.map((scenario) => scenario.id);
       const uniqueIds = new Set(ids);
       if (ids.length !== uniqueIds.size) {
         console.error(
-          'Duplicate entry IDs detected across data sources. This may cause entries to be overwritten.',
+          'Duplicate scenario IDs detected in scenarioCards.json. This may cause scenarios to be overwritten.',
         );
       }
     }
 
-    return new Map<string, ReferenceEntryType>(
-      allEntries.map((entry) => [entry.id, entry]),
+    return new Map<string, ScenarioCardType>(
+      allScenarios.map((scenario) => [scenario.id, scenario]),
     );
   }, []);
 
   const load = useCallback(async () => {
     const list = await getBookmarks();
-    // Filter to only show bookmarks that exist in reference data
-    const referenceBookmarks = list.filter((item) => entryMap.has(item.id));
-    setItems(referenceBookmarks);
-  }, [entryMap]);
+    // Filter to only show bookmarks that exist in scenario data
+    const scenarioBookmarks = list.filter((item) => scenarioMap.has(item.id));
+    setItems(scenarioBookmarks);
+  }, [scenarioMap]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', load);
@@ -75,28 +65,28 @@ export default function BookmarkScreen(): JSX.Element {
   }, [navigation, load]);
 
   /**
-   * Opens the bookmarked entry associated with the given bookmark item.
+   * Opens the bookmarked scenario associated with the given bookmark item.
    *
-   * Looks up the corresponding entry in {@link entryMap} using the bookmark's `id`.
-   * If no entry is found, logs a warning and exits without navigating.
-   * Otherwise, navigates to the `Entry` screen, passing the resolved entry as a route param.
+   * Looks up the corresponding scenario in {@link scenarioMap} using the bookmark's `id`.
+   * If no scenario is found, logs a warning and exits without navigating.
+   * Otherwise, navigates to the `ScenarioDetail` screen, passing the resolved scenario as a route param.
    *
-   * @param item - The bookmark item whose associated entry should be opened.
+   * @param item - The bookmark item whose associated scenario should be opened.
    */
   const handleOpen = (item: BookmarkItem) => {
-    const entry = entryMap.get(item.id);
+    const scenario = scenarioMap.get(item.id);
 
-    if (!entry) {
-      console.warn('Bookmark entry not found for id:', item.id);
+    if (!scenario) {
+      console.warn('Bookmarked scenario not found for id:', item.id);
       return;
     }
 
-    navigation.navigate('Entry', { entry });
+    navigation.navigate('ScenarioDetail', { scenario });
   };
 
   return (
     <ScreenBody>
-      <SectionHeader>Bookmarks</SectionHeader>
+      <SectionHeader>Bookmarked Scenarios</SectionHeader>
 
       {/* DEV ONLY - Clear all bookmarks */}
       {__DEV__ && (
@@ -118,7 +108,7 @@ export default function BookmarkScreen(): JSX.Element {
           contentContainerStyle={styles.scrollContent}
         >
           {items.length === 0 && (
-            <Text style={styles.helperText}>No bookmarks yet.</Text>
+            <Text style={styles.helperText}>No bookmarked scenarios yet.</Text>
           )}
           {items.length > 0 && (
             <Grid>
