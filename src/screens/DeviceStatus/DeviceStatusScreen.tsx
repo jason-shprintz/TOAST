@@ -104,8 +104,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   scrollContent: {
-    alignItems: 'center',
+    width: '100%',
     paddingBottom: 24,
+    alignItems: 'center',
   },
   card: {
     width: '100%',
