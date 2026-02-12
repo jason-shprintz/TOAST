@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useDeviceStatus } from '../../hooks/useDeviceStatus';
-import { COLORS } from '../../theme';
+import { COLORS, FOOTER_HEIGHT } from '../../theme';
 
 /**
  * DeviceStatusScreen
@@ -33,48 +34,57 @@ function DeviceStatusScreen() {
   return (
     <ScreenBody>
       <SectionHeader>Device Status</SectionHeader>
-      <View style={styles.card}>
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.cardBackground}
-        />
-        <Text style={styles.label}>Battery</Text>
-        <Text style={styles.value}>{batteryText}</Text>
-      </View>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <Grid>
+            <View style={styles.card}>
+              <LinearGradient
+                colors={COLORS.TOAST_BROWN_GRADIENT}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cardBackground}
+              />
+              <Text style={styles.label}>Battery</Text>
+              <Text style={styles.value}>{batteryText}</Text>
+            </View>
 
-      <View style={styles.card}>
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.cardBackground}
-        />
-        <Text style={styles.label}>Last GPS Fix</Text>
-        <Text style={styles.value}>{lastFixText}</Text>
-      </View>
+            <View style={styles.card}>
+              <LinearGradient
+                colors={COLORS.TOAST_BROWN_GRADIENT}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cardBackground}
+              />
+              <Text style={styles.label}>Last GPS Fix</Text>
+              <Text style={styles.value}>{lastFixText}</Text>
+            </View>
 
-      <View style={styles.card}>
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.cardBackground}
-        />
-        <Text style={styles.label}>Storage</Text>
-        <Text style={styles.value}>{storageText}</Text>
-      </View>
+            <View style={styles.card}>
+              <LinearGradient
+                colors={COLORS.TOAST_BROWN_GRADIENT}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cardBackground}
+              />
+              <Text style={styles.label}>Storage</Text>
+              <Text style={styles.value}>{storageText}</Text>
+            </View>
 
-      <View style={styles.card}>
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.cardBackground}
-        />
-        <Text style={styles.label}>Connectivity</Text>
-        <Text style={styles.value}>{offlineText}</Text>
+            <View style={styles.card}>
+              <LinearGradient
+                colors={COLORS.TOAST_BROWN_GRADIENT}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cardBackground}
+              />
+              <Text style={styles.label}>Connectivity</Text>
+              <Text style={styles.value}>{offlineText}</Text>
+            </View>
+          </Grid>
+        </ScrollView>
       </View>
     </ScreenBody>
   );
@@ -83,8 +93,23 @@ function DeviceStatusScreen() {
 export default observer(DeviceStatusScreen);
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    width: '100%',
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
   card: {
-    width: '90%',
+    width: '100%',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.SECONDARY_ACCENT,
