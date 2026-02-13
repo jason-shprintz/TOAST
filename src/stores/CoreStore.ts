@@ -53,7 +53,7 @@ export interface ChecklistItem {
   checklistId: string;
   text: string;
   checked: boolean;
-  order: number;
+  order: number; // Maintained for database compatibility; display order determined by alphabetical sorting
 }
 
 export interface Checklist {
@@ -1936,17 +1936,18 @@ export class CoreStore {
       (i) => i.checklistId === checklistId,
     );
 
-    // Increment order of all existing items to make room at the top
-    for (const existingItem of existingItems) {
-      existingItem.order += 1;
-    }
+    // Determine the next order value (for database storage; display order is alphabetical)
+    const maxOrder =
+      existingItems.length > 0
+        ? Math.max(...existingItems.map((i) => i.order))
+        : -1;
 
     const item: ChecklistItem = {
       id: this.generateId(),
       checklistId,
       text,
       checked: false,
-      order: 0, // Add to top
+      order: maxOrder + 1,
     };
 
     runInAction(() => {
@@ -1955,11 +1956,6 @@ export class CoreStore {
 
     // Persist the new item
     await this.persistChecklistItem(item);
-
-    // Persist updated order for existing items
-    for (const existingItem of existingItems) {
-      await this.persistChecklistItem(existingItem);
-    }
   }
 
   /**
