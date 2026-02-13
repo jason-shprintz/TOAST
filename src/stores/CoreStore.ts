@@ -2053,7 +2053,9 @@ export class CoreStore {
   getChecklistItems(checklistId: string): ChecklistItem[] {
     return this.checklistItems
       .filter((item) => item.checklistId === checklistId)
-      .sort((a, b) => a.text.localeCompare(b.text));
+      .sort((a, b) =>
+        a.text.localeCompare(b.text, undefined, { sensitivity: 'base' }),
+      );
   }
 
   // --------------------------------------------------------------------
