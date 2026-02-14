@@ -135,6 +135,187 @@ describe('Offline Region Schemas', () => {
 
       expect(() => parseRegionJson(invalid)).toThrow();
     });
+
+    it('should throw on invalid generatedAt timestamp', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: 'not-a-valid-iso-timestamp',
+        regionId: 'region-123',
+        center: { lat: 40.7128, lng: -74.006 },
+        radiusMiles: 25,
+        bounds: {
+          minLat: 40.5,
+          minLng: -74.5,
+          maxLat: 41.0,
+          maxLng: -73.5,
+        },
+        tiles: {
+          format: 'mbtiles',
+          minZoom: 8,
+          maxZoom: 14,
+        },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          width: 1000,
+          height: 1000,
+          nodata: -9999,
+          bounds: {
+            minLat: 40.5,
+            minLng: -74.5,
+            maxLat: 41.0,
+            maxLng: -73.5,
+          },
+        },
+      };
+
+      expect(() => parseRegionJson(invalid)).toThrow();
+    });
+
+    it('should throw on invalid tile format', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        center: { lat: 40.7128, lng: -74.006 },
+        radiusMiles: 25,
+        bounds: {
+          minLat: 40.5,
+          minLng: -74.5,
+          maxLat: 41.0,
+          maxLng: -73.5,
+        },
+        tiles: {
+          format: 'invalid-format', // should be 'mbtiles'
+          minZoom: 8,
+          maxZoom: 14,
+        },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          width: 1000,
+          height: 1000,
+          nodata: -9999,
+          bounds: {
+            minLat: 40.5,
+            minLng: -74.5,
+            maxLat: 41.0,
+            maxLng: -73.5,
+          },
+        },
+      };
+
+      expect(() => parseRegionJson(invalid)).toThrow();
+    });
+
+    it('should throw on invalid zoom levels', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        center: { lat: 40.7128, lng: -74.006 },
+        radiusMiles: 25,
+        bounds: {
+          minLat: 40.5,
+          minLng: -74.5,
+          maxLat: 41.0,
+          maxLng: -73.5,
+        },
+        tiles: {
+          format: 'mbtiles',
+          minZoom: -1, // invalid: negative
+          maxZoom: 14,
+        },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          width: 1000,
+          height: 1000,
+          nodata: -9999,
+          bounds: {
+            minLat: 40.5,
+            minLng: -74.5,
+            maxLat: 41.0,
+            maxLng: -73.5,
+          },
+        },
+      };
+
+      expect(() => parseRegionJson(invalid)).toThrow();
+    });
+
+    it('should throw on invalid DEM dimensions', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        center: { lat: 40.7128, lng: -74.006 },
+        radiusMiles: 25,
+        bounds: {
+          minLat: 40.5,
+          minLng: -74.5,
+          maxLat: 41.0,
+          maxLng: -73.5,
+        },
+        tiles: {
+          format: 'mbtiles',
+          minZoom: 8,
+          maxZoom: 14,
+        },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          width: -100, // invalid: negative
+          height: 1000,
+          nodata: -9999,
+          bounds: {
+            minLat: 40.5,
+            minLng: -74.5,
+            maxLat: 41.0,
+            maxLng: -73.5,
+          },
+        },
+      };
+
+      expect(() => parseRegionJson(invalid)).toThrow();
+    });
+
+    it('should throw on unexpected fields (strict mode)', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        center: { lat: 40.7128, lng: -74.006 },
+        radiusMiles: 25,
+        bounds: {
+          minLat: 40.5,
+          minLng: -74.5,
+          maxLat: 41.0,
+          maxLng: -73.5,
+        },
+        tiles: {
+          format: 'mbtiles',
+          minZoom: 8,
+          maxZoom: 14,
+        },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          width: 1000,
+          height: 1000,
+          nodata: -9999,
+          bounds: {
+            minLat: 40.5,
+            minLng: -74.5,
+            maxLat: 41.0,
+            maxLng: -73.5,
+          },
+        },
+        unexpectedField: 'should cause error', // extra field
+      };
+
+      expect(() => parseRegionJson(invalid)).toThrow();
+    });
   });
 
   describe('Water Collection Schema', () => {
@@ -292,6 +473,91 @@ describe('Offline Region Schemas', () => {
             },
             properties: {
               name: 'Test',
+              isSeasonal: false,
+            },
+          },
+        ],
+      };
+
+      expect(() => parseWaterCollection(invalid)).toThrow();
+    });
+
+    it('should throw on LineString with less than 2 positions', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        features: [
+          {
+            id: 'water-1',
+            type: 'river',
+            geometry: {
+              kind: 'LineString',
+              coordinates: [[-74.006, 40.7128]], // only 1 position - invalid
+            },
+            properties: {
+              name: 'Test River',
+              isSeasonal: false,
+            },
+          },
+        ],
+      };
+
+      expect(() => parseWaterCollection(invalid)).toThrow();
+    });
+
+    it('should throw on Polygon with invalid linear ring (less than 4 positions)', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        features: [
+          {
+            id: 'water-1',
+            type: 'lake',
+            geometry: {
+              kind: 'Polygon',
+              coordinates: [
+                [
+                  [-74.006, 40.7128],
+                  [-74.007, 40.7128],
+                  [-74.006, 40.7128], // only 3 positions - invalid
+                ],
+              ],
+            },
+            properties: {
+              name: 'Test Lake',
+              isSeasonal: false,
+            },
+          },
+        ],
+      };
+
+      expect(() => parseWaterCollection(invalid)).toThrow();
+    });
+
+    it('should throw on Polygon with unclosed ring', () => {
+      const invalid = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-13T23:00:00.000Z',
+        regionId: 'region-123',
+        features: [
+          {
+            id: 'water-1',
+            type: 'lake',
+            geometry: {
+              kind: 'Polygon',
+              coordinates: [
+                [
+                  [-74.006, 40.7128],
+                  [-74.007, 40.7128],
+                  [-74.007, 40.7129],
+                  [-74.006, 40.7129], // not closed - should be [-74.006, 40.7128]
+                ],
+              ],
+            },
+            properties: {
+              name: 'Test Lake',
               isSeasonal: false,
             },
           },
