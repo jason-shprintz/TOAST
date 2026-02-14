@@ -28,9 +28,10 @@ export function clampLat(lat: number): number {
  * Normalize longitude to [-180, 180] range
  */
 export function normalizeLng(lng: number): number {
-  lng = lng % 360;
+  // Handle the modulo for negative numbers properly
+  lng = ((lng % 360) + 360) % 360;
+  // Convert from [0, 360) to [-180, 180]
   if (lng > 180) lng -= 360;
-  if (lng < -180) lng += 360;
   return lng;
 }
 

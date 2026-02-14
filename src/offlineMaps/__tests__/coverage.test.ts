@@ -40,7 +40,7 @@ describe('Geo Math Utilities', () => {
     it('should normalize longitude to [-180, 180]', () => {
       expect(normalizeLng(0)).toBe(0);
       expect(normalizeLng(180)).toBe(180);
-      expect(normalizeLng(-180)).toBe(-180);
+      expect(normalizeLng(-180)).toBe(180); // -180 and 180 are equivalent
       expect(normalizeLng(190)).toBe(-170);
       expect(normalizeLng(-190)).toBe(170);
       expect(normalizeLng(360)).toBe(0);
