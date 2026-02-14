@@ -100,14 +100,14 @@ interface Bounds {
 }
 
 interface TileCoord {
-  z: number;  // zoom level
-  x: number;  // tile X coordinate
-  y: number;  // tile Y coordinate
+  z: number; // zoom level
+  x: number; // tile X coordinate
+  y: number; // tile Y coordinate
 }
 
 interface TileCoverageConfig {
-  minZoom: number;  // inclusive
-  maxZoom: number;  // inclusive
+  minZoom: number; // inclusive
+  maxZoom: number; // inclusive
 }
 
 interface CoverageResult {
