@@ -129,13 +129,13 @@ export function createFileOps(): FileOps {
         } else {
           // For Uint8Array, convert to base64 using btoa-based approach
           // that works in React Native without Buffer polyfill
-          let base64 = '';
           const bytes = new Uint8Array(data);
           const len = bytes.length;
+          const chars: string[] = [];
           for (let i = 0; i < len; i++) {
-            base64 += String.fromCharCode(bytes[i]);
+            chars.push(String.fromCharCode(bytes[i]));
           }
-          await RNFS.writeFile(tmpPath, btoa(base64), 'base64');
+          await RNFS.writeFile(tmpPath, btoa(chars.join('')), 'base64');
         }
 
         // Use moveAtomic to handle existing destination properly
