@@ -3,20 +3,11 @@
  * @format
  */
 
-import { regionToBounds } from './geoMath';
+import { regionToBounds, type LatLng, type Bounds } from './geoMath';
 import { lonToTileX, latToTileY } from './tiles';
 
-export interface LatLng {
-  lat: number;
-  lng: number;
-}
-
-export interface Bounds {
-  minLat: number;
-  minLng: number;
-  maxLat: number;
-  maxLng: number;
-}
+// Re-export common types for convenience
+export type { LatLng, Bounds };
 
 export interface TileCoord {
   z: number;
