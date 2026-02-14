@@ -3,25 +3,17 @@
  * @format
  */
 
+// Shared mock DB state – lives outside the factory so beforeEach can reset it
+let mockTables: Record<string, any[]> = {};
+let mockMetaTable: Record<string, string> = {};
+
+const resetMockDb = () => {
+  mockTables = {};
+  mockMetaTable = {};
+};
+
 // Mock SQLite before importing the repository
 jest.mock('react-native-sqlite-storage', () => {
-  let tables: Record<string, any[]> = {};
-  let metaTable: Record<string, string> = {};
-
-  const resetMockDb = () => {
-    tables = {};
-    metaTable = {};
-  };
-
-  // Ensure a clean state before each test so data does not leak between tests
-  if (typeof beforeEach === 'function') {
-    beforeEach(() => {
-      resetMockDb();
-    });
-  } else {
-    // Fallback in case beforeEach is not available for some reason
-    resetMockDb();
-  }
   const mockExecuteSql = jest.fn(
     async (sql: string, params?: Array<string | number | boolean | null>) => {
       const sqlLower = sql.toLowerCase().trim();
@@ -29,9 +21,9 @@ jest.mock('react-native-sqlite-storage', () => {
       // Handle CREATE TABLE
       if (sqlLower.includes('create table')) {
         if (sqlLower.includes('app_meta')) {
-          metaTable = {};
+          mockMetaTable = {};
         } else if (sqlLower.includes('offline_regions')) {
-          tables.offline_regions = [];
+          mockTables.offline_regions = [];
         }
         return [{ rows: { length: 0, item: () => null } }];
       }
@@ -39,12 +31,12 @@ jest.mock('react-native-sqlite-storage', () => {
       // Handle SELECT from app_meta
       if (sqlLower.includes('select') && sqlLower.includes('app_meta')) {
         const key = params?.[0];
-        if (key && metaTable[key as string]) {
+        if (key && mockMetaTable[key as string]) {
           return [
             {
               rows: {
                 length: 1,
-                item: () => ({ value: metaTable[key as string] }),
+                item: () => ({ value: mockMetaTable[key as string] }),
               },
             },
           ];
@@ -58,13 +50,13 @@ jest.mock('react-native-sqlite-storage', () => {
         sqlLower.includes('app_meta')
       ) {
         const [key, value] = params || [];
-        metaTable[key as string] = value as string;
+        mockMetaTable[key as string] = value as string;
         return [{ rows: { length: 0, item: () => null } }];
       }
 
       // Handle SELECT from offline_regions
       if (sqlLower.includes('select') && sqlLower.includes('offline_regions')) {
-        let results = tables.offline_regions || [];
+        let results = mockTables.offline_regions || [];
 
         // Filter by WHERE clauses
         if (sqlLower.includes('where id = ?')) {
@@ -142,23 +134,23 @@ jest.mock('react-native-sqlite-storage', () => {
           index_path,
         };
 
-        if (!tables.offline_regions) {
-          tables.offline_regions = [];
+        if (!mockTables.offline_regions) {
+          mockTables.offline_regions = [];
         }
-        tables.offline_regions.push(newRow);
+        mockTables.offline_regions.push(newRow);
         return [{ rows: { length: 0, item: () => null } }];
       }
 
       // Handle UPDATE offline_regions
       if (sqlLower.includes('update') && sqlLower.includes('offline_regions')) {
-        if (!tables.offline_regions) {
-          tables.offline_regions = [];
+        if (!mockTables.offline_regions) {
+          mockTables.offline_regions = [];
         }
 
         if (sqlLower.includes('set status = ?')) {
           // Status update
           const [status, updated_at, id] = params || [];
-          tables.offline_regions = tables.offline_regions.map((r) =>
+          mockTables.offline_regions = mockTables.offline_regions.map((r) =>
             r.id === id ? { ...r, status, updated_at } : r,
           );
         } else {
@@ -181,7 +173,7 @@ jest.mock('react-native-sqlite-storage', () => {
             id,
           ] = params || [];
 
-          tables.offline_regions = tables.offline_regions.map((r) =>
+          mockTables.offline_regions = mockTables.offline_regions.map((r) =>
             r.id === id
               ? {
                   ...r,
@@ -212,10 +204,10 @@ jest.mock('react-native-sqlite-storage', () => {
         sqlLower.includes('offline_regions')
       ) {
         const id = params?.[0];
-        if (!tables.offline_regions) {
-          tables.offline_regions = [];
+        if (!mockTables.offline_regions) {
+          mockTables.offline_regions = [];
         }
-        tables.offline_regions = tables.offline_regions.filter(
+        mockTables.offline_regions = mockTables.offline_regions.filter(
           (r) => r.id !== id,
         );
         return [{ rows: { length: 0, item: () => null } }];
@@ -245,6 +237,10 @@ jest.mock('react-native-sqlite-storage', () => {
 
 import { createRegionRepository } from '../db/regionRepository';
 import { OfflineRegion, OfflineRegionStatus } from '../types';
+
+beforeEach(() => {
+  resetMockDb();
+});
 
 describe('RegionRepository', () => {
   let repository: ReturnType<typeof createRegionRepository>;
