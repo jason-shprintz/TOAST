@@ -146,8 +146,10 @@ describe('Tile Coverage Computation', () => {
       const z = 8;
       const range = boundsToTileRange(bounds, z);
 
-      expect(range.minX).toBeLessThanOrEqual(range.maxX);
+      // Y range should not wrap; minY should always be <= maxY
       expect(range.minY).toBeLessThanOrEqual(range.maxY);
+      // X range may wrap across the antimeridian; assert that both are within valid tile index bounds
+      expect(range.minX >= 0 && range.maxX < Math.pow(2, z)).toBe(true);
       expect(range.minX).toBeGreaterThanOrEqual(0);
       expect(range.maxX).toBeLessThan(Math.pow(2, z));
       expect(range.minY).toBeGreaterThanOrEqual(0);
@@ -242,7 +244,8 @@ describe('Tile Coverage Computation', () => {
       const hasLowX = tilesAtZ5.some((t) => t.x <= 2);
 
       // Should have tiles on both sides if crossing antimeridian
-      expect(hasHighX || hasLowX).toBe(true);
+      expect(hasHighX).toBe(true);
+      expect(hasLowX).toBe(true);
     });
 
     it('should clamp latitude near poles', () => {

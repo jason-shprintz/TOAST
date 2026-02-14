@@ -66,7 +66,7 @@ function generateTilesForRange(
   const tiles: TileCoord[] = [];
   const n = Math.pow(2, z);
 
-  // Check if we cross the antimeridian (minX > maxX after normalization)
+  // Check if we cross the antimeridian (indicated by minX > maxX from boundsToTileRange)
   if (minX > maxX) {
     // Split into two ranges: [minX..n-1] and [0..maxX]
     for (let y = minY; y <= maxY; y++) {
@@ -100,7 +100,6 @@ export function computeTileCoverage(
 ): CoverageResult {
   const bounds = regionToBounds(center, radiusMiles);
   const tiles: TileCoord[] = [];
-  const tileCountByZoom: Record<number, number> = {};
 
   // Generate tiles for each zoom level
   for (let z = cfg.minZoom; z <= cfg.maxZoom; z++) {
@@ -113,7 +112,6 @@ export function computeTileCoverage(
       z,
     );
     tiles.push(...zoomTiles);
-    tileCountByZoom[z] = zoomTiles.length;
   }
 
   // Sort tiles: z ascending, then y ascending, then x ascending
@@ -131,6 +129,12 @@ export function computeTileCoverage(
       uniqueTiles.push(tile);
       prev = tile;
     }
+  }
+
+  // Calculate tile count by zoom after deduplication
+  const tileCountByZoom: Record<number, number> = {};
+  for (const tile of uniqueTiles) {
+    tileCountByZoom[tile.z] = (tileCountByZoom[tile.z] || 0) + 1;
   }
 
   return {
