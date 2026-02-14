@@ -38,6 +38,34 @@ export interface RegionPaths {
 }
 
 /**
+ * Validates that a regionId is safe for use in filesystem paths
+ * Prevents path traversal attacks by rejecting IDs with path separators
+ */
+function validateRegionId(regionId: string): void {
+  if (!regionId || typeof regionId !== 'string') {
+    throw new Error('regionId must be a non-empty string');
+  }
+
+  // Reject path separators and special path components
+  if (
+    regionId.includes('/') ||
+    regionId.includes('\\') ||
+    regionId.includes('..')
+  ) {
+    throw new Error(
+      `Invalid regionId: "${regionId}". Region IDs cannot contain path separators or '..'`,
+    );
+  }
+
+  // Reject other potentially problematic characters
+  if (regionId.startsWith('.') || regionId.includes('\0')) {
+    throw new Error(
+      `Invalid regionId: "${regionId}". Region IDs cannot start with '.' or contain null characters`,
+    );
+  }
+}
+
+/**
  * Creates region path helpers using the app's document directory
  */
 export function createRegionPaths(): RegionPaths {
@@ -51,29 +79,81 @@ export function createRegionPaths(): RegionPaths {
     tmpDir,
 
     // Region directories
-    regionDir: (regionId: string) => `${regionsDir}/${regionId}`,
-    tmpRegionDir: (regionId: string) => `${tmpDir}/${regionId}`,
+    regionDir: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}`;
+    },
+    tmpRegionDir: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}`;
+    },
 
     // Final region file paths
-    regionJson: (regionId: string) => `${regionsDir}/${regionId}/region.json`,
-    tilesMbtiles: (regionId: string) =>
-      `${regionsDir}/${regionId}/tiles.mbtiles`,
-    dem: (regionId: string) => `${regionsDir}/${regionId}/elevation.dem`,
-    water: (regionId: string) => `${regionsDir}/${regionId}/water.json`,
-    cities: (regionId: string) => `${regionsDir}/${regionId}/cities.json`,
-    roads: (regionId: string) => `${regionsDir}/${regionId}/roads.json`,
-    index: (regionId: string) => `${regionsDir}/${regionId}/index.sqlite`,
-    manifest: (regionId: string) => `${regionsDir}/${regionId}/manifest.json`,
+    regionJson: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/region.json`;
+    },
+    tilesMbtiles: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/tiles.mbtiles`;
+    },
+    dem: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/elevation.dem`;
+    },
+    water: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/water.json`;
+    },
+    cities: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/cities.json`;
+    },
+    roads: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/roads.json`;
+    },
+    index: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/index.sqlite`;
+    },
+    manifest: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${regionsDir}/${regionId}/manifest.json`;
+    },
 
     // Temp region file paths
-    tmpRegionJson: (regionId: string) => `${tmpDir}/${regionId}/region.json`,
-    tmpTilesMbtiles: (regionId: string) =>
-      `${tmpDir}/${regionId}/tiles.mbtiles`,
-    tmpDem: (regionId: string) => `${tmpDir}/${regionId}/elevation.dem`,
-    tmpWater: (regionId: string) => `${tmpDir}/${regionId}/water.json`,
-    tmpCities: (regionId: string) => `${tmpDir}/${regionId}/cities.json`,
-    tmpRoads: (regionId: string) => `${tmpDir}/${regionId}/roads.json`,
-    tmpIndex: (regionId: string) => `${tmpDir}/${regionId}/index.sqlite`,
-    tmpManifest: (regionId: string) => `${tmpDir}/${regionId}/manifest.json`,
+    tmpRegionJson: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/region.json`;
+    },
+    tmpTilesMbtiles: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/tiles.mbtiles`;
+    },
+    tmpDem: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/elevation.dem`;
+    },
+    tmpWater: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/water.json`;
+    },
+    tmpCities: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/cities.json`;
+    },
+    tmpRoads: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/roads.json`;
+    },
+    tmpIndex: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/index.sqlite`;
+    },
+    tmpManifest: (regionId: string) => {
+      validateRegionId(regionId);
+      return `${tmpDir}/${regionId}/manifest.json`;
+    },
   };
 }

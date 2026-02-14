@@ -53,6 +53,33 @@ const REQUIRED_FILES = [
 ];
 
 /**
+ * Validates that a filename is safe (no path traversal)
+ */
+function validateFilename(filename: string): void {
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('filename must be a non-empty string');
+  }
+
+  // Reject path separators and path traversal attempts
+  if (
+    filename.includes('/') ||
+    filename.includes('\\') ||
+    filename.includes('..')
+  ) {
+    throw new Error(
+      `Invalid filename: "${filename}". Filenames cannot contain path separators or '..'`,
+    );
+  }
+
+  // Reject filenames starting with '.' or containing null characters
+  if (filename.startsWith('.') || filename.includes('\0')) {
+    throw new Error(
+      `Invalid filename: "${filename}". Filenames cannot start with '.' or contain null characters`,
+    );
+  }
+}
+
+/**
  * Creates region storage operations
  */
 export function createRegionStorage(
@@ -98,6 +125,9 @@ export function createRegionStorage(
       filename: string,
       json: unknown,
     ): Promise<void> {
+      // Validate filename to prevent path traversal
+      validateFilename(filename);
+
       const dirPath = regionPaths.tmpRegionDir(regionId);
       await ops.ensureDir(dirPath);
 
@@ -132,8 +162,13 @@ export function createRegionStorage(
           );
         }
 
-        // Check file size is greater than 0
+        // Check file size is greater than 0 and that it's actually a file
         const stat = await ops.stat(filePath);
+        if (stat.isDirectory) {
+          throw new Error(
+            `Validation failed: Required file ${filename} is a directory, not a file, for region ${regionId}`,
+          );
+        }
         if (stat.size === 0) {
           throw new Error(
             `Validation failed: Required file ${filename} is empty for region ${regionId}`,
@@ -161,14 +196,30 @@ export function createRegionStorage(
           const content = await ops.readFile(manifestPath);
           const manifest: Manifest = JSON.parse(content);
 
-          // Validate manifest structure
+          // Validate manifest structure with explicit type checks
           if (
-            !manifest.schemaVersion ||
-            !manifest.generatedAt ||
-            !manifest.regionId ||
+            typeof manifest.schemaVersion !== 'number' ||
+            typeof manifest.generatedAt !== 'string' ||
+            typeof manifest.regionId !== 'string' ||
             !Array.isArray(manifest.files)
           ) {
-            throw new Error('Invalid manifest structure');
+            throw new Error(
+              'Invalid manifest structure: missing or incorrect types for required fields',
+            );
+          }
+
+          // Validate each file entry in manifest
+          for (const file of manifest.files) {
+            if (
+              typeof file !== 'object' ||
+              file === null ||
+              typeof file.name !== 'string' ||
+              typeof file.sizeBytes !== 'number'
+            ) {
+              throw new Error(
+                `Invalid manifest structure: file entry has incorrect shape`,
+              );
+            }
           }
 
           // Validate regionId matches
@@ -209,8 +260,13 @@ export function createRegionStorage(
      * This includes backup and rollback logic to ensure existing regions are not corrupted
      */
     async finaliseTempToFinal(regionId: string): Promise<void> {
+      console.log(
+        `[RegionStorage] Starting finalization for region ${regionId}`,
+      );
+
       // Step 1: Validate the temp package
       await this.validateTempPackage(regionId);
+      console.log(`[RegionStorage] Validation passed for region ${regionId}`);
 
       // Step 2: Generate manifest if not exists
       const manifestPath = regionPaths.tmpManifest(regionId);
@@ -242,6 +298,9 @@ export function createRegionStorage(
           manifestPath,
           JSON.stringify(manifest, null, 2),
         );
+        console.log(
+          `[RegionStorage] Generated manifest for region ${regionId}`,
+        );
       }
 
       // Step 3: Ensure regions directory exists
@@ -256,23 +315,48 @@ export function createRegionStorage(
         const timestamp = Date.now();
         backupDir = `${regionPaths.regionsDir}/${regionId}.bak.${timestamp}`;
         await ops.moveAtomic(finalDir, backupDir);
+        console.log(
+          `[RegionStorage] Created backup of existing region ${regionId} at ${backupDir}`,
+        );
       }
 
       // Step 5: Move temp to final atomically
       const tmpDir = regionPaths.tmpRegionDir(regionId);
       try {
         await ops.moveAtomic(tmpDir, finalDir);
+        console.log(
+          `[RegionStorage] Successfully moved temp to final for region ${regionId}`,
+        );
 
         // Step 6: Delete backup if move succeeded
         if (backupDir) {
           await ops.remove(backupDir);
+          console.log(
+            `[RegionStorage] Cleaned up backup for region ${regionId}`,
+          );
         }
+
+        console.log(
+          `[RegionStorage] Finalization completed successfully for region ${regionId}`,
+        );
       } catch (error) {
+        console.error(
+          `[RegionStorage] Finalization failed for region ${regionId}:`,
+          error,
+        );
+
         // Step 6 (failure): Restore backup if move failed
         if (backupDir) {
           try {
             await ops.moveAtomic(backupDir, finalDir);
+            console.log(
+              `[RegionStorage] Restored backup for region ${regionId} after failure`,
+            );
           } catch (restoreError) {
+            console.error(
+              `[RegionStorage] Failed to restore backup for region ${regionId}:`,
+              restoreError,
+            );
             // If restore fails, we're in a bad state
             throw new Error(
               `Failed to finalize region and restore backup: ${error instanceof Error ? error.message : 'Unknown error'}. Backup restore error: ${restoreError instanceof Error ? restoreError.message : 'Unknown error'}`,

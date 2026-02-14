@@ -67,14 +67,49 @@ export function createFileOps(): FileOps {
      * On most platforms, this is a rename operation which is atomic
      */
     async moveAtomic(from: string, to: string): Promise<void> {
-      // First check if destination exists and remove it
+      // If destination exists, move it to a temporary backup first.
       const destExists = await RNFS.exists(to);
+      let backupPath: string | null = null;
+
       if (destExists) {
-        await RNFS.unlink(to);
+        // Use a unique backup name in the same directory so the rename stays atomic.
+        const backupSuffix =
+          '.bak.' +
+          Date.now().toString() +
+          '-' +
+          Math.random().toString(36).slice(2);
+        backupPath = to + backupSuffix;
+
+        // Rename existing destination to backup; this should be atomic on most platforms.
+        await RNFS.moveFile(to, backupPath);
       }
 
-      // moveFile is atomic on most platforms (uses rename syscall)
-      await RNFS.moveFile(from, to);
+      try {
+        // moveFile is atomic on most platforms (uses rename syscall)
+        await RNFS.moveFile(from, to);
+
+        // New file is in place; remove the backup if we created one.
+        if (backupPath !== null) {
+          try {
+            await RNFS.unlink(backupPath);
+          } catch {
+            // If cleanup of the backup fails, we still consider the move successful.
+          }
+        }
+      } catch (error) {
+        // Move failed; try to restore the original destination from the backup.
+        if (backupPath !== null) {
+          try {
+            const backupStillExists = await RNFS.exists(backupPath);
+            if (backupStillExists) {
+              await RNFS.moveFile(backupPath, to);
+            }
+          } catch {
+            // If restoration fails, we swallow this to avoid masking the original error.
+          }
+        }
+        throw error;
+      }
     },
 
     /**
@@ -92,13 +127,19 @@ export function createFileOps(): FileOps {
         if (typeof data === 'string') {
           await RNFS.writeFile(tmpPath, data, 'utf8');
         } else {
-          // For Uint8Array, convert to base64 and write
-          const base64 = Buffer.from(data).toString('base64');
-          await RNFS.writeFile(tmpPath, base64, 'base64');
+          // For Uint8Array, convert to base64 using btoa-based approach
+          // that works in React Native without Buffer polyfill
+          let base64 = '';
+          const bytes = new Uint8Array(data);
+          const len = bytes.length;
+          for (let i = 0; i < len; i++) {
+            base64 += String.fromCharCode(bytes[i]);
+          }
+          await RNFS.writeFile(tmpPath, btoa(base64), 'base64');
         }
 
-        // Atomic move to final location
-        await RNFS.moveFile(tmpPath, path);
+        // Use moveAtomic to handle existing destination properly
+        await this.moveAtomic(tmpPath, path);
       } catch (error) {
         // Clean up temp file on error
         try {

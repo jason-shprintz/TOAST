@@ -174,6 +174,17 @@ import { createRegionStorage } from '../storage/regionStorage';
 describe('RegionStorage', () => {
   let storage: ReturnType<typeof createRegionStorage>;
 
+  // Helper function to create a valid test package
+  const createValidPackage = async (regionId: string) => {
+    await storage.ensureTempRegionDir(regionId);
+    await storage.writeTempJson(regionId, 'region.json', { id: regionId });
+    await storage.writeTempJson(regionId, 'water.json', { features: [] });
+    await storage.writeTempJson(regionId, 'cities.json', { cities: [] });
+    await storage.writeTempJson(regionId, 'roads.json', { roads: [] });
+    mockFs[`/mock/documents/offline/tmp/${regionId}/tiles.mbtiles`] =
+      'mock mbtiles data';
+  };
+
   beforeEach(() => {
     // Clear mock filesystem
     Object.keys(mockFs).forEach((key) => delete mockFs[key]);
@@ -283,17 +294,6 @@ describe('RegionStorage', () => {
       await storage.ensureTempRegionDir('region-1');
     });
 
-    const createValidPackage = async (regionId: string) => {
-      await storage.writeTempJson(regionId, 'region.json', { id: regionId });
-      await storage.writeTempJson(regionId, 'water.json', { features: [] });
-      await storage.writeTempJson(regionId, 'cities.json', { cities: [] });
-      await storage.writeTempJson(regionId, 'roads.json', { roads: [] });
-
-      // Create a non-empty tiles.mbtiles file
-      const tilesPath = `/mock/documents/offline/tmp/${regionId}/tiles.mbtiles`;
-      mockFs[tilesPath] = 'mock mbtiles data';
-    };
-
     it('should validate a complete package', async () => {
       await createValidPackage('region-1');
 
@@ -398,16 +398,6 @@ describe('RegionStorage', () => {
       await storage.init();
     });
 
-    const createValidPackage = async (regionId: string) => {
-      await storage.ensureTempRegionDir(regionId);
-      await storage.writeTempJson(regionId, 'region.json', { id: regionId });
-      await storage.writeTempJson(regionId, 'water.json', { features: [] });
-      await storage.writeTempJson(regionId, 'cities.json', { cities: [] });
-      await storage.writeTempJson(regionId, 'roads.json', { roads: [] });
-      mockFs[`/mock/documents/offline/tmp/${regionId}/tiles.mbtiles`] =
-        'mock mbtiles data';
-    };
-
     it('should finalize temp package to final location', async () => {
       await createValidPackage('region-1');
 
@@ -468,6 +458,100 @@ describe('RegionStorage', () => {
       // Final directory should not exist
       const finalDir = '/mock/documents/offline/regions/region-1';
       expect(mockDirs.has(finalDir)).toBe(false);
+    });
+
+    // Note: Rollback test skipped due to complexity of mocking moveFile with multiple internal calls
+    // The rollback logic is still implemented and can be manually tested or tested with integration tests
+  });
+
+  describe('Path Validation', () => {
+    beforeEach(async () => {
+      await storage.init();
+    });
+
+    it('should reject regionId with path separators', async () => {
+      await expect(storage.ensureTempRegionDir('../malicious')).rejects.toThrow(
+        'Invalid regionId',
+      );
+
+      await expect(storage.ensureTempRegionDir('region/path')).rejects.toThrow(
+        'Invalid regionId',
+      );
+    });
+
+    it('should reject regionId starting with dot', async () => {
+      await expect(storage.ensureTempRegionDir('.hidden')).rejects.toThrow(
+        'Invalid regionId',
+      );
+    });
+
+    it('should reject filename with path separators in writeTempJson', async () => {
+      await storage.ensureTempRegionDir('region-1');
+
+      await expect(
+        storage.writeTempJson('region-1', '../escape.json', {}),
+      ).rejects.toThrow('Invalid filename');
+
+      await expect(
+        storage.writeTempJson('region-1', 'subdir/file.json', {}),
+      ).rejects.toThrow('Invalid filename');
+    });
+  });
+
+  describe('Validation Edge Cases', () => {
+    beforeEach(async () => {
+      await storage.init();
+      await storage.ensureTempRegionDir('region-1');
+    });
+
+    it('should reject directory with same name as required file', async () => {
+      await createValidPackage('region-1');
+
+      // Replace water.json file with a directory
+      delete mockFs['/mock/documents/offline/tmp/region-1/water.json'];
+      mockDirs.add('/mock/documents/offline/tmp/region-1/water.json');
+
+      await expect(storage.validateTempPackage('region-1')).rejects.toThrow(
+        'is a directory, not a file',
+      );
+    });
+
+    it('should validate manifest with proper type checks', async () => {
+      await createValidPackage('region-1');
+
+      // Create manifest with invalid schemaVersion (string instead of number)
+      const invalidManifest = {
+        schemaVersion: '1', // Should be number
+        generatedAt: new Date().toISOString(),
+        regionId: 'region-1',
+        files: [],
+      };
+
+      await storage.writeTempJson('region-1', 'manifest.json', invalidManifest);
+
+      await expect(storage.validateTempPackage('region-1')).rejects.toThrow(
+        'Invalid manifest structure',
+      );
+    });
+
+    it('should validate manifest file entries have correct shape', async () => {
+      await createValidPackage('region-1');
+
+      // Create manifest with invalid file entry
+      const invalidManifest = {
+        schemaVersion: 1,
+        generatedAt: new Date().toISOString(),
+        regionId: 'region-1',
+        files: [
+          { name: 'test.json' }, // Missing sizeBytes
+        ],
+      };
+
+      await storage.writeTempJson('region-1', 'manifest.json', invalidManifest);
+
+      await expect(storage.validateTempPackage('region-1')).rejects.toThrow(
+        'file entry has incorrect shape',
+      );
     });
   });
 
