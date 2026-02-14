@@ -302,7 +302,7 @@ describe('DownloadManager', () => {
       const store = createMockStateStore();
 
       const handlers: PhaseHandlers = {
-        estimating: async (_ctx: PhaseHandlerContext) => {
+        estimating: async (ctx: PhaseHandlerContext) => {
           for (let i = 0; i < 100; i++) {
             if (ctx.isCancelled()) {
               break;
@@ -444,7 +444,7 @@ describe('DownloadManager', () => {
       const progressEvents2: DownloadProgress[] = [];
 
       const handlers: PhaseHandlers = {
-        estimating: async (_ctx: PhaseHandlerContext) => {
+        estimating: async (ctx: PhaseHandlerContext) => {
           await ctx.report({ message: 'Estimating', totalBytes: 100 });
         },
         tiles: async (ctx: PhaseHandlerContext) => {
@@ -490,7 +490,7 @@ describe('DownloadManager', () => {
       const progressEvents: DownloadProgress[] = [];
 
       const handlers: PhaseHandlers = {
-        estimating: async (_ctx: PhaseHandlerContext) => {
+        estimating: async (ctx: PhaseHandlerContext) => {
           await ctx.report({ message: 'Step 1' });
           await sleep(50);
           await ctx.report({ message: 'Step 2' });
