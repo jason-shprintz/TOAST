@@ -8,6 +8,20 @@ jest.mock('react-native-sqlite-storage', () => {
   let tables: Record<string, any[]> = {};
   let metaTable: Record<string, string> = {};
 
+  const resetMockDb = () => {
+    tables = {};
+    metaTable = {};
+  };
+
+  // Ensure a clean state before each test so data does not leak between tests
+  if (typeof beforeEach === 'function') {
+    beforeEach(() => {
+      resetMockDb();
+    });
+  } else {
+    // Fallback in case beforeEach is not available for some reason
+    resetMockDb();
+  }
   const mockExecuteSql = jest.fn(
     async (sql: string, params?: Array<string | number | boolean | null>) => {
       const sqlLower = sql.toLowerCase().trim();
