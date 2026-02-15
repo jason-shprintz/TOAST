@@ -34,7 +34,7 @@ export interface PhaseHandlerContext {
   isCancelled: () => boolean;
   /**
    * Check if the job has been paused. Handlers should check this frequently
-   * and exit early if true (throwing a special pause error).
+   * and exit early if true (by returning or breaking out of loops).
    */
   isPaused: () => boolean;
 }
@@ -61,7 +61,13 @@ export interface PhaseHandlers {
  */
 export interface DownloadManager {
   /**
-   * Start a new download job
+   * Start a new download job.
+   *
+   * Note: This method initiates the download but returns immediately without waiting
+   * for completion. The download runs asynchronously in the background. Use onProgress()
+   * to monitor the job's progress and completion status.
+   *
+   * @param job - Job configuration with jobId and regionId
    */
   start(job: { jobId: string; regionId: string }): Promise<void>;
   /**
@@ -69,7 +75,13 @@ export interface DownloadManager {
    */
   pause(jobId: string): Promise<void>;
   /**
-   * Resume a paused or failed download job
+   * Resume a paused or failed download job.
+   *
+   * Note: Similar to start(), this method initiates the resume but returns immediately.
+   * The job continues to run asynchronously in the background.
+   *
+   * @param jobId - The job ID to resume
+   * @param regionId - Optional region ID (defaults to jobId if omitted)
    */
   resume(jobId: string, regionId?: string): Promise<void>;
   /**

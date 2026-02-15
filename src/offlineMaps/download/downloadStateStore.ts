@@ -7,6 +7,34 @@ import type { DownloadPhase } from './downloadTypes';
 import type { FileOps } from '../storage/fileOps';
 
 /**
+ * Validates that a regionId is safe for use in filesystem paths
+ * Prevents path traversal attacks by rejecting IDs with path separators
+ */
+function validateRegionId(regionId: string): void {
+  if (!regionId || typeof regionId !== 'string') {
+    throw new Error('regionId must be a non-empty string');
+  }
+
+  // Reject path separators and special path components
+  if (
+    regionId.includes('/') ||
+    regionId.includes('\\') ||
+    regionId.includes('..')
+  ) {
+    throw new Error(
+      `Invalid regionId: "${regionId}". Region IDs cannot contain path separators or '..'`,
+    );
+  }
+
+  // Reject other potentially problematic characters
+  if (regionId.startsWith('.') || regionId.includes('\0')) {
+    throw new Error(
+      `Invalid regionId: "${regionId}". Region IDs cannot start with '.' or contain null characters`,
+    );
+  }
+}
+
+/**
  * Persisted download state schema
  */
 export interface PersistedDownloadState {
@@ -49,6 +77,7 @@ export function createDownloadStateStore(
    * Get the path to the state file for a region
    */
   function getStatePath(regionId: string): string {
+    validateRegionId(regionId);
     return `${tmpDir}/${regionId}/download_state.json`;
   }
 
@@ -93,11 +122,14 @@ export function createDownloadStateStore(
       const dir = path.substring(0, path.lastIndexOf('/'));
       await fileOps.ensureDir(dir);
 
-      // Update timestamp
-      state.updatedAt = new Date().toISOString();
+      // Prepare state with updated timestamp without mutating input
+      const stateToSave: PersistedDownloadState = {
+        ...state,
+        updatedAt: new Date().toISOString(),
+      };
 
       // Write atomically
-      const content = JSON.stringify(state, null, 2);
+      const content = JSON.stringify(stateToSave, null, 2);
       await fileOps.writeFileAtomic(path, content);
     },
 

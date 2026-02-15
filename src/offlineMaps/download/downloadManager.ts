@@ -182,7 +182,9 @@ export function createDownloadManager(
           downloadedBytes: job.downloadedBytes,
           totalBytes: job.totalBytes,
           percent:
-            job.totalBytes && job.downloadedBytes
+            typeof job.totalBytes === 'number' &&
+            job.totalBytes > 0 &&
+            typeof job.downloadedBytes === 'number'
               ? (job.downloadedBytes / job.totalBytes) * 100
               : undefined,
           message: progress.message,
@@ -368,14 +370,25 @@ export function createDownloadManager(
       }
     },
 
+    /**
+     * Resume a previously started download job.
+     *
+     * @param jobId - The unique identifier of the download job.
+     * @param regionId - Optional region identifier associated with the job.
+     *   If omitted, this method assumes that the region ID is equal to the job ID
+     *   and will use jobId as the region ID when loading persisted state.
+     *   Only omit this parameter when jobId and regionId are known to be the same.
+     */
     async resume(jobId: string, regionId?: string): Promise<void> {
       // Check if job exists in memory
       let job = jobs.get(jobId);
 
       if (!job) {
         // Try to load from disk
-        // If regionId not provided, try jobId as regionId (common pattern)
-        const lookupRegionId = regionId || jobId;
+        // If regionId is not provided, fall back to jobId as regionId.
+        // Callers must ensure that omitting regionId is only done when
+        // jobId and regionId are expected to be identical.
+        const lookupRegionId = regionId !== undefined ? regionId : jobId;
         const state = await store.load(jobId, lookupRegionId);
         if (!state) {
           throw new Error(`Job ${jobId} not found`);
@@ -400,12 +413,18 @@ export function createDownloadManager(
         jobs.set(jobId, job);
       }
 
-      // Check status
+      // Check status and whether job is already executing
       if (job.status === 'completed') {
         // Already completed, nothing to do
         return;
       }
 
+      // If there is an active run promise, the job is already executing
+      if (job.running) {
+        throw new Error(`Job ${jobId} is already running`);
+      }
+
+      // Additional defensive check on status
       if (job.status === 'running') {
         throw new Error(`Job ${jobId} is already running`);
       }
@@ -445,10 +464,24 @@ export function createDownloadManager(
         await job.running;
       }
 
+      // Remove persisted state from disk
+      await store.remove(job.jobId, job.regionId);
+
       // Remove from active jobs
       jobs.delete(jobId);
     },
 
+    /**
+     * Subscribe to progress updates for a job.
+     *
+     * Note: Subscriptions are only active for jobs that currently exist in memory.
+     * If you subscribe before calling start() or after a job completes/is cancelled,
+     * no callbacks will be fired. Subscribe after starting the job to receive progress updates.
+     *
+     * @param jobId - The job ID to subscribe to
+     * @param cb - Callback function to receive progress updates
+     * @returns Unsubscribe function
+     */
     onProgress(jobId: string, cb: ProgressCallback): () => void {
       const job = jobs.get(jobId);
 
