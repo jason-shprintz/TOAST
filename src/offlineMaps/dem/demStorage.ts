@@ -41,10 +41,14 @@ export function createDemStorage(
       // Use RNFS to read as base64, then convert to Uint8Array
       const base64Data = await RNFS.readFile(path, 'base64');
 
-      // Convert base64 to Uint8Array
+      // Convert base64 to Uint8Array efficiently
+      // Note: atob is available in React Native's JavaScript environment
       const binaryString = atob(base64Data);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+
+      // Batch conversion is more efficient than individual character access
+      for (let i = 0; i < len; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
 

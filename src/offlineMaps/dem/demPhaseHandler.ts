@@ -104,8 +104,10 @@ export function createDemPhaseHandler(
               downloadedBytes: progress.downloadedBytes,
               totalBytes: progress.totalBytes,
               message: progress.message || 'Downloading DEM...',
-            }).catch(() => {
-              // Ignore errors in progress reporting
+            }).catch((err) => {
+              // Log errors in progress reporting but don't fail the download
+              // Progress reporting failures should not interrupt the download
+              console.warn('Failed to report DEM progress:', err);
             });
           },
         },
