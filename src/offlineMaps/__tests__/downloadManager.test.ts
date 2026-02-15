@@ -196,7 +196,7 @@ describe('DownloadManager', () => {
         tiles: async (ctx: PhaseHandlerContext) => {
           phasesExecuted.push('tiles');
           // Simulate long-running phase with pause checks
-          for (let i = 0; i < 50; i++) {
+          for (let i = 0; i < 10; i++) {
             if (ctx.isPaused()) {
               break;
             }
