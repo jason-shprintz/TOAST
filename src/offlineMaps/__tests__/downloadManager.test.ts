@@ -98,8 +98,8 @@ describe('DownloadManager', () => {
 
       const manager = createDownloadManager({ store, handlers });
 
-      // Start job
-      const startPromise = manager.start({
+      // Start job (fire-and-forget)
+      manager.start({
         jobId: 'job1',
         regionId: 'region1',
       });
@@ -109,9 +109,9 @@ describe('DownloadManager', () => {
         progressEvents.push({ ...progress });
       });
 
-      // Wait for completion
-      await startPromise;
-      await sleep(50);
+      // Wait for completion - since start() is fire-and-forget, we need to wait
+      // long enough for all phases to complete
+      await sleep(100);
 
       // Verify all phases executed
       expect(phasesExecuted).toEqual([
@@ -458,8 +458,8 @@ describe('DownloadManager', () => {
 
       const manager = createDownloadManager({ store, handlers });
 
-      // Start job first
-      const startPromise = manager.start({
+      // Start job first (fire-and-forget)
+      manager.start({
         jobId: 'job8',
         regionId: 'region8',
       });
@@ -472,8 +472,8 @@ describe('DownloadManager', () => {
         progressEvents2.push({ ...p }),
       );
 
-      await startPromise;
-      await sleep(50);
+      // Wait for completion
+      await sleep(100);
 
       // Both should receive events (at least the ones emitted after subscription)
       expect(progressEvents1.length).toBeGreaterThan(0);
