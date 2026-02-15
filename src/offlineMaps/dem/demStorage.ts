@@ -3,9 +3,9 @@
  * @format
  */
 
+import RNFS from 'react-native-fs';
 import type { FileOps } from '../storage/fileOps';
 import type { RegionPaths } from '../storage/paths';
-import RNFS from 'react-native-fs';
 
 /**
  * DEM storage interface
@@ -40,14 +40,14 @@ export function createDemStorage(
     async readDemBytes(path: string): Promise<Uint8Array> {
       // Use RNFS to read as base64, then convert to Uint8Array
       const base64Data = await RNFS.readFile(path, 'base64');
-      
+
       // Convert base64 to Uint8Array
       const binaryString = atob(base64Data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
-      
+
       return bytes;
     },
   };

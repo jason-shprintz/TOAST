@@ -21,8 +21,8 @@ export interface DemProvider {
  */
 export class PlaceholderDemProvider implements DemProvider {
   async fetchDem(
-    req: DemRequest,
-    opts?: { onProgress?: (p: DemProgressInfo) => void },
+    _req: DemRequest,
+    _opts?: { onProgress?: (p: DemProgressInfo) => void },
   ): Promise<DemResponse> {
     throw new Error('DEM provider not configured');
   }

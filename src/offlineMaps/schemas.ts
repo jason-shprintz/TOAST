@@ -88,6 +88,7 @@ export const RegionJsonSchemaV1 = z
     dem: z.object({
       format: z.enum(['grid']),
       units: z.enum(['meters']),
+      encoding: z.enum(['int16', 'float32']),
       width: z.number().int().positive(),
       height: z.number().int().positive(),
       nodata: z.number(),

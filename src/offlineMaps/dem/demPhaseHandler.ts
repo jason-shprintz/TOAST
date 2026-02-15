@@ -3,12 +3,12 @@
  * @format
  */
 
-import type { PhaseHandler } from '../download/downloadTypes';
-import type { RegionPaths } from '../storage/paths';
-import type { FileOps } from '../storage/fileOps';
+import { createDemStorage } from './demStorage';
 import type { DemProvider } from './demProvider';
 import type { DemMetadataV1 } from './demTypes';
-import { createDemStorage } from './demStorage';
+import type { PhaseHandler } from '../download/downloadTypes';
+import type { FileOps } from '../storage/fileOps';
+import type { RegionPaths } from '../storage/paths';
 
 /**
  * Options for creating a DEM phase handler
