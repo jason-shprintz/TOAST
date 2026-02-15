@@ -4,6 +4,8 @@
  */
 
 import { createDefaultMetadata } from './mbtilesSchema';
+import type { MbtilesWriter } from './mbtilesWriter';
+import type { TileFetcher } from './tileDownloader';
 import type {
   PhaseHandler,
   PhaseHandlerContext,
@@ -12,8 +14,6 @@ import type { TileCoord } from '../geo/coverage';
 import type { FileOps } from '../storage/fileOps';
 import type { RegionPaths } from '../storage/paths';
 import type { OfflineRegion } from '../types';
-import type { MbtilesWriter } from './mbtilesWriter';
-import type { TileFetcher } from './tileDownloader';
 
 /**
  * Options for creating the tiles phase handler
@@ -85,7 +85,17 @@ export function createTilesPhaseHandler(
       };
 
       const metadata = createDefaultMetadata(bounds, minZoom, maxZoom);
-      await writer.setMetadata(metadata);
+      // Convert metadata to Record<string, string> format expected by setMetadata
+      const metadataRecord: Record<string, string> = Object.entries(
+        metadata,
+      ).reduce(
+        (acc, [key, value]) => {
+          acc[key] = String(value);
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+      await writer.setMetadata(metadataRecord);
 
       // 5. Download and insert tiles in batches
       let batch: Array<{ z: number; x: number; y: number; data: Uint8Array }> =
