@@ -117,46 +117,101 @@ jest.mock('react-native-sqlite-storage', () => {
             return [{ rows: { length: 0 } }];
           }),
 
-          transaction: jest.fn(async (callback: (tx: any) => Promise<void>) => {
-            if (db.closed) {
-              throw new Error('Database is closed');
-            }
+          transaction: jest.fn(
+            (
+              callback: (tx: any) => void | Promise<void>,
+              errorCallback?: (error: any) => void,
+              successCallback?: () => void,
+            ) => {
+              if (db.closed) {
+                const error = new Error('Database is closed');
+                if (errorCallback) {
+                  errorCallback(error);
+                  return;
+                }
+                throw error;
+              }
 
-            const tx = {
-              executeSql: jest.fn(async (sql: string, params?: unknown[]) => {
-                if (sql.includes('INSERT') && params) {
-                  // Handle INSERT
-                  if (sql.includes('metadata')) {
-                    const [name, value] = params as [string, string];
-                    const metadataTable = db.tables.get('metadata');
-                    if (metadataTable) {
-                      metadataTable.rows.set(name, { name, value });
+              const tx = {
+                executeSql: jest.fn(
+                  (
+                    sql: string,
+                    params?: unknown[],
+                    successCb?: (tx: any, result: any) => void,
+                    errorCb?: (tx: any, error: any) => void,
+                  ) => {
+                    try {
+                      if (sql.includes('INSERT') && params) {
+                        // Handle INSERT
+                        if (sql.includes('metadata')) {
+                          const [name, value] = params as [string, string];
+                          const metadataTable = db.tables.get('metadata');
+                          if (metadataTable) {
+                            metadataTable.rows.set(name, { name, value });
+                          }
+                        } else if (sql.includes('tiles')) {
+                          const [z, x, tmsRow, data] = params as [
+                            number,
+                            number,
+                            number,
+                            string,
+                          ];
+                          const tilesTable = db.tables.get('tiles');
+                          if (tilesTable) {
+                            const key = `${z}:${x}:${tmsRow}`;
+                            tilesTable.rows.set(key, {
+                              zoom_level: z,
+                              tile_column: x,
+                              tile_row: tmsRow,
+                              tile_data: data,
+                            });
+                          }
+                        }
+                      }
+                      const result = [{ rows: { length: 0 } }];
+                      if (successCb) {
+                        successCb(tx, result);
+                      }
+                      return result;
+                    } catch (error) {
+                      if (errorCb) {
+                        errorCb(tx, error);
+                      }
+                      throw error;
                     }
-                  } else if (sql.includes('tiles')) {
-                    const [z, x, tmsRow, data] = params as [
-                      number,
-                      number,
-                      number,
-                      string,
-                    ];
-                    const tilesTable = db.tables.get('tiles');
-                    if (tilesTable) {
-                      const key = `${z}:${x}:${tmsRow}`;
-                      tilesTable.rows.set(key, {
-                        zoom_level: z,
-                        tile_column: x,
-                        tile_row: tmsRow,
-                        tile_data: data,
-                      });
-                    }
+                  },
+                ),
+              };
+
+              try {
+                const result = callback(tx);
+                // Handle both sync and async callbacks
+                if (result && typeof result.then === 'function') {
+                  result
+                    .then(() => {
+                      if (successCallback) {
+                        successCallback();
+                      }
+                    })
+                    .catch((error: any) => {
+                      if (errorCallback) {
+                        errorCallback(error);
+                      }
+                    });
+                } else {
+                  if (successCallback) {
+                    successCallback();
                   }
                 }
-                return [{ rows: { length: 0 } }];
-              }),
-            };
-
-            await callback(tx);
-          }),
+              } catch (error) {
+                if (errorCallback) {
+                  errorCallback(error);
+                } else {
+                  throw error;
+                }
+              }
+            },
+          ),
 
           close: jest.fn(async () => {
             db.closed = true;

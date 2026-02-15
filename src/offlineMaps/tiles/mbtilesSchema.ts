@@ -8,7 +8,7 @@
  */
 export const CREATE_METADATA_TABLE = `
   CREATE TABLE IF NOT EXISTS metadata (
-    name TEXT,
+    name TEXT PRIMARY KEY,
     value TEXT
   );
 `;

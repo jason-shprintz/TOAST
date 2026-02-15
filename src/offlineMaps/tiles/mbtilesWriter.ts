@@ -70,11 +70,10 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
 
     this.dbPath = path;
 
-    // Open database with location set to default
-    // react-native-sqlite-storage expects absolute paths
+    // Open database using the provided absolute path
+    // react-native-sqlite-storage will use this full path as-is
     this.db = await SQLite.openDatabase({
       name: path,
-      location: 'default',
     });
   }
 
@@ -94,13 +93,23 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
     }
 
     // Insert all metadata entries in a transaction
-    await this.db.transaction(async (tx) => {
-      for (const [name, value] of Object.entries(meta)) {
-        await tx.executeSql(
-          'INSERT OR REPLACE INTO metadata (name, value) VALUES (?, ?)',
-          [name, value],
-        );
-      }
+    await new Promise<void>((resolve, reject) => {
+      this.db!.transaction(
+        (tx) => {
+          for (const [name, value] of Object.entries(meta)) {
+            tx.executeSql(
+              'INSERT OR REPLACE INTO metadata (name, value) VALUES (?, ?)',
+              [name, value],
+            );
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          resolve();
+        },
+      );
     });
   }
 
@@ -114,18 +123,28 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
     }
 
     // Insert all tiles in a single transaction
-    await this.db.transaction(async (tx) => {
-      for (const tile of tiles) {
-        const tmsRow = xyzToTmsRow(tile.z, tile.y);
+    await new Promise<void>((resolve, reject) => {
+      this.db!.transaction(
+        (tx) => {
+          for (const tile of tiles) {
+            const tmsRow = xyzToTmsRow(tile.z, tile.y);
 
-        // Convert Uint8Array to base64 for SQLite storage
-        const base64Data = uint8ArrayToBase64(tile.data);
+            // Convert Uint8Array to base64 for SQLite storage
+            const base64Data = uint8ArrayToBase64(tile.data);
 
-        await tx.executeSql(
-          'INSERT OR REPLACE INTO tiles (zoom_level, tile_column, tile_row, tile_data) VALUES (?, ?, ?, ?)',
-          [tile.z, tile.x, tmsRow, base64Data],
-        );
-      }
+            tx.executeSql(
+              'INSERT OR REPLACE INTO tiles (zoom_level, tile_column, tile_row, tile_data) VALUES (?, ?, ?, ?)',
+              [tile.z, tile.x, tmsRow, base64Data],
+            );
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          resolve();
+        },
+      );
     });
   }
 
@@ -160,13 +179,24 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
 
 /**
  * Convert Uint8Array to base64 string
+ * Processes data in chunks to avoid memory issues with large tiles
  */
 function uint8ArrayToBase64(bytes: Uint8Array): string {
-  const chars: string[] = [];
-  for (let i = 0; i < bytes.length; i++) {
-    chars.push(String.fromCharCode(bytes[i]));
+  // Process the Uint8Array in chunks to avoid creating a very large
+  // intermediate array of single-character strings.
+  const chunkSize = 0x8000; // 32768 bytes per chunk
+  let binary = '';
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const end = Math.min(i + chunkSize, bytes.length);
+    let chunk = '';
+    for (let j = i; j < end; j++) {
+      chunk += String.fromCharCode(bytes[j]);
+    }
+    binary += chunk;
   }
-  return btoa(chars.join(''));
+
+  return btoa(binary);
 }
 
 /**

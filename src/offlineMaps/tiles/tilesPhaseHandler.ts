@@ -3,6 +3,8 @@
  * @format
  */
 
+import { withRetry } from '../download/retry';
+import { regionToBounds } from '../geo/geoMath';
 import { createDefaultMetadata } from './mbtilesSchema';
 import type { MbtilesWriter } from './mbtilesWriter';
 import type { TileFetcher } from './tileDownloader';
@@ -24,6 +26,7 @@ export interface TilesPhaseHandlerOptions {
   fetcher: TileFetcher;
   writerFactory: () => MbtilesWriter;
   batchSize?: number;
+  maxRetries?: number;
   getRegion: (regionId: string) => Promise<OfflineRegion | null>;
   getTilesToDownload: (regionId: string) => Promise<TileCoord[]>;
 }
@@ -34,12 +37,18 @@ export interface TilesPhaseHandlerOptions {
 const DEFAULT_BATCH_SIZE = 250;
 
 /**
+ * Default number of retries for failed tile fetches
+ */
+const DEFAULT_MAX_RETRIES = 3;
+
+/**
  * Creates a phase handler for the tiles download phase
  */
 export function createTilesPhaseHandler(
   opts: TilesPhaseHandlerOptions,
 ): PhaseHandler {
   const batchSize = opts.batchSize ?? DEFAULT_BATCH_SIZE;
+  const maxRetries = opts.maxRetries ?? DEFAULT_MAX_RETRIES;
 
   return async (ctx: PhaseHandlerContext): Promise<void> => {
     const { regionId } = ctx;
@@ -76,13 +85,11 @@ export function createTilesPhaseHandler(
       const minZoom = Math.min(...tiles.map((t) => t.z));
       const maxZoom = Math.max(...tiles.map((t) => t.z));
 
-      // Compute bounds from region
-      const bounds = {
-        minLng: region.centerLng - 0.1, // Approximate - real bounds would be computed from region
-        minLat: region.centerLat - 0.1,
-        maxLng: region.centerLng + 0.1,
-        maxLat: region.centerLat + 0.1,
-      };
+      // Compute bounds from region using its actual radius
+      const bounds = regionToBounds(
+        { lat: region.centerLat, lng: region.centerLng },
+        region.radiusMiles,
+      );
 
       const metadata = createDefaultMetadata(bounds, minZoom, maxZoom);
       // Convert metadata to Record<string, string> format expected by setMetadata
@@ -115,23 +122,68 @@ export function createTilesPhaseHandler(
           if (batch.length > 0) {
             await writer.insertTilesBatch(batch);
             batch = [];
+
+            // Report progress after flushing the final batch before pausing
+            const percent = (downloadedTiles / totalTiles) * 100;
+            await ctx.report({
+              phase: 'tiles',
+              downloadedBytes,
+              percent,
+              message: `Downloading tiles (${downloadedTiles}/${totalTiles})`,
+            });
           }
           return;
         }
 
         const tile = tiles[i];
 
-        // Fetch tile data
+        // Fetch tile data with retry logic
         let tileData: Uint8Array;
         try {
-          tileData = await opts.fetcher.fetchTile({
-            z: tile.z,
-            x: tile.x,
-            y: tile.y,
-          });
+          tileData = await withRetry(
+            () =>
+              opts.fetcher.fetchTile({
+                z: tile.z,
+                x: tile.x,
+                y: tile.y,
+              }),
+            {
+              retries: maxRetries,
+              baseDelayMs: 1000,
+              maxDelayMs: 10000,
+              jitter: true,
+              retryOn: (err) => {
+                // Retry on network errors but not on other types of errors
+                if (!err) return false;
+                if (typeof err === 'object' && err !== null) {
+                  const error = err as { code?: string; message?: string };
+                  // Retry on common network errors
+                  const transientCodes = [
+                    'ETIMEDOUT',
+                    'ECONNRESET',
+                    'EAI_AGAIN',
+                    'TRANSIENT',
+                    'ENOTFOUND',
+                    'ENETUNREACH',
+                  ];
+                  if (error.code && transientCodes.includes(error.code)) {
+                    return true;
+                  }
+                  if (
+                    error.message &&
+                    (error.message.toLowerCase().includes('timeout') ||
+                      error.message.toLowerCase().includes('network'))
+                  ) {
+                    return true;
+                  }
+                }
+                return false;
+              },
+            },
+          );
         } catch (error) {
           throw new Error(
-            `Failed to fetch tile z=${tile.z} x=${tile.x} y=${tile.y}: ${
+            `Failed to fetch tile z=${tile.z} x=${tile.x} y=${tile.y} after ${maxRetries} retries: ${
               error instanceof Error ? error.message : String(error)
             }`,
           );
