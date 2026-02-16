@@ -40,9 +40,17 @@ const INDEX_SCHEMA_VERSION = 1;
 
 /**
  * Index persistence format
- * Note: MapFeatureRefSchema and IndexJsonSchema defined for reference but not used
- * due to Zod v4 record() validation issues in React Native environment.
- * Basic validation is performed manually in load() instead.
+ *
+ * Note: MapFeatureRefSchema and IndexJsonSchema are defined for reference and documentation
+ * but not actively used for validation due to a known issue with Zod v4's z.record() validator
+ * in the React Native environment.
+ *
+ * Issue: When using z.record(z.array(MapFeatureRefSchema)), Zod incorrectly reports that
+ * array values are strings. This appears to be a Zod v4.x issue with record validation.
+ * See: https://github.com/colinhacks/zod/issues
+ *
+ * Workaround: We perform basic manual validation in load() instead. These schemas are
+ * preserved for future use when the issue is resolved or Zod is upgraded.
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -76,7 +84,7 @@ const IndexJsonSchema = z.object({
   generatedAt: z.string().datetime(),
   regionId: z.string(),
   cellSizeMeters: z.number(),
-  cells: z.record(z.any()), // Bypass z.record validation bug - validate manually
+  cells: z.record(z.any()), // Using z.any() due to z.record() validation bug
 });
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -261,7 +269,11 @@ function calculateFeatureDistance(
     }
 
     case 'Polygon': {
-      // Simple centroid-based distance for Phase 1
+      // TODO Phase 2: Implement proper polygon containment/distance checking
+      // Currently using centroid-based distance as Phase 1 approximation
+      // Phase 2 should implement:
+      // - Point-in-polygon test (ray casting algorithm)
+      // - Distance to polygon boundary for points outside
       return distanceMeters(lat, lng, feature.lat, feature.lng);
     }
   }

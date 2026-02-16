@@ -18,6 +18,15 @@ export interface IndexPhaseHandlerOptions {
 }
 
 /**
+ * Helper function to create a cancellation error
+ */
+function createCancellationError(message: string): Error {
+  const error = new Error(message);
+  (error as Error & { code: string }).code = 'CANCELLED';
+  return error;
+}
+
+/**
  * Create a phase handler for spatial index building
  */
 export function createIndexPhaseHandler(
@@ -41,9 +50,7 @@ export function createIndexPhaseHandler(
 
     // Check for cancellation
     if (ctx.isCancelled()) {
-      const error = new Error('Index build cancelled');
-      (error as any).code = 'CANCELLED';
-      throw error;
+      throw createCancellationError('Index build cancelled');
     }
 
     // Check for pause
@@ -65,9 +72,7 @@ export function createIndexPhaseHandler(
 
     // Check for cancellation
     if (ctx.isCancelled()) {
-      const error = new Error('Index build cancelled');
-      (error as any).code = 'CANCELLED';
-      throw error;
+      throw createCancellationError('Index build cancelled');
     }
 
     // Check for pause
