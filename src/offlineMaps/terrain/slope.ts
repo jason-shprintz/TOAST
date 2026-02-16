@@ -3,8 +3,7 @@
  * @format
  */
 
-// Earth radius in meters (WGS84)
-const EARTH_RADIUS_METERS = 6378137;
+import { EARTH_RADIUS_METERS } from '../geo/geoMath';
 
 /**
  * Compute slope at a point using finite difference gradient approximation.
@@ -22,6 +21,11 @@ export function computeSlopePercent(
   lng: number,
   sampleDistanceMeters: number,
 ): number | null {
+  // Validate sampling distance
+  if (!Number.isFinite(sampleDistanceMeters) || sampleDistanceMeters <= 0) {
+    return null;
+  }
+
   // Get center elevation
   const centerElev = getElevation(lat, lng);
   if (centerElev === null) {

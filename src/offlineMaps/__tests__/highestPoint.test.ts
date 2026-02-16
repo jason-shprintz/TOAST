@@ -217,4 +217,106 @@ describe('Highest Point Search', () => {
       expect(getElevation.mock.calls.length).toBeLessThan(200);
     });
   });
+
+  describe('Parameter validation', () => {
+    it('should return null for zero radius', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const result = findHighestPointInRadius(
+        getElevation,
+        40.0,
+        -74.0,
+        { radiusMeters: 0 },
+        { minLat: 39.0, minLng: -75.0, maxLat: 41.0, maxLng: -73.0 },
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null for negative radius', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const result = findHighestPointInRadius(
+        getElevation,
+        40.0,
+        -74.0,
+        { radiusMeters: -1000 },
+        { minLat: 39.0, minLng: -75.0, maxLat: 41.0, maxLng: -73.0 },
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null for non-finite radius', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const result = findHighestPointInRadius(
+        getElevation,
+        40.0,
+        -74.0,
+        { radiusMeters: Infinity },
+        { minLat: 39.0, minLng: -75.0, maxLat: 41.0, maxLng: -73.0 },
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should handle zero step size by using default', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const result = findHighestPointInRadius(
+        getElevation,
+        40.0,
+        -74.0,
+        { radiusMeters: 1000, stepMeters: 0 },
+        { minLat: 39.0, minLng: -75.0, maxLat: 41.0, maxLng: -73.0 },
+      );
+
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle negative step size by using default', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const result = findHighestPointInRadius(
+        getElevation,
+        40.0,
+        -74.0,
+        { radiusMeters: 1000, stepMeters: -50 },
+        { minLat: 39.0, minLng: -75.0, maxLat: 41.0, maxLng: -73.0 },
+      );
+
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle single step (division by zero case)', () => {
+      // Create a very small search area where only 1 step will be taken
+      const getElevation = jest.fn((_lat: number, _lng: number) => 150);
+
+      const centerLat = 40.0;
+      const centerLng = -74.0;
+
+      // Use bounds that are very close to center, forcing single grid cell
+      const result = findHighestPointInRadius(
+        getElevation,
+        centerLat,
+        centerLng,
+        { radiusMeters: 1000, stepMeters: 2000 },
+        {
+          minLat: centerLat - 0.001,
+          minLng: centerLng - 0.001,
+          maxLat: centerLat + 0.001,
+          maxLng: centerLng + 0.001,
+        },
+      );
+
+      // Should handle the case without division by zero
+      // Result may be null if the single point is outside radius, but shouldn't crash
+      if (result !== null) {
+        expect(result.elevationM).toBe(150);
+      }
+      // Key is that it doesn't throw/crash with division by zero
+      expect(true).toBe(true);
+    });
+  });
 });

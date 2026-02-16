@@ -158,4 +158,30 @@ describe('Slope Calculation', () => {
       expect(slope).toBeNull();
     });
   });
+
+  describe('Parameter validation', () => {
+    it('should return null for zero sample distance', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const slope = computeSlopePercent(getElevation, 40.0, -74.0, 0);
+
+      expect(slope).toBeNull();
+    });
+
+    it('should return null for negative sample distance', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const slope = computeSlopePercent(getElevation, 40.0, -74.0, -30);
+
+      expect(slope).toBeNull();
+    });
+
+    it('should return null for non-finite sample distance', () => {
+      const getElevation = jest.fn((_lat: number, _lng: number) => 100);
+
+      const slope = computeSlopePercent(getElevation, 40.0, -74.0, NaN);
+
+      expect(slope).toBeNull();
+    });
+  });
 });

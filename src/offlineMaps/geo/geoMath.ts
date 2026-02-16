@@ -4,7 +4,7 @@
  */
 
 // Earth radius in meters (WGS84 approximation)
-const EARTH_RADIUS_METERS = 6378137;
+export const EARTH_RADIUS_METERS = 6378137;
 
 // Web Mercator latitude limits
 const MAX_LATITUDE = 85.05112878;

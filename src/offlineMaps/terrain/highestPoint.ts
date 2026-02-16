@@ -3,10 +3,8 @@
  * @format
  */
 
+import { EARTH_RADIUS_METERS } from '../geo/geoMath';
 import type { TerrainPoint, HighestPointOptions } from './terrainTypes';
-
-// Earth radius in meters (WGS84)
-const EARTH_RADIUS_METERS = 6378137;
 
 /**
  * Calculate distance between two points using equirectangular approximation.
@@ -56,6 +54,11 @@ export function findHighestPointInRadius(
   const { radiusMeters, maxSamples = 50000 } = opts;
   let { stepMeters } = opts;
 
+  // Validate radius to avoid invalid bounds and division by zero
+  if (!Number.isFinite(radiusMeters) || radiusMeters <= 0) {
+    return null;
+  }
+
   // Convert radius to degree bounds
   const latRad = (centerLat * Math.PI) / 180;
   const dLat = (radiusMeters / EARTH_RADIUS_METERS) * (180 / Math.PI);
@@ -68,8 +71,8 @@ export function findHighestPointInRadius(
   let minLng = Math.max(centerLng - dLng, bounds.minLng);
   let maxLng = Math.min(centerLng + dLng, bounds.maxLng);
 
-  // If no step size provided, use a default
-  if (!stepMeters) {
+  // If no step size provided or invalid (non-positive), use a default
+  if (stepMeters == null || stepMeters <= 0) {
     stepMeters = 60; // Default step size
   }
 
@@ -106,10 +109,16 @@ export function findHighestPointInRadius(
 
   // Grid scan
   for (let i = 0; i < latSteps; i++) {
-    const lat = minLat + (i / (latSteps - 1)) * latSpan;
+    const lat =
+      latSteps === 1
+        ? minLat + latSpan / 2
+        : minLat + (i / (latSteps - 1)) * latSpan;
 
     for (let j = 0; j < lngSteps; j++) {
-      const lng = minLng + (j / (lngSteps - 1)) * lngSpan;
+      const lng =
+        lngSteps === 1
+          ? minLng + lngSpan / 2
+          : minLng + (j / (lngSteps - 1)) * lngSpan;
 
       // Check if point is within circular radius
       const distance = equirectangularDistance(centerLat, centerLng, lat, lng);
