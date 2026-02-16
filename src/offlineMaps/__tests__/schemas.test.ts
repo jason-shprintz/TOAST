@@ -37,6 +37,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -74,6 +75,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -121,6 +123,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -157,6 +160,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -193,6 +197,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -229,6 +234,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
@@ -265,6 +271,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: -100, // invalid: negative
           height: 1000,
           nodata: -9999,
@@ -301,6 +308,7 @@ describe('Offline Region Schemas', () => {
         dem: {
           format: 'grid',
           units: 'meters',
+          encoding: 'int16',
           width: 1000,
           height: 1000,
           nodata: -9999,
