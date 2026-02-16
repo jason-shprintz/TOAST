@@ -4,6 +4,7 @@
  */
 
 import { parseRegionJson } from '../schemas';
+import { createOverlayStorage } from './overlayStorage';
 import type { OverlayProvider, OverlayKind } from './overlayTypes';
 import type { PhaseHandler } from '../download/downloadTypes';
 import type { FileOps } from '../storage/fileOps';
@@ -35,6 +36,7 @@ export function createOverlayPhaseHandler(
   opts: OverlayPhaseHandlerOptions,
 ): PhaseHandler {
   const { paths, fileOps, provider, validate } = opts;
+  const storage = createOverlayStorage(paths, fileOps);
 
   return async (ctx) => {
     const { regionId } = ctx;
@@ -64,7 +66,9 @@ export function createOverlayPhaseHandler(
     for (const { kind, progressStart, progressEnd } of overlayKinds) {
       // Check for cancellation
       if (ctx.isCancelled()) {
-        throw { code: 'CANCELLED' };
+        const error = new Error('Overlay download cancelled');
+        (error as any).code = 'CANCELLED';
+        throw error;
       }
 
       // Check for pause - return early to allow DownloadManager to persist pause
@@ -86,13 +90,17 @@ export function createOverlayPhaseHandler(
         {
           onProgress: (progress) => {
             // Pass through provider progress with current percent
-            ctx.report({
-              phase: 'overlays',
-              percent: progressStart,
-              message: progress.message || `Fetching ${kind}...`,
-              downloadedBytes: progress.downloadedBytes,
-              totalBytes: progress.totalBytes,
-            });
+            ctx
+              .report({
+                phase: 'overlays',
+                percent: progressStart,
+                message: progress.message || `Fetching ${kind}...`,
+                downloadedBytes: progress.downloadedBytes,
+                totalBytes: progress.totalBytes,
+              })
+              .catch((err: unknown) => {
+                console.error('[Overlays] Failed to report progress:', err);
+              });
           },
         },
       );
@@ -118,13 +126,17 @@ export function createOverlayPhaseHandler(
       }
 
       // Write validated data to temp file
-      const overlayPath = getOverlayTempPath(paths, regionId, kind);
-      const jsonString = JSON.stringify(validatedData, null, 2);
-      await fileOps.writeFileAtomic(overlayPath, jsonString);
+      await storage.writeTempOverlay(regionId, kind, validatedData);
 
       // Log feature count for debugging
       const featureCount = (validatedData as { features?: unknown[] }).features
         ?.length;
+      const overlayPath =
+        kind === 'water'
+          ? paths.tmpWater(regionId)
+          : kind === 'cities'
+            ? paths.tmpCities(regionId)
+            : paths.tmpRoads(regionId);
       console.log(
         `[Overlays] ${kind}: ${featureCount || 0} features written to ${overlayPath}`,
       );
@@ -144,22 +156,4 @@ export function createOverlayPhaseHandler(
       message: 'Overlays complete',
     });
   };
-}
-
-/**
- * Get the temp path for an overlay kind
- */
-function getOverlayTempPath(
-  paths: RegionPaths,
-  regionId: string,
-  kind: OverlayKind,
-): string {
-  switch (kind) {
-    case 'water':
-      return paths.tmpWater(regionId);
-    case 'cities':
-      return paths.tmpCities(regionId);
-    case 'roads':
-      return paths.tmpRoads(regionId);
-  }
 }

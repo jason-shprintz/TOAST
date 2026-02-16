@@ -308,6 +308,101 @@ describe('Overlay Validation', () => {
 
       expect(() => parseRoadCollection(invalidRoadData)).toThrow();
     });
+
+    it('should wrap validation errors from the overlay phase handler', async () => {
+      const regionId = 'test-region-invalid';
+      const bounds = {
+        minLat: 40.0,
+        minLng: -75.0,
+        maxLat: 41.0,
+        maxLng: -74.0,
+      };
+
+      // Setup region.json
+      const regionJson = {
+        schemaVersion: 1,
+        generatedAt: '2026-02-16T00:00:00.000Z',
+        regionId,
+        center: { lat: 40.5, lng: -74.5 },
+        radiusMiles: 25,
+        bounds,
+        tiles: { format: 'mbtiles', minZoom: 8, maxZoom: 14 },
+        dem: {
+          format: 'grid',
+          units: 'meters',
+          encoding: 'int16',
+          width: 100,
+          height: 100,
+          nodata: -9999,
+          bounds,
+        },
+      };
+      mockFiles.set(
+        mockPaths.tmpRegionJson(regionId),
+        JSON.stringify(regionJson),
+      );
+
+      // Create provider that returns invalid city data
+      const invalidProvider = {
+        async fetchOverlay(kind: string) {
+          if (kind === 'water') {
+            // Return valid water first
+            return {
+              schemaVersion: WATER_SCHEMA_VERSION,
+              generatedAt: '2026-02-16T00:00:00.000Z',
+              regionId,
+              features: [],
+            };
+          } else if (kind === 'cities') {
+            // Return invalid city data
+            return {
+              schemaVersion: CITY_SCHEMA_VERSION,
+              generatedAt: '2026-02-16T00:00:00.000Z',
+              regionId,
+              features: [
+                {
+                  id: 'city-1',
+                  geometry: {
+                    kind: 'Point',
+                    coordinates: [-74.0, 40.7],
+                  },
+                  properties: {
+                    name: 'Test City',
+                    populationTier: 'extra-large', // Invalid tier
+                    population: 1000000,
+                  },
+                },
+              ],
+            };
+          }
+          return null;
+        },
+      };
+
+      // Create handler with invalid provider
+      const handler = createOverlayPhaseHandler({
+        paths: mockPaths,
+        fileOps: mockFileOps,
+        provider: invalidProvider as any,
+        validate: {
+          water: parseWaterCollection,
+          cities: parseCityCollection,
+          roads: parseRoadCollection,
+        },
+      });
+
+      // Create mock context
+      const ctx: PhaseHandlerContext = {
+        jobId: 'job-invalid',
+        regionId,
+        report: async () => {},
+        isCancelled: () => false,
+        isPaused: () => false,
+      };
+
+      // Execute handler - should throw with wrapped error
+      await expect(handler(ctx)).rejects.toThrow(/cities overlay/i);
+    });
   });
 
   describe('Pause and cancel behavior', () => {
@@ -445,8 +540,16 @@ describe('Overlay Validation', () => {
         isPaused: () => false,
       };
 
-      // Execute handler - should throw
-      await expect(handler(ctx)).rejects.toEqual({ code: 'CANCELLED' });
+      // Execute handler - should throw Error with code
+      await expect(handler(ctx)).rejects.toThrow('Overlay download cancelled');
+
+      // Also verify the error has the code property
+      try {
+        await handler(ctx);
+        fail('Should have thrown an error');
+      } catch (error: any) {
+        expect(error.code).toBe('CANCELLED');
+      }
     });
   });
 });
