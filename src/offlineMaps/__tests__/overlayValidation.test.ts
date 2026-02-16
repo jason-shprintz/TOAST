@@ -23,7 +23,7 @@ const mockFiles = new Map<string, string>();
 const mockFileOps: FileOps = {
   async writeFileAtomic(path: string, data: string | Uint8Array) {
     const content =
-      typeof data === 'string' ? data : new TextDecoder().decode(data);
+      typeof data === 'string' ? data : String.fromCharCode(...data);
     mockFiles.set(path, content);
   },
   async readFile(path: string) {
@@ -157,7 +157,11 @@ describe('Overlay Validation', () => {
         jobId: 'job-1',
         regionId,
         report: async (progress) => {
-          progressReports.push(progress);
+          progressReports.push({
+            phase: progress.phase || '',
+            percent: progress.percent,
+            message: progress.message,
+          });
         },
         isCancelled: () => false,
         isPaused: () => false,
