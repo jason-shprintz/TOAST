@@ -44,7 +44,7 @@ export function createDemPhaseHandler(
 
       // Check for pause/cancel
       if (isCancelled()) {
-        throw { code: 'CANCELLED' };
+        throw new Error('DEM download cancelled');
       }
       if (isPaused()) {
         return;
@@ -73,7 +73,7 @@ export function createDemPhaseHandler(
 
       // Check for pause/cancel
       if (isCancelled()) {
-        throw { code: 'CANCELLED' };
+        throw new Error('DEM download cancelled');
       }
       if (isPaused()) {
         return;
@@ -115,7 +115,7 @@ export function createDemPhaseHandler(
 
       // Check for pause/cancel after fetch
       if (isCancelled()) {
-        throw { code: 'CANCELLED' };
+        throw new Error('DEM download cancelled');
       }
       if (isPaused()) {
         return;
@@ -131,7 +131,7 @@ export function createDemPhaseHandler(
 
       // Check for pause/cancel
       if (isCancelled()) {
-        throw { code: 'CANCELLED' };
+        throw new Error('DEM download cancelled');
       }
       if (isPaused()) {
         return;
@@ -159,17 +159,7 @@ export function createDemPhaseHandler(
         message: 'DEM download completed',
       });
     } catch (error) {
-      // Re-throw cancellation errors
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        'code' in error &&
-        error.code === 'CANCELLED'
-      ) {
-        throw error;
-      }
-
-      // Wrap other errors
+      // Wrap errors with context
       throw new Error(
         `DEM download failed: ${error instanceof Error ? error.message : String(error)}`,
       );

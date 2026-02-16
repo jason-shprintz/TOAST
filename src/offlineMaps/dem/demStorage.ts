@@ -27,7 +27,7 @@ export function createDemStorage(
      * Writes DEM data to temp region directory
      */
     async writeTempDem(regionId: string, bytes: Uint8Array): Promise<void> {
-      const dirPath = await paths.tmpRegionDir(regionId);
+      const dirPath = paths.tmpRegionDir(regionId);
       await fileOps.ensureDir(dirPath);
 
       const filePath = paths.tmpDem(regionId);
