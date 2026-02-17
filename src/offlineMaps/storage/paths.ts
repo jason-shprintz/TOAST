@@ -115,7 +115,7 @@ export function createRegionPaths(): RegionPaths {
     },
     index: (regionId: string) => {
       validateRegionId(regionId);
-      return `${regionsDir}/${regionId}/index.sqlite`;
+      return `${regionsDir}/${regionId}/index.json`;
     },
     manifest: (regionId: string) => {
       validateRegionId(regionId);
@@ -149,7 +149,7 @@ export function createRegionPaths(): RegionPaths {
     },
     tmpIndex: (regionId: string) => {
       validateRegionId(regionId);
-      return `${tmpDir}/${regionId}/index.sqlite`;
+      return `${tmpDir}/${regionId}/index.json`;
     },
     tmpManifest: (regionId: string) => {
       validateRegionId(regionId);

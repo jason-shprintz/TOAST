@@ -76,3 +76,26 @@ export function regionToBounds(center: LatLng, radiusMiles: number): Bounds {
     maxLng,
   };
 }
+
+/**
+ * Calculate distance between two points using equirectangular approximation
+ * Fast approximation suitable for small distances (< 1000km)
+ */
+export function distanceMeters(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+): number {
+  const lat1Rad = (lat1 * Math.PI) / 180;
+  const lat2Rad = (lat2 * Math.PI) / 180;
+  const dLat = lat2Rad - lat1Rad;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+
+  // Equirectangular approximation
+  const x = dLng * Math.cos((lat1Rad + lat2Rad) / 2);
+  const y = dLat;
+  const distance = Math.sqrt(x * x + y * y) * EARTH_RADIUS_METERS;
+
+  return distance;
+}
