@@ -28,7 +28,6 @@ jest.mock('../db/regionRepository', () => ({
 }));
 
 import { createRegionRepository } from '../db/regionRepository';
-import type { OfflineRegion } from '../types';
 
 describe('Offline Map - No Network Test', () => {
   let fetchSpy: jest.SpyInstance;
