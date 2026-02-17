@@ -4,7 +4,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -24,10 +24,10 @@ import { useOfflineRegion } from './useOfflineRegion';
 export default function OfflineMapScreen() {
   const { region, status, error } = useOfflineRegion();
 
-  const handleMapTap = (lat: number, lng: number) => {
+  const handleMapTap = useCallback((lat: number, lng: number) => {
     // Hook for Issue 12 - tap inspector
     console.log('Map tapped at:', lat, lng);
-  };
+  }, []);
 
   const handleRetry = () => {
     // Trigger a reload by remounting the component

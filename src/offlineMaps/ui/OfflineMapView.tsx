@@ -45,6 +45,8 @@ export default function OfflineMapView({
     mapAdapterRef.current = adapter;
 
     // Render map with current state
+    // Note: onTap is captured at mount time; if it needs to change dynamically,
+    // parent should memoize it with useCallback
     adapter.render({
       containerRef: containerRef.current,
       mbtilesPath: region.tilesPath,
@@ -56,7 +58,8 @@ export default function OfflineMapView({
       adapter.destroy();
       mapAdapterRef.current = null;
     };
-  }, [region.tilesPath, onTap]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region.tilesPath]); // Only re-init if tilesPath changes
 
   // Update overlays when they change
   useEffect(() => {

@@ -15,8 +15,6 @@ export interface UseOfflineRegionResult {
   error?: string;
 }
 
-const repository = createRegionRepository();
-
 /**
  * Hook to access the currently active offline region
  * Returns the region with status='ready' and tilesPath set
@@ -33,6 +31,9 @@ export function useOfflineRegion(): UseOfflineRegionResult {
       try {
         setStatus('loading');
         setError(undefined);
+
+        // Create repository instance within effect
+        const repository = createRegionRepository();
 
         // Initialize repository if needed
         await repository.init();

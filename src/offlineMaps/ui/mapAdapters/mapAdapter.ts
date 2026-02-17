@@ -4,6 +4,9 @@
  * @format
  */
 
+import type { RefObject } from 'react';
+import type { View } from 'react-native';
+
 export interface OverlayState {
   water: boolean;
   cities: boolean;
@@ -11,7 +14,7 @@ export interface OverlayState {
 }
 
 export interface MapRenderOptions {
-  containerRef: any; // Platform-specific container reference
+  containerRef: RefObject<View> | null;
   mbtilesPath: string;
   onTap?: (lat: number, lng: number) => void;
   overlays: OverlayState;
