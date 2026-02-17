@@ -3,10 +3,7 @@
  * @format
  */
 
-import { createRegionRepository } from '../db/regionRepository';
-import type { OfflineRegion } from '../types';
-
-// Mock the region repository
+// Mock the region repository BEFORE imports
 jest.mock('../db/regionRepository', () => ({
   createRegionRepository: jest.fn(() => ({
     init: jest.fn().mockResolvedValue(undefined),
@@ -20,7 +17,7 @@ jest.mock('../db/regionRepository', () => ({
       version: 1,
       status: 'ready',
       tilesPath: '/path/to/tiles.mbtiles',
-    } as OfflineRegion),
+    }),
     getRegion: jest.fn(),
     listRegions: jest.fn(),
     createRegion: jest.fn(),
@@ -30,10 +27,17 @@ jest.mock('../db/regionRepository', () => ({
   })),
 }));
 
+import { createRegionRepository } from '../db/regionRepository';
+import type { OfflineRegion } from '../types';
+
 describe('Offline Map - No Network Test', () => {
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    // Ensure global fetch exists so we can safely spy on it
+    if (typeof globalThis.fetch !== 'function') {
+      (globalThis as any).fetch = jest.fn();
+    }
     // Spy on global fetch to ensure no network calls
     fetchSpy = jest.spyOn(globalThis, 'fetch');
   });

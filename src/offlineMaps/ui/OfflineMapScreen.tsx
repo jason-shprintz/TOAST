@@ -17,22 +17,32 @@ import { COLORS } from '../../theme';
 import OfflineMapView from './OfflineMapView';
 import { useOfflineRegion } from './useOfflineRegion';
 
+export interface OfflineMapScreenProps {
+  /**
+   * Optional tap handler for map interactions (e.g., tap inspector).
+   * If not provided, taps are logged but not acted upon.
+   */
+  onTap?: (lat: number, lng: number) => void;
+}
+
 /**
  * OfflineMapScreen - Main screen for offline map viewing
  * Handles loading states and delegates to OfflineMapView when ready
  */
-export default function OfflineMapScreen() {
-  const { region, status, error } = useOfflineRegion();
+export default function OfflineMapScreen({ onTap }: OfflineMapScreenProps) {
+  const { region, status, error, reload } = useOfflineRegion();
 
-  const handleMapTap = useCallback((lat: number, lng: number) => {
-    // Hook for Issue 12 - tap inspector
-    console.log('Map tapped at:', lat, lng);
-  }, []);
+  const handleMapTap = useCallback(
+    (lat: number, lng: number) => {
+      if (onTap) {
+        onTap(lat, lng);
+      }
+    },
+    [onTap],
+  );
 
   const handleRetry = () => {
-    // Trigger a reload by remounting the component
-    // In a real app, this might navigate away and back
-    console.log('Retry requested');
+    reload();
   };
 
   const handleDownload = () => {

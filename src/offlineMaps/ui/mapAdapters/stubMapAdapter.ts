@@ -13,9 +13,11 @@ import type { MapAdapter, MapRenderOptions, OverlayState } from './mapAdapter';
  */
 export class StubMapAdapter implements MapAdapter {
   private opts: MapRenderOptions | null = null;
+  private onTapCallback: ((lat: number, lng: number) => void) | undefined;
 
   render(opts: MapRenderOptions): void {
     this.opts = opts;
+    this.onTapCallback = opts.onTap;
     // In a real implementation, this would:
     // 1. Initialize the map SDK
     // 2. Configure it to load tiles from mbtilesPath
@@ -27,16 +29,18 @@ export class StubMapAdapter implements MapAdapter {
     });
   }
 
-  setCenter(lat: number, lng: number): void {
-    console.log('StubMapAdapter: setCenter', { lat, lng });
-  }
-
   setOverlays(overlays: OverlayState): void {
     console.log('StubMapAdapter: setOverlays', overlays);
   }
 
+  setOnTap(callback: ((lat: number, lng: number) => void) | undefined): void {
+    this.onTapCallback = callback;
+    console.log('StubMapAdapter: setOnTap', { hasCallback: !!callback });
+  }
+
   destroy(): void {
     this.opts = null;
+    this.onTapCallback = undefined;
     console.log('StubMapAdapter: destroy called');
   }
 }

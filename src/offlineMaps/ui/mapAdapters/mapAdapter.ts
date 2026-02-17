@@ -31,14 +31,14 @@ export interface MapAdapter {
   render(opts: MapRenderOptions): void;
 
   /**
-   * Set map center position
-   */
-  setCenter(lat: number, lng: number): void;
-
-  /**
    * Update overlay visibility
    */
   setOverlays(overlays: OverlayState): void;
+
+  /**
+   * Update the tap callback handler
+   */
+  setOnTap(callback: ((lat: number, lng: number) => void) | undefined): void;
 
   /**
    * Clean up map resources

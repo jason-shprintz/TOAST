@@ -42,8 +42,6 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
     mapAdapterRef.current = adapter;
 
     // Render map with current state
-    // Note: onTap is captured at mount time; if it needs to change dynamically,
-    // parent should memoize it with useCallback
     adapter.render({
       containerRef: containerRef,
       mbtilesPath: region.tilesPath,
@@ -57,6 +55,13 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [region.tilesPath]); // Only re-init if tilesPath changes
+
+  // Update onTap callback when it changes
+  useEffect(() => {
+    if (mapAdapterRef.current) {
+      mapAdapterRef.current.setOnTap(onTap);
+    }
+  }, [onTap]);
 
   // Update overlays when they change
   useEffect(() => {
@@ -72,9 +77,15 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer} ref={containerRef}>
-        {/* Placeholder for actual map - will be rendered by adapter */}
+        {/* Placeholder view showing region info. 
+            The stub adapter doesn't render actual tiles yet.
+            Replace StubMapAdapter with a real map SDK implementation 
+            (MapLibre/Mapbox) to render vector tiles from MBTiles. */}
         <View style={styles.mapPlaceholder}>
           <Text style={styles.placeholderText}>Offline Map View</Text>
+          <Text style={styles.placeholderSubtext}>
+            (Stub adapter - awaiting map SDK integration)
+          </Text>
           <Text style={styles.infoText}>
             Region: {region.centerLat.toFixed(4)}, {region.centerLng.toFixed(4)}
           </Text>
@@ -117,6 +128,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: COLORS.PRIMARY_DARK,
+    marginBottom: 4,
+  },
+  placeholderSubtext: {
+    fontSize: 12,
+    color: '#999',
+    fontStyle: 'italic',
     marginBottom: 12,
   },
   infoText: {

@@ -103,12 +103,17 @@ export function createMapAdapter(): MapAdapter {
 
 ## Network Isolation
 
-The implementation guarantees no network calls when rendering a ready region:
+The implementation is designed to avoid network calls when rendering a ready region:
 
 - RegionRepository reads from local SQLite
 - Map adapter uses local MBTiles file
 - No remote tile endpoints are configured
-- Test suite verifies fetch() is never called
+- Test coverage focuses on offline usage and guards against unintended network access at the repository layer
+
+Note: The current implementation uses a stub adapter that doesn't render actual tiles. When integrating a real map SDK (MapLibre/Mapbox), ensure that:
+- Style JSON, glyphs, and sprites are bundled locally or disabled
+- The SDK is configured to only use local tile sources
+- No fallback to remote tile servers is enabled
 
 ## Extension Points
 

@@ -3,7 +3,7 @@
  * @format
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createRegionRepository } from '../db/regionRepository';
 import type { OfflineRegion } from '../types';
 
@@ -13,6 +13,7 @@ export interface UseOfflineRegionResult {
   region: OfflineRegion | null;
   status: UseOfflineRegionStatus;
   error?: string;
+  reload: () => void;
 }
 
 /**
@@ -23,6 +24,11 @@ export function useOfflineRegion(): UseOfflineRegionResult {
   const [region, setRegion] = useState<OfflineRegion | null>(null);
   const [status, setStatus] = useState<UseOfflineRegionStatus>('loading');
   const [error, setError] = useState<string | undefined>(undefined);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const reload = useCallback(() => {
+    setReloadToken((prev) => prev + 1);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -77,7 +83,7 @@ export function useOfflineRegion(): UseOfflineRegionResult {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [reloadToken]);
 
-  return { region, status, error };
+  return { region, status, error, reload };
 }

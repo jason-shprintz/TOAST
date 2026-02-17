@@ -4,6 +4,7 @@
  */
 
 export { default as OfflineMapScreen } from './OfflineMapScreen';
+export type { OfflineMapScreenProps } from './OfflineMapScreen';
 export { default as OfflineMapView } from './OfflineMapView';
 export { default as OverlayToggles } from './OverlayToggles';
 export { useOfflineRegion } from './useOfflineRegion';
