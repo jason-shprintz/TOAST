@@ -1,29 +1,36 @@
 # Offline Map UI Integration Guide
 
 ## Overview
+
 The Offline Map UI provides a complete screen for viewing offline maps rendered from local MBTiles files with overlay toggles.
 
 ## Components
 
 ### OfflineMapScreen
+
 Main screen component with automatic state management:
+
 - **Loading**: Shows spinner while fetching region
 - **Error**: Displays error message with retry button
 - **Missing**: Shows CTA to download offline region
 - **Ready**: Renders the OfflineMapView
 
 ### OfflineMapView
+
 Core map view component that:
+
 - Renders map using local MBTiles via adapter
 - Manages overlay toggle state (Water/Cities/Terrain)
 - Provides tap callback for future inspector integration
 
 ### OverlayToggles
+
 UI component with three toggle switches for overlays.
 
 ## Usage
 
 ### Adding to Navigation
+
 To add the Offline Map screen to your app navigation:
 
 ```typescript
@@ -35,6 +42,7 @@ import OfflineMapScreen from '../offlineMaps/ui/OfflineMapScreen';
 ```
 
 ### Programmatic Navigation
+
 ```typescript
 import { useNavigation } from '@react-navigation/native';
 
@@ -43,12 +51,13 @@ navigation.navigate('OfflineMap');
 ```
 
 ### Using the Hook Directly
+
 ```typescript
 import { useOfflineRegion } from '../offlineMaps/ui';
 
 function MyComponent() {
   const { region, status, error } = useOfflineRegion();
-  
+
   if (status === 'ready' && region) {
     // Region is available and has tilesPath
   }
@@ -71,14 +80,21 @@ export class MapLibreAdapter implements MapAdapter {
     // Initialize MapLibre with local tile source
     // Configure to use opts.mbtilesPath
   }
-  
-  setCenter(lat: number, lng: number): void { /* ... */ }
-  setOverlays(overlays: OverlayState): void { /* ... */ }
-  destroy(): void { /* ... */ }
+
+  setCenter(lat: number, lng: number): void {
+    /* ... */
+  }
+  setOverlays(overlays: OverlayState): void {
+    /* ... */
+  }
+  destroy(): void {
+    /* ... */
+  }
 }
 ```
 
 3. Update `stubMapAdapter.ts` factory:
+
 ```typescript
 export function createMapAdapter(): MapAdapter {
   return new MapLibreAdapter(); // Instead of StubMapAdapter
@@ -88,6 +104,7 @@ export function createMapAdapter(): MapAdapter {
 ## Network Isolation
 
 The implementation guarantees no network calls when rendering a ready region:
+
 - RegionRepository reads from local SQLite
 - Map adapter uses local MBTiles file
 - No remote tile endpoints are configured
@@ -96,7 +113,9 @@ The implementation guarantees no network calls when rendering a ready region:
 ## Extension Points
 
 ### Tap Inspector (Issue 12)
+
 The map tap callback is already wired:
+
 ```typescript
 // In OfflineMapScreen
 const handleMapTap = useCallback((lat: number, lng: number) => {
@@ -105,7 +124,9 @@ const handleMapTap = useCallback((lat: number, lng: number) => {
 ```
 
 ### Quick Actions (Issue 13)
+
 Quick actions can be added as siblings to the OfflineMapView in OfflineMapScreen.
 
 ### Overlay Rendering (Issue 10/12)
+
 The overlay state is managed but rendering is not yet implemented. The MapAdapter's `setOverlays()` method is the integration point.

@@ -4,7 +4,6 @@
  */
 
 import { createRegionRepository } from '../db/regionRepository';
-import { useOfflineRegion } from '../ui/useOfflineRegion';
 import type { OfflineRegion } from '../types';
 
 // Mock the region repository
@@ -36,7 +35,7 @@ describe('Offline Map - No Network Test', () => {
 
   beforeEach(() => {
     // Spy on global fetch to ensure no network calls
-    fetchSpy = jest.spyOn(global, 'fetch');
+    fetchSpy = jest.spyOn(globalThis, 'fetch');
   });
 
   afterEach(() => {
@@ -79,4 +78,3 @@ describe('Offline Map - No Network Test', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
-

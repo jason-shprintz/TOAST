@@ -8,10 +8,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import { COLORS } from '../../theme';
-import type { OfflineRegion } from '../types';
-import OverlayToggles from './OverlayToggles';
-import type { MapAdapter, OverlayState } from './mapAdapters/mapAdapter';
 import { createMapAdapter } from './mapAdapters/stubMapAdapter';
+import OverlayToggles from './OverlayToggles';
+import type { OfflineRegion } from '../types';
+import type { MapAdapter, OverlayState } from './mapAdapters/mapAdapter';
 
 interface OfflineMapViewProps {
   region: OfflineRegion;
@@ -22,10 +22,7 @@ interface OfflineMapViewProps {
  * OfflineMapView - Renders the offline map with overlay controls
  * Owns overlay toggle state and integrates with map adapter
  */
-export default function OfflineMapView({
-  region,
-  onTap,
-}: OfflineMapViewProps) {
+export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
   const [overlays, setOverlays] = useState<OverlayState>({
     water: true,
     cities: true,
@@ -33,7 +30,7 @@ export default function OfflineMapView({
   });
 
   const mapAdapterRef = useRef<MapAdapter | null>(null);
-  const containerRef = useRef<View>(null);
+  const containerRef = useRef<View>(null) as React.RefObject<View>;
 
   // Initialize map adapter
   useEffect(() => {
@@ -48,7 +45,7 @@ export default function OfflineMapView({
     // Note: onTap is captured at mount time; if it needs to change dynamically,
     // parent should memoize it with useCallback
     adapter.render({
-      containerRef: containerRef.current,
+      containerRef: containerRef,
       mbtilesPath: region.tilesPath,
       onTap,
       overlays,
@@ -69,7 +66,7 @@ export default function OfflineMapView({
   }, [overlays]);
 
   const handleToggle = (key: keyof OverlayState, value: boolean) => {
-    setOverlays(prev => ({ ...prev, [key]: value }));
+    setOverlays((prev) => ({ ...prev, [key]: value }));
   };
 
   return (

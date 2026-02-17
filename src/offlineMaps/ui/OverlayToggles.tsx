@@ -30,7 +30,7 @@ export default function OverlayToggles({
         <Text style={styles.label}>Water</Text>
         <Switch
           value={overlays.water}
-          onValueChange={value => onToggle('water', value)}
+          onValueChange={(value) => onToggle('water', value)}
           trackColor={{ false: '#999', true: COLORS.SECONDARY_ACCENT }}
           thumbColor={COLORS.PRIMARY_LIGHT}
         />
@@ -40,7 +40,7 @@ export default function OverlayToggles({
         <Text style={styles.label}>Cities</Text>
         <Switch
           value={overlays.cities}
-          onValueChange={value => onToggle('cities', value)}
+          onValueChange={(value) => onToggle('cities', value)}
           trackColor={{ false: '#999', true: COLORS.SECONDARY_ACCENT }}
           thumbColor={COLORS.PRIMARY_LIGHT}
         />
@@ -50,7 +50,7 @@ export default function OverlayToggles({
         <Text style={styles.label}>Terrain</Text>
         <Switch
           value={overlays.terrain}
-          onValueChange={value => onToggle('terrain', value)}
+          onValueChange={(value) => onToggle('terrain', value)}
           trackColor={{ false: '#999', true: COLORS.SECONDARY_ACCENT }}
           thumbColor={COLORS.PRIMARY_LIGHT}
         />

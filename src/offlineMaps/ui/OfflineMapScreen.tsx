@@ -61,7 +61,8 @@ export default function OfflineMapScreen() {
           <TouchableOpacity
             style={styles.button}
             onPress={handleRetry}
-            activeOpacity={0.7}>
+            activeOpacity={0.7}
+          >
             <Text style={styles.buttonText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -80,7 +81,8 @@ export default function OfflineMapScreen() {
           <TouchableOpacity
             style={styles.button}
             onPress={handleDownload}
-            activeOpacity={0.7}>
+            activeOpacity={0.7}
+          >
             <Text style={styles.buttonText}>Download Offline Region</Text>
           </TouchableOpacity>
         </View>
