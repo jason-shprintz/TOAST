@@ -79,7 +79,7 @@ const mockPaths: RegionPaths = {
   water: (regionId: string) => `/test/offline/regions/${regionId}/water.json`,
   cities: (regionId: string) => `/test/offline/regions/${regionId}/cities.json`,
   roads: (regionId: string) => `/test/offline/regions/${regionId}/roads.json`,
-  index: (regionId: string) => `/test/offline/regions/${regionId}/index.sqlite`,
+  index: (regionId: string) => `/test/offline/regions/${regionId}/index.json`,
   manifest: (regionId: string) =>
     `/test/offline/regions/${regionId}/manifest.json`,
   tmpRegionJson: (regionId: string) =>
@@ -90,7 +90,7 @@ const mockPaths: RegionPaths = {
   tmpWater: (regionId: string) => `/test/offline/tmp/${regionId}/water.json`,
   tmpCities: (regionId: string) => `/test/offline/tmp/${regionId}/cities.json`,
   tmpRoads: (regionId: string) => `/test/offline/tmp/${regionId}/roads.json`,
-  tmpIndex: (regionId: string) => `/test/offline/tmp/${regionId}/index.sqlite`,
+  tmpIndex: (regionId: string) => `/test/offline/tmp/${regionId}/index.json`,
   tmpManifest: (regionId: string) =>
     `/test/offline/tmp/${regionId}/manifest.json`,
 };

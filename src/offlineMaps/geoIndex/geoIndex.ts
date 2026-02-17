@@ -117,15 +117,49 @@ export function createGeoIndex(paths: RegionPaths, fileOps: FileOps): GeoIndex {
       const indexContent = await fileOps.readFile(indexPath);
       const indexJson = JSON.parse(indexContent) as IndexJson;
 
-      // Basic validation
+      // Validate schema version
       if (indexJson.schemaVersion !== INDEX_SCHEMA_VERSION) {
         throw new Error(
           `Unsupported index schema version: ${indexJson.schemaVersion}`,
         );
       }
 
+      // Validate required fields
+      if (
+        typeof indexJson.cellSizeMeters !== 'number' ||
+        indexJson.cellSizeMeters <= 0
+      ) {
+        throw new Error(
+          'Invalid index: cellSizeMeters must be a positive number',
+        );
+      }
+
       if (!indexJson.cells || typeof indexJson.cells !== 'object') {
         throw new Error('Invalid index: cells must be an object');
+      }
+
+      // Validate cell structure
+      for (const [cellKey, cellFeatures] of Object.entries(indexJson.cells)) {
+        if (!Array.isArray(cellFeatures)) {
+          throw new Error(
+            `Invalid index: cell ${cellKey} must contain an array`,
+          );
+        }
+
+        for (const feature of cellFeatures) {
+          if (
+            !feature ||
+            typeof feature !== 'object' ||
+            !feature.kind ||
+            !feature.id ||
+            typeof feature.lat !== 'number' ||
+            typeof feature.lng !== 'number'
+          ) {
+            throw new Error(
+              `Invalid index: cell ${cellKey} contains malformed feature`,
+            );
+          }
+        }
       }
 
       // Reconstruct grid index
@@ -213,8 +247,9 @@ function findNearest(
   let bestFeature: MapFeatureRef | null = null;
   let bestDistance = Infinity;
 
-  // Search in expanding rings (up to 50 cells)
-  const maxRing = 50;
+  // Limit ring expansion for performance
+  // Ring radius of 30 = ~2800 cells max, still reasonable for mobile
+  const maxRing = 30;
   for (let ring = 0; ring <= maxRing; ring++) {
     const cellKeys = getNeighboringCells(cx, cy, ring);
 
@@ -225,7 +260,8 @@ function findNearest(
       for (const feature of features) {
         if (feature.kind !== kind) continue;
 
-        const dist = distanceMeters(lat, lng, feature.lat, feature.lng);
+        // Use geometry-aware distance for more accurate results
+        const dist = calculateFeatureDistance(lat, lng, feature);
         if (dist < bestDistance) {
           bestDistance = dist;
           bestFeature = feature;
@@ -304,6 +340,7 @@ function distanceToLineString(
 
 /**
  * Calculate distance from point to line segment
+ * Uses equirectangular projection for accurate distance calculation
  */
 function distanceToSegment(
   lat: number,
@@ -313,13 +350,25 @@ function distanceToSegment(
   lat2: number,
   lng2: number,
 ): number {
-  // Convert to simple coordinate system for segment projection
-  const px = lng;
-  const py = lat;
-  const ax = lng1;
-  const ay = lat1;
-  const bx = lng2;
-  const by = lat2;
+  // Project to local meter-based coordinate system using equirectangular projection
+  // Use average latitude for the projection
+  const avgLat = (lat + lat1 + lat2) / 3;
+  const avgLatRad = (avgLat * Math.PI) / 180;
+  const cosAvgLat = Math.cos(avgLatRad);
+
+  // Convert to meters
+  const EARTH_RADIUS_METERS = 6378137;
+  const degreesToMeters = (EARTH_RADIUS_METERS * Math.PI) / 180;
+
+  // Convert query point to meters
+  const px = lng * degreesToMeters * cosAvgLat;
+  const py = lat * degreesToMeters;
+
+  // Convert segment endpoints to meters
+  const ax = lng1 * degreesToMeters * cosAvgLat;
+  const ay = lat1 * degreesToMeters;
+  const bx = lng2 * degreesToMeters * cosAvgLat;
+  const by = lat2 * degreesToMeters;
 
   // Vector from A to B
   const abx = bx - ax;
@@ -339,11 +388,14 @@ function distanceToSegment(
 
   const t = Math.max(0, Math.min(1, (apx * abx + apy * aby) / abLenSq));
 
-  // Closest point on segment
-  const closestLng = ax + t * abx;
-  const closestLat = ay + t * aby;
+  // Closest point on segment in meters
+  const closestX = ax + t * abx;
+  const closestY = ay + t * aby;
 
-  return distanceMeters(lat, lng, closestLat, closestLng);
+  // Distance in meters
+  const dx = px - closestX;
+  const dy = py - closestY;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 /**
@@ -478,10 +530,9 @@ function transformRoadFeature(feature: RoadFeature): MapFeatureRef {
 /**
  * Compute representative point and minimal geometry from feature geometry
  */
-function computeRepresentativePoint(geometry: {
-  kind: string;
-  coordinates: any;
-}): { lat: number; lng: number; geometry: FeatureGeometry } {
+function computeRepresentativePoint(
+  geometry: WaterFeature['geometry'] | RoadFeature['geometry'],
+): { lat: number; lng: number; geometry: FeatureGeometry } {
   switch (geometry.kind) {
     case 'Point': {
       const [lng, lat] = geometry.coordinates;
@@ -496,7 +547,7 @@ function computeRepresentativePoint(geometry: {
     }
 
     case 'LineString': {
-      const coords = geometry.coordinates as [number, number][];
+      const coords = geometry.coordinates;
       // Use centroid as representative point
       const centroid = computeCentroid(coords);
       return {
@@ -510,7 +561,7 @@ function computeRepresentativePoint(geometry: {
     }
 
     case 'Polygon': {
-      const coords = geometry.coordinates as [number, number][][];
+      const coords = geometry.coordinates;
       // Use exterior ring for centroid
       const exteriorRing = coords[0];
       const centroid = computeCentroid(exteriorRing);
@@ -523,9 +574,6 @@ function computeRepresentativePoint(geometry: {
         },
       };
     }
-
-    default:
-      throw new Error(`Unknown geometry kind: ${geometry.kind}`);
   }
 }
 

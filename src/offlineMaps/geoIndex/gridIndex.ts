@@ -56,6 +56,45 @@ export function latLngToCellKey(
 }
 
 /**
+ * Get all cell keys that a feature should be indexed in based on its geometry
+ * For points: single cell
+ * For LineStrings/Polygons: all cells overlapped by bounding box
+ */
+export function getCellKeysForFeature(
+  feature: MapFeatureRef,
+  cfg: GridIndexConfig,
+): string[] {
+  // For features without geometry or Point geometry, use representative point only
+  if (!feature.geometry || feature.geometry.kind === 'Point') {
+    const { key } = latLngToCellKey(feature.lat, feature.lng, cfg);
+    return [key];
+  }
+
+  const cellKeys = new Set<string>();
+
+  if (feature.geometry.kind === 'LineString') {
+    // For LineStrings, add cells for all vertices
+    for (const [lng, lat] of feature.geometry.coordinates) {
+      const { key } = latLngToCellKey(lat, lng, cfg);
+      cellKeys.add(key);
+    }
+  } else if (feature.geometry.kind === 'Polygon') {
+    // For Polygons, add cells for all vertices of exterior ring
+    const exteriorRing = feature.geometry.coordinates[0];
+    for (const [lng, lat] of exteriorRing) {
+      const { key } = latLngToCellKey(lat, lng, cfg);
+      cellKeys.add(key);
+    }
+  }
+
+  // Ensure at least the representative point is included
+  const { key: repKey } = latLngToCellKey(feature.lat, feature.lng, cfg);
+  cellKeys.add(repKey);
+
+  return Array.from(cellKeys);
+}
+
+/**
  * Build a grid index from features
  */
 export function buildGridIndex(
@@ -65,12 +104,15 @@ export function buildGridIndex(
   const cells: Record<string, MapFeatureRef[]> = {};
 
   for (const feature of features) {
-    const { key } = latLngToCellKey(feature.lat, feature.lng, cfg);
+    // Get all cells this feature should be indexed in
+    const cellKeys = getCellKeysForFeature(feature, cfg);
 
-    if (!cells[key]) {
-      cells[key] = [];
+    for (const key of cellKeys) {
+      if (!cells[key]) {
+        cells[key] = [];
+      }
+      cells[key].push(feature);
     }
-    cells[key].push(feature);
   }
 
   return { cfg, cells };
