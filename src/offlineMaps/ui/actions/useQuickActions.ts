@@ -226,17 +226,17 @@ export function useQuickActions(
   /**
    * Handle marker press
    */
-  const onMarkerPress = useCallback((markerId: string) => {
-    setMarkers((prev) => {
-      const marker = prev.find((m) => m.id === markerId);
+  const onMarkerPress = useCallback(
+    (markerId: string) => {
+      const marker = markers.find((m) => m.id === markerId);
       if (marker) {
         setSelectedMarker(marker);
       } else {
         setSelectedMarker(undefined);
       }
-      return prev;
-    });
-  }, []);
+    },
+    [markers],
+  );
 
   /**
    * Close marker details panel

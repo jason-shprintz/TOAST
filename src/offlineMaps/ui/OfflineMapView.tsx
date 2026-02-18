@@ -126,7 +126,9 @@ export default function OfflineMapView({
       }));
       mapAdapterRef.current.setMarkers(markerData, quickActions.onMarkerPress);
     }
-  }, [quickActions.markers, quickActions.onMarkerPress]);
+    // Only depend on markers array, not the callback which changes due to markers dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quickActions.markers]);
 
   const handleToggle = (key: keyof OverlayState, value: boolean) => {
     setOverlays((prev) => ({ ...prev, [key]: value }));
