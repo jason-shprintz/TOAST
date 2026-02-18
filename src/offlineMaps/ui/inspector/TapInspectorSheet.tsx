@@ -22,8 +22,8 @@ import {
   formatSlope,
   formatDistance,
 } from './formatters';
-import type { UseTapInspectorReturn } from './useTapInspector';
 import type { TapInspectorFeature } from './types';
+import type { UseTapInspectorReturn } from './useTapInspector';
 
 interface TapInspectorSheetProps {
   inspector: UseTapInspectorReturn;

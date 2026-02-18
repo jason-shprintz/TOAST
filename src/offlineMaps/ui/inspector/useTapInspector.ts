@@ -5,10 +5,10 @@
 
 import { useState, useCallback } from 'react';
 import { distanceMeters } from '../../geo/geoMath';
-import type { GeoIndex } from '../../geoIndex/geoIndexTypes';
-import type { TerrainService } from '../../terrain/terrainService';
-import type { MapFeatureRef } from '../../geoIndex/geoIndexTypes';
 import type { TapInspectorResult, TapInspectorFeature } from './types';
+import type { GeoIndex } from '../../geoIndex/geoIndexTypes';
+import type { MapFeatureRef } from '../../geoIndex/geoIndexTypes';
+import type { TerrainService } from '../../terrain/terrainService';
 
 // Default tolerance for tap hit testing (in meters)
 const DEFAULT_TOLERANCE_METERS = 40;
