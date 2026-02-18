@@ -43,6 +43,7 @@ export default function DownloadRegionScreen({
   getCurrentLocation,
   onViewOfflineMap,
   onBack,
+  regionStorage,
 }: DownloadRegionScreenProps) {
   const {
     draft,
@@ -65,6 +66,7 @@ export default function DownloadRegionScreen({
     downloadManager,
     getCurrentLocation,
     defaultRadiusMiles: 25,
+    regionStorage,
   });
 
   // Initialize draft on mount if idle
@@ -219,11 +221,7 @@ export default function DownloadRegionScreen({
               status={status}
               error={error}
               onPause={status === 'downloading' ? handlePause : undefined}
-              onResume={
-                status === 'paused' || status === 'error'
-                  ? handleResume
-                  : undefined
-              }
+              onResume={status === 'paused' ? handleResume : undefined}
               onCancel={handleCancel}
               onRetry={status === 'error' ? handleRetry : undefined}
             />

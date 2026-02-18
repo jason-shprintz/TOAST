@@ -3,7 +3,7 @@
  * @format
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { estimateRegionSize } from './estimator';
 import type { DownloadRegionEstimate, DownloadStatus } from './types';
 import type { RegionRepository } from '../../db/regionRepository';
@@ -15,6 +15,10 @@ export interface UseDownloadRegionOptions {
   downloadManager: DownloadManager;
   getCurrentLocation: () => Promise<{ lat: number; lng: number } | null>;
   defaultRadiusMiles?: number;
+  // Optional RegionStorage for temp file cleanup
+  regionStorage?: {
+    deleteTemp(regionId: string): Promise<void>;
+  };
 }
 
 export interface UseDownloadRegionResult {
@@ -48,6 +52,7 @@ export function useDownloadRegion(
     downloadManager,
     getCurrentLocation,
     defaultRadiusMiles = 25,
+    regionStorage,
   } = opts;
 
   const [draft, setDraft] = useState<OfflineRegionDraft | undefined>();
@@ -61,6 +66,19 @@ export function useDownloadRegion(
   const [message, setMessage] = useState<string | undefined>();
   const [status, setStatus] = useState<DownloadStatus>('idle');
   const [error, setError] = useState<string | undefined>();
+
+  // Store unsubscribe function for progress updates
+  const unsubscribeRef = useRef<(() => void) | null>(null);
+
+  // Cleanup progress subscription on unmount or when jobId changes
+  useEffect(() => {
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, [jobId]);
 
   /**
    * Initialize draft with current location
@@ -129,6 +147,9 @@ export function useDownloadRegion(
     }
 
     try {
+      // Ensure repository is initialized
+      await regionRepo.init();
+
       // Create region ID
       const newRegionId = `region-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
       const newJobId = `job-${newRegionId}`;
@@ -149,23 +170,45 @@ export function useDownloadRegion(
       setRegion(newRegion);
       setJobId(newJobId);
 
-      // Subscribe to progress updates
-      downloadManager.onProgress(newJobId, (progress) => {
-        setPhase(progress.phase);
-        setPercent(progress.percent);
-        setMessage(progress.message);
-
-        // Update status based on phase completion
-        if (progress.phase === 'finalise' && progress.percent === 100) {
-          setStatus('complete');
-        }
-      });
-
-      // Start download
+      // Start download first
       await downloadManager.start({
         jobId: newJobId,
         regionId: newRegionId,
       });
+
+      // Then subscribe to progress updates
+      // Cleanup any existing subscription
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
+
+      unsubscribeRef.current = downloadManager.onProgress(
+        newJobId,
+        async (progress) => {
+          setPhase(progress.phase);
+          setPercent(progress.percent);
+          setMessage(progress.message);
+
+          // Update status based on phase completion
+          if (progress.phase === 'finalise' && progress.percent === 100) {
+            setStatus('complete');
+
+            // Update region status to 'ready' in repository
+            try {
+              await regionRepo.updateRegionStatus(newRegionId, 'ready');
+              const updatedRegion = await regionRepo.getRegion(newRegionId);
+              if (updatedRegion) {
+                setRegion(updatedRegion);
+              }
+            } catch (repoError) {
+              console.warn(
+                'Failed to update region to ready status',
+                repoError,
+              );
+            }
+          }
+        },
+      );
 
       setStatus('downloading');
       setError(undefined);
@@ -201,7 +244,16 @@ export function useDownloadRegion(
     }
 
     try {
-      await downloadManager.resume(jobId, region?.id);
+      // Extract regionId from jobId (format: "job-{regionId}")
+      const regionId =
+        region?.id ??
+        (jobId.startsWith('job-') ? jobId.substring(4) : undefined);
+
+      if (!regionId) {
+        throw new Error('Cannot determine regionId for resume');
+      }
+
+      await downloadManager.resume(jobId, regionId);
       setStatus('downloading');
       setError(undefined);
     } catch (err) {
@@ -221,19 +273,50 @@ export function useDownloadRegion(
     }
 
     try {
+      // Try to resume the job first to ensure it's loaded in memory
+      // This is best-effort; ignore failures
+      try {
+        const dmStatus = downloadManager.getStatus(jobId);
+        if (!dmStatus || dmStatus !== 'running') {
+          const regionId = region?.id ?? jobId.substring(4);
+          await downloadManager.resume(jobId, regionId);
+        }
+      } catch {
+        // Ignore resume failures; proceed with cancel
+      }
+
+      // Cancel the download job
       await downloadManager.cancel(jobId);
+
+      // Delete the region record from database
+      if (region?.id) {
+        await regionRepo.deleteRegion(region.id);
+      }
+
+      // Delete temporary files if regionStorage is available
+      if (regionStorage && region?.id) {
+        try {
+          await regionStorage.deleteTemp(region.id);
+        } catch (cleanupErr) {
+          console.warn('Failed to delete temp files:', cleanupErr);
+        }
+      }
+
+      // Reset local UI state to idle
+      setRegion(null);
       setStatus('idle');
       setJobId(undefined);
       setPhase(undefined);
       setPercent(undefined);
       setMessage(undefined);
+      setError(undefined);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to cancel download',
       );
       setStatus('error');
     }
-  }, [jobId, downloadManager]);
+  }, [jobId, region, downloadManager, regionRepo, regionStorage]);
 
   /**
    * Delete temporary files
@@ -244,8 +327,14 @@ export function useDownloadRegion(
     }
 
     try {
+      // Delete temporary files if regionStorage is available
+      if (regionStorage) {
+        await regionStorage.deleteTemp(region.id);
+      }
+
       // Delete region from database
       await regionRepo.deleteRegion(region.id);
+
       setRegion(null);
       setStatus('idle');
       setJobId(undefined);
@@ -259,7 +348,7 @@ export function useDownloadRegion(
       );
       setStatus('error');
     }
-  }, [region, regionRepo]);
+  }, [region, regionRepo, regionStorage]);
 
   /**
    * Check for existing download on mount
@@ -267,19 +356,23 @@ export function useDownloadRegion(
   useEffect(() => {
     const checkExistingDownload = async () => {
       try {
-        const activeRegion = await regionRepo.getActiveRegion();
+        // Initialize repository first
+        await regionRepo.init();
 
-        if (activeRegion && activeRegion.status === 'downloading') {
-          setRegion(activeRegion);
-          setStatus('paused'); // Default to paused for recovery
-          const recoveryJobId = `job-${activeRegion.id}`;
+        // Use listRegions to find downloading regions (getActiveRegion only returns 'ready')
+        const regions = await regionRepo.listRegions();
+        const downloadingRegion = regions.find(
+          (r) => r.status === 'downloading',
+        );
+
+        if (downloadingRegion) {
+          setRegion(downloadingRegion);
+          setStatus('paused'); // Default to paused for recovery (no silent auto-download)
+          const recoveryJobId = `job-${downloadingRegion.id}`;
           setJobId(recoveryJobId);
 
-          // Check download manager status
-          const dmStatus = downloadManager.getStatus(recoveryJobId);
-          if (dmStatus === 'running') {
-            setStatus('downloading');
-          }
+          // Note: We intentionally keep status as 'paused' even if DownloadManager
+          // reports 'running', to avoid silent background downloads after restart
         }
       } catch (err) {
         console.error('Failed to check for existing download:', err);
