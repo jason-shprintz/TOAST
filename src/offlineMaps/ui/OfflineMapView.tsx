@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import { COLORS } from '../../theme';
 import TapInspectorSheet from './inspector/TapInspectorSheet';
@@ -98,6 +98,12 @@ export default function OfflineMapView({
     setOverlays((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Demo function to simulate a map tap (for testing since stub adapter doesn't have real map)
+  const handleTestTap = () => {
+    // Simulate tapping at the region center
+    handleMapTap(region.centerLat, region.centerLng);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer} ref={containerRef}>
@@ -122,6 +128,15 @@ export default function OfflineMapView({
             {overlays.cities ? 'ON' : 'OFF'}, Terrain=
             {overlays.terrain ? 'ON' : 'OFF'}
           </Text>
+
+          {/* Demo button to test tap inspector */}
+          <TouchableOpacity
+            style={styles.testButton}
+            onPress={handleTestTap}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.testButtonText}>Tap to Test Inspector</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -172,5 +187,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666',
     marginTop: 8,
+  },
+  testButton: {
+    marginTop: 16,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  testButtonText: {
+    color: COLORS.PRIMARY_LIGHT,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
