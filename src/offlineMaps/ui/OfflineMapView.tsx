@@ -5,24 +5,35 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import { COLORS } from '../../theme';
+import TapInspectorSheet from './inspector/TapInspectorSheet';
+import { useTapInspector } from './inspector/useTapInspector';
 import { createMapAdapter } from './mapAdapters/stubMapAdapter';
 import OverlayToggles from './OverlayToggles';
 import type { OfflineRegion } from '../types';
 import type { MapAdapter, OverlayState } from './mapAdapters/mapAdapter';
+import type { GeoIndex } from '../geoIndex/geoIndexTypes';
+import type { TerrainService } from '../terrain/terrainService';
 
 interface OfflineMapViewProps {
   region: OfflineRegion;
   onTap?: (lat: number, lng: number) => void;
+  geoIndex?: GeoIndex | null;
+  terrain?: TerrainService | null;
 }
 
 /**
  * OfflineMapView - Renders the offline map with overlay controls
  * Owns overlay toggle state and integrates with map adapter
  */
-export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
+export default function OfflineMapView({
+  region,
+  onTap,
+  geoIndex = null,
+  terrain = null,
+}: OfflineMapViewProps) {
   const [overlays, setOverlays] = useState<OverlayState>({
     water: true,
     cities: true,
@@ -31,6 +42,23 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
 
   const mapAdapterRef = useRef<MapAdapter | null>(null);
   const containerRef = useRef<View>(null) as React.RefObject<View>;
+
+  // Initialize tap inspector
+  const inspector = useTapInspector({ geoIndex, terrain });
+  const { openAt } = inspector;
+
+  // Handle map tap - trigger inspector
+  // Memoize to avoid effect re-runs
+  const handleMapTap = React.useCallback(
+    (lat: number, lng: number) => {
+      openAt(lat, lng);
+      // Also call provided onTap callback if present
+      if (onTap) {
+        onTap(lat, lng);
+      }
+    },
+    [openAt, onTap],
+  );
 
   // Initialize map adapter
   useEffect(() => {
@@ -45,7 +73,7 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
     adapter.render({
       containerRef: containerRef,
       mbtilesPath: region.tilesPath,
-      onTap,
+      onTap: handleMapTap,
       overlays,
     });
 
@@ -59,9 +87,9 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
   // Update onTap callback when it changes
   useEffect(() => {
     if (mapAdapterRef.current) {
-      mapAdapterRef.current.setOnTap(onTap);
+      mapAdapterRef.current.setOnTap(handleMapTap);
     }
-  }, [onTap]);
+  }, [handleMapTap]);
 
   // Update overlays when they change
   useEffect(() => {
@@ -72,6 +100,12 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
 
   const handleToggle = (key: keyof OverlayState, value: boolean) => {
     setOverlays((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Demo function to simulate a map tap (for testing since stub adapter doesn't have real map)
+  const handleTestTap = () => {
+    // Simulate tapping at the region center
+    handleMapTap(region.centerLat, region.centerLng);
   };
 
   return (
@@ -98,10 +132,22 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
             {overlays.cities ? 'ON' : 'OFF'}, Terrain=
             {overlays.terrain ? 'ON' : 'OFF'}
           </Text>
+
+          {/* Demo button to test tap inspector */}
+          <TouchableOpacity
+            style={styles.testButton}
+            onPress={handleTestTap}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.testButtonText}>Tap to Test Inspector</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
       <OverlayToggles overlays={overlays} onToggle={handleToggle} />
+
+      {/* Tap Inspector Sheet */}
+      <TapInspectorSheet inspector={inspector} />
     </View>
   );
 }
@@ -145,5 +191,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666',
     marginTop: 8,
+  },
+  testButton: {
+    marginTop: 16,
+    backgroundColor: COLORS.SECONDARY_ACCENT,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  testButtonText: {
+    color: COLORS.PRIMARY_LIGHT,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
