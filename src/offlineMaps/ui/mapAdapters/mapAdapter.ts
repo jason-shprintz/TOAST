@@ -13,6 +13,13 @@ export interface OverlayState {
   terrain: boolean;
 }
 
+export interface MapMarkerData {
+  id: string;
+  lat: number;
+  lng: number;
+  title?: string;
+}
+
 export interface MapRenderOptions {
   containerRef: RefObject<View> | null;
   mbtilesPath: string;
@@ -39,6 +46,11 @@ export interface MapAdapter {
    * Update the tap callback handler
    */
   setOnTap(callback: ((lat: number, lng: number) => void) | undefined): void;
+
+  /**
+   * Set markers on the map
+   */
+  setMarkers(markers: MapMarkerData[], onPress: (id: string) => void): void;
 
   /**
    * Clean up map resources

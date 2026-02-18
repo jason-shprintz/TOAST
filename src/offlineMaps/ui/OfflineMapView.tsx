@@ -8,9 +8,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import { COLORS } from '../../theme';
+import QuickActionsBar from './actions/QuickActionsBar';
+import { useQuickActions } from './actions/useQuickActions';
 import TapInspectorSheet from './inspector/TapInspectorSheet';
 import { useTapInspector } from './inspector/useTapInspector';
 import { createMapAdapter } from './mapAdapters/stubMapAdapter';
+import MapMarkers from './markers/MapMarkers';
 import OverlayToggles from './OverlayToggles';
 import type { OfflineRegion } from '../types';
 import type { MapAdapter, OverlayState } from './mapAdapters/mapAdapter';
@@ -46,6 +49,20 @@ export default function OfflineMapView({
   // Initialize tap inspector
   const inspector = useTapInspector({ geoIndex, terrain });
   const { openAt } = inspector;
+
+  // Initialize quick actions
+  const quickActions = useQuickActions({
+    geoIndex,
+    terrain,
+    getUserLocation: async () => {
+      // Return map center as fallback for now
+      // In a real app, this would use react-native-geolocation-service
+      return { lat: region.centerLat, lng: region.centerLng };
+    },
+    getMapCenter: () => {
+      return { lat: region.centerLat, lng: region.centerLng };
+    },
+  });
 
   // Handle map tap - trigger inspector
   // Memoize to avoid effect re-runs
@@ -98,6 +115,19 @@ export default function OfflineMapView({
     }
   }, [overlays]);
 
+  // Update markers when they change
+  useEffect(() => {
+    if (mapAdapterRef.current) {
+      const markerData = quickActions.markers.map((m) => ({
+        id: m.id,
+        lat: m.lat,
+        lng: m.lng,
+        title: m.title,
+      }));
+      mapAdapterRef.current.setMarkers(markerData, quickActions.onMarkerPress);
+    }
+  }, [quickActions.markers, quickActions.onMarkerPress]);
+
   const handleToggle = (key: keyof OverlayState, value: boolean) => {
     setOverlays((prev) => ({ ...prev, [key]: value }));
   };
@@ -110,6 +140,14 @@ export default function OfflineMapView({
 
   return (
     <View style={styles.container}>
+      {/* Quick Actions Bar */}
+      <QuickActionsBar
+        onFindNearestWater={quickActions.findNearestWater}
+        onFindHighestElevation={quickActions.findHighestElevation}
+        isRunning={quickActions.isRunning}
+        error={quickActions.error}
+      />
+
       <View style={styles.mapContainer} ref={containerRef}>
         {/* Placeholder view showing region info. 
             The stub adapter doesn't render actual tiles yet.
@@ -142,6 +180,14 @@ export default function OfflineMapView({
             <Text style={styles.testButtonText}>Tap to Test Inspector</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Markers overlay */}
+        <MapMarkers
+          markers={quickActions.markers}
+          selectedMarker={quickActions.selectedMarker}
+          onMarkerPress={quickActions.onMarkerPress}
+          onCloseDetails={() => quickActions.onMarkerPress('')}
+        />
       </View>
 
       <OverlayToggles overlays={overlays} onToggle={handleToggle} />
