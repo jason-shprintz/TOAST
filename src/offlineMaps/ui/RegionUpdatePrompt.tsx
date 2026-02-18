@@ -12,8 +12,8 @@ import {
   View,
   Pressable,
 } from 'react-native';
-import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { Text } from '../../components/ScaledText';
+import { COLORS } from '../../theme';
 
 export interface RegionUpdatePromptProps {
   visible: boolean;
