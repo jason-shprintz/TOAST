@@ -7,6 +7,7 @@ import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
+import OfflineMapScreen from '../offlineMaps/ui/OfflineMapScreen';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
@@ -107,6 +108,8 @@ function NavigatorContent(): JSX.Element {
             component={CommunicationsModule}
           />
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
+          {/* Navigation Module Screens */}
+          <Stack.Screen name="OfflineMapScreen" component={OfflineMapScreen} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />

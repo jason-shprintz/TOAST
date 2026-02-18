@@ -123,7 +123,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
 export const NAVIGATION_TOOLS: ToolType[] = [
   {
     name: 'Offline Map Tiles',
-    screen: 'ComingSoon',
+    screen: 'OfflineMapScreen',
     icon: 'map-outline',
     id: 'nav_offline_map_tiles',
   },
