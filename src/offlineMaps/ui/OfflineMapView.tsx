@@ -10,19 +10,30 @@ import { Text } from '../../components/ScaledText';
 import { COLORS } from '../../theme';
 import { createMapAdapter } from './mapAdapters/stubMapAdapter';
 import OverlayToggles from './OverlayToggles';
+import TapInspectorSheet from './inspector/TapInspectorSheet';
+import { useTapInspector } from './inspector/useTapInspector';
 import type { OfflineRegion } from '../types';
 import type { MapAdapter, OverlayState } from './mapAdapters/mapAdapter';
+import type { GeoIndex } from '../geoIndex/geoIndexTypes';
+import type { TerrainService } from '../terrain/terrainService';
 
 interface OfflineMapViewProps {
   region: OfflineRegion;
   onTap?: (lat: number, lng: number) => void;
+  geoIndex?: GeoIndex | null;
+  terrain?: TerrainService | null;
 }
 
 /**
  * OfflineMapView - Renders the offline map with overlay controls
  * Owns overlay toggle state and integrates with map adapter
  */
-export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
+export default function OfflineMapView({
+  region,
+  onTap,
+  geoIndex = null,
+  terrain = null,
+}: OfflineMapViewProps) {
   const [overlays, setOverlays] = useState<OverlayState>({
     water: true,
     cities: true,
@@ -31,6 +42,18 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
 
   const mapAdapterRef = useRef<MapAdapter | null>(null);
   const containerRef = useRef<View>(null) as React.RefObject<View>;
+
+  // Initialize tap inspector
+  const inspector = useTapInspector({ geoIndex, terrain });
+
+  // Handle map tap - trigger inspector
+  const handleMapTap = (lat: number, lng: number) => {
+    inspector.openAt(lat, lng);
+    // Also call provided onTap callback if present
+    if (onTap) {
+      onTap(lat, lng);
+    }
+  };
 
   // Initialize map adapter
   useEffect(() => {
@@ -45,7 +68,7 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
     adapter.render({
       containerRef: containerRef,
       mbtilesPath: region.tilesPath,
-      onTap,
+      onTap: handleMapTap,
       overlays,
     });
 
@@ -59,9 +82,10 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
   // Update onTap callback when it changes
   useEffect(() => {
     if (mapAdapterRef.current) {
-      mapAdapterRef.current.setOnTap(onTap);
+      mapAdapterRef.current.setOnTap(handleMapTap);
     }
-  }, [onTap]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onTap, inspector]);
 
   // Update overlays when they change
   useEffect(() => {
@@ -102,6 +126,9 @@ export default function OfflineMapView({ region, onTap }: OfflineMapViewProps) {
       </View>
 
       <OverlayToggles overlays={overlays} onToggle={handleToggle} />
+
+      {/* Tap Inspector Sheet */}
+      <TapInspectorSheet inspector={inspector} />
     </View>
   );
 }
