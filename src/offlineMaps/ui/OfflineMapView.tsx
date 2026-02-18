@@ -45,18 +45,19 @@ export default function OfflineMapView({
 
   // Initialize tap inspector
   const inspector = useTapInspector({ geoIndex, terrain });
+  const { openAt } = inspector;
 
   // Handle map tap - trigger inspector
   // Memoize to avoid effect re-runs
   const handleMapTap = React.useCallback(
     (lat: number, lng: number) => {
-      inspector.openAt(lat, lng);
+      openAt(lat, lng);
       // Also call provided onTap callback if present
       if (onTap) {
         onTap(lat, lng);
       }
     },
-    [inspector, onTap],
+    [openAt, onTap],
   );
 
   // Initialize map adapter

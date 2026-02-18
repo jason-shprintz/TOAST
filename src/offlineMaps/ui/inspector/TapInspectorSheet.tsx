@@ -45,7 +45,8 @@ export default function TapInspectorSheet({
     close();
   };
 
-  // Stop propagation to prevent backdrop close when tapping inside sheet
+  // No-op handler to prevent backdrop TouchableWithoutFeedback from closing
+  // the modal when user taps inside the sheet content area
   const stopPropagation = () => {};
 
   return (
@@ -55,7 +56,12 @@ export default function TapInspectorSheet({
       transparent
       onRequestClose={close}
     >
-      <TouchableWithoutFeedback onPress={handleBackdropPress}>
+      <TouchableWithoutFeedback
+        onPress={handleBackdropPress}
+        accessibilityLabel="Dismiss tap details"
+        accessibilityRole="button"
+        accessibilityHint="Dismisses the tap details sheet and returns to the map"
+      >
         <View style={styles.overlay}>
           <TouchableWithoutFeedback onPress={stopPropagation}>
             <View style={styles.sheet}>

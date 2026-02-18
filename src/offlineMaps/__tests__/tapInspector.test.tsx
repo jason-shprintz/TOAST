@@ -24,7 +24,14 @@ function TestComponent({
 
   React.useEffect(() => {
     onStateChange?.(inspector);
-  }, [inspector, onStateChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    inspector.isOpen,
+    inspector.isLoading,
+    inspector.result,
+    inspector.error,
+    onStateChange,
+  ]);
 
   return null;
 }

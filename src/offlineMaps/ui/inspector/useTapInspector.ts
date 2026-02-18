@@ -114,7 +114,9 @@ export function useTapInspector(
         }
       }, 0);
     },
-    [opts],
+    // Only geoIndex and terrain from opts are used, and they're stable references
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [opts.geoIndex, opts.terrain],
   );
 
   const close = useCallback(() => {
