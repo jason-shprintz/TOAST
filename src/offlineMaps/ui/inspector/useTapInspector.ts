@@ -3,7 +3,7 @@
  * @format
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { distanceMeters } from '../../geo/geoMath';
 import type { TapInspectorResult, TapInspectorFeature } from './types';
 import type { GeoIndex } from '../../geoIndex/geoIndexTypes';
@@ -44,14 +44,22 @@ export function useTapInspector(
     undefined,
   );
 
+  // Store timeout ID for cleanup
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const openAt = useCallback(
     (lat: number, lng: number) => {
+      // Clear any pending timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
       setIsOpen(true);
       setIsLoading(true);
       setError(undefined);
 
       // Compute result asynchronously (using setTimeout to avoid blocking UI)
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         try {
           const { geoIndex, terrain } = opts;
 
@@ -110,9 +118,23 @@ export function useTapInspector(
   );
 
   const close = useCallback(() => {
+    // Clear any pending timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setIsOpen(false);
     setError(undefined);
     // Keep result until next open for smooth transitions
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   return {

@@ -45,8 +45,8 @@ export default function TapInspectorSheet({
     close();
   };
 
-  // Prevent backdrop close when tapping inside the sheet
-  const preventClose = () => {};
+  // Stop propagation to prevent backdrop close when tapping inside sheet
+  const stopPropagation = () => {};
 
   return (
     <Modal
@@ -57,7 +57,7 @@ export default function TapInspectorSheet({
     >
       <TouchableWithoutFeedback onPress={handleBackdropPress}>
         <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={preventClose}>
+          <TouchableWithoutFeedback onPress={stopPropagation}>
             <View style={styles.sheet}>
               {/* Header */}
               <View style={styles.header}>

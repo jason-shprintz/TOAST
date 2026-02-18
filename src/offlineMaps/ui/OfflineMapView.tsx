@@ -47,13 +47,17 @@ export default function OfflineMapView({
   const inspector = useTapInspector({ geoIndex, terrain });
 
   // Handle map tap - trigger inspector
-  const handleMapTap = (lat: number, lng: number) => {
-    inspector.openAt(lat, lng);
-    // Also call provided onTap callback if present
-    if (onTap) {
-      onTap(lat, lng);
-    }
-  };
+  // Memoize to avoid effect re-runs
+  const handleMapTap = React.useCallback(
+    (lat: number, lng: number) => {
+      inspector.openAt(lat, lng);
+      // Also call provided onTap callback if present
+      if (onTap) {
+        onTap(lat, lng);
+      }
+    },
+    [inspector, onTap],
+  );
 
   // Initialize map adapter
   useEffect(() => {
@@ -84,8 +88,7 @@ export default function OfflineMapView({
     if (mapAdapterRef.current) {
       mapAdapterRef.current.setOnTap(handleMapTap);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onTap, inspector]);
+  }, [handleMapTap]);
 
   // Update overlays when they change
   useEffect(() => {
