@@ -158,6 +158,8 @@ export function useRegionUpdatePrompt(
 
   // Check distance on mount and when region changes
   useEffect(() => {
+    // Reset check flag so we run distance check for each new/updated region
+    hasCheckedRef.current = false;
     checkDistance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [region?.id, region?.status]);

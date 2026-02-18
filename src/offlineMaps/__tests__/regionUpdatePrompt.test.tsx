@@ -60,8 +60,9 @@ describe('Region Update Prompt', () => {
     centerLat: number,
     centerLng: number,
     status: 'ready' | 'idle' = 'ready',
+    id: string = 'test-region-1',
   ): OfflineRegion => ({
-    id: 'test-region-1',
+    id,
     centerLat,
     centerLng,
     radiusMiles: 25,
@@ -425,6 +426,76 @@ describe('Region Update Prompt', () => {
       expect(capturedState).toBeDefined();
       expect(capturedState!.shouldShow).toBe(false);
       expect(capturedState!.error).toBe('Location permission denied');
+    });
+
+    it('should rerun distance check when region id changes', async () => {
+      const capturedStates: Array<ReturnType<typeof useRegionUpdatePrompt>> =
+        [];
+
+      // User location near San Francisco
+      mockGetCurrentLocation.mockResolvedValue({
+        lat: 37.7749,
+        lng: -122.4194,
+      });
+
+      const region1 = createMockRegion(
+        37.7749,
+        -122.4194,
+        'ready',
+        'region-sf',
+      );
+      const region2 = createMockRegion(40.7128, -74.006, 'ready', 'region-nyc'); // New York, far away
+
+      let testRenderer: ReactTestRenderer.ReactTestRenderer;
+
+      // First render with region1 (nearby, should not show prompt)
+      await ReactTestRenderer.act(async () => {
+        testRenderer = ReactTestRenderer.create(
+          <TestComponent
+            region={region1}
+            getCurrentLocation={mockGetCurrentLocation}
+            thresholdMiles={50}
+            onStateChange={(state) => {
+              capturedStates.push(state);
+            }}
+          />,
+        );
+
+        // Wait for async operations
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      // Update with region2 (far away, should show prompt)
+      await ReactTestRenderer.act(async () => {
+        testRenderer!.update(
+          <TestComponent
+            region={region2}
+            getCurrentLocation={mockGetCurrentLocation}
+            thresholdMiles={50}
+            onStateChange={(state) => {
+              capturedStates.push(state);
+            }}
+          />,
+        );
+
+        // Wait for async operations
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      // Ensure we captured state for both regions
+      expect(capturedStates.length).toBeGreaterThanOrEqual(2);
+
+      const firstState = capturedStates[0];
+      const lastState = capturedStates[capturedStates.length - 1];
+
+      // Initially near the region: no prompt
+      expect(firstState!.shouldShow).toBe(false);
+
+      // After region id changes to a far-away region: prompt should show
+      expect(lastState!.shouldShow).toBe(true);
+
+      // Location check should have been performed again for the new region
+      expect(mockGetCurrentLocation).toHaveBeenCalledTimes(2);
     });
   });
 });

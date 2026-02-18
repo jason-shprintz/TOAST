@@ -53,6 +53,7 @@ export default function RegionUpdatePrompt({
                 style={[styles.button, styles.secondaryButton]}
                 onPress={onDismiss}
                 activeOpacity={0.7}
+                accessibilityLabel="Dismiss region update prompt"
               >
                 <Text style={styles.secondaryButtonText}>Not Now</Text>
               </TouchableOpacity>
@@ -61,6 +62,7 @@ export default function RegionUpdatePrompt({
                 style={[styles.button, styles.primaryButton]}
                 onPress={onAccept}
                 activeOpacity={0.7}
+                accessibilityLabel="Update offline map region"
               >
                 <Text style={styles.primaryButtonText}>Update Region</Text>
               </TouchableOpacity>
