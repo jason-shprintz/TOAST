@@ -1,0 +1,36 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Round Turn and Two Half Hitches diagram -->
+  <defs>
+    <style>
+      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+      .pole { fill: #654321; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+  
+  <!-- Pole/post -->
+  <rect x="85" y="50" width="20" height="100" class="pole" rx="10"/>
+  
+  <!-- Round turn (two full wraps) -->
+  <ellipse cx="95" cy="80" rx="30" ry="15" fill="none" stroke="#8B4513" stroke-width="8"/>
+  <ellipse cx="95" cy="95" rx="30" ry="15" fill="none" stroke="#8B4513" stroke-width="8"/>
+  
+  <!-- Standing part going down -->
+  <path class="rope" d="M 65 110 L 65 170" />
+  
+  <!-- First half hitch -->
+  <path class="rope" d="M 125 95 Q 135 95, 140 105 L 145 115 Q 148 125, 140 130 L 75 130 Q 65 130, 65 120" />
+  
+  <!-- Second half hitch -->
+  <path class="rope" d="M 140 130 Q 148 135, 150 145 L 155 155 Q 158 165, 150 170 L 75 170 Q 65 170, 65 160" />
+  
+  <!-- Working end -->
+  <path class="rope" d="M 150 170 L 170 180" />
+  
+  <!-- Labels -->
+  <text x="50" y="175" class="label">Standing</text>
+  <text x="155" y="185" class="label">End</text>
+  
+  <!-- Title -->
+  <text x="100" y="30" class="label" text-anchor="middle" font-weight="bold" font-size="13">Round Turn & Two Half Hitches</text>
+</svg>

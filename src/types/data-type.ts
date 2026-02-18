@@ -9,6 +9,7 @@ type ReferenceEntryType = {
   do_not: string[];
   watch_for: string[];
   notes: string[];
+  image?: string; // optional — maps to key in referenceImages.ts
 };
 
 export type ScenarioCardType = {

@@ -1,7 +1,14 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import referenceImages from '../../../assets/referenceImages';
 import { HorizontalRule } from '../../../components/HorizontalRule';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
@@ -28,6 +35,7 @@ type EntryScreenRouteProp = RouteProp<
  * - If the entry is not found, a "Topic Not Found" message is shown.
  * - The bookmark state is managed and persisted using async storage helpers.
  * - The entry data is received via navigation route parameters.
+ * - If an image exists for the entry in the asset map, it is displayed at the top.
  *
  * @returns {JSX.Element} The rendered EntryScreen component.
  */
@@ -92,6 +100,11 @@ export default function EntryScreen(): JSX.Element {
     );
   }
 
+  // Get the image for this entry if it exists
+  const entryImage = resolvedEntry.id
+    ? referenceImages[resolvedEntry.id]
+    : null;
+
   return (
     <ScreenBody>
       <SectionHeader>{resolvedEntry.title}</SectionHeader>
@@ -106,11 +119,21 @@ export default function EntryScreen(): JSX.Element {
       </View>
       <HorizontalRule />
       <View style={styles.container}>
-        {/* Summary */}
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
+          {/* Reference Image - Display if available */}
+          {entryImage && (
+            <View style={styles.imageCard}>
+              <Image
+                source={entryImage}
+                style={styles.referenceImage}
+                resizeMode="contain"
+              />
+            </View>
+          )}
+          {/* Summary */}
           {!!resolvedEntry.summary && (
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Summary</Text>
@@ -196,6 +219,20 @@ const styles = StyleSheet.create({
   helperText: {
     fontSize: 16,
     opacity: 0.8,
+  },
+  imageCard: {
+    borderWidth: 1,
+    borderColor: COLORS.TOAST_BROWN,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+    alignItems: 'center',
+  },
+  referenceImage: {
+    width: '100%',
+    height: 200,
+    maxWidth: 400,
   },
   card: {
     borderWidth: 1,

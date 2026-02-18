@@ -1,0 +1,34 @@
+<svg width="200" height="220" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+  <!-- Primitive Mallet diagram -->
+  <defs>
+    <style>
+      .wood { fill: #8B4513; stroke: #654321; stroke-width: 2; }
+      .binding { fill: none; stroke: #2F4F2F; stroke-width: 3; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+  
+  <!-- Mallet head (thick branch section) -->
+  <ellipse cx="100" cy="70" rx="40" ry="25" class="wood"/>
+  <rect x="60" y="55" width="80" height="30" class="wood"/>
+  <ellipse cx="100" cy="85" rx="40" ry="25" class="wood"/>
+  
+  <!-- Handle (straight branch) -->
+  <rect x="90" y="85" width="20" height="110" class="wood" rx="5"/>
+  <ellipse cx="100" cy="195" rx="10" ry="8" class="wood"/>
+  
+  <!-- Cordage binding -->
+  <path class="binding" d="M 75 75 Q 70 75, 70 85 L 70 95 Q 70 100, 75 100" />
+  <path class="binding" d="M 85 75 Q 80 75, 80 85 L 80 95 Q 80 100, 85 100" />
+  <path class="binding" d="M 125 75 Q 130 75, 130 85 L 130 95 Q 130 100, 125 100" />
+  <path class="binding" d="M 115 75 Q 120 75, 120 85 L 120 95 Q 120 100, 115 100" />
+  
+  <!-- Labels -->
+  <text x="40" y="75" class="label">Heavy head</text>
+  <text x="25" y="130" class="label">Handle</text>
+  <text x="140" y="90" class="label">Binding</text>
+  
+  <!-- Title -->
+  <text x="100" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="13">Primitive Mallet</text>
+  <text x="100" y="215" class="label" text-anchor="middle" font-size="10">(Stone age woodworking)</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg width="220" height="200" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pot Hanger and Tripod diagram -->
+  <defs>
+    <style>
+      .wood { fill: none; stroke: #8B4513; stroke-width: 4; stroke-linecap: round; }
+      .rope { fill: none; stroke: #654321; stroke-width: 3; }
+      .pot { fill: #333; stroke: #000; stroke-width: 2; }
+      .fire { fill: #FF6B35; opacity: 0.7; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 10px; }
+    </style>
+  </defs>
+  
+  <!-- Tripod legs -->
+  <path class="wood" d="M 110 30 L 80 140" />
+  <path class="wood" d="M 110 30 L 140 140" />
+  <path class="wood" d="M 110 30 L 110 130" />
+  
+  <!-- Rope binding at top -->
+  <ellipse cx="110" cy="30" rx="15" ry="10" class="rope"/>
+  
+  <!-- Cross bar -->
+  <path class="wood" d="M 85 70 L 135 70" />
+  
+  <!-- Rope hanging down with pot -->
+  <path class="rope" d="M 110 70 L 110 95" />
+  
+  <!-- Pot -->
+  <ellipse cx="110" cy="95" rx="15" ry="8" class="pot"/>
+  <rect x="95" y="95" width="30" height="25" class="pot" rx="3"/>
+  <ellipse cx="110" cy="120" rx="15" ry="8" class="pot"/>
+  <path d="M 95 100 L 85 95 L 85 105 L 95 110" class="pot"/>
+  
+  <!-- Fire below -->
+  <ellipse cx="110" cy="155" rx="25" ry="15" class="fire"/>
+  <path d="M 90 145 L 95 135 L 100 145" class="fire"/>
+  <path d="M 110 145 L 110 130" class="fire"/>
+  <path d="M 125 145 L 120 135 L 115 145" class="fire"/>
+  
+  <!-- Labels -->
+  <text x="140" y="40" class="label">Lashed</text>
+  <text x="140" y="50" class="label">together</text>
+  <text x="140" y="75" class="label">Cross bar</text>
+  <text x="125" y="105" class="label">Pot</text>
+  <text x="45" y="160" class="label">Fire</text>
+  
+  <!-- Title -->
+  <text x="110" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="12">Pot Hanger & Tripod</text>
+  <text x="110" y="190" class="label" text-anchor="middle" font-size="9">(Adjustable height cooking)</text>
+</svg>

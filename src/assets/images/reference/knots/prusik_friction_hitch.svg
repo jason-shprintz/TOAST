@@ -1,0 +1,38 @@
+<svg width="200" height="220" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+  <!-- Prusik Friction Hitch diagram -->
+  <defs>
+    <style>
+      .main-rope { fill: none; stroke: #333; stroke-width: 12; stroke-linecap: round; }
+      .prusik-loop { fill: none; stroke: #8B4513; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+  
+  <!-- Main rope (thick) -->
+  <path class="main-rope" d="M 100 20 L 100 200" />
+  
+  <!-- Prusik loop wrapping around main rope (3 wraps) -->
+  <!-- First wrap -->
+  <ellipse cx="85" cy="80" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  <ellipse cx="115" cy="80" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  
+  <!-- Second wrap -->
+  <ellipse cx="85" cy="100" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  <ellipse cx="115" cy="100" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  
+  <!-- Third wrap -->
+  <ellipse cx="85" cy="120" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  <ellipse cx="115" cy="120" rx="25" ry="15" fill="none" stroke="#8B4513" stroke-width="6"/>
+  
+  <!-- Connection loop at bottom -->
+  <path class="prusik-loop" d="M 60 130 Q 50 140, 50 155 L 50 170 Q 50 180, 60 180 L 140 180 Q 150 180, 150 170 L 150 155 Q 150 140, 140 130" />
+  
+  <!-- Labels -->
+  <text x="105" y="45" class="label">Main rope</text>
+  <text x="35" y="105" class="label">Prusik</text>
+  <text x="35" y="117" class="label">wraps</text>
+  <text x="70" y="205" class="label">Attach load here</text>
+  
+  <!-- Title -->
+  <text x="100" y="15" class="label" text-anchor="middle" font-weight="bold" font-size="12">Prusik Friction Hitch</text>
+</svg>

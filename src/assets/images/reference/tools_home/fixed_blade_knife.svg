@@ -1,0 +1,54 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fixed Blade Knife diagram -->
+  <defs>
+    <style>
+      .blade { fill: #C0C0C0; stroke: #808080; stroke-width: 2; }
+      .edge { fill: none; stroke: #505050; stroke-width: 1.5; }
+      .handle { fill: #8B4513; stroke: #654321; stroke-width: 2; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+  
+  <!-- Blade -->
+  <path class="blade" d="M 40 95 L 120 95 L 140 100 L 120 105 L 40 105 Z" />
+  <path class="edge" d="M 120 95 L 140 100 L 120 105" />
+  
+  <!-- Finger guard -->
+  <rect x="38" y="88" width="5" height="24" class="blade" rx="2"/>
+  
+  <!-- Handle -->
+  <ellipse cx="55" cy="100" rx="8" ry="12" class="handle"/>
+  <rect x="47" y="88" width="25" height="24" class="handle" rx="6"/>
+  <ellipse cx="72" cy="100" rx="8" ry="12" class="handle"/>
+  
+  <!-- Handle texture lines -->
+  <path d="M 52 92 L 52 108" fill="none" stroke="#654321" stroke-width="1"/>
+  <path d="M 58 92 L 58 108" fill="none" stroke="#654321" stroke-width="1"/>
+  <path d="M 64 92 L 64 108" fill="none" stroke="#654321" stroke-width="1"/>
+  
+  <!-- Safety demonstration -->
+  <g transform="translate(50, 130)">
+    <!-- Hand grip -->
+    <ellipse cx="30" cy="25" rx="20" ry="15" fill="#FFD7B5" stroke="#333" stroke-width="1.5"/>
+    <!-- Thumb -->
+    <ellipse cx="15" cy="20" rx="8" ry="10" fill="#FFD7B5" stroke="#333" stroke-width="1.5"/>
+    <!-- Arrow showing cut direction -->
+    <path d="M 60 25 L 90 25" fill="none" stroke="#E74C3C" stroke-width="3" marker-end="url(#arrow-cut)"/>
+    <text x="95" y="30" class="label" fill="#E74C3C">Away from body</text>
+  </g>
+  
+  <defs>
+    <marker id="arrow-cut" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E74C3C" />
+    </marker>
+  </defs>
+  
+  <!-- Labels -->
+  <text x="145" y="103" class="label">Sharp edge</text>
+  <text x="55" y="80" class="label" text-anchor="middle">Handle</text>
+  <text x="43" y="83" class="label" text-anchor="middle">Guard</text>
+  
+  <!-- Title -->
+  <text x="100" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="13">Fixed-Blade Knife</text>
+  <text x="100" y="190" class="label" text-anchor="middle" font-size="10">(Always cut away from yourself)</text>
+</svg>

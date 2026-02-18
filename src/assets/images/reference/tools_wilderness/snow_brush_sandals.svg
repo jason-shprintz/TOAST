@@ -1,0 +1,51 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Snow/Brush Sandals diagram -->
+  <defs>
+    <style>
+      .frame { fill: none; stroke: #8B4513; stroke-width: 4; stroke-linecap: round; }
+      .binding { fill: none; stroke: #654321; stroke-width: 2.5; }
+      .crosshatch { fill: none; stroke: #8B7355; stroke-width: 2; }
+      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+  
+  <!-- Left sandal frame (oval) -->
+  <ellipse cx="60" cy="100" rx="35" ry="55" class="frame"/>
+  
+  <!-- Cross-hatching/webbing on left sandal -->
+  <path class="crosshatch" d="M 40 70 L 80 130" />
+  <path class="crosshatch" d="M 45 70 L 75 130" />
+  <path class="crosshatch" d="M 80 70 L 40 130" />
+  <path class="crosshatch" d="M 75 70 L 45 130" />
+  <path class="crosshatch" d="M 25 100 L 95 100" />
+  <path class="crosshatch" d="M 30 90 L 90 110" />
+  <path class="crosshatch" d="M 30 110 L 90 90" />
+  
+  <!-- Binding straps on left -->
+  <ellipse cx="60" cy="85" rx="25" ry="8" class="binding"/>
+  <ellipse cx="60" cy="100" rx="25" ry="8" class="binding"/>
+  
+  <!-- Right sandal frame (oval) -->
+  <ellipse cx="140" cy="100" rx="35" ry="55" class="frame"/>
+  
+  <!-- Cross-hatching/webbing on right sandal -->
+  <path class="crosshatch" d="M 120 70 L 160 130" />
+  <path class="crosshatch" d="M 125 70 L 155 130" />
+  <path class="crosshatch" d="M 160 70 L 120 130" />
+  <path class="crosshatch" d="M 155 70 L 125 130" />
+  <path class="crosshatch" d="M 105 100 L 175 100" />
+  <path class="crosshatch" d="M 110 90 L 170 110" />
+  <path class="crosshatch" d="M 110 110 L 170 90" />
+  
+  <!-- Binding straps on right -->
+  <ellipse cx="140" cy="85" rx="25" ry="8" class="binding"/>
+  <ellipse cx="140" cy="100" rx="25" ry="8" class="binding"/>
+  
+  <!-- Labels -->
+  <text x="25" y="170" class="label">Bent sapling frame</text>
+  <text x="25" y="182" class="label">with woven brush/bark</text>
+  
+  <!-- Title -->
+  <text x="100" y="25" class="label" text-anchor="middle" font-weight="bold" font-size="13">Snow/Brush Sandals</text>
+  <text x="100" y="190" class="label" text-anchor="middle" font-size="10">(Impromptu snowshoes)</text>
+</svg>
