@@ -4,8 +4,6 @@
  * @format
  */
 
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { ParamListBase } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -19,6 +17,8 @@ import { createRegionPaths } from '../../storage/paths';
 import { createRegionStorage } from '../../storage/regionStorage';
 import DownloadRegionScreen from './DownloadRegionScreen';
 import type { PhaseHandlers } from '../../download/downloadTypes';
+import type { ParamListBase } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 /**
  * Mock location provider - replace with actual implementation
@@ -65,7 +65,7 @@ export default function DownloadRegionScreenContainer() {
   const fileOps = React.useMemo(() => createFileOps(), []);
   const paths = React.useMemo(() => createRegionPaths(), []);
   const regionStorage = React.useMemo(
-    () => createRegionStorage(fileOps, paths),
+    () => createRegionStorage(paths, fileOps),
     [fileOps, paths],
   );
   const stateStore = React.useMemo(

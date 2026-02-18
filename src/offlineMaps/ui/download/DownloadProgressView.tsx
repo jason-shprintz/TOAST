@@ -85,7 +85,10 @@ export default function DownloadProgressView({
             />
           </View>
           <Text style={styles.percentText}>
-            {Math.round(Math.max(0, Math.min(100, isFinite(percent) ? percent : 0)))}%
+            {Math.round(
+              Math.max(0, Math.min(100, isFinite(percent) ? percent : 0)),
+            )}
+            %
           </Text>
         </View>
       ) : (
