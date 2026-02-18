@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   estimateCard: {
-    backgroundColor: COLORS.SECONDARY_LIGHT,
+    backgroundColor: COLORS.BACKGROUND,
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,

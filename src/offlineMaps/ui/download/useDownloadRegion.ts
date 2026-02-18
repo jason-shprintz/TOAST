@@ -150,7 +150,7 @@ export function useDownloadRegion(
       setJobId(newJobId);
 
       // Subscribe to progress updates
-      const unsubscribe = downloadManager.onProgress(newJobId, (progress) => {
+      downloadManager.onProgress(newJobId, (progress) => {
         setPhase(progress.phase);
         setPercent(progress.percent);
         setMessage(progress.message);
@@ -169,9 +169,6 @@ export function useDownloadRegion(
 
       setStatus('downloading');
       setError(undefined);
-
-      // Store unsubscribe function for cleanup
-      return () => unsubscribe();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to start download',

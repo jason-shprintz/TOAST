@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   secondaryButton: {
-    backgroundColor: COLORS.PRIMARY_MEDIUM,
+    backgroundColor: COLORS.BACKGROUND,
   },
   secondaryButtonText: {
     color: COLORS.PRIMARY_DARK,

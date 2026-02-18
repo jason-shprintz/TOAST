@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   progressBarBackground: {
     height: 8,
-    backgroundColor: COLORS.PRIMARY_MEDIUM,
+    backgroundColor: COLORS.BACKGROUND,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   secondaryButton: {
-    backgroundColor: COLORS.PRIMARY_MEDIUM,
+    backgroundColor: COLORS.BACKGROUND,
   },
   secondaryButtonText: {
     color: COLORS.PRIMARY_DARK,

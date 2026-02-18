@@ -3,7 +3,7 @@
  * @format
  */
 
-import { computeCoverage, type LatLng } from '../../geo/coverage';
+import { computeTileCoverage, type LatLng } from '../../geo/coverage';
 import type { DownloadRegionEstimate } from './types';
 
 /**
@@ -33,7 +33,7 @@ export function estimateRegionSize(
   radiusMiles: number,
 ): DownloadRegionEstimate {
   // Compute tile coverage
-  const coverage = computeCoverage(center, radiusMiles, DEFAULT_TILE_CONFIG);
+  const coverage = computeTileCoverage(center, radiusMiles, DEFAULT_TILE_CONFIG);
 
   // Estimate tile storage
   const estimatedTilesMB = (coverage.totalTileCount * AVG_PBF_TILE_KB) / 1024;

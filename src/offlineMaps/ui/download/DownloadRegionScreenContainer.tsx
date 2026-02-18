@@ -10,6 +10,8 @@ import DownloadRegionScreen from './DownloadRegionScreen';
 import { createRegionRepository } from '../../db/regionRepository';
 import { createDownloadManager } from '../../download/downloadManager';
 import { createDownloadStateStore } from '../../download/downloadStateStore';
+import { createFileOps } from '../../storage/fileOps';
+import { createRegionPaths } from '../../storage/paths';
 import type { PhaseHandlers } from '../../download/downloadTypes';
 
 /**
@@ -52,7 +54,12 @@ export default function DownloadRegionScreenContainer() {
 
   // Create dependencies
   const regionRepo = React.useMemo(() => createRegionRepository(), []);
-  const stateStore = React.useMemo(() => createDownloadStateStore(), []);
+  const fileOps = React.useMemo(() => createFileOps(), []);
+  const paths = React.useMemo(() => createRegionPaths(), []);
+  const stateStore = React.useMemo(
+    () => createDownloadStateStore(fileOps, paths.tmpDir),
+    [fileOps, paths],
+  );
   const handlers = React.useMemo(() => createStubPhaseHandlers(), []);
   const downloadManager = React.useMemo(
     () => createDownloadManager({ store: stateStore, handlers }),
