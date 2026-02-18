@@ -214,8 +214,7 @@ describe('Quick Actions', () => {
       expect(capturedState!.markers[0].lat).toBe(36.2);
       expect(capturedState!.markers[0].lng).toBe(-115.2);
       expect(capturedState!.markers[0].elevationM).toBe(1500);
-      expect(capturedState!.markers[0].subtitle).toContain('1500 m');
-      expect(capturedState!.markers[0].subtitle).toContain('ft');
+      expect(capturedState!.markers[0].subtitle).toBe('Within 5 mile radius');
       expect(capturedState!.selectedMarker).toEqual(capturedState!.markers[0]);
       expect(capturedState!.isRunning).toBe(false);
       expect(capturedState!.error).toBeUndefined();

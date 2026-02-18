@@ -5,7 +5,6 @@
 
 import { useCallback, useState } from 'react';
 import { distanceMeters } from '../../geo/geoMath';
-import { formatElevation } from '../markers/markerFormatters';
 import type { GeoIndex } from '../../geoIndex/geoIndexTypes';
 import type { TerrainService } from '../../terrain/terrainService';
 import type { MapMarker, MarkerKind } from '../markers/types';
@@ -115,13 +114,18 @@ export function useQuickActions(
       );
 
       // Create marker
+      const waterType = waterFeature.props?.type;
+      const subtitle =
+        waterFeature.name ||
+        (typeof waterType === 'string' ? waterType : undefined);
+
       const marker: MapMarker = {
         id: 'nearestWater',
         kind: 'nearestWater',
         lat: waterFeature.lat,
         lng: waterFeature.lng,
         title: 'Nearest Water',
-        subtitle: waterFeature.name || waterFeature.props?.type,
+        subtitle,
         distanceMeters: distance,
       };
 
@@ -185,7 +189,7 @@ export function useQuickActions(
         lat: highestPoint.lat,
         lng: highestPoint.lng,
         title: 'Highest Elevation (5 mi)',
-        subtitle: formatElevation(highestPoint.elevationM),
+        subtitle: 'Within 5 mile radius',
         elevationM: highestPoint.elevationM,
       };
 

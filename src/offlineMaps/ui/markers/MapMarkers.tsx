@@ -4,10 +4,16 @@
  */
 
 import React from 'react';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
-import { formatDistance } from './markerFormatters';
+import { formatDistance, formatElevation } from './markerFormatters';
 import type { MapMarker } from './types';
 
 export interface MapMarkersProps {
@@ -75,7 +81,13 @@ export default function MapMarkers({
           activeOpacity={1}
           onPress={onCloseDetails}
         >
-          <View style={styles.detailsPanel}>
+          <Pressable
+            style={styles.detailsPanel}
+            onPress={(e) => {
+              // Prevent tap from propagating to overlay
+              e.stopPropagation();
+            }}
+          >
             <View style={styles.detailsHeader}>
               <Text style={styles.detailsTitle}>{selectedMarker.title}</Text>
               <TouchableOpacity
@@ -117,12 +129,12 @@ export default function MapMarkers({
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Elevation:</Text>
                   <Text style={styles.detailValue}>
-                    {selectedMarker.elevationM.toFixed(0)} m
+                    {formatElevation(selectedMarker.elevationM)}
                   </Text>
                 </View>
               )}
             </View>
-          </View>
+          </Pressable>
         </TouchableOpacity>
       </Modal>
     );
