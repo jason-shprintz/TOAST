@@ -74,12 +74,13 @@ export default function DownloadRegionScreen({
     }
   }, [status, initDraft]);
 
-  // Run estimate after draft is ready
+  // Run estimate after draft is ready (only once)
   useEffect(() => {
     if (draft && !estimate && status === 'estimating') {
       runEstimate();
     }
-  }, [draft, estimate, status, runEstimate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft, status]); // Intentionally omit estimate to prevent re-runs
 
   const handleStartDownload = useCallback(() => {
     startDownload();

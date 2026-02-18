@@ -130,7 +130,7 @@ export function useDownloadRegion(
 
     try {
       // Create region ID
-      const newRegionId = `region-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const newRegionId = `region-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
       const newJobId = `job-${newRegionId}`;
 
       // Create region record

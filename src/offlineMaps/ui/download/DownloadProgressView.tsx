@@ -41,7 +41,7 @@ function getPhaseLabel(phase?: string): string {
     dem: 'Downloading elevation data...',
     overlays: 'Downloading overlays...',
     index: 'Building offline index...',
-    finalise: 'Finalising offline package...',
+    finalise: 'Finalizing offline package...',
   };
 
   return phaseLabels[phase] || phase;
