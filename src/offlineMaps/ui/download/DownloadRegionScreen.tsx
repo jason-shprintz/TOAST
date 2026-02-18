@@ -20,8 +20,10 @@ import DownloadRegionCard from './DownloadRegionCard';
 import { useDownloadRegion } from './useDownloadRegion';
 import type { UseDownloadRegionOptions } from './useDownloadRegion';
 
-export interface DownloadRegionScreenProps
-  extends Omit<UseDownloadRegionOptions, 'defaultRadiusMiles'> {
+export interface DownloadRegionScreenProps extends Omit<
+  UseDownloadRegionOptions,
+  'defaultRadiusMiles'
+> {
   /**
    * Callback when user wants to view the offline map
    */
@@ -45,7 +47,6 @@ export default function DownloadRegionScreen({
   const {
     draft,
     estimate,
-    region,
     jobId,
     phase,
     percent,
@@ -179,7 +180,10 @@ export default function DownloadRegionScreen({
   // Render main download UI
   return (
     <ScreenBody>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Download Offline Region</Text>

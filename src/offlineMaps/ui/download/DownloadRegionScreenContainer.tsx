@@ -4,14 +4,14 @@
  * @format
  */
 
-import React, { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import DownloadRegionScreen from './DownloadRegionScreen';
+import React, { useCallback } from 'react';
 import { createRegionRepository } from '../../db/regionRepository';
 import { createDownloadManager } from '../../download/downloadManager';
 import { createDownloadStateStore } from '../../download/downloadStateStore';
 import { createFileOps } from '../../storage/fileOps';
 import { createRegionPaths } from '../../storage/paths';
+import DownloadRegionScreen from './DownloadRegionScreen';
 import type { PhaseHandlers } from '../../download/downloadTypes';
 
 /**

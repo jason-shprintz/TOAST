@@ -8,8 +8,8 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
-import type { OfflineRegionDraft } from '../../types';
 import type { DownloadRegionEstimate } from './types';
+import type { OfflineRegionDraft } from '../../types';
 
 interface DownloadRegionCardProps {
   draft?: OfflineRegionDraft;

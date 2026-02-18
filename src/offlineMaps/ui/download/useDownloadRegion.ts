@@ -4,11 +4,11 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { estimateRegionSize } from './estimator';
+import type { DownloadRegionEstimate, DownloadStatus } from './types';
 import type { RegionRepository } from '../../db/regionRepository';
 import type { DownloadManager } from '../../download/downloadTypes';
 import type { OfflineRegion, OfflineRegionDraft } from '../../types';
-import { estimateRegionSize } from './estimator';
-import type { DownloadRegionEstimate, DownloadStatus } from './types';
 
 export interface UseDownloadRegionOptions {
   regionRepo: RegionRepository;
@@ -51,7 +51,9 @@ export function useDownloadRegion(
   } = opts;
 
   const [draft, setDraft] = useState<OfflineRegionDraft | undefined>();
-  const [estimate, setEstimate] = useState<DownloadRegionEstimate | undefined>();
+  const [estimate, setEstimate] = useState<
+    DownloadRegionEstimate | undefined
+  >();
   const [region, setRegion] = useState<OfflineRegion | null | undefined>();
   const [jobId, setJobId] = useState<string | undefined>();
   const [phase, setPhase] = useState<string | undefined>();
@@ -83,9 +85,7 @@ export function useDownloadRegion(
       setDraft(newDraft);
       setError(undefined);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to get location',
-      );
+      setError(err instanceof Error ? err.message : 'Failed to get location');
       setStatus('error');
     }
   }, [getCurrentLocation, defaultRadiusMiles]);
@@ -170,9 +170,7 @@ export function useDownloadRegion(
       setStatus('downloading');
       setError(undefined);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to start download',
-      );
+      setError(err instanceof Error ? err.message : 'Failed to start download');
       setStatus('error');
     }
   }, [draft, regionRepo, downloadManager]);
@@ -189,9 +187,7 @@ export function useDownloadRegion(
       await downloadManager.pause(jobId);
       setStatus('paused');
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to pause download',
-      );
+      setError(err instanceof Error ? err.message : 'Failed to pause download');
       setStatus('error');
     }
   }, [jobId, downloadManager]);
@@ -259,9 +255,7 @@ export function useDownloadRegion(
       setError(undefined);
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to delete temporary files',
+        err instanceof Error ? err.message : 'Failed to delete temporary files',
       );
       setStatus('error');
     }

@@ -75,9 +75,7 @@ export default function DownloadProgressView({
       {percent !== undefined ? (
         <View style={styles.progressContainer}>
           <View style={styles.progressBarBackground}>
-            <View
-              style={[styles.progressBarFill, { width: `${percent}%` }]}
-            />
+            <View style={[styles.progressBarFill, { width: `${percent}%` }]} />
           </View>
           <Text style={styles.percentText}>{Math.round(percent)}%</Text>
         </View>

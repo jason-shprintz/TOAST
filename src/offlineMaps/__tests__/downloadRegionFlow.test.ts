@@ -4,7 +4,6 @@
  */
 
 import { estimateRegionSize } from '../ui/download/estimator';
-import type { OfflineRegion } from '../types';
 
 describe('Download Region Flow', () => {
   describe('estimateRegionSize', () => {
@@ -21,7 +20,9 @@ describe('Download Region Flow', () => {
       expect(estimate.estimatedMetaMB).toBe(20); // META_ESTIMATE_MB
       expect(estimate.estimatedTotalMB).toBeGreaterThan(0);
       expect(estimate.estimatedTotalMB).toBe(
-        estimate.estimatedTilesMB + estimate.estimatedDemMB + estimate.estimatedMetaMB,
+        estimate.estimatedTilesMB +
+          estimate.estimatedDemMB +
+          estimate.estimatedMetaMB,
       );
     });
 
@@ -57,7 +58,10 @@ describe('Download Region Flow', () => {
       const radiusMiles = 25;
 
       // Test different latitudes
-      const sanFrancisco = estimateRegionSize({ lat: 37.7749, lng: -122.4194 }, radiusMiles);
+      const sanFrancisco = estimateRegionSize(
+        { lat: 37.7749, lng: -122.4194 },
+        radiusMiles,
+      );
       const equator = estimateRegionSize({ lat: 0, lng: 0 }, radiusMiles);
       const nearPole = estimateRegionSize({ lat: 80, lng: 0 }, radiusMiles);
 
