@@ -4,7 +4,12 @@
  * @format
  */
 
-import type { MapAdapter, MapRenderOptions, OverlayState } from './mapAdapter';
+import type {
+  MapAdapter,
+  MapMarkerData,
+  MapRenderOptions,
+  OverlayState,
+} from './mapAdapter';
 
 /**
  * Stub implementation that doesn't use a real map SDK
@@ -14,6 +19,7 @@ import type { MapAdapter, MapRenderOptions, OverlayState } from './mapAdapter';
 export class StubMapAdapter implements MapAdapter {
   private opts: MapRenderOptions | null = null;
   private onTapCallback: ((lat: number, lng: number) => void) | undefined;
+  private onMarkerPressCallback: ((id: string) => void) | undefined;
 
   render(opts: MapRenderOptions): void {
     this.opts = opts;
@@ -38,9 +44,18 @@ export class StubMapAdapter implements MapAdapter {
     console.log('StubMapAdapter: setOnTap', { hasCallback: !!callback });
   }
 
+  setMarkers(markers: MapMarkerData[], onPress: (id: string) => void): void {
+    this.onMarkerPressCallback = onPress;
+    console.log('StubMapAdapter: setMarkers', {
+      count: markers.length,
+      markers,
+    });
+  }
+
   destroy(): void {
     this.opts = null;
     this.onTapCallback = undefined;
+    this.onMarkerPressCallback = undefined;
     console.log('StubMapAdapter: destroy called');
   }
 }
