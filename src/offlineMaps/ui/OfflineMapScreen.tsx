@@ -21,6 +21,9 @@ import { useOfflineRegion } from './useOfflineRegion';
 
 /**
  * Mock location provider - replace with actual implementation
+ * TODO: Replace with actual geolocation service using react-native-geolocation-service
+ * This mock always returns San Francisco, so the region update prompt will not
+ * trigger in production until this is replaced with real location access.
  */
 const getCurrentLocation = async (): Promise<{
   lat: number;

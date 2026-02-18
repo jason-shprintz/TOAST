@@ -44,8 +44,8 @@ export default function RegionUpdatePrompt({
           <View style={styles.content}>
             <Text style={styles.title}>Update Offline Map Area?</Text>
             <Text style={styles.message}>
-              You've moved outside your downloaded 25-mile offline map region.
-              Download a new region centered on your current location?
+              You've moved outside your downloaded offline map region. Download
+              a new region centered on your current location?
             </Text>
 
             <View style={styles.buttonContainer}>
