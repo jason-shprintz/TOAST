@@ -1,12 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import referenceImages from '../../../assets/referenceImages';
 import { HorizontalRule } from '../../../components/HorizontalRule';
@@ -100,8 +94,8 @@ export default function EntryScreen(): JSX.Element {
     );
   }
 
-  // Get the image for this entry if it exists
-  const entryImage = resolvedEntry.id
+  // Get the SVG component for this entry if it exists
+  const SvgComponent = resolvedEntry.id
     ? referenceImages[resolvedEntry.id]
     : null;
 
@@ -124,13 +118,9 @@ export default function EntryScreen(): JSX.Element {
           contentContainerStyle={styles.scrollContent}
         >
           {/* Reference Image - Display if available */}
-          {entryImage && (
+          {SvgComponent && (
             <View style={styles.imageCard}>
-              <Image
-                source={entryImage}
-                style={styles.referenceImage}
-                resizeMode="contain"
-              />
+              <SvgComponent width="100%" height={200} />
             </View>
           )}
           {/* Summary */}
@@ -228,11 +218,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: COLORS.PRIMARY_LIGHT,
     alignItems: 'center',
-  },
-  referenceImage: {
-    width: '100%',
-    height: 200,
-    maxWidth: 400,
   },
   card: {
     borderWidth: 1,
