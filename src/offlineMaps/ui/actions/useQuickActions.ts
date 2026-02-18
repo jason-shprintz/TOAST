@@ -33,6 +33,7 @@ export interface UseQuickActionsReturn {
   clearAll(): void;
 
   onMarkerPress(markerId: string): void;
+  closeDetails(): void;
 }
 
 /**
@@ -230,9 +231,18 @@ export function useQuickActions(
       const marker = prev.find((m) => m.id === markerId);
       if (marker) {
         setSelectedMarker(marker);
+      } else {
+        setSelectedMarker(undefined);
       }
       return prev;
     });
+  }, []);
+
+  /**
+   * Close marker details panel
+   */
+  const closeDetails = useCallback(() => {
+    setSelectedMarker(undefined);
   }, []);
 
   return {
@@ -245,5 +255,6 @@ export function useQuickActions(
     clearMarker,
     clearAll,
     onMarkerPress,
+    closeDetails,
   };
 }

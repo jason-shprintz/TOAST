@@ -186,7 +186,7 @@ export default function OfflineMapView({
           markers={quickActions.markers}
           selectedMarker={quickActions.selectedMarker}
           onMarkerPress={quickActions.onMarkerPress}
-          onCloseDetails={() => quickActions.onMarkerPress('')}
+          onCloseDetails={quickActions.closeDetails}
         />
       </View>
 

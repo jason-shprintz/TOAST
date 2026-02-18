@@ -75,11 +75,7 @@ export default function MapMarkers({
           activeOpacity={1}
           onPress={onCloseDetails}
         >
-          <TouchableOpacity
-            style={styles.detailsPanel}
-            activeOpacity={1}
-            onPress={(e) => e.stopPropagation()}
-          >
+          <View style={styles.detailsPanel}>
             <View style={styles.detailsHeader}>
               <Text style={styles.detailsTitle}>{selectedMarker.title}</Text>
               <TouchableOpacity
@@ -126,7 +122,7 @@ export default function MapMarkers({
                 </View>
               )}
             </View>
-          </TouchableOpacity>
+          </View>
         </TouchableOpacity>
       </Modal>
     );
