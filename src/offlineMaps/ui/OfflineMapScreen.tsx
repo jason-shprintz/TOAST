@@ -23,13 +23,20 @@ export interface OfflineMapScreenProps {
    * If not provided, taps are logged but not acted upon.
    */
   onTap?: (lat: number, lng: number) => void;
+  /**
+   * Optional navigation function to download screen
+   */
+  onNavigateToDownload?: () => void;
 }
 
 /**
  * OfflineMapScreen - Main screen for offline map viewing
  * Handles loading states and delegates to OfflineMapView when ready
  */
-export default function OfflineMapScreen({ onTap }: OfflineMapScreenProps) {
+export default function OfflineMapScreen({
+  onTap,
+  onNavigateToDownload,
+}: OfflineMapScreenProps) {
   const { region, status, error, reload } = useOfflineRegion();
 
   const handleMapTap = useCallback(
@@ -46,9 +53,11 @@ export default function OfflineMapScreen({ onTap }: OfflineMapScreenProps) {
   };
 
   const handleDownload = () => {
-    // Navigate to download screen
-    // This will be implemented when navigation is set up
-    console.log('Download region requested');
+    if (onNavigateToDownload) {
+      onNavigateToDownload();
+    } else {
+      console.log('Download region requested - no navigation handler');
+    }
   };
 
   if (status === 'loading') {
