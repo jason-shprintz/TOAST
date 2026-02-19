@@ -244,7 +244,11 @@ export default function DownloadRegionScreen({
     <ScreenBody>
       <SectionHeader>Download Offline Region</SectionHeader>
       {onBack && (
-        <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={handleBack}
+          activeOpacity={0.7}
+          style={styles.backButton}
+        >
           <Text style={dynamicStyles.backLink}>← Back</Text>
         </TouchableOpacity>
       )}
