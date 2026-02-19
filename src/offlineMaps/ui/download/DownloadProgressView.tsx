@@ -268,20 +268,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  primaryButton: {
-  },
+  primaryButton: {},
   primaryButtonText: {
     fontSize: 14,
     fontWeight: '600',
   },
-  secondaryButton: {
-  },
+  secondaryButton: {},
   secondaryButtonText: {
     fontSize: 14,
     fontWeight: '600',
   },
-  dangerButton: {
-  },
+  dangerButton: {},
   dangerButtonText: {
     fontSize: 14,
     fontWeight: '600',

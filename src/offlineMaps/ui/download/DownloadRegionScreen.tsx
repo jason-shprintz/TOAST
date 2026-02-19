@@ -373,15 +373,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  secondaryButton: {
-  },
+  secondaryButton: {},
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
-  dangerButton: {
-  },
+  dangerButton: {},
   dangerButtonText: {
     fontSize: 14,
     fontWeight: '600',
