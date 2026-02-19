@@ -102,7 +102,9 @@ export default function RegionUpdatePrompt({
                 activeOpacity={0.7}
                 accessibilityLabel="Update offline map region"
               >
-                <Text style={dynamicStyles.primaryButtonText}>Update Region</Text>
+                <Text style={dynamicStyles.primaryButtonText}>
+                  Update Region
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -160,8 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  primaryButton: {
-  },
+  primaryButton: {},
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',

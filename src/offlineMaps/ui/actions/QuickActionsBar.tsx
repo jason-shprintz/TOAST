@@ -63,7 +63,10 @@ export default function QuickActionsBar({
     <View style={dynamicStyles.container}>
       <View style={styles.buttonRow}>
         <TouchableOpacity
-          style={[dynamicStyles.button, isRunning && dynamicStyles.buttonDisabled]}
+          style={[
+            dynamicStyles.button,
+            isRunning && dynamicStyles.buttonDisabled,
+          ]}
           onPress={onFindNearestWater}
           disabled={isRunning}
           activeOpacity={0.7}
@@ -72,12 +75,17 @@ export default function QuickActionsBar({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[dynamicStyles.button, isRunning && dynamicStyles.buttonDisabled]}
+          style={[
+            dynamicStyles.button,
+            isRunning && dynamicStyles.buttonDisabled,
+          ]}
           onPress={onFindHighestElevation}
           disabled={isRunning}
           activeOpacity={0.7}
         >
-          <Text style={dynamicStyles.buttonText}>Find Highest Elevation (5 mi)</Text>
+          <Text style={dynamicStyles.buttonText}>
+            Find Highest Elevation (5 mi)
+          </Text>
         </TouchableOpacity>
       </View>
 

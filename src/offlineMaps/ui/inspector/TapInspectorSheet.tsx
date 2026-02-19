@@ -163,7 +163,9 @@ export default function TapInspectorSheet({
                       size="large"
                       color={COLORS.SECONDARY_ACCENT}
                     />
-                    <Text style={dynamicStyles.loadingText}>Loading details…</Text>
+                    <Text style={dynamicStyles.loadingText}>
+                      Loading details…
+                    </Text>
                   </View>
                 )}
 
@@ -175,7 +177,9 @@ export default function TapInspectorSheet({
                       style={dynamicStyles.closeButtonOutlined}
                       onPress={close}
                     >
-                      <Text style={dynamicStyles.closeButtonOutlinedText}>Close</Text>
+                      <Text style={dynamicStyles.closeButtonOutlinedText}>
+                        Close
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -195,7 +199,9 @@ export default function TapInspectorSheet({
                     <View style={styles.section}>
                       <Text style={dynamicStyles.sectionTitle}>Terrain</Text>
                       <View style={styles.terrainRow}>
-                        <Text style={dynamicStyles.terrainLabel}>Elevation:</Text>
+                        <Text style={dynamicStyles.terrainLabel}>
+                          Elevation:
+                        </Text>
                         <Text style={dynamicStyles.terrainValue}>
                           {result.elevationM !== null
                             ? formatElevation(result.elevationM)
@@ -214,14 +220,20 @@ export default function TapInspectorSheet({
 
                     {/* Features */}
                     <View style={styles.section}>
-                      <Text style={dynamicStyles.sectionTitle}>Nearby Features</Text>
+                      <Text style={dynamicStyles.sectionTitle}>
+                        Nearby Features
+                      </Text>
                       {result.features.length === 0 ? (
                         <Text style={dynamicStyles.emptyText}>
                           No nearby features found
                         </Text>
                       ) : (
                         result.features.map((feature) => (
-                          <FeatureItem key={feature.id} feature={feature} styles={dynamicStyles} />
+                          <FeatureItem
+                            key={feature.id}
+                            feature={feature}
+                            styles={dynamicStyles}
+                          />
                         ))
                       )}
                     </View>
@@ -239,13 +251,21 @@ export default function TapInspectorSheet({
 /**
  * Individual feature item in the list
  */
-function FeatureItem({ feature, styles: dynamicItemStyles }: { feature: TapInspectorFeature; styles: any }) {
+function FeatureItem({
+  feature,
+  styles: dynamicItemStyles,
+}: {
+  feature: TapInspectorFeature;
+  styles: any;
+}) {
   return (
     <View style={dynamicItemStyles.featureItem}>
       <View style={styles.featureHeader}>
         <Text style={dynamicItemStyles.featureTitle}>{feature.title}</Text>
         {feature.subtitle && (
-          <Text style={dynamicItemStyles.featureSubtitle}>{feature.subtitle}</Text>
+          <Text style={dynamicItemStyles.featureSubtitle}>
+            {feature.subtitle}
+          </Text>
         )}
       </View>
       <Text style={dynamicItemStyles.featureDistance}>

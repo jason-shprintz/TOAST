@@ -220,7 +220,9 @@ export default function OfflineMapView({
             onPress={handleTestTap}
             activeOpacity={0.7}
           >
-            <Text style={dynamicStyles.testButtonText}>Tap to Test Inspector</Text>
+            <Text style={dynamicStyles.testButtonText}>
+              Tap to Test Inspector
+            </Text>
           </TouchableOpacity>
         </View>
 

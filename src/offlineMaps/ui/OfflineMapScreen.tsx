@@ -131,7 +131,9 @@ export default function OfflineMapScreen({
       <ScreenBody>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-          <Text style={dynamicStyles.loadingText}>Loading offline region...</Text>
+          <Text style={dynamicStyles.loadingText}>
+            Loading offline region...
+          </Text>
         </View>
       </ScreenBody>
     );
@@ -168,7 +170,9 @@ export default function OfflineMapScreen({
             onPress={handleDownload}
             activeOpacity={0.7}
           >
-            <Text style={dynamicStyles.buttonText}>Download Offline Region</Text>
+            <Text style={dynamicStyles.buttonText}>
+              Download Offline Region
+            </Text>
           </TouchableOpacity>
         </View>
       </ScreenBody>

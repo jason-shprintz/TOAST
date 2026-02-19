@@ -407,6 +407,9 @@ describe('Region Update Prompt', () => {
         new Error('Location permission denied'),
       );
 
+      // Suppress expected console.error from the hook's error handler
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
       await ReactTestRenderer.act(async () => {
         ReactTestRenderer.create(
           <TestComponent
@@ -426,6 +429,8 @@ describe('Region Update Prompt', () => {
       expect(capturedState).toBeDefined();
       expect(capturedState!.shouldShow).toBe(false);
       expect(capturedState!.error).toBe('Location permission denied');
+
+      jest.restoreAllMocks();
     });
 
     it('should rerun distance check when region id changes', async () => {

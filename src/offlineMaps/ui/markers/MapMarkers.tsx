@@ -105,7 +105,8 @@ export default function MapMarkers({
             key={marker.id}
             style={[
               dynamicStyles.markerItem,
-              selectedMarker?.id === marker.id && dynamicStyles.markerItemSelected,
+              selectedMarker?.id === marker.id &&
+                dynamicStyles.markerItemSelected,
             ]}
             onPress={() => onMarkerPress(marker.id)}
             activeOpacity={0.7}
@@ -146,7 +147,9 @@ export default function MapMarkers({
             }}
           >
             <View style={styles.detailsHeader}>
-              <Text style={dynamicStyles.detailsTitle}>{selectedMarker.title}</Text>
+              <Text style={dynamicStyles.detailsTitle}>
+                {selectedMarker.title}
+              </Text>
               <TouchableOpacity
                 style={dynamicStyles.closeButton}
                 onPress={onCloseDetails}
@@ -229,8 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 4,
   },
-  markerItemSelected: {
-  },
+  markerItemSelected: {},
   markerItemTitle: {
     fontSize: 10,
     fontWeight: '500',
