@@ -408,29 +408,31 @@ describe('Region Update Prompt', () => {
       );
 
       // Suppress expected console.error from the hook's error handler
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-      await ReactTestRenderer.act(async () => {
-        ReactTestRenderer.create(
-          <TestComponent
-            region={region}
-            getCurrentLocation={mockGetCurrentLocation}
-            thresholdMiles={50}
-            onStateChange={(state) => {
-              capturedState = state;
-            }}
-          />,
-        );
+      try {
+        await ReactTestRenderer.act(async () => {
+          ReactTestRenderer.create(
+            <TestComponent
+              region={region}
+              getCurrentLocation={mockGetCurrentLocation}
+              thresholdMiles={50}
+              onStateChange={(state) => {
+                capturedState = state;
+              }}
+            />,
+          );
 
-        // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      });
+          // Wait for async operations
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        });
 
-      expect(capturedState).toBeDefined();
-      expect(capturedState!.shouldShow).toBe(false);
-      expect(capturedState!.error).toBe('Location permission denied');
-
-      jest.restoreAllMocks();
+        expect(capturedState).toBeDefined();
+        expect(capturedState!.shouldShow).toBe(false);
+        expect(capturedState!.error).toBe('Location permission denied');
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
 
     it('should rerun distance check when region id changes', async () => {

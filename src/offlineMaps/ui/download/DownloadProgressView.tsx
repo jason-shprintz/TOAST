@@ -65,61 +65,21 @@ export default function DownloadProgressView({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          ...styles.container,
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-        },
-        phaseLabel: {
-          ...styles.phaseLabel,
-          color: COLORS.PRIMARY_DARK,
-        },
-        progressBarBackground: {
-          ...styles.progressBarBackground,
-          backgroundColor: COLORS.BACKGROUND,
-        },
-        progressBarFill: {
-          ...styles.progressBarFill,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        percentText: {
-          ...styles.percentText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        message: {
-          ...styles.message,
-          color: COLORS.PRIMARY_DARK,
-        },
-        errorText: {
-          ...styles.errorText,
-          color: COLORS.ERROR,
-        },
-        primaryButton: {
-          ...styles.primaryButton,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        primaryButtonText: {
-          ...styles.primaryButtonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-        secondaryButton: {
-          ...styles.secondaryButton,
-          backgroundColor: COLORS.BACKGROUND,
-        },
-        secondaryButtonText: {
-          ...styles.secondaryButtonText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        dangerButton: {
-          ...styles.dangerButton,
-          backgroundColor: COLORS.ERROR,
-        },
-        dangerButtonText: {
-          ...styles.dangerButtonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-      }),
+    () => ({
+      container: [styles.container, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      phaseLabel: [styles.phaseLabel, { color: COLORS.PRIMARY_DARK }],
+      progressBarBackground: [styles.progressBarBackground, { backgroundColor: COLORS.BACKGROUND }],
+      progressBarFill: [styles.progressBarFill, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      percentText: [styles.percentText, { color: COLORS.PRIMARY_DARK }],
+      message: [styles.message, { color: COLORS.PRIMARY_DARK }],
+      errorText: [styles.errorText, { color: COLORS.ERROR }],
+      primaryButton: [styles.primaryButton, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      primaryButtonText: [styles.primaryButtonText, { color: COLORS.PRIMARY_LIGHT }],
+      secondaryButton: [styles.secondaryButton, { backgroundColor: COLORS.BACKGROUND }],
+      secondaryButtonText: [styles.secondaryButtonText, { color: COLORS.PRIMARY_DARK }],
+      dangerButton: [styles.dangerButton, { backgroundColor: COLORS.ERROR }],
+      dangerButtonText: [styles.dangerButtonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
     [COLORS],
   );
 

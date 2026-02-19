@@ -26,21 +26,11 @@ export default function OverlayToggles({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          ...styles.container,
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-        },
-        title: {
-          ...styles.title,
-          color: COLORS.PRIMARY_DARK,
-        },
-        label: {
-          ...styles.label,
-          color: COLORS.PRIMARY_DARK,
-        },
-      }),
+    () => ({
+      container: [styles.container, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      title: [styles.title, { color: COLORS.PRIMARY_DARK }],
+      label: [styles.label, { color: COLORS.PRIMARY_DARK }],
+    }),
     [COLORS],
   );
 

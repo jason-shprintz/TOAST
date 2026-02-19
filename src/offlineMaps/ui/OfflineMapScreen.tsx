@@ -61,37 +61,15 @@ export default function OfflineMapScreen({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        loadingText: {
-          ...styles.loadingText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        errorTitle: {
-          ...styles.errorTitle,
-          color: COLORS.ERROR,
-        },
-        errorMessage: {
-          ...styles.errorMessage,
-          color: COLORS.PRIMARY_DARK,
-        },
-        emptyTitle: {
-          ...styles.emptyTitle,
-          color: COLORS.PRIMARY_DARK,
-        },
-        emptyMessage: {
-          ...styles.emptyMessage,
-          color: COLORS.PRIMARY_DARK,
-        },
-        button: {
-          ...styles.button,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        buttonText: {
-          ...styles.buttonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-      }),
+    () => ({
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorTitle: [styles.errorTitle, { color: COLORS.ERROR }],
+      errorMessage: [styles.errorMessage, { color: COLORS.PRIMARY_DARK }],
+      emptyTitle: [styles.emptyTitle, { color: COLORS.PRIMARY_DARK }],
+      emptyMessage: [styles.emptyMessage, { color: COLORS.PRIMARY_DARK }],
+      button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
     [COLORS],
   );
 

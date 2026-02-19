@@ -28,34 +28,17 @@ export default function QuickActionsBar({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          ...styles.container,
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-        },
-        button: {
-          ...styles.button,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        buttonDisabled: {
-          ...styles.buttonDisabled,
-          backgroundColor: COLORS.PRIMARY_DARK,
-        },
-        buttonText: {
-          ...styles.buttonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-        errorContainer: {
-          ...styles.errorContainer,
-          backgroundColor: COLORS.ERROR_LIGHT,
-          borderColor: COLORS.ERROR,
-        },
-        errorText: {
-          ...styles.errorText,
-          color: COLORS.ERROR,
-        },
-      }),
+    () => ({
+      container: [styles.container, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      buttonDisabled: [styles.buttonDisabled, { backgroundColor: COLORS.PRIMARY_DARK }],
+      buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
+      errorContainer: [
+        styles.errorContainer,
+        { backgroundColor: COLORS.ERROR_LIGHT, borderColor: COLORS.ERROR },
+      ],
+      errorText: [styles.errorText, { color: COLORS.ERROR }],
+    }),
     [COLORS],
   );
 

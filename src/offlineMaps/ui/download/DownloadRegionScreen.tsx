@@ -74,57 +74,20 @@ export default function DownloadRegionScreen({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        loadingText: {
-          ...styles.loadingText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        errorTitle: {
-          ...styles.errorTitle,
-          color: COLORS.ERROR,
-        },
-        errorMessage: {
-          ...styles.errorMessage,
-          color: COLORS.PRIMARY_DARK,
-        },
-        successTitle: {
-          ...styles.successTitle,
-          color: COLORS.SECONDARY_ACCENT,
-        },
-        successMessage: {
-          ...styles.successMessage,
-          color: COLORS.PRIMARY_DARK,
-        },
-        backLink: {
-          ...styles.backLink,
-          color: COLORS.SECONDARY_ACCENT,
-        },
-        button: {
-          ...styles.button,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        buttonText: {
-          ...styles.buttonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-        secondaryButton: {
-          ...styles.secondaryButton,
-          backgroundColor: COLORS.BACKGROUND,
-        },
-        secondaryButtonText: {
-          ...styles.secondaryButtonText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        dangerButton: {
-          ...styles.dangerButton,
-          backgroundColor: COLORS.ERROR,
-        },
-        dangerButtonText: {
-          ...styles.dangerButtonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-      }),
+    () => ({
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorTitle: [styles.errorTitle, { color: COLORS.ERROR }],
+      errorMessage: [styles.errorMessage, { color: COLORS.PRIMARY_DARK }],
+      successTitle: [styles.successTitle, { color: COLORS.SECONDARY_ACCENT }],
+      successMessage: [styles.successMessage, { color: COLORS.PRIMARY_DARK }],
+      backLink: [styles.backLink, { color: COLORS.SECONDARY_ACCENT }],
+      button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
+      secondaryButton: [styles.secondaryButton, { backgroundColor: COLORS.BACKGROUND }],
+      secondaryButtonText: [styles.secondaryButtonText, { color: COLORS.PRIMARY_DARK }],
+      dangerButton: [styles.dangerButton, { backgroundColor: COLORS.ERROR }],
+      dangerButtonText: [styles.dangerButtonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
     [COLORS],
   );
 
@@ -183,6 +146,12 @@ export default function DownloadRegionScreen({
   if (status === 'estimating' && !estimate) {
     return (
       <ScreenBody>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
+          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
           <Text style={dynamicStyles.loadingText}>Preparing download...</Text>
@@ -195,6 +164,12 @@ export default function DownloadRegionScreen({
   if (status === 'error' && !jobId) {
     return (
       <ScreenBody>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
+          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.centerContainer}>
           <Text style={dynamicStyles.errorTitle}>Error</Text>
           <Text style={dynamicStyles.errorMessage}>{error}</Text>
@@ -214,6 +189,12 @@ export default function DownloadRegionScreen({
   if (status === 'complete') {
     return (
       <ScreenBody>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
+          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.centerContainer}>
           <Text style={dynamicStyles.successTitle}>Region Ready!</Text>
           <Text style={dynamicStyles.successMessage}>

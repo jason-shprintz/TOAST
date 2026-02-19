@@ -143,41 +143,16 @@ export default function OfflineMapView({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        mapContainer: {
-          ...styles.mapContainer,
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-        },
-        mapPlaceholder: {
-          ...styles.mapPlaceholder,
-          backgroundColor: COLORS.BACKGROUND,
-        },
-        placeholderText: {
-          ...styles.placeholderText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        placeholderSubtext: {
-          ...styles.placeholderSubtext,
-          color: COLORS.PRIMARY_DARK,
-        },
-        infoText: {
-          ...styles.infoText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        overlayInfo: {
-          ...styles.overlayInfo,
-          color: COLORS.PRIMARY_DARK,
-        },
-        testButton: {
-          ...styles.testButton,
-          backgroundColor: COLORS.SECONDARY_ACCENT,
-        },
-        testButtonText: {
-          ...styles.testButtonText,
-          color: COLORS.PRIMARY_LIGHT,
-        },
-      }),
+    () => ({
+      mapContainer: [styles.mapContainer, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      mapPlaceholder: [styles.mapPlaceholder, { backgroundColor: COLORS.BACKGROUND }],
+      placeholderText: [styles.placeholderText, { color: COLORS.PRIMARY_DARK }],
+      placeholderSubtext: [styles.placeholderSubtext, { color: COLORS.PRIMARY_DARK }],
+      infoText: [styles.infoText, { color: COLORS.PRIMARY_DARK }],
+      overlayInfo: [styles.overlayInfo, { color: COLORS.PRIMARY_DARK }],
+      testButton: [styles.testButton, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      testButtonText: [styles.testButtonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
     [COLORS],
   );
 

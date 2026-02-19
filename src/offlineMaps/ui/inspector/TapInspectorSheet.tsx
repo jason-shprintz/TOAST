@@ -40,77 +40,25 @@ export default function TapInspectorSheet({
 
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        sheet: {
-          ...styles.sheet,
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-        },
-        header: {
-          ...styles.header,
-          borderBottomColor: COLORS.PRIMARY_DARK,
-        },
-        headerTitle: {
-          ...styles.headerTitle,
-          color: COLORS.PRIMARY_DARK,
-        },
-        closeButtonText: {
-          ...styles.closeButtonText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        loadingText: {
-          ...styles.loadingText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        errorText: {
-          ...styles.errorText,
-          color: COLORS.ERROR,
-        },
-        closeButtonOutlined: {
-          ...styles.closeButtonOutlined,
-          borderColor: COLORS.PRIMARY_DARK,
-        },
-        closeButtonOutlinedText: {
-          ...styles.closeButtonOutlinedText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        sectionTitle: {
-          ...styles.sectionTitle,
-          color: COLORS.PRIMARY_DARK,
-        },
-        coordinateText: {
-          ...styles.coordinateText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        terrainLabel: {
-          ...styles.terrainLabel,
-          color: COLORS.PRIMARY_DARK,
-        },
-        terrainValue: {
-          ...styles.terrainValue,
-          color: COLORS.PRIMARY_DARK,
-        },
-        emptyText: {
-          ...styles.emptyText,
-          color: COLORS.PRIMARY_DARK,
-        },
-        featureItem: {
-          ...styles.featureItem,
-          borderBottomColor: COLORS.PRIMARY_DARK,
-        },
-        featureTitle: {
-          ...styles.featureTitle,
-          color: COLORS.PRIMARY_DARK,
-        },
-        featureSubtitle: {
-          ...styles.featureSubtitle,
-          color: COLORS.PRIMARY_DARK,
-        },
-        featureDistance: {
-          ...styles.featureDistance,
-          color: COLORS.PRIMARY_DARK,
-        },
-      }),
+    () => ({
+      sheet: [styles.sheet, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      header: [styles.header, { borderBottomColor: COLORS.PRIMARY_DARK }],
+      headerTitle: [styles.headerTitle, { color: COLORS.PRIMARY_DARK }],
+      closeButtonText: [styles.closeButtonText, { color: COLORS.PRIMARY_DARK }],
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorText: [styles.errorText, { color: COLORS.ERROR }],
+      closeButtonOutlined: [styles.closeButtonOutlined, { borderColor: COLORS.PRIMARY_DARK }],
+      closeButtonOutlinedText: [styles.closeButtonOutlinedText, { color: COLORS.PRIMARY_DARK }],
+      sectionTitle: [styles.sectionTitle, { color: COLORS.PRIMARY_DARK }],
+      coordinateText: [styles.coordinateText, { color: COLORS.PRIMARY_DARK }],
+      terrainLabel: [styles.terrainLabel, { color: COLORS.PRIMARY_DARK }],
+      terrainValue: [styles.terrainValue, { color: COLORS.PRIMARY_DARK }],
+      emptyText: [styles.emptyText, { color: COLORS.PRIMARY_DARK }],
+      featureItem: [styles.featureItem, { borderBottomColor: COLORS.PRIMARY_DARK }],
+      featureTitle: [styles.featureTitle, { color: COLORS.PRIMARY_DARK }],
+      featureSubtitle: [styles.featureSubtitle, { color: COLORS.PRIMARY_DARK }],
+      featureDistance: [styles.featureDistance, { color: COLORS.PRIMARY_DARK }],
+    }),
     [COLORS],
   );
 
@@ -256,7 +204,12 @@ function FeatureItem({
   styles: dynamicItemStyles,
 }: {
   feature: TapInspectorFeature;
-  styles: any;
+  styles: {
+    featureItem: any;
+    featureTitle: any;
+    featureSubtitle: any;
+    featureDistance: any;
+  };
 }) {
   return (
     <View style={dynamicItemStyles.featureItem}>
