@@ -3,7 +3,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Modal,
   Pressable,
@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 import { formatDistance, formatElevation } from './markerFormatters';
 import type { MapMarker } from './types';
 
@@ -34,6 +34,38 @@ export default function MapMarkers({
   onMarkerPress,
   onCloseDetails,
 }: MapMarkersProps) {
+  const COLORS = useTheme();
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () => ({
+      markerList: [
+        styles.markerList,
+        { backgroundColor: COLORS.PRIMARY_LIGHT },
+      ],
+      markerListTitle: [styles.markerListTitle, { color: COLORS.PRIMARY_DARK }],
+      markerItem: [styles.markerItem, { backgroundColor: COLORS.BACKGROUND }],
+      markerItemSelected: [
+        styles.markerItemSelected,
+        { backgroundColor: COLORS.SECONDARY_ACCENT },
+      ],
+      markerItemTitle: [styles.markerItemTitle, { color: COLORS.PRIMARY_DARK }],
+      markerItemCoords: [
+        styles.markerItemCoords,
+        { color: COLORS.PRIMARY_DARK },
+      ],
+      detailsPanel: [
+        styles.detailsPanel,
+        { backgroundColor: COLORS.PRIMARY_LIGHT },
+      ],
+      detailsTitle: [styles.detailsTitle, { color: COLORS.PRIMARY_DARK }],
+      closeButton: [styles.closeButton, { backgroundColor: COLORS.BACKGROUND }],
+      closeButtonText: [styles.closeButtonText, { color: COLORS.PRIMARY_DARK }],
+      detailLabel: [styles.detailLabel, { color: COLORS.PRIMARY_DARK }],
+      detailValue: [styles.detailValue, { color: COLORS.PRIMARY_DARK }],
+    }),
+    [COLORS],
+  );
   // Render marker list (for stub adapter visualization)
   const renderMarkerList = () => {
     if (markers.length === 0) {
@@ -41,20 +73,21 @@ export default function MapMarkers({
     }
 
     return (
-      <View style={styles.markerList}>
-        <Text style={styles.markerListTitle}>Active Markers:</Text>
+      <View style={dynamicStyles.markerList}>
+        <Text style={dynamicStyles.markerListTitle}>Active Markers:</Text>
         {markers.map((marker) => (
           <TouchableOpacity
             key={marker.id}
             style={[
-              styles.markerItem,
-              selectedMarker?.id === marker.id && styles.markerItemSelected,
+              dynamicStyles.markerItem,
+              selectedMarker?.id === marker.id &&
+                dynamicStyles.markerItemSelected,
             ]}
             onPress={() => onMarkerPress(marker.id)}
             activeOpacity={0.7}
           >
-            <Text style={styles.markerItemTitle}>{marker.title}</Text>
-            <Text style={styles.markerItemCoords}>
+            <Text style={dynamicStyles.markerItemTitle}>{marker.title}</Text>
+            <Text style={dynamicStyles.markerItemCoords}>
               {marker.lat.toFixed(5)}, {marker.lng.toFixed(5)}
             </Text>
           </TouchableOpacity>
@@ -82,35 +115,37 @@ export default function MapMarkers({
           onPress={onCloseDetails}
         >
           <Pressable
-            style={styles.detailsPanel}
+            style={dynamicStyles.detailsPanel}
             onPress={(e) => {
               // Prevent tap from propagating to overlay
               e.stopPropagation();
             }}
           >
             <View style={styles.detailsHeader}>
-              <Text style={styles.detailsTitle}>{selectedMarker.title}</Text>
+              <Text style={dynamicStyles.detailsTitle}>
+                {selectedMarker.title}
+              </Text>
               <TouchableOpacity
-                style={styles.closeButton}
+                style={dynamicStyles.closeButton}
                 onPress={onCloseDetails}
               >
-                <Text style={styles.closeButtonText}>×</Text>
+                <Text style={dynamicStyles.closeButtonText}>×</Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.detailsContent}>
               {selectedMarker.subtitle && (
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Type:</Text>
-                  <Text style={styles.detailValue}>
+                  <Text style={dynamicStyles.detailLabel}>Type:</Text>
+                  <Text style={dynamicStyles.detailValue}>
                     {selectedMarker.subtitle}
                   </Text>
                 </View>
               )}
 
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Location:</Text>
-                <Text style={styles.detailValue}>
+                <Text style={dynamicStyles.detailLabel}>Location:</Text>
+                <Text style={dynamicStyles.detailValue}>
                   {selectedMarker.lat.toFixed(5)},{' '}
                   {selectedMarker.lng.toFixed(5)}
                 </Text>
@@ -118,8 +153,8 @@ export default function MapMarkers({
 
               {selectedMarker.distanceMeters !== undefined && (
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Distance:</Text>
-                  <Text style={styles.detailValue}>
+                  <Text style={dynamicStyles.detailLabel}>Distance:</Text>
+                  <Text style={dynamicStyles.detailValue}>
                     {formatDistance(selectedMarker.distanceMeters)}
                   </Text>
                 </View>
@@ -127,8 +162,8 @@ export default function MapMarkers({
 
               {selectedMarker.elevationM !== undefined && (
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Elevation:</Text>
-                  <Text style={styles.detailValue}>
+                  <Text style={dynamicStyles.detailLabel}>Elevation:</Text>
+                  <Text style={dynamicStyles.detailValue}>
                     {formatElevation(selectedMarker.elevationM)}
                   </Text>
                 </View>
@@ -153,7 +188,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 60,
     right: 12,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     padding: 8,
     borderRadius: 8,
     maxWidth: 200,
@@ -166,27 +200,22 @@ const styles = StyleSheet.create({
   markerListTitle: {
     fontSize: 11,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 4,
   },
   markerItem: {
     padding: 6,
     borderRadius: 4,
-    backgroundColor: '#f5f5f5',
     marginTop: 4,
   },
-  markerItemSelected: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-  },
+  markerItemSelected: {},
   markerItemTitle: {
     fontSize: 10,
     fontWeight: '500',
-    color: COLORS.PRIMARY_DARK,
   },
   markerItemCoords: {
     fontSize: 8,
-    color: '#666',
     marginTop: 2,
+    opacity: 0.8,
   },
   modalOverlay: {
     flex: 1,
@@ -194,7 +223,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   detailsPanel: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 20,
@@ -209,19 +237,16 @@ const styles = StyleSheet.create({
   detailsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
   },
   closeButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 24,
-    color: COLORS.PRIMARY_DARK,
     lineHeight: 24,
   },
   detailsContent: {
@@ -234,11 +259,10 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#666',
+    opacity: 0.8,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
   },
 });
