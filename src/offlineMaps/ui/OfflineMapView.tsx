@@ -4,10 +4,10 @@
  * @format
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
-import { COLORS } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
 import QuickActionsBar from './actions/QuickActionsBar';
 import { useQuickActions } from './actions/useQuickActions';
 import TapInspectorSheet from './inspector/TapInspectorSheet';
@@ -37,6 +37,7 @@ export default function OfflineMapView({
   geoIndex = null,
   terrain = null,
 }: OfflineMapViewProps) {
+  const COLORS = useTheme();
   const [overlays, setOverlays] = useState<OverlayState>({
     water: true,
     cities: true,
@@ -140,6 +141,33 @@ export default function OfflineMapView({
     handleMapTap(region.centerLat, region.centerLng);
   };
 
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () => ({
+      mapContainer: [
+        styles.mapContainer,
+        { backgroundColor: COLORS.PRIMARY_LIGHT },
+      ],
+      mapPlaceholder: [
+        styles.mapPlaceholder,
+        { backgroundColor: COLORS.BACKGROUND },
+      ],
+      placeholderText: [styles.placeholderText, { color: COLORS.PRIMARY_DARK }],
+      placeholderSubtext: [
+        styles.placeholderSubtext,
+        { color: COLORS.PRIMARY_DARK },
+      ],
+      infoText: [styles.infoText, { color: COLORS.PRIMARY_DARK }],
+      overlayInfo: [styles.overlayInfo, { color: COLORS.PRIMARY_DARK }],
+      testButton: [
+        styles.testButton,
+        { backgroundColor: COLORS.SECONDARY_ACCENT },
+      ],
+      testButtonText: [styles.testButtonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
+    [COLORS],
+  );
+
   return (
     <View style={styles.container}>
       {/* Quick Actions Bar */}
@@ -150,24 +178,24 @@ export default function OfflineMapView({
         error={quickActions.error}
       />
 
-      <View style={styles.mapContainer} ref={containerRef}>
+      <View style={dynamicStyles.mapContainer} ref={containerRef}>
         {/* Placeholder view showing region info. 
             The stub adapter doesn't render actual tiles yet.
             Replace StubMapAdapter with a real map SDK implementation 
             (MapLibre/Mapbox) to render vector tiles from MBTiles. */}
-        <View style={styles.mapPlaceholder}>
-          <Text style={styles.placeholderText}>Offline Map View</Text>
-          <Text style={styles.placeholderSubtext}>
+        <View style={dynamicStyles.mapPlaceholder}>
+          <Text style={dynamicStyles.placeholderText}>Offline Map View</Text>
+          <Text style={dynamicStyles.placeholderSubtext}>
             (Stub adapter - awaiting map SDK integration)
           </Text>
-          <Text style={styles.infoText}>
+          <Text style={dynamicStyles.infoText}>
             Region: {region.centerLat.toFixed(4)}, {region.centerLng.toFixed(4)}
           </Text>
-          <Text style={styles.infoText}>
+          <Text style={dynamicStyles.infoText}>
             Radius: {region.radiusMiles} miles
           </Text>
-          <Text style={styles.infoText}>Tiles: {region.tilesPath}</Text>
-          <Text style={styles.overlayInfo}>
+          <Text style={dynamicStyles.infoText}>Tiles: {region.tilesPath}</Text>
+          <Text style={dynamicStyles.overlayInfo}>
             Overlays: Water={overlays.water ? 'ON' : 'OFF'}, Cities=
             {overlays.cities ? 'ON' : 'OFF'}, Terrain=
             {overlays.terrain ? 'ON' : 'OFF'}
@@ -175,11 +203,13 @@ export default function OfflineMapView({
 
           {/* Demo button to test tap inspector */}
           <TouchableOpacity
-            style={styles.testButton}
+            style={dynamicStyles.testButton}
             onPress={handleTestTap}
             activeOpacity={0.7}
           >
-            <Text style={styles.testButtonText}>Tap to Test Inspector</Text>
+            <Text style={dynamicStyles.testButtonText}>
+              Tap to Test Inspector
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -206,7 +236,6 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     marginBottom: 16,
     borderRadius: 8,
     overflow: 'hidden',
@@ -215,40 +244,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
     padding: 20,
   },
   placeholderText: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 4,
   },
   placeholderSubtext: {
     fontSize: 12,
-    color: '#999',
     fontStyle: 'italic',
     marginBottom: 12,
+    opacity: 0.7,
   },
   infoText: {
     fontSize: 12,
-    color: '#666',
     marginVertical: 2,
+    opacity: 0.8,
   },
   overlayInfo: {
     fontSize: 10,
-    color: '#666',
     marginTop: 8,
+    opacity: 0.7,
   },
   testButton: {
     marginTop: 16,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
   },
   testButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 14,
     fontWeight: '600',
   },

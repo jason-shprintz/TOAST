@@ -4,7 +4,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 import {
   formatLatLng,
   formatElevation,
@@ -35,7 +35,41 @@ interface TapInspectorSheetProps {
 export default function TapInspectorSheet({
   inspector,
 }: TapInspectorSheetProps) {
+  const COLORS = useTheme();
   const { isOpen, isLoading, error, result, close } = inspector;
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () => ({
+      sheet: [styles.sheet, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      header: [styles.header, { borderBottomColor: COLORS.PRIMARY_DARK }],
+      headerTitle: [styles.headerTitle, { color: COLORS.PRIMARY_DARK }],
+      closeButtonText: [styles.closeButtonText, { color: COLORS.PRIMARY_DARK }],
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorText: [styles.errorText, { color: COLORS.ERROR }],
+      closeButtonOutlined: [
+        styles.closeButtonOutlined,
+        { borderColor: COLORS.PRIMARY_DARK },
+      ],
+      closeButtonOutlinedText: [
+        styles.closeButtonOutlinedText,
+        { color: COLORS.PRIMARY_DARK },
+      ],
+      sectionTitle: [styles.sectionTitle, { color: COLORS.PRIMARY_DARK }],
+      coordinateText: [styles.coordinateText, { color: COLORS.PRIMARY_DARK }],
+      terrainLabel: [styles.terrainLabel, { color: COLORS.PRIMARY_DARK }],
+      terrainValue: [styles.terrainValue, { color: COLORS.PRIMARY_DARK }],
+      emptyText: [styles.emptyText, { color: COLORS.PRIMARY_DARK }],
+      featureItem: [
+        styles.featureItem,
+        { borderBottomColor: COLORS.PRIMARY_DARK },
+      ],
+      featureTitle: [styles.featureTitle, { color: COLORS.PRIMARY_DARK }],
+      featureSubtitle: [styles.featureSubtitle, { color: COLORS.PRIMARY_DARK }],
+      featureDistance: [styles.featureDistance, { color: COLORS.PRIMARY_DARK }],
+    }),
+    [COLORS],
+  );
 
   if (!isOpen) {
     return null;
@@ -64,17 +98,17 @@ export default function TapInspectorSheet({
       >
         <View style={styles.overlay}>
           <TouchableWithoutFeedback onPress={stopPropagation}>
-            <View style={styles.sheet}>
+            <View style={dynamicStyles.sheet}>
               {/* Header */}
-              <View style={styles.header}>
-                <Text style={styles.headerTitle}>Tap Details</Text>
+              <View style={dynamicStyles.header}>
+                <Text style={dynamicStyles.headerTitle}>Tap Details</Text>
                 <TouchableOpacity
                   onPress={close}
                   style={styles.closeButton}
                   accessibilityLabel="Close tap inspector"
                   accessibilityRole="button"
                 >
-                  <Text style={styles.closeButtonText}>✕</Text>
+                  <Text style={dynamicStyles.closeButtonText}>✕</Text>
                 </TouchableOpacity>
               </View>
 
@@ -86,19 +120,23 @@ export default function TapInspectorSheet({
                       size="large"
                       color={COLORS.SECONDARY_ACCENT}
                     />
-                    <Text style={styles.loadingText}>Loading details…</Text>
+                    <Text style={dynamicStyles.loadingText}>
+                      Loading details…
+                    </Text>
                   </View>
                 )}
 
                 {/* Error State */}
                 {error && !isLoading && (
                   <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>{error}</Text>
+                    <Text style={dynamicStyles.errorText}>{error}</Text>
                     <TouchableOpacity
-                      style={styles.closeButtonOutlined}
+                      style={dynamicStyles.closeButtonOutlined}
                       onPress={close}
                     >
-                      <Text style={styles.closeButtonOutlinedText}>Close</Text>
+                      <Text style={dynamicStyles.closeButtonOutlinedText}>
+                        Close
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -108,26 +146,28 @@ export default function TapInspectorSheet({
                   <>
                     {/* Location */}
                     <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Location</Text>
-                      <Text style={styles.coordinateText}>
+                      <Text style={dynamicStyles.sectionTitle}>Location</Text>
+                      <Text style={dynamicStyles.coordinateText}>
                         {formatLatLng(result.location.lat, result.location.lng)}
                       </Text>
                     </View>
 
                     {/* Terrain */}
                     <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Terrain</Text>
+                      <Text style={dynamicStyles.sectionTitle}>Terrain</Text>
                       <View style={styles.terrainRow}>
-                        <Text style={styles.terrainLabel}>Elevation:</Text>
-                        <Text style={styles.terrainValue}>
+                        <Text style={dynamicStyles.terrainLabel}>
+                          Elevation:
+                        </Text>
+                        <Text style={dynamicStyles.terrainValue}>
                           {result.elevationM !== null
                             ? formatElevation(result.elevationM)
                             : '—'}
                         </Text>
                       </View>
                       <View style={styles.terrainRow}>
-                        <Text style={styles.terrainLabel}>Slope:</Text>
-                        <Text style={styles.terrainValue}>
+                        <Text style={dynamicStyles.terrainLabel}>Slope:</Text>
+                        <Text style={dynamicStyles.terrainValue}>
                           {result.slopePercent !== null
                             ? formatSlope(result.slopePercent)
                             : '—'}
@@ -137,14 +177,20 @@ export default function TapInspectorSheet({
 
                     {/* Features */}
                     <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Nearby Features</Text>
+                      <Text style={dynamicStyles.sectionTitle}>
+                        Nearby Features
+                      </Text>
                       {result.features.length === 0 ? (
-                        <Text style={styles.emptyText}>
+                        <Text style={dynamicStyles.emptyText}>
                           No nearby features found
                         </Text>
                       ) : (
                         result.features.map((feature) => (
-                          <FeatureItem key={feature.id} feature={feature} />
+                          <FeatureItem
+                            key={feature.id}
+                            feature={feature}
+                            styles={dynamicStyles}
+                          />
                         ))
                       )}
                     </View>
@@ -162,16 +208,29 @@ export default function TapInspectorSheet({
 /**
  * Individual feature item in the list
  */
-function FeatureItem({ feature }: { feature: TapInspectorFeature }) {
+function FeatureItem({
+  feature,
+  styles: dynamicItemStyles,
+}: {
+  feature: TapInspectorFeature;
+  styles: {
+    featureItem: any;
+    featureTitle: any;
+    featureSubtitle: any;
+    featureDistance: any;
+  };
+}) {
   return (
-    <View style={styles.featureItem}>
+    <View style={dynamicItemStyles.featureItem}>
       <View style={styles.featureHeader}>
-        <Text style={styles.featureTitle}>{feature.title}</Text>
+        <Text style={dynamicItemStyles.featureTitle}>{feature.title}</Text>
         {feature.subtitle && (
-          <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
+          <Text style={dynamicItemStyles.featureSubtitle}>
+            {feature.subtitle}
+          </Text>
         )}
       </View>
-      <Text style={styles.featureDistance}>
+      <Text style={dynamicItemStyles.featureDistance}>
         {formatDistance(feature.distanceMeters)}
       </Text>
     </View>
@@ -185,7 +244,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     maxHeight: '80%',
@@ -202,19 +260,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
   },
   closeButton: {
     padding: 4,
   },
   closeButtonText: {
     fontSize: 24,
-    color: COLORS.PRIMARY_DARK,
   },
   content: {
     paddingHorizontal: 20,
@@ -227,7 +282,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   errorContainer: {
     alignItems: 'center',
@@ -235,7 +289,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 14,
-    color: COLORS.ERROR,
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -243,12 +296,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: COLORS.PRIMARY_DARK,
     borderRadius: 8,
   },
   closeButtonOutlinedText: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   section: {
     marginBottom: 20,
@@ -256,12 +307,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 8,
   },
   coordinateText: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     fontFamily: 'monospace',
   },
   terrainRow: {
@@ -271,22 +320,19 @@ const styles = StyleSheet.create({
   },
   terrainLabel: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   terrainValue: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.PRIMARY_DARK,
   },
   emptyText: {
     fontSize: 14,
-    color: '#999',
     fontStyle: 'italic',
+    opacity: 0.7,
   },
   featureItem: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
   featureHeader: {
     marginBottom: 4,
@@ -294,15 +340,14 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.PRIMARY_DARK,
   },
   featureSubtitle: {
     fontSize: 12,
-    color: '#666',
     marginTop: 2,
+    opacity: 0.8,
   },
   featureDistance: {
     fontSize: 12,
-    color: '#999',
+    opacity: 0.7,
   },
 });

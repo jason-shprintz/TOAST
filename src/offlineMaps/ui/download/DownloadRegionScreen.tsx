@@ -4,7 +4,7 @@
  * @format
  */
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -14,7 +14,9 @@ import {
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
-import { COLORS } from '../../../theme';
+import SectionHeader from '../../../components/SectionHeader';
+import { useTheme } from '../../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../../theme';
 import DownloadProgressView from './DownloadProgressView';
 import DownloadRegionCard from './DownloadRegionCard';
 import { useDownloadRegion } from './useDownloadRegion';
@@ -45,6 +47,7 @@ export default function DownloadRegionScreen({
   onBack,
   regionStorage,
 }: DownloadRegionScreenProps) {
+  const COLORS = useTheme();
   const {
     draft,
     estimate,
@@ -68,6 +71,34 @@ export default function DownloadRegionScreen({
     defaultRadiusMiles: 25,
     regionStorage,
   });
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () => ({
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorTitle: [styles.errorTitle, { color: COLORS.ERROR }],
+      errorMessage: [styles.errorMessage, { color: COLORS.PRIMARY_DARK }],
+      successTitle: [styles.successTitle, { color: COLORS.SECONDARY_ACCENT }],
+      successMessage: [styles.successMessage, { color: COLORS.PRIMARY_DARK }],
+      backLink: [styles.backLink, { color: COLORS.SECONDARY_ACCENT }],
+      button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
+      secondaryButton: [
+        styles.secondaryButton,
+        { backgroundColor: COLORS.BACKGROUND },
+      ],
+      secondaryButtonText: [
+        styles.secondaryButtonText,
+        { color: COLORS.PRIMARY_DARK },
+      ],
+      dangerButton: [styles.dangerButton, { backgroundColor: COLORS.ERROR }],
+      dangerButtonText: [
+        styles.dangerButtonText,
+        { color: COLORS.PRIMARY_LIGHT },
+      ],
+    }),
+    [COLORS],
+  );
 
   // Initialize draft on mount if idle
   useEffect(() => {
@@ -124,9 +155,19 @@ export default function DownloadRegionScreen({
   if (status === 'estimating' && !estimate) {
     return (
       <ScreenBody>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-          <Text style={styles.loadingText}>Preparing download...</Text>
+          <Text style={dynamicStyles.loadingText}>Preparing download...</Text>
         </View>
       </ScreenBody>
     );
@@ -136,15 +177,25 @@ export default function DownloadRegionScreen({
   if (status === 'error' && !jobId) {
     return (
       <ScreenBody>
-        <View style={styles.centerContainer}>
-          <Text style={styles.errorTitle}>Error</Text>
-          <Text style={styles.errorMessage}>{error}</Text>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
           <TouchableOpacity
-            style={styles.button}
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
+        <View style={styles.centerContainer}>
+          <Text style={dynamicStyles.errorTitle}>Error</Text>
+          <Text style={dynamicStyles.errorMessage}>{error}</Text>
+          <TouchableOpacity
+            style={dynamicStyles.button}
             onPress={handleBack}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText}>Go Back</Text>
+            <Text style={dynamicStyles.buttonText}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </ScreenBody>
@@ -155,9 +206,19 @@ export default function DownloadRegionScreen({
   if (status === 'complete') {
     return (
       <ScreenBody>
+        <SectionHeader>Download Offline Region</SectionHeader>
+        {onBack && (
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
+            <Text style={dynamicStyles.backLink}>← Back</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.centerContainer}>
-          <Text style={styles.successTitle}>Region Ready!</Text>
-          <Text style={styles.successMessage}>
+          <Text style={dynamicStyles.successTitle}>Region Ready!</Text>
+          <Text style={dynamicStyles.successMessage}>
             Your offline region has been downloaded successfully.
           </Text>
           <DownloadRegionCard
@@ -168,11 +229,11 @@ export default function DownloadRegionScreen({
           />
           {onBack && (
             <TouchableOpacity
-              style={[styles.button, styles.secondaryButton]}
+              style={[dynamicStyles.button, dynamicStyles.secondaryButton]}
               onPress={handleBack}
               activeOpacity={0.7}
             >
-              <Text style={styles.secondaryButtonText}>Go Back</Text>
+              <Text style={dynamicStyles.secondaryButtonText}>Go Back</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -183,72 +244,82 @@ export default function DownloadRegionScreen({
   // Render main download UI
   return (
     <ScreenBody>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Download Offline Region</Text>
-          {onBack && (
-            <TouchableOpacity onPress={handleBack} activeOpacity={0.7}>
-              <Text style={styles.backLink}>← Back</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Region Card - Show when ready to download */}
-        {status === 'readyToDownload' && (
-          <DownloadRegionCard
-            draft={draft}
-            estimate={estimate}
-            onStartDownload={handleStartDownload}
-            showStartButton={true}
-          />
-        )}
-
-        {/* Progress View - Show when downloading/paused/error */}
-        {(status === 'downloading' ||
-          status === 'paused' ||
-          (status === 'error' && jobId)) && (
-          <>
-            <DownloadRegionCard draft={draft} estimate={estimate} />
-            <View style={styles.spacer} />
-            <DownloadProgressView
-              phase={phase}
-              percent={percent}
-              message={message}
-              status={status}
-              error={error}
-              onPause={status === 'downloading' ? handlePause : undefined}
-              onResume={status === 'paused' ? handleResume : undefined}
-              onCancel={handleCancel}
-              onRetry={status === 'error' ? handleRetry : undefined}
+      <SectionHeader>Download Offline Region</SectionHeader>
+      {onBack && (
+        <TouchableOpacity
+          onPress={handleBack}
+          activeOpacity={0.7}
+          style={styles.backButton}
+        >
+          <Text style={dynamicStyles.backLink}>← Back</Text>
+        </TouchableOpacity>
+      )}
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}
+        >
+          {/* Region Card - Show when ready to download */}
+          {status === 'readyToDownload' && (
+            <DownloadRegionCard
+              draft={draft}
+              estimate={estimate}
+              onStartDownload={handleStartDownload}
+              showStartButton={true}
             />
-            {status === 'error' && (
-              <TouchableOpacity
-                style={[styles.button, styles.dangerButton]}
-                onPress={handleDeleteTemp}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.dangerButtonText}>
-                  Delete Temporary Files
-                </Text>
-              </TouchableOpacity>
-            )}
-          </>
-        )}
-      </ScrollView>
+          )}
+
+          {/* Progress View - Show when downloading/paused/error */}
+          {(status === 'downloading' ||
+            status === 'paused' ||
+            (status === 'error' && jobId)) && (
+            <>
+              <DownloadRegionCard draft={draft} estimate={estimate} />
+              <View style={styles.spacer} />
+              <DownloadProgressView
+                phase={phase}
+                percent={percent}
+                message={message}
+                status={status}
+                error={error}
+                onPause={status === 'downloading' ? handlePause : undefined}
+                onResume={status === 'paused' ? handleResume : undefined}
+                onCancel={handleCancel}
+                onRetry={status === 'error' ? handleRetry : undefined}
+              />
+              {status === 'error' && (
+                <TouchableOpacity
+                  style={[dynamicStyles.button, dynamicStyles.dangerButton]}
+                  onPress={handleDeleteTemp}
+                  activeOpacity={0.7}
+                >
+                  <Text style={dynamicStyles.dangerButtonText}>
+                    Delete Temporary Files
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
   scrollView: {
     flex: 1,
+    width: '100%',
   },
   contentContainer: {
     padding: 20,
+    paddingBottom: 24,
   },
   centerContainer: {
     flex: 1,
@@ -256,35 +327,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  header: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
+  backButton: {
+    paddingHorizontal: 6,
+    paddingVertical: 8,
     marginBottom: 8,
   },
   backLink: {
     fontSize: 14,
-    color: COLORS.SECONDARY_ACCENT,
     fontWeight: '600',
   },
   loadingText: {
     marginTop: 16,
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.ERROR,
     marginBottom: 12,
     textAlign: 'center',
   },
   errorMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     maxWidth: 300,
@@ -292,13 +355,11 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: COLORS.SECONDARY_ACCENT,
     marginBottom: 12,
     textAlign: 'center',
   },
   successMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     maxWidth: 300,
@@ -307,32 +368,24 @@ const styles = StyleSheet.create({
     height: 16,
   },
   button: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 16,
   },
   buttonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
-  secondaryButton: {
-    backgroundColor: COLORS.BACKGROUND,
-  },
+  secondaryButton: {},
   secondaryButtonText: {
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
-  dangerButton: {
-    backgroundColor: COLORS.ERROR,
-  },
+  dangerButton: {},
   dangerButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',

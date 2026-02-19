@@ -4,7 +4,7 @@
  * @format
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -13,7 +13,9 @@ import {
 } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
-import { COLORS } from '../../theme';
+import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { useRegionUpdatePrompt } from '../location/useRegionUpdatePrompt';
 import OfflineMapView from './OfflineMapView';
 import RegionUpdatePrompt from './RegionUpdatePrompt';
@@ -54,7 +56,22 @@ export default function OfflineMapScreen({
   onTap,
   onNavigateToDownload,
 }: OfflineMapScreenProps) {
+  const COLORS = useTheme();
   const { region, status, error, reload } = useOfflineRegion();
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () => ({
+      loadingText: [styles.loadingText, { color: COLORS.PRIMARY_DARK }],
+      errorTitle: [styles.errorTitle, { color: COLORS.ERROR }],
+      errorMessage: [styles.errorMessage, { color: COLORS.PRIMARY_DARK }],
+      emptyTitle: [styles.emptyTitle, { color: COLORS.PRIMARY_DARK }],
+      emptyMessage: [styles.emptyMessage, { color: COLORS.PRIMARY_DARK }],
+      button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
+    }),
+    [COLORS],
+  );
 
   const handleMapTap = useCallback(
     (lat: number, lng: number) => {
@@ -91,9 +108,12 @@ export default function OfflineMapScreen({
   if (status === 'loading') {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-          <Text style={styles.loadingText}>Loading offline region...</Text>
+          <Text style={dynamicStyles.loadingText}>
+            Loading offline region...
+          </Text>
         </View>
       </ScreenBody>
     );
@@ -102,15 +122,16 @@ export default function OfflineMapScreen({
   if (status === 'error') {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
-          <Text style={styles.errorTitle}>Error Loading Region</Text>
-          <Text style={styles.errorMessage}>{error}</Text>
+          <Text style={dynamicStyles.errorTitle}>Error Loading Region</Text>
+          <Text style={dynamicStyles.errorMessage}>{error}</Text>
           <TouchableOpacity
-            style={styles.button}
+            style={dynamicStyles.button}
             onPress={handleRetry}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText}>Retry</Text>
+            <Text style={dynamicStyles.buttonText}>Retry</Text>
           </TouchableOpacity>
         </View>
       </ScreenBody>
@@ -120,17 +141,20 @@ export default function OfflineMapScreen({
   if (status === 'missing' || !region) {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
-          <Text style={styles.emptyTitle}>No Offline Region</Text>
-          <Text style={styles.emptyMessage}>
+          <Text style={dynamicStyles.emptyTitle}>No Offline Region</Text>
+          <Text style={dynamicStyles.emptyMessage}>
             Download an offline region to view maps without internet connection.
           </Text>
           <TouchableOpacity
-            style={styles.button}
+            style={dynamicStyles.button}
             onPress={handleDownload}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText}>Download Offline Region</Text>
+            <Text style={dynamicStyles.buttonText}>
+              Download Offline Region
+            </Text>
           </TouchableOpacity>
         </View>
       </ScreenBody>
@@ -140,7 +164,10 @@ export default function OfflineMapScreen({
   // status === 'ready' and region exists
   return (
     <ScreenBody>
-      <OfflineMapView region={region} onTap={handleMapTap} />
+      <SectionHeader>Offline Map</SectionHeader>
+      <View style={styles.container}>
+        <OfflineMapView region={region} onTap={handleMapTap} />
+      </View>
       <RegionUpdatePrompt
         visible={updatePrompt.shouldShow}
         onAccept={updatePrompt.accept}
@@ -151,6 +178,12 @@ export default function OfflineMapScreen({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -160,43 +193,36 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.ERROR,
     marginBottom: 12,
     textAlign: 'center',
   },
   errorMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
   },
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 12,
     textAlign: 'center',
   },
   emptyMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     maxWidth: 300,
   },
   button: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   buttonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
