@@ -4,7 +4,7 @@
  * @format
  */
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../../theme';
 import DownloadProgressView from './DownloadProgressView';
 import DownloadRegionCard from './DownloadRegionCard';
 import { useDownloadRegion } from './useDownloadRegion';
@@ -45,6 +46,7 @@ export default function DownloadRegionScreen({
   onBack,
   regionStorage,
 }: DownloadRegionScreenProps) {
+  const COLORS = useTheme();
   const {
     draft,
     estimate,
@@ -68,6 +70,66 @@ export default function DownloadRegionScreen({
     defaultRadiusMiles: 25,
     regionStorage,
   });
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        loadingText: {
+          ...styles.loadingText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        errorTitle: {
+          ...styles.errorTitle,
+          color: COLORS.ERROR,
+        },
+        errorMessage: {
+          ...styles.errorMessage,
+          color: COLORS.PRIMARY_DARK,
+        },
+        successTitle: {
+          ...styles.successTitle,
+          color: COLORS.SECONDARY_ACCENT,
+        },
+        successMessage: {
+          ...styles.successMessage,
+          color: COLORS.PRIMARY_DARK,
+        },
+        title: {
+          ...styles.title,
+          color: COLORS.PRIMARY_DARK,
+        },
+        backLink: {
+          ...styles.backLink,
+          color: COLORS.SECONDARY_ACCENT,
+        },
+        button: {
+          ...styles.button,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        buttonText: {
+          ...styles.buttonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+        secondaryButton: {
+          ...styles.secondaryButton,
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        secondaryButtonText: {
+          ...styles.secondaryButtonText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        dangerButton: {
+          ...styles.dangerButton,
+          backgroundColor: COLORS.ERROR,
+        },
+        dangerButtonText: {
+          ...styles.dangerButtonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+      }),
+    [COLORS],
+  );
 
   // Initialize draft on mount if idle
   useEffect(() => {
@@ -126,7 +188,7 @@ export default function DownloadRegionScreen({
       <ScreenBody>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-          <Text style={styles.loadingText}>Preparing download...</Text>
+          <Text style={dynamicStyles.loadingText}>Preparing download...</Text>
         </View>
       </ScreenBody>
     );
@@ -137,14 +199,14 @@ export default function DownloadRegionScreen({
     return (
       <ScreenBody>
         <View style={styles.centerContainer}>
-          <Text style={styles.errorTitle}>Error</Text>
-          <Text style={styles.errorMessage}>{error}</Text>
+          <Text style={dynamicStyles.errorTitle}>Error</Text>
+          <Text style={dynamicStyles.errorMessage}>{error}</Text>
           <TouchableOpacity
-            style={styles.button}
+            style={dynamicStyles.button}
             onPress={handleBack}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText}>Go Back</Text>
+            <Text style={dynamicStyles.buttonText}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </ScreenBody>
@@ -156,8 +218,8 @@ export default function DownloadRegionScreen({
     return (
       <ScreenBody>
         <View style={styles.centerContainer}>
-          <Text style={styles.successTitle}>Region Ready!</Text>
-          <Text style={styles.successMessage}>
+          <Text style={dynamicStyles.successTitle}>Region Ready!</Text>
+          <Text style={dynamicStyles.successMessage}>
             Your offline region has been downloaded successfully.
           </Text>
           <DownloadRegionCard
@@ -168,11 +230,11 @@ export default function DownloadRegionScreen({
           />
           {onBack && (
             <TouchableOpacity
-              style={[styles.button, styles.secondaryButton]}
+              style={[dynamicStyles.button, dynamicStyles.secondaryButton]}
               onPress={handleBack}
               activeOpacity={0.7}
             >
-              <Text style={styles.secondaryButtonText}>Go Back</Text>
+              <Text style={dynamicStyles.secondaryButtonText}>Go Back</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -189,10 +251,10 @@ export default function DownloadRegionScreen({
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Download Offline Region</Text>
+          <Text style={dynamicStyles.title}>Download Offline Region</Text>
           {onBack && (
             <TouchableOpacity onPress={handleBack} activeOpacity={0.7}>
-              <Text style={styles.backLink}>← Back</Text>
+              <Text style={dynamicStyles.backLink}>← Back</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -227,11 +289,11 @@ export default function DownloadRegionScreen({
             />
             {status === 'error' && (
               <TouchableOpacity
-                style={[styles.button, styles.dangerButton]}
+                style={[dynamicStyles.button, dynamicStyles.dangerButton]}
                 onPress={handleDeleteTemp}
                 activeOpacity={0.7}
               >
-                <Text style={styles.dangerButtonText}>
+                <Text style={dynamicStyles.dangerButtonText}>
                   Delete Temporary Files
                 </Text>
               </TouchableOpacity>
@@ -249,6 +311,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+    paddingBottom: FOOTER_HEIGHT + 20,
   },
   centerContainer: {
     flex: 1,
@@ -262,29 +325,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 8,
   },
   backLink: {
     fontSize: 14,
-    color: COLORS.SECONDARY_ACCENT,
     fontWeight: '600',
   },
   loadingText: {
     marginTop: 16,
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.ERROR,
     marginBottom: 12,
     textAlign: 'center',
   },
   errorMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     maxWidth: 300,
@@ -292,13 +350,11 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: COLORS.SECONDARY_ACCENT,
     marginBottom: 12,
     textAlign: 'center',
   },
   successMessage: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     maxWidth: 300,
@@ -307,32 +363,26 @@ const styles = StyleSheet.create({
     height: 16,
   },
   button: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 16,
   },
   buttonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
   secondaryButton: {
-    backgroundColor: COLORS.BACKGROUND,
   },
   secondaryButtonText: {
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
   dangerButton: {
-    backgroundColor: COLORS.ERROR,
   },
   dangerButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',

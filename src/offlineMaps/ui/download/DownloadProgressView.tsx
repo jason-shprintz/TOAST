@@ -4,7 +4,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 import type { DownloadStatus } from './types';
 
 interface DownloadProgressViewProps {
@@ -61,30 +61,92 @@ export default function DownloadProgressView({
   onCancel,
   onRetry,
 }: DownloadProgressViewProps) {
+  const COLORS = useTheme();
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...styles.container,
+          backgroundColor: COLORS.PRIMARY_LIGHT,
+        },
+        phaseLabel: {
+          ...styles.phaseLabel,
+          color: COLORS.PRIMARY_DARK,
+        },
+        progressBarBackground: {
+          ...styles.progressBarBackground,
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        progressBarFill: {
+          ...styles.progressBarFill,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        percentText: {
+          ...styles.percentText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        message: {
+          ...styles.message,
+          color: COLORS.PRIMARY_DARK,
+        },
+        errorText: {
+          ...styles.errorText,
+          color: COLORS.ERROR,
+        },
+        primaryButton: {
+          ...styles.primaryButton,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        primaryButtonText: {
+          ...styles.primaryButtonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+        secondaryButton: {
+          ...styles.secondaryButton,
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        secondaryButtonText: {
+          ...styles.secondaryButtonText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        dangerButton: {
+          ...styles.dangerButton,
+          backgroundColor: COLORS.ERROR,
+        },
+        dangerButtonText: {
+          ...styles.dangerButtonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+      }),
+    [COLORS],
+  );
+
   const showPauseButton = status === 'downloading' && onPause;
   const showResumeButton =
     (status === 'paused' || status === 'error') && onResume;
   const showRetryButton = status === 'error' && onRetry;
 
   return (
-    <View style={styles.container}>
+    <View style={dynamicStyles.container}>
       {/* Phase Label */}
-      <Text style={styles.phaseLabel}>{getPhaseLabel(phase)}</Text>
+      <Text style={dynamicStyles.phaseLabel}>{getPhaseLabel(phase)}</Text>
 
       {/* Progress Bar */}
       {percent !== undefined ? (
         <View style={styles.progressContainer}>
-          <View style={styles.progressBarBackground}>
+          <View style={dynamicStyles.progressBarBackground}>
             <View
               style={[
-                styles.progressBarFill,
+                dynamicStyles.progressBarFill,
                 {
                   width: `${Math.max(0, Math.min(100, isFinite(percent) ? percent : 0))}%`,
                 },
               ]}
             />
           </View>
-          <Text style={styles.percentText}>
+          <Text style={dynamicStyles.percentText}>
             {Math.round(
               Math.max(0, Math.min(100, isFinite(percent) ? percent : 0)),
             )}
@@ -98,50 +160,50 @@ export default function DownloadProgressView({
       )}
 
       {/* Message */}
-      {message && <Text style={styles.message}>{message}</Text>}
+      {message && <Text style={dynamicStyles.message}>{message}</Text>}
 
       {/* Error */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={dynamicStyles.errorText}>{error}</Text>}
 
       {/* Controls */}
       <View style={styles.controls}>
         {showPauseButton && (
           <TouchableOpacity
-            style={[styles.button, styles.secondaryButton]}
+            style={[styles.button, dynamicStyles.secondaryButton]}
             onPress={onPause}
             activeOpacity={0.7}
           >
-            <Text style={styles.secondaryButtonText}>Pause</Text>
+            <Text style={dynamicStyles.secondaryButtonText}>Pause</Text>
           </TouchableOpacity>
         )}
 
         {showResumeButton && (
           <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
+            style={[styles.button, dynamicStyles.primaryButton]}
             onPress={onResume}
             activeOpacity={0.7}
           >
-            <Text style={styles.primaryButtonText}>Resume</Text>
+            <Text style={dynamicStyles.primaryButtonText}>Resume</Text>
           </TouchableOpacity>
         )}
 
         {showRetryButton && (
           <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
+            style={[styles.button, dynamicStyles.primaryButton]}
             onPress={onRetry}
             activeOpacity={0.7}
           >
-            <Text style={styles.primaryButtonText}>Retry</Text>
+            <Text style={dynamicStyles.primaryButtonText}>Retry</Text>
           </TouchableOpacity>
         )}
 
         {onCancel && (
           <TouchableOpacity
-            style={[styles.button, styles.dangerButton]}
+            style={[styles.button, dynamicStyles.dangerButton]}
             onPress={onCancel}
             activeOpacity={0.7}
           >
-            <Text style={styles.dangerButtonText}>Cancel</Text>
+            <Text style={dynamicStyles.dangerButtonText}>Cancel</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -152,7 +214,6 @@ export default function DownloadProgressView({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -163,7 +224,6 @@ const styles = StyleSheet.create({
   phaseLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 12,
   },
   progressContainer: {
@@ -171,19 +231,16 @@ const styles = StyleSheet.create({
   },
   progressBarBackground: {
     height: 8,
-    backgroundColor: COLORS.BACKGROUND,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     borderRadius: 4,
   },
   percentText: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     fontWeight: '600',
     textAlign: 'right',
   },
@@ -193,12 +250,10 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 12,
   },
   errorText: {
     fontSize: 12,
-    color: COLORS.ERROR,
     marginBottom: 12,
   },
   controls: {
@@ -214,26 +269,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButton: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
   },
   primaryButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 14,
     fontWeight: '600',
   },
   secondaryButton: {
-    backgroundColor: COLORS.BACKGROUND,
   },
   secondaryButtonText: {
-    color: COLORS.PRIMARY_DARK,
     fontSize: 14,
     fontWeight: '600',
   },
   dangerButton: {
-    backgroundColor: COLORS.ERROR,
   },
   dangerButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 14,
     fontWeight: '600',
   },

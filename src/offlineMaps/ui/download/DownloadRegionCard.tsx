@@ -4,10 +4,10 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 import type { DownloadRegionEstimate } from './types';
 import type { OfflineRegionDraft } from '../../types';
 
@@ -31,21 +31,75 @@ export default function DownloadRegionCard({
   showStartButton = false,
   showCompleteButton = false,
 }: DownloadRegionCardProps) {
+  const COLORS = useTheme();
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...styles.container,
+          backgroundColor: COLORS.PRIMARY_LIGHT,
+        },
+        sectionTitle: {
+          ...styles.sectionTitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        label: {
+          ...styles.label,
+          color: COLORS.PRIMARY_DARK,
+        },
+        value: {
+          ...styles.value,
+          color: COLORS.PRIMARY_DARK,
+        },
+        estimateCard: {
+          ...styles.estimateCard,
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        totalSize: {
+          ...styles.totalSize,
+          color: COLORS.SECONDARY_ACCENT,
+        },
+        breakdownLabel: {
+          ...styles.breakdownLabel,
+          color: COLORS.PRIMARY_DARK,
+        },
+        breakdownValue: {
+          ...styles.breakdownValue,
+          color: COLORS.PRIMARY_DARK,
+        },
+        disclaimer: {
+          ...styles.disclaimer,
+          color: COLORS.PRIMARY_DARK,
+        },
+        primaryButton: {
+          ...styles.primaryButton,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        primaryButtonText: {
+          ...styles.primaryButtonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+      }),
+    [COLORS],
+  );
+
   return (
-    <View style={styles.container}>
+    <View style={dynamicStyles.container}>
       {/* Region Info */}
       {draft && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Region Details</Text>
+          <Text style={dynamicStyles.sectionTitle}>Region Details</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Center:</Text>
-            <Text style={styles.value}>
+            <Text style={dynamicStyles.label}>Center:</Text>
+            <Text style={dynamicStyles.value}>
               {draft.centerLat.toFixed(4)}, {draft.centerLng.toFixed(4)}
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Radius:</Text>
-            <Text style={styles.value}>{draft.radiusMiles} miles</Text>
+            <Text style={dynamicStyles.label}>Radius:</Text>
+            <Text style={dynamicStyles.value}>{draft.radiusMiles} miles</Text>
           </View>
         </View>
       )}
@@ -53,33 +107,33 @@ export default function DownloadRegionCard({
       {/* Size Estimate */}
       {estimate && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Storage Estimate</Text>
-          <View style={styles.estimateCard}>
-            <Text style={styles.totalSize}>
+          <Text style={dynamicStyles.sectionTitle}>Storage Estimate</Text>
+          <View style={dynamicStyles.estimateCard}>
+            <Text style={dynamicStyles.totalSize}>
               ~{estimate.estimatedTotalMB} MB
             </Text>
             <View style={styles.breakdown}>
               <View style={styles.breakdownRow}>
-                <Text style={styles.breakdownLabel}>Map tiles:</Text>
-                <Text style={styles.breakdownValue}>
+                <Text style={dynamicStyles.breakdownLabel}>Map tiles:</Text>
+                <Text style={dynamicStyles.breakdownValue}>
                   {estimate.estimatedTilesMB} MB ({estimate.tileCount} tiles)
                 </Text>
               </View>
               <View style={styles.breakdownRow}>
-                <Text style={styles.breakdownLabel}>Elevation:</Text>
-                <Text style={styles.breakdownValue}>
+                <Text style={dynamicStyles.breakdownLabel}>Elevation:</Text>
+                <Text style={dynamicStyles.breakdownValue}>
                   {estimate.estimatedDemMB} MB
                 </Text>
               </View>
               <View style={styles.breakdownRow}>
-                <Text style={styles.breakdownLabel}>Metadata:</Text>
-                <Text style={styles.breakdownValue}>
+                <Text style={dynamicStyles.breakdownLabel}>Metadata:</Text>
+                <Text style={dynamicStyles.breakdownValue}>
                   {estimate.estimatedMetaMB} MB
                 </Text>
               </View>
             </View>
           </View>
-          <Text style={styles.disclaimer}>
+          <Text style={dynamicStyles.disclaimer}>
             * This is an estimate. Actual size may vary.
           </Text>
         </View>
@@ -88,21 +142,21 @@ export default function DownloadRegionCard({
       {/* Action Buttons */}
       {showStartButton && onStartDownload && (
         <TouchableOpacity
-          style={styles.primaryButton}
+          style={dynamicStyles.primaryButton}
           onPress={onStartDownload}
           activeOpacity={0.7}
         >
-          <Text style={styles.primaryButtonText}>Start Download</Text>
+          <Text style={dynamicStyles.primaryButtonText}>Start Download</Text>
         </TouchableOpacity>
       )}
 
       {showCompleteButton && onViewOfflineMap && (
         <TouchableOpacity
-          style={styles.primaryButton}
+          style={dynamicStyles.primaryButton}
           onPress={onViewOfflineMap}
           activeOpacity={0.7}
         >
-          <Text style={styles.primaryButtonText}>View Offline Map</Text>
+          <Text style={dynamicStyles.primaryButtonText}>View Offline Map</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -111,7 +165,6 @@ export default function DownloadRegionCard({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
     borderRadius: 12,
     padding: 20,
     shadowColor: '#000',
@@ -126,7 +179,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 12,
   },
   infoRow: {
@@ -136,15 +188,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
   },
   value: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     fontWeight: '600',
   },
   estimateCard: {
-    backgroundColor: COLORS.BACKGROUND,
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
@@ -152,7 +201,6 @@ const styles = StyleSheet.create({
   totalSize: {
     fontSize: 24,
     fontWeight: '700',
-    color: COLORS.SECONDARY_ACCENT,
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -165,27 +213,23 @@ const styles = StyleSheet.create({
   },
   breakdownLabel: {
     fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
   },
   breakdownValue: {
     fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
     fontWeight: '600',
   },
   disclaimer: {
     fontSize: 11,
-    color: COLORS.PRIMARY_DARK,
     fontStyle: 'italic',
+    opacity: 0.8,
   },
   primaryButton: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 8,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
