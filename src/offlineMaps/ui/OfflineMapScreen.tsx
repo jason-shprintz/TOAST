@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
+import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../theme';
 import { useRegionUpdatePrompt } from '../location/useRegionUpdatePrompt';
@@ -129,6 +130,7 @@ export default function OfflineMapScreen({
   if (status === 'loading') {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
           <Text style={dynamicStyles.loadingText}>
@@ -142,6 +144,7 @@ export default function OfflineMapScreen({
   if (status === 'error') {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
           <Text style={dynamicStyles.errorTitle}>Error Loading Region</Text>
           <Text style={dynamicStyles.errorMessage}>{error}</Text>
@@ -160,6 +163,7 @@ export default function OfflineMapScreen({
   if (status === 'missing' || !region) {
     return (
       <ScreenBody>
+        <SectionHeader>Offline Map</SectionHeader>
         <View style={styles.centerContainer}>
           <Text style={dynamicStyles.emptyTitle}>No Offline Region</Text>
           <Text style={dynamicStyles.emptyMessage}>
@@ -182,6 +186,7 @@ export default function OfflineMapScreen({
   // status === 'ready' and region exists
   return (
     <ScreenBody>
+      <SectionHeader>Offline Map</SectionHeader>
       <View style={styles.container}>
         <OfflineMapView region={region} onTap={handleMapTap} />
       </View>
