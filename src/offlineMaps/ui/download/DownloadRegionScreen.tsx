@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
+import SectionHeader from '../../../components/SectionHeader';
 import { useTheme } from '../../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../../theme';
 import DownloadProgressView from './DownloadProgressView';
@@ -93,10 +94,6 @@ export default function DownloadRegionScreen({
         },
         successMessage: {
           ...styles.successMessage,
-          color: COLORS.PRIMARY_DARK,
-        },
-        title: {
-          ...styles.title,
           color: COLORS.PRIMARY_DARK,
         },
         backLink: {
@@ -245,21 +242,17 @@ export default function DownloadRegionScreen({
   // Render main download UI
   return (
     <ScreenBody>
+      <SectionHeader>Download Offline Region</SectionHeader>
+      {onBack && (
+        <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+          <Text style={dynamicStyles.backLink}>← Back</Text>
+        </TouchableOpacity>
+      )}
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.contentContainer}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={dynamicStyles.title}>Download Offline Region</Text>
-            {onBack && (
-              <TouchableOpacity onPress={handleBack} activeOpacity={0.7}>
-                <Text style={dynamicStyles.backLink}>← Back</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
           {/* Region Card - Show when ready to download */}
           {status === 'readyToDownload' && (
             <DownloadRegionCard
@@ -328,12 +321,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  header: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
+  backButton: {
+    paddingHorizontal: 6,
+    paddingVertical: 8,
     marginBottom: 8,
   },
   backLink: {
