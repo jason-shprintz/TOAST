@@ -1,41 +1,33 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Hatchet/Small Axe diagram -->
-  <defs>
-    <style>
-      .head { fill: #696969; stroke: #404040; stroke-width: 2; }
-      .edge { fill: #C0C0C0; stroke: #808080; stroke-width: 1.5; }
-      .handle { fill: #8B4513; stroke: #654321; stroke-width: 2; }
-      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
-    </style>
-  </defs>
   
   <!-- Handle -->
-  <rect x="70" y="80" width="15" height="100" class="handle" rx="7"/>
-  <ellipse cx="77.5" cy="180" rx="9" ry="7" class="handle"/>
+  <rect x="70" y="80" width="15" height="100" fill="#8B4513" stroke="#654321" strokeWidth="2" rx="7"/>
+  <ellipse cx="77.5" cy="180" rx="9" ry="7" fill="#8B4513" stroke="#654321" strokeWidth="2"/>
   
   <!-- Axe head body -->
-  <path class="head" d="M 65 60 L 90 60 L 95 70 L 90 80 L 65 80 Z" />
+  <path d="M 65 60 L 90 60 L 95 70 L 90 80 L 65 80 Z" fill="#696969" stroke="#404040" strokeWidth="2" />
   
   <!-- Axe head eye (where handle goes through) -->
   <ellipse cx="77.5" cy="70" rx="6" ry="8" fill="#8B4513"/>
   
   <!-- Cutting edge -->
-  <path class="edge" d="M 90 60 L 110 50 L 115 55 L 120 65 L 115 75 L 110 80 L 90 70 Z" />
+  <path d="M 90 60 L 110 50 L 115 55 L 120 65 L 115 75 L 110 80 L 90 70 Z" fill="#C0C0C0" stroke="#808080" strokeWidth="1.5" />
   
   <!-- Edge line -->
-  <path d="M 110 50 L 115 55 L 120 65 L 115 75 L 110 80" fill="none" stroke="#505050" stroke-width="1.5"/>
+  <path d="M 110 50 L 115 55 L 120 65 L 115 75 L 110 80" fill="none" stroke="#505050" strokeWidth="1.5"/>
   
   <!-- Safety zone demonstration -->
-  <ellipse cx="100" cy="120" rx="70" ry="60" fill="none" stroke="#E74C3C" stroke-width="2" stroke-dasharray="5,5"/>
-  <text x="35" y="135" class="label" fill="#E74C3C" font-size="10">Keep clear</text>
-  <text x="35" y="147" class="label" fill="#E74C3C" font-size="10">of swing</text>
+  <ellipse cx="100" cy="120" rx="70" ry="60" fill="none" stroke="#E74C3C" strokeWidth="2" strokeDasharray="5,5"/>
+  <text x="35" y="135" fill="#E74C3C" fontFamily="Arial, sans-serif" fontSize="10px">Keep clear</text>
+  <text x="35" y="147" fill="#E74C3C" fontFamily="Arial, sans-serif" fontSize="10px">of swing</text>
   
   <!-- Labels -->
-  <text x="125" y="65" class="label">Sharp edge</text>
-  <text x="55" y="130" class="label">Handle</text>
-  <text x="50" y="70" class="label">Head</text>
+  <text x="125" y="65" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Sharp edge</text>
+  <text x="55" y="130" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Handle</text>
+  <text x="50" y="70" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Head</text>
   
   <!-- Title -->
-  <text x="100" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="13">Hatchet/Small Axe</text>
-  <text x="100" y="195" class="label" text-anchor="middle" font-size="10">(Maintain safe swing zone)</text>
+  <text x="100" y="20" fill="#333" fontFamily="Arial, sans-serif" fontSize="13px" textAnchor="middle" fontWeight="bold">Hatchet/Small Axe</text>
+  <text x="100" y="195" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px" textAnchor="middle">(Maintain safe swing zone)</text>
 </svg>

@@ -1,57 +1,45 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Ferro Rod/Firestarter diagram -->
-  <defs>
-    <style>
-      .rod { fill: #404040; stroke: #202020; stroke-width: 2; }
-      .handle { fill: #8B4513; stroke: #654321; stroke-width: 2; }
-      .striker { fill: #C0C0C0; stroke: #808080; stroke-width: 2; }
-      .spark { fill: #FFD700; opacity: 0.8; }
-      .tinder { fill: #D2B48C; stroke: #8B7355; stroke-width: 1; }
-      .label { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
-    </style>
-  </defs>
+  <marker id="strike-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#E74C3C" />
+  </marker>
   
   <!-- Ferro rod -->
-  <rect x="40" y="60" width="12" height="60" class="rod" rx="3"/>
-  <ellipse cx="46" cy="60" rx="6" ry="4" class="rod"/>
+  <rect x="40" y="60" width="12" height="60" fill="#404040" stroke="#202020" strokeWidth="2" rx="3"/>
+  <ellipse cx="46" cy="60" rx="6" ry="4" fill="#404040" stroke="#202020" strokeWidth="2"/>
   
   <!-- Rod handle -->
-  <rect x="38" y="120" width="16" height="25" class="handle" rx="5"/>
-  <ellipse cx="46" cy="145" rx="8" ry="5" class="handle"/>
+  <rect x="38" y="120" width="16" height="25" fill="#8B4513" stroke="#654321" strokeWidth="2" rx="5"/>
+  <ellipse cx="46" cy="145" rx="8" ry="5" fill="#8B4513" stroke="#654321" strokeWidth="2"/>
   
   <!-- Striker -->
-  <rect x="100" y="75" width="50" height="15" class="striker" rx="3"/>
-  <path d="M 100 75 L 95 82.5 L 100 90" class="striker"/>
+  <rect x="100" y="75" width="50" height="15" fill="#C0C0C0" stroke="#808080" strokeWidth="2" rx="3"/>
+  <path d="M 100 75 L 95 82.5 L 100 90" fill="#C0C0C0" stroke="#808080" strokeWidth="2"/>
   
   <!-- Sparks -->
-  <circle cx="80" cy="85" r="3" class="spark"/>
-  <circle cx="75" cy="80" r="2" class="spark"/>
-  <circle cx="85" cy="82" r="2.5" class="spark"/>
-  <circle cx="82" cy="90" r="2" class="spark"/>
-  <circle cx="78" cy="88" r="1.5" class="spark"/>
+  <circle cx="80" cy="85" r="3" fill="#FFD700" opacity="0.8"/>
+  <circle cx="75" cy="80" r="2" fill="#FFD700" opacity="0.8"/>
+  <circle cx="85" cy="82" r="2.5" fill="#FFD700" opacity="0.8"/>
+  <circle cx="82" cy="90" r="2" fill="#FFD700" opacity="0.8"/>
+  <circle cx="78" cy="88" r="1.5" fill="#FFD700" opacity="0.8"/>
   
   <!-- Arrow showing striking motion -->
-  <path d="M 120 65 L 80 75" fill="none" stroke="#E74C3C" stroke-width="2" marker-end="url(#strike-arrow)"/>
-  <defs>
-    <marker id="strike-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#E74C3C" />
-    </marker>
-  </defs>
+  <path d="M 120 65 L 80 75" fill="none" stroke="#E74C3C" strokeWidth="2" markerEnd="url(#strike-arrow)"/>
   
   <!-- Tinder pile -->
-  <ellipse cx="80" cy="150" rx="35" ry="15" class="tinder"/>
-  <path d="M 50 145 Q 55 140, 60 145" class="tinder"/>
-  <path d="M 70 142 Q 75 137, 80 142" class="tinder"/>
-  <path d="M 85 143 Q 90 138, 95 143" class="tinder"/>
-  <path d="M 100 145 Q 105 140, 110 145" class="tinder"/>
+  <ellipse cx="80" cy="150" rx="35" ry="15" fill="#D2B48C" stroke="#8B7355" strokeWidth="1"/>
+  <path d="M 50 145 Q 55 140, 60 145" fill="#D2B48C" stroke="#8B7355" strokeWidth="1"/>
+  <path d="M 70 142 Q 75 137, 80 142" fill="#D2B48C" stroke="#8B7355" strokeWidth="1"/>
+  <path d="M 85 143 Q 90 138, 95 143" fill="#D2B48C" stroke="#8B7355" strokeWidth="1"/>
+  <path d="M 100 145 Q 105 140, 110 145" fill="#D2B48C" stroke="#8B7355" strokeWidth="1"/>
   
   <!-- Labels -->
-  <text x="20" y="95" class="label">Ferro rod</text>
-  <text x="155" y="85" class="label">Striker</text>
-  <text x="125" y="60" class="label" fill="#E74C3C">Strike!</text>
-  <text x="55" y="175" class="label">Tinder pile</text>
+  <text x="20" y="95" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Ferro rod</text>
+  <text x="155" y="85" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Striker</text>
+  <text x="125" y="60" fill="#E74C3C" fontFamily="Arial, sans-serif" fontSize="11px">Strike!</text>
+  <text x="55" y="175" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Tinder pile</text>
   
   <!-- Title -->
-  <text x="100" y="25" class="label" text-anchor="middle" font-weight="bold" font-size="13">Ferro Rod Firestarter</text>
-  <text x="100" y="195" class="label" text-anchor="middle" font-size="10">(Scrape rod to create sparks)</text>
+  <text x="100" y="25" fill="#333" fontFamily="Arial, sans-serif" fontSize="13px" textAnchor="middle" fontWeight="bold">Ferro Rod Firestarter</text>
+  <text x="100" y="195" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px" textAnchor="middle">(Scrape rod to create sparks)</text>
 </svg>

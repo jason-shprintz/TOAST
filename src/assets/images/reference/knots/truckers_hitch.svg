@@ -1,45 +1,38 @@
 <svg width="220" height="200" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Trucker's Hitch diagram -->
-  <defs>
-    <style>
-      .rope { fill: none; stroke: #8B4513; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
-      .anchor { fill: #333; }
-      .label { fill: #333; font-family: Arial, sans-serif; font-size: 10px; }
-    </style>
-  </defs>
   
   <!-- Anchor points -->
-  <circle cx="30" cy="100" r="8" class="anchor"/>
-  <circle cx="190" cy="100" r="8" class="anchor"/>
+  <circle cx="30" cy="100" r="8" fill="#333"/>
+  <circle cx="190" cy="100" r="8" fill="#333"/>
   
   <!-- Standing part to pulley loop -->
-  <path class="rope" d="M 30 100 L 110 100" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 30 100 L 110 100" />
   
   <!-- Pulley loop (slip knot or quick release loop) -->
-  <ellipse cx="130" cy="85" rx="12" ry="20" fill="none" stroke="#8B4513" stroke-width="7"/>
-  <path class="rope" d="M 110 100 Q 118 95, 125 85 L 135 85 Q 142 95, 150 100" />
+  <ellipse cx="130" cy="85" rx="12" ry="20" fill="none" stroke="#8B4513" strokeWidth="7"/>
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 110 100 Q 118 95, 125 85 L 135 85 Q 142 95, 150 100" />
   
   <!-- Working end through loop and to anchor -->
-  <path class="rope" d="M 150 100 L 165 100 Q 175 100, 180 110 L 185 120" />
-  <path class="rope" d="M 185 120 Q 190 130, 180 135 L 140 135" />
-  <path class="rope" d="M 140 135 Q 125 135, 125 120 L 125 105" />
-  <path class="rope" d="M 125 105 L 125 85" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 150 100 L 165 100 Q 175 100, 180 110 L 185 120" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 185 120 Q 190 130, 180 135 L 140 135" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 140 135 Q 125 135, 125 120 L 125 105" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 125 105 L 125 85" />
   
   <!-- Mechanical advantage arrow -->
-  <path d="M 190 90 L 210 90" fill="none" stroke="#E74C3C" stroke-width="2" marker-end="url(#arrowhead)"/>
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#E74C3C" />
     </marker>
   </defs>
+  <path d="M 190 90 L 210 90" fill="none" stroke="#E74C3C" strokeWidth="2" markerEnd="url(#arrowhead)"/>
   
   <!-- Labels -->
-  <text x="25" y="90" class="label" text-anchor="middle">Fixed</text>
-  <text x="185" y="90" class="label" text-anchor="middle">Fixed</text>
-  <text x="130" y="60" class="label" text-anchor="middle">Pulley loop</text>
-  <text x="155" y="150" class="label">Pull for tension</text>
+  <text x="25" y="90" fill="#333" fontFamily="Arial, sans-serif" fontSize="10" textAnchor="middle">Fixed</text>
+  <text x="185" y="90" fill="#333" fontFamily="Arial, sans-serif" fontSize="10" textAnchor="middle">Fixed</text>
+  <text x="130" y="60" fill="#333" fontFamily="Arial, sans-serif" fontSize="10" textAnchor="middle">Pulley loop</text>
+  <text x="155" y="150" fill="#333" fontFamily="Arial, sans-serif" fontSize="10">Pull for tension</text>
   
   <!-- Title -->
-  <text x="110" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="13">Trucker's Hitch</text>
-  <text x="110" y="185" class="label" text-anchor="middle" font-size="10">(Mechanical advantage 3:1)</text>
+  <text x="110" y="20" fill="#333" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="bold" textAnchor="middle">Trucker's Hitch</text>
+  <text x="110" y="185" fill="#333" fontFamily="Arial, sans-serif" fontSize="10" textAnchor="middle">(Mechanical advantage 3:1)</text>
 </svg>

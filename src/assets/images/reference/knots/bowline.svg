@@ -1,30 +1,23 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Bowline knot diagram -->
-  <defs>
-    <style>
-      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-      .rope-back { fill: none; stroke: #654321; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-      .label { fill: #333; font-family: Arial, sans-serif; font-size: 12px; }
-    </style>
-  </defs>
   
   <!-- Standing part -->
-  <path class="rope" d="M 100 180 L 100 140" />
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 100 180 L 100 140" />
   
   <!-- Small loop -->
-  <ellipse cx="100" cy="110" rx="15" ry="25" fill="none" stroke="#8B4513" stroke-width="8"/>
+  <ellipse cx="100" cy="110" rx="15" ry="25" fill="none" stroke="#8B4513" strokeWidth="8"/>
   
   <!-- Working end going through loop -->
-  <path class="rope-back" d="M 100 85 Q 80 95, 80 115 L 80 130 Q 80 145, 95 150 Q 120 155, 130 145 Q 140 135, 135 120 L 130 100" />
+  <path fill="none" stroke="#654321" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 100 85 Q 80 95, 80 115 L 80 130 Q 80 145, 95 150 Q 120 155, 130 145 Q 140 135, 135 120 L 130 100" />
   
   <!-- Working end -->
-  <path class="rope" d="M 130 100 L 130 60" />
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 130 100 L 130 60" />
   
   <!-- Labels -->
-  <text x="140" y="70" class="label">Working end</text>
-  <text x="110" y="185" class="label">Standing part</text>
-  <text x="20" y="115" class="label">Loop</text>
+  <text x="140" y="70" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Working end</text>
+  <text x="110" y="185" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Standing part</text>
+  <text x="20" y="115" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Loop</text>
   
   <!-- Title -->
-  <text x="100" y="20" class="label" text-anchor="middle" font-weight="bold" font-size="14">Bowline Knot</text>
+  <text x="100" y="20" fill="#333" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle">Bowline Knot</text>
 </svg>
