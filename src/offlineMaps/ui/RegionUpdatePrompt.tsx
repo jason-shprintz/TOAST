@@ -13,7 +13,7 @@ import {
   Pressable,
 } from 'react-native';
 import { Text } from '../../components/ScaledText';
-import { COLORS } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
 
 export interface RegionUpdatePromptProps {
   visible: boolean;
@@ -29,6 +29,40 @@ export default function RegionUpdatePrompt({
   onAccept,
   onDismiss,
 }: RegionUpdatePromptProps) {
+  const COLORS = useTheme();
+
+  // Create dynamic styles using theme colors
+  const dynamicStyles = StyleSheet.create({
+    content: {
+      ...styles.content,
+      backgroundColor: COLORS.BACKGROUND,
+    },
+    title: {
+      ...styles.title,
+      color: COLORS.PRIMARY_DARK,
+    },
+    message: {
+      ...styles.message,
+      color: COLORS.PRIMARY_DARK,
+    },
+    primaryButton: {
+      ...styles.primaryButton,
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+    },
+    primaryButtonText: {
+      ...styles.primaryButtonText,
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    secondaryButton: {
+      ...styles.secondaryButton,
+      borderColor: COLORS.PRIMARY_DARK,
+    },
+    secondaryButtonText: {
+      ...styles.secondaryButtonText,
+      color: COLORS.PRIMARY_DARK,
+    },
+  });
+
   return (
     <Modal
       visible={visible}
@@ -41,30 +75,30 @@ export default function RegionUpdatePrompt({
           style={styles.container}
           onPress={(e) => e.stopPropagation()}
         >
-          <View style={styles.content}>
-            <Text style={styles.title}>Update Offline Map Area?</Text>
-            <Text style={styles.message}>
+          <View style={dynamicStyles.content}>
+            <Text style={dynamicStyles.title}>Update Offline Map Area?</Text>
+            <Text style={dynamicStyles.message}>
               You've moved outside your downloaded offline map region. Download
               a new region centered on your current location?
             </Text>
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={[styles.button, styles.secondaryButton]}
+                style={[styles.button, dynamicStyles.secondaryButton]}
                 onPress={onDismiss}
                 activeOpacity={0.7}
                 accessibilityLabel="Dismiss region update prompt"
               >
-                <Text style={styles.secondaryButtonText}>Not Now</Text>
+                <Text style={dynamicStyles.secondaryButtonText}>Not Now</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.button, styles.primaryButton]}
+                style={[styles.button, dynamicStyles.primaryButton]}
                 onPress={onAccept}
                 activeOpacity={0.7}
                 accessibilityLabel="Update offline map region"
               >
-                <Text style={styles.primaryButtonText}>Update Region</Text>
+                <Text style={dynamicStyles.primaryButtonText}>Update Region</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -86,7 +120,6 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   content: {
-    backgroundColor: COLORS.BACKGROUND,
     borderRadius: 12,
     padding: 24,
     shadowColor: '#000',
@@ -101,13 +134,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 12,
     textAlign: 'center',
   },
   message: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     marginBottom: 24,
     textAlign: 'center',
     lineHeight: 20,
@@ -126,20 +157,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primaryButton: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
   },
   primaryButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
     fontSize: 16,
     fontWeight: '600',
   },
   secondaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: COLORS.PRIMARY_DARK,
   },
   secondaryButtonText: {
-    color: COLORS.PRIMARY_DARK,
     fontSize: 16,
     fontWeight: '600',
   },
