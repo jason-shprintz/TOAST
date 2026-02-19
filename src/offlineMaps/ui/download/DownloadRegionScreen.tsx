@@ -245,73 +245,82 @@ export default function DownloadRegionScreen({
   // Render main download UI
   return (
     <ScreenBody>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={dynamicStyles.title}>Download Offline Region</Text>
-          {onBack && (
-            <TouchableOpacity onPress={handleBack} activeOpacity={0.7}>
-              <Text style={dynamicStyles.backLink}>← Back</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Region Card - Show when ready to download */}
-        {status === 'readyToDownload' && (
-          <DownloadRegionCard
-            draft={draft}
-            estimate={estimate}
-            onStartDownload={handleStartDownload}
-            showStartButton={true}
-          />
-        )}
-
-        {/* Progress View - Show when downloading/paused/error */}
-        {(status === 'downloading' ||
-          status === 'paused' ||
-          (status === 'error' && jobId)) && (
-          <>
-            <DownloadRegionCard draft={draft} estimate={estimate} />
-            <View style={styles.spacer} />
-            <DownloadProgressView
-              phase={phase}
-              percent={percent}
-              message={message}
-              status={status}
-              error={error}
-              onPause={status === 'downloading' ? handlePause : undefined}
-              onResume={status === 'paused' ? handleResume : undefined}
-              onCancel={handleCancel}
-              onRetry={status === 'error' ? handleRetry : undefined}
-            />
-            {status === 'error' && (
-              <TouchableOpacity
-                style={[dynamicStyles.button, dynamicStyles.dangerButton]}
-                onPress={handleDeleteTemp}
-                activeOpacity={0.7}
-              >
-                <Text style={dynamicStyles.dangerButtonText}>
-                  Delete Temporary Files
-                </Text>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={dynamicStyles.title}>Download Offline Region</Text>
+            {onBack && (
+              <TouchableOpacity onPress={handleBack} activeOpacity={0.7}>
+                <Text style={dynamicStyles.backLink}>← Back</Text>
               </TouchableOpacity>
             )}
-          </>
-        )}
-      </ScrollView>
+          </View>
+
+          {/* Region Card - Show when ready to download */}
+          {status === 'readyToDownload' && (
+            <DownloadRegionCard
+              draft={draft}
+              estimate={estimate}
+              onStartDownload={handleStartDownload}
+              showStartButton={true}
+            />
+          )}
+
+          {/* Progress View - Show when downloading/paused/error */}
+          {(status === 'downloading' ||
+            status === 'paused' ||
+            (status === 'error' && jobId)) && (
+            <>
+              <DownloadRegionCard draft={draft} estimate={estimate} />
+              <View style={styles.spacer} />
+              <DownloadProgressView
+                phase={phase}
+                percent={percent}
+                message={message}
+                status={status}
+                error={error}
+                onPause={status === 'downloading' ? handlePause : undefined}
+                onResume={status === 'paused' ? handleResume : undefined}
+                onCancel={handleCancel}
+                onRetry={status === 'error' ? handleRetry : undefined}
+              />
+              {status === 'error' && (
+                <TouchableOpacity
+                  style={[dynamicStyles.button, dynamicStyles.dangerButton]}
+                  onPress={handleDeleteTemp}
+                  activeOpacity={0.7}
+                >
+                  <Text style={dynamicStyles.dangerButtonText}>
+                    Delete Temporary Files
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingBottom: FOOTER_HEIGHT,
+  },
   scrollView: {
     flex: 1,
+    width: '100%',
   },
   contentContainer: {
     padding: 20,
-    paddingBottom: FOOTER_HEIGHT + 20,
+    paddingBottom: 24,
   },
   centerContainer: {
     flex: 1,
