@@ -4,7 +4,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -32,36 +32,40 @@ export default function RegionUpdatePrompt({
   const COLORS = useTheme();
 
   // Create dynamic styles using theme colors
-  const dynamicStyles = StyleSheet.create({
-    content: {
-      ...styles.content,
-      backgroundColor: COLORS.BACKGROUND,
-    },
-    title: {
-      ...styles.title,
-      color: COLORS.PRIMARY_DARK,
-    },
-    message: {
-      ...styles.message,
-      color: COLORS.PRIMARY_DARK,
-    },
-    primaryButton: {
-      ...styles.primaryButton,
-      backgroundColor: COLORS.SECONDARY_ACCENT,
-    },
-    primaryButtonText: {
-      ...styles.primaryButtonText,
-      color: COLORS.PRIMARY_LIGHT,
-    },
-    secondaryButton: {
-      ...styles.secondaryButton,
-      borderColor: COLORS.PRIMARY_DARK,
-    },
-    secondaryButtonText: {
-      ...styles.secondaryButtonText,
-      color: COLORS.PRIMARY_DARK,
-    },
-  });
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        content: {
+          ...styles.content,
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        title: {
+          ...styles.title,
+          color: COLORS.PRIMARY_DARK,
+        },
+        message: {
+          ...styles.message,
+          color: COLORS.PRIMARY_DARK,
+        },
+        primaryButton: {
+          ...styles.primaryButton,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        primaryButtonText: {
+          ...styles.primaryButtonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+        secondaryButton: {
+          ...styles.secondaryButton,
+          borderColor: COLORS.PRIMARY_DARK,
+        },
+        secondaryButtonText: {
+          ...styles.secondaryButtonText,
+          color: COLORS.PRIMARY_DARK,
+        },
+      }),
+    [COLORS],
+  );
 
   return (
     <Modal

@@ -4,7 +4,7 @@
  * @format
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -59,36 +59,40 @@ export default function OfflineMapScreen({
   const { region, status, error, reload } = useOfflineRegion();
 
   // Create dynamic styles using theme colors
-  const dynamicStyles = StyleSheet.create({
-    loadingText: {
-      ...styles.loadingText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    errorTitle: {
-      ...styles.errorTitle,
-      color: COLORS.ERROR,
-    },
-    errorMessage: {
-      ...styles.errorMessage,
-      color: COLORS.PRIMARY_DARK,
-    },
-    emptyTitle: {
-      ...styles.emptyTitle,
-      color: COLORS.PRIMARY_DARK,
-    },
-    emptyMessage: {
-      ...styles.emptyMessage,
-      color: COLORS.PRIMARY_DARK,
-    },
-    button: {
-      ...styles.button,
-      backgroundColor: COLORS.SECONDARY_ACCENT,
-    },
-    buttonText: {
-      ...styles.buttonText,
-      color: COLORS.PRIMARY_LIGHT,
-    },
-  });
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        loadingText: {
+          ...styles.loadingText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        errorTitle: {
+          ...styles.errorTitle,
+          color: COLORS.ERROR,
+        },
+        errorMessage: {
+          ...styles.errorMessage,
+          color: COLORS.PRIMARY_DARK,
+        },
+        emptyTitle: {
+          ...styles.emptyTitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        emptyMessage: {
+          ...styles.emptyMessage,
+          color: COLORS.PRIMARY_DARK,
+        },
+        button: {
+          ...styles.button,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        buttonText: {
+          ...styles.buttonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+      }),
+    [COLORS],
+  );
 
   const handleMapTap = useCallback(
     (lat: number, lng: number) => {

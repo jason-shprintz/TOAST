@@ -4,7 +4,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -39,76 +39,80 @@ export default function TapInspectorSheet({
   const { isOpen, isLoading, error, result, close } = inspector;
 
   // Create dynamic styles using theme colors
-  const dynamicStyles = StyleSheet.create({
-    sheet: {
-      ...styles.sheet,
-      backgroundColor: COLORS.PRIMARY_LIGHT,
-    },
-    header: {
-      ...styles.header,
-      borderBottomColor: COLORS.PRIMARY_DARK,
-    },
-    headerTitle: {
-      ...styles.headerTitle,
-      color: COLORS.PRIMARY_DARK,
-    },
-    closeButtonText: {
-      ...styles.closeButtonText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    loadingText: {
-      ...styles.loadingText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    errorText: {
-      ...styles.errorText,
-      color: COLORS.ERROR,
-    },
-    closeButtonOutlined: {
-      ...styles.closeButtonOutlined,
-      borderColor: COLORS.PRIMARY_DARK,
-    },
-    closeButtonOutlinedText: {
-      ...styles.closeButtonOutlinedText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    sectionTitle: {
-      ...styles.sectionTitle,
-      color: COLORS.PRIMARY_DARK,
-    },
-    coordinateText: {
-      ...styles.coordinateText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    terrainLabel: {
-      ...styles.terrainLabel,
-      color: COLORS.PRIMARY_DARK,
-    },
-    terrainValue: {
-      ...styles.terrainValue,
-      color: COLORS.PRIMARY_DARK,
-    },
-    emptyText: {
-      ...styles.emptyText,
-      color: COLORS.PRIMARY_DARK,
-    },
-    featureItem: {
-      ...styles.featureItem,
-      borderBottomColor: COLORS.PRIMARY_DARK,
-    },
-    featureTitle: {
-      ...styles.featureTitle,
-      color: COLORS.PRIMARY_DARK,
-    },
-    featureSubtitle: {
-      ...styles.featureSubtitle,
-      color: COLORS.PRIMARY_DARK,
-    },
-    featureDistance: {
-      ...styles.featureDistance,
-      color: COLORS.PRIMARY_DARK,
-    },
-  });
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        sheet: {
+          ...styles.sheet,
+          backgroundColor: COLORS.PRIMARY_LIGHT,
+        },
+        header: {
+          ...styles.header,
+          borderBottomColor: COLORS.PRIMARY_DARK,
+        },
+        headerTitle: {
+          ...styles.headerTitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        closeButtonText: {
+          ...styles.closeButtonText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        loadingText: {
+          ...styles.loadingText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        errorText: {
+          ...styles.errorText,
+          color: COLORS.ERROR,
+        },
+        closeButtonOutlined: {
+          ...styles.closeButtonOutlined,
+          borderColor: COLORS.PRIMARY_DARK,
+        },
+        closeButtonOutlinedText: {
+          ...styles.closeButtonOutlinedText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        sectionTitle: {
+          ...styles.sectionTitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        coordinateText: {
+          ...styles.coordinateText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        terrainLabel: {
+          ...styles.terrainLabel,
+          color: COLORS.PRIMARY_DARK,
+        },
+        terrainValue: {
+          ...styles.terrainValue,
+          color: COLORS.PRIMARY_DARK,
+        },
+        emptyText: {
+          ...styles.emptyText,
+          color: COLORS.PRIMARY_DARK,
+        },
+        featureItem: {
+          ...styles.featureItem,
+          borderBottomColor: COLORS.PRIMARY_DARK,
+        },
+        featureTitle: {
+          ...styles.featureTitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        featureSubtitle: {
+          ...styles.featureSubtitle,
+          color: COLORS.PRIMARY_DARK,
+        },
+        featureDistance: {
+          ...styles.featureDistance,
+          color: COLORS.PRIMARY_DARK,
+        },
+      }),
+    [COLORS],
+  );
 
   if (!isOpen) {
     return null;
@@ -235,16 +239,16 @@ export default function TapInspectorSheet({
 /**
  * Individual feature item in the list
  */
-function FeatureItem({ feature, styles: dynamicStyles }: { feature: TapInspectorFeature; styles: any }) {
+function FeatureItem({ feature, styles: dynamicItemStyles }: { feature: TapInspectorFeature; styles: any }) {
   return (
-    <View style={dynamicStyles.featureItem}>
+    <View style={dynamicItemStyles.featureItem}>
       <View style={styles.featureHeader}>
-        <Text style={dynamicStyles.featureTitle}>{feature.title}</Text>
+        <Text style={dynamicItemStyles.featureTitle}>{feature.title}</Text>
         {feature.subtitle && (
-          <Text style={dynamicStyles.featureSubtitle}>{feature.subtitle}</Text>
+          <Text style={dynamicItemStyles.featureSubtitle}>{feature.subtitle}</Text>
         )}
       </View>
-      <Text style={dynamicStyles.featureDistance}>
+      <Text style={dynamicItemStyles.featureDistance}>
         {formatDistance(feature.distanceMeters)}
       </Text>
     </View>

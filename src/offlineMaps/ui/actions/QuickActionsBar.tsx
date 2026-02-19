@@ -3,7 +3,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import { useTheme } from '../../../hooks/useTheme';
@@ -27,33 +27,37 @@ export default function QuickActionsBar({
   const COLORS = useTheme();
 
   // Create dynamic styles using theme colors
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      ...styles.container,
-      backgroundColor: COLORS.PRIMARY_LIGHT,
-    },
-    button: {
-      ...styles.button,
-      backgroundColor: COLORS.SECONDARY_ACCENT,
-    },
-    buttonDisabled: {
-      ...styles.buttonDisabled,
-      backgroundColor: COLORS.PRIMARY_DARK,
-    },
-    buttonText: {
-      ...styles.buttonText,
-      color: COLORS.PRIMARY_LIGHT,
-    },
-    errorContainer: {
-      ...styles.errorContainer,
-      backgroundColor: COLORS.ERROR_LIGHT,
-      borderColor: COLORS.ERROR,
-    },
-    errorText: {
-      ...styles.errorText,
-      color: COLORS.ERROR,
-    },
-  });
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...styles.container,
+          backgroundColor: COLORS.PRIMARY_LIGHT,
+        },
+        button: {
+          ...styles.button,
+          backgroundColor: COLORS.SECONDARY_ACCENT,
+        },
+        buttonDisabled: {
+          ...styles.buttonDisabled,
+          backgroundColor: COLORS.PRIMARY_DARK,
+        },
+        buttonText: {
+          ...styles.buttonText,
+          color: COLORS.PRIMARY_LIGHT,
+        },
+        errorContainer: {
+          ...styles.errorContainer,
+          backgroundColor: COLORS.ERROR_LIGHT,
+          borderColor: COLORS.ERROR,
+        },
+        errorText: {
+          ...styles.errorText,
+          color: COLORS.ERROR,
+        },
+      }),
+    [COLORS],
+  );
 
   return (
     <View style={dynamicStyles.container}>

@@ -3,7 +3,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Switch, View } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import { useTheme } from '../../hooks/useTheme';
@@ -25,20 +25,24 @@ export default function OverlayToggles({
   const COLORS = useTheme();
 
   // Create dynamic styles using theme colors
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      ...styles.container,
-      backgroundColor: COLORS.PRIMARY_LIGHT,
-    },
-    title: {
-      ...styles.title,
-      color: COLORS.PRIMARY_DARK,
-    },
-    label: {
-      ...styles.label,
-      color: COLORS.PRIMARY_DARK,
-    },
-  });
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...styles.container,
+          backgroundColor: COLORS.PRIMARY_LIGHT,
+        },
+        title: {
+          ...styles.title,
+          color: COLORS.PRIMARY_DARK,
+        },
+        label: {
+          ...styles.label,
+          color: COLORS.PRIMARY_DARK,
+        },
+      }),
+    [COLORS],
+  );
 
   return (
     <View style={dynamicStyles.container}>
