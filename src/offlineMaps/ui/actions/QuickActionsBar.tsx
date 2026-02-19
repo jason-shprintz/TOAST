@@ -31,7 +31,10 @@ export default function QuickActionsBar({
     () => ({
       container: [styles.container, { backgroundColor: COLORS.PRIMARY_LIGHT }],
       button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
-      buttonDisabled: [styles.buttonDisabled, { backgroundColor: COLORS.PRIMARY_DARK }],
+      buttonDisabled: [
+        styles.buttonDisabled,
+        { backgroundColor: COLORS.PRIMARY_DARK },
+      ],
       buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
       errorContainer: [
         styles.errorContainer,

@@ -39,13 +39,25 @@ export default function MapMarkers({
   // Create dynamic styles using theme colors
   const dynamicStyles = useMemo(
     () => ({
-      markerList: [styles.markerList, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      markerList: [
+        styles.markerList,
+        { backgroundColor: COLORS.PRIMARY_LIGHT },
+      ],
       markerListTitle: [styles.markerListTitle, { color: COLORS.PRIMARY_DARK }],
       markerItem: [styles.markerItem, { backgroundColor: COLORS.BACKGROUND }],
-      markerItemSelected: [styles.markerItemSelected, { backgroundColor: COLORS.SECONDARY_ACCENT }],
+      markerItemSelected: [
+        styles.markerItemSelected,
+        { backgroundColor: COLORS.SECONDARY_ACCENT },
+      ],
       markerItemTitle: [styles.markerItemTitle, { color: COLORS.PRIMARY_DARK }],
-      markerItemCoords: [styles.markerItemCoords, { color: COLORS.PRIMARY_DARK }],
-      detailsPanel: [styles.detailsPanel, { backgroundColor: COLORS.PRIMARY_LIGHT }],
+      markerItemCoords: [
+        styles.markerItemCoords,
+        { color: COLORS.PRIMARY_DARK },
+      ],
+      detailsPanel: [
+        styles.detailsPanel,
+        { backgroundColor: COLORS.PRIMARY_LIGHT },
+      ],
       detailsTitle: [styles.detailsTitle, { color: COLORS.PRIMARY_DARK }],
       closeButton: [styles.closeButton, { backgroundColor: COLORS.BACKGROUND }],
       closeButtonText: [styles.closeButtonText, { color: COLORS.PRIMARY_DARK }],

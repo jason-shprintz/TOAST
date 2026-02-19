@@ -40,13 +40,22 @@ export default function DownloadRegionCard({
       sectionTitle: [styles.sectionTitle, { color: COLORS.PRIMARY_DARK }],
       label: [styles.label, { color: COLORS.PRIMARY_DARK }],
       value: [styles.value, { color: COLORS.PRIMARY_DARK }],
-      estimateCard: [styles.estimateCard, { backgroundColor: COLORS.BACKGROUND }],
+      estimateCard: [
+        styles.estimateCard,
+        { backgroundColor: COLORS.BACKGROUND },
+      ],
       totalSize: [styles.totalSize, { color: COLORS.SECONDARY_ACCENT }],
       breakdownLabel: [styles.breakdownLabel, { color: COLORS.PRIMARY_DARK }],
       breakdownValue: [styles.breakdownValue, { color: COLORS.PRIMARY_DARK }],
       disclaimer: [styles.disclaimer, { color: COLORS.PRIMARY_DARK }],
-      primaryButton: [styles.primaryButton, { backgroundColor: COLORS.SECONDARY_ACCENT }],
-      primaryButtonText: [styles.primaryButtonText, { color: COLORS.PRIMARY_LIGHT }],
+      primaryButton: [
+        styles.primaryButton,
+        { backgroundColor: COLORS.SECONDARY_ACCENT },
+      ],
+      primaryButtonText: [
+        styles.primaryButtonText,
+        { color: COLORS.PRIMARY_LIGHT },
+      ],
     }),
     [COLORS],
   );

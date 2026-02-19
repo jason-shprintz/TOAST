@@ -37,10 +37,22 @@ export default function RegionUpdatePrompt({
       content: [styles.content, { backgroundColor: COLORS.BACKGROUND }],
       title: [styles.title, { color: COLORS.PRIMARY_DARK }],
       message: [styles.message, { color: COLORS.PRIMARY_DARK }],
-      primaryButton: [styles.primaryButton, { backgroundColor: COLORS.SECONDARY_ACCENT }],
-      primaryButtonText: [styles.primaryButtonText, { color: COLORS.PRIMARY_LIGHT }],
-      secondaryButton: [styles.secondaryButton, { borderColor: COLORS.PRIMARY_DARK }],
-      secondaryButtonText: [styles.secondaryButtonText, { color: COLORS.PRIMARY_DARK }],
+      primaryButton: [
+        styles.primaryButton,
+        { backgroundColor: COLORS.SECONDARY_ACCENT },
+      ],
+      primaryButtonText: [
+        styles.primaryButtonText,
+        { color: COLORS.PRIMARY_LIGHT },
+      ],
+      secondaryButton: [
+        styles.secondaryButton,
+        { borderColor: COLORS.PRIMARY_DARK },
+      ],
+      secondaryButtonText: [
+        styles.secondaryButtonText,
+        { color: COLORS.PRIMARY_DARK },
+      ],
     }),
     [COLORS],
   );

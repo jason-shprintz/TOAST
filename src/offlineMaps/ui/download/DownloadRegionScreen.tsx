@@ -83,10 +83,19 @@ export default function DownloadRegionScreen({
       backLink: [styles.backLink, { color: COLORS.SECONDARY_ACCENT }],
       button: [styles.button, { backgroundColor: COLORS.SECONDARY_ACCENT }],
       buttonText: [styles.buttonText, { color: COLORS.PRIMARY_LIGHT }],
-      secondaryButton: [styles.secondaryButton, { backgroundColor: COLORS.BACKGROUND }],
-      secondaryButtonText: [styles.secondaryButtonText, { color: COLORS.PRIMARY_DARK }],
+      secondaryButton: [
+        styles.secondaryButton,
+        { backgroundColor: COLORS.BACKGROUND },
+      ],
+      secondaryButtonText: [
+        styles.secondaryButtonText,
+        { color: COLORS.PRIMARY_DARK },
+      ],
       dangerButton: [styles.dangerButton, { backgroundColor: COLORS.ERROR }],
-      dangerButtonText: [styles.dangerButtonText, { color: COLORS.PRIMARY_LIGHT }],
+      dangerButtonText: [
+        styles.dangerButtonText,
+        { color: COLORS.PRIMARY_LIGHT },
+      ],
     }),
     [COLORS],
   );
@@ -148,7 +157,11 @@ export default function DownloadRegionScreen({
       <ScreenBody>
         <SectionHeader>Download Offline Region</SectionHeader>
         {onBack && (
-          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
             <Text style={dynamicStyles.backLink}>← Back</Text>
           </TouchableOpacity>
         )}
@@ -166,7 +179,11 @@ export default function DownloadRegionScreen({
       <ScreenBody>
         <SectionHeader>Download Offline Region</SectionHeader>
         {onBack && (
-          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
             <Text style={dynamicStyles.backLink}>← Back</Text>
           </TouchableOpacity>
         )}
@@ -191,7 +208,11 @@ export default function DownloadRegionScreen({
       <ScreenBody>
         <SectionHeader>Download Offline Region</SectionHeader>
         {onBack && (
-          <TouchableOpacity onPress={handleBack} activeOpacity={0.7} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
+            style={styles.backButton}
+          >
             <Text style={dynamicStyles.backLink}>← Back</Text>
           </TouchableOpacity>
         )}

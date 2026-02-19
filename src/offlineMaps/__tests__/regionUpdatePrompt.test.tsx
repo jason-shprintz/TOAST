@@ -408,7 +408,9 @@ describe('Region Update Prompt', () => {
       );
 
       // Suppress expected console.error from the hook's error handler
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       try {
         await ReactTestRenderer.act(async () => {
