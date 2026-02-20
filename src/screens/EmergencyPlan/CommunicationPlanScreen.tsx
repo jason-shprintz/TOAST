@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
@@ -50,6 +50,18 @@ export default observer(function CommunicationPlanScreen() {
   const [checkInSchedule, setCheckInSchedule] = useState(plan.checkInSchedule);
   const [isDirty, setIsDirty] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
+
+  // Sync form fields when the store's plan loads asynchronously (e.g. on first
+  // mount before SQLite has finished reading). Only apply if the form is clean
+  // so we don't overwrite unsaved edits the user has already made.
+  useEffect(() => {
+    if (!isDirty) {
+      setWhoCallsWhom(store.communicationPlan.whoCallsWhom);
+      setIfPhonesDown(store.communicationPlan.ifPhonesDown);
+      setOutOfAreaContact(store.communicationPlan.outOfAreaContact);
+      setCheckInSchedule(store.communicationPlan.checkInSchedule);
+    }
+  }, [store.communicationPlan, isDirty]);
 
   const markDirty = (setter: (v: string) => void) => (v: string) => {
     setter(v);

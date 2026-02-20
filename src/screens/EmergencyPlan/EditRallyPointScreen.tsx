@@ -24,6 +24,12 @@ export default observer(function EditRallyPointScreen() {
   const store = useEmergencyPlanStore();
 
   const { rallyPoint } = route.params || {};
+
+  if (!rallyPoint) {
+    navigation.goBack();
+    return null;
+  }
+
   const [name, setName] = useState(rallyPoint?.name || '');
   const [description, setDescription] = useState(rallyPoint?.description || '');
   const [coordinates, setCoordinates] = useState(rallyPoint?.coordinates || '');
@@ -85,7 +91,7 @@ export default observer(function EditRallyPointScreen() {
         >
           <FormInput
             label="Name *"
-            placeholder='e.g. "Primary: Grandma&apos;s house"'
+            placeholder='e.g. "Primary: Grandma\'s house"'
             value={name}
             onChangeText={setName}
             accessibilityLabel="Rally point name"

@@ -128,6 +128,9 @@ export class EmergencyPlanStore {
       );
 
       await this.db.executeSql(
+        // This table is designed to hold exactly one row (id = 1).
+        // saveCommunicationPlan always uses INSERT OR REPLACE with id = 1
+        // so only one row ever exists.
         'CREATE TABLE IF NOT EXISTS communication_plan (' +
           'id INTEGER PRIMARY KEY DEFAULT 1, ' +
           "whoCallsWhom TEXT NOT NULL DEFAULT '', " +

@@ -87,7 +87,7 @@ export function ContactPickerModal({
         .map((c: any) => ({
           id:
             c.recordID ??
-            `${c.givenName ?? ''}-${c.familyName ?? ''}-${c.phoneNumbers[0].number}`,
+            `${c.givenName ?? ''}-${c.familyName ?? ''}-${c.phoneNumbers[0].number}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
           name:
             [c.givenName, c.familyName].filter(Boolean).join(' ') ||
             c.company ||

@@ -67,10 +67,17 @@ export default observer(function RallyPointsScreen() {
       }
     }
     setImportVisible(false);
-    Alert.alert(
-      'Import complete',
-      `${added} rally point${added !== 1 ? 's' : ''} imported.`,
-    );
+    if (added === 0) {
+      Alert.alert(
+        'Import failed',
+        'The data was valid but could not be saved. Please try again.',
+      );
+    } else {
+      Alert.alert(
+        'Import complete',
+        `${added} rally point${added !== 1 ? 's' : ''} imported.`,
+      );
+    }
   };
 
   return (

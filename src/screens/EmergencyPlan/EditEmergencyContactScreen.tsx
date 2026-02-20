@@ -24,6 +24,12 @@ export default observer(function EditEmergencyContactScreen() {
   const store = useEmergencyPlanStore();
 
   const { contact } = route.params || {};
+
+  if (!contact) {
+    navigation.goBack();
+    return null;
+  }
+
   const [name, setName] = useState(contact?.name || '');
   const [relationship, setRelationship] = useState(contact?.relationship || '');
   const [phone, setPhone] = useState(contact?.phone || '');

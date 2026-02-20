@@ -63,6 +63,9 @@ export async function shareCommunicationPlan(
   await Share.share({ message: text, title: 'TOAST Communication Plan' });
 }
 
+/** Maximum allowed character length for any string field in a shared payload. */
+const MAX_FIELD_LENGTH = 1000;
+
 /**
  * Parses a shared rally-points JSON string.
  * Returns the array of rally point stubs on success, or `null` if the
@@ -79,10 +82,16 @@ export function parseSharedRallyPoints(
     if (!Array.isArray(parsed.data)) {
       return null;
     }
-    // Basic shape validation
+    // Basic shape and length validation
     const valid = parsed.data.every(
       (item) =>
-        typeof item.name === 'string' && typeof item.description === 'string',
+        typeof item.name === 'string' &&
+        item.name.length <= MAX_FIELD_LENGTH &&
+        typeof item.description === 'string' &&
+        item.description.length <= MAX_FIELD_LENGTH &&
+        (item.coordinates === undefined ||
+          (typeof item.coordinates === 'string' &&
+            item.coordinates.length <= MAX_FIELD_LENGTH)),
     );
     return valid ? parsed.data : null;
   } catch {
@@ -105,9 +114,13 @@ export function parseSharedCommunicationPlan(
     const d = parsed.data;
     if (
       typeof d.whoCallsWhom !== 'string' ||
+      d.whoCallsWhom.length > MAX_FIELD_LENGTH ||
       typeof d.ifPhonesDown !== 'string' ||
+      d.ifPhonesDown.length > MAX_FIELD_LENGTH ||
       typeof d.outOfAreaContact !== 'string' ||
-      typeof d.checkInSchedule !== 'string'
+      d.outOfAreaContact.length > MAX_FIELD_LENGTH ||
+      typeof d.checkInSchedule !== 'string' ||
+      d.checkInSchedule.length > MAX_FIELD_LENGTH
     ) {
       return null;
     }
