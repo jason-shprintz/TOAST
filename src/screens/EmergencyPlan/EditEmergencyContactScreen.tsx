@@ -25,9 +25,7 @@ export default observer(function EditEmergencyContactScreen() {
 
   const { contact } = route.params || {};
   const [name, setName] = useState(contact?.name || '');
-  const [relationship, setRelationship] = useState(
-    contact?.relationship || '',
-  );
+  const [relationship, setRelationship] = useState(contact?.relationship || '');
   const [phone, setPhone] = useState(contact?.phone || '');
   const [notes, setNotes] = useState(contact?.notes || '');
 
@@ -120,9 +118,7 @@ export default observer(function EditEmergencyContactScreen() {
           <FormButtonRow
             onCancel={() => navigation.goBack()}
             onSave={handleSave}
-            saveDisabled={
-              !name.trim() || !relationship.trim() || !phone.trim()
-            }
+            saveDisabled={!name.trim() || !relationship.trim() || !phone.trim()}
           />
           <DeleteButton onPress={handleDelete} label="Delete Contact" />
         </ScrollView>

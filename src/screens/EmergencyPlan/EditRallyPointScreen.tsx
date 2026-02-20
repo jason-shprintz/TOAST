@@ -25,12 +25,8 @@ export default observer(function EditRallyPointScreen() {
 
   const { rallyPoint } = route.params || {};
   const [name, setName] = useState(rallyPoint?.name || '');
-  const [description, setDescription] = useState(
-    rallyPoint?.description || '',
-  );
-  const [coordinates, setCoordinates] = useState(
-    rallyPoint?.coordinates || '',
-  );
+  const [description, setDescription] = useState(rallyPoint?.description || '');
+  const [coordinates, setCoordinates] = useState(rallyPoint?.coordinates || '');
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -89,7 +85,7 @@ export default observer(function EditRallyPointScreen() {
         >
           <FormInput
             label="Name *"
-            placeholder='e.g. "Primary: Grandma\'s house"'
+            placeholder='e.g. "Primary: Grandma&apos;s house"'
             value={name}
             onChangeText={setName}
             accessibilityLabel="Rally point name"

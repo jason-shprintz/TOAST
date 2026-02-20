@@ -65,13 +65,19 @@ export default observer(function EmergencyPlanScreen() {
             accessibilityRole="button"
           >
             <View style={styles.cardIcon}>
-              <Ionicons name={section.icon} size={32} color={COLORS.PRIMARY_DARK} />
+              <Ionicons
+                name={section.icon}
+                size={32}
+                color={COLORS.PRIMARY_DARK}
+              />
             </View>
             <View style={styles.cardText}>
               <Text style={[styles.cardTitle, { color: COLORS.PRIMARY_DARK }]}>
                 {section.title}
               </Text>
-              <Text style={[styles.cardSubtitle, { color: COLORS.PRIMARY_DARK }]}>
+              <Text
+                style={[styles.cardSubtitle, { color: COLORS.PRIMARY_DARK }]}
+              >
                 {section.subtitle}
               </Text>
             </View>

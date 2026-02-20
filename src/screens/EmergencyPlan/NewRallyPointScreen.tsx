@@ -5,11 +5,7 @@ import { Alert, ScrollView, View } from 'react-native';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useEmergencyPlanStore } from '../../stores';
-import {
-  FormButtonRow,
-  FormInput,
-  FormTextArea,
-} from '../Shared/Prepper';
+import { FormButtonRow, FormInput, FormTextArea } from '../Shared/Prepper';
 import { formStyles as styles } from '../Shared/Prepper/formStyles';
 
 /**
@@ -53,7 +49,7 @@ export default observer(function NewRallyPointScreen() {
         >
           <FormInput
             label="Name *"
-            placeholder='e.g. "Primary: Grandma\'s house"'
+            placeholder='e.g. "Primary: Grandma&apos;s house"'
             value={name}
             onChangeText={setName}
             autoFocus

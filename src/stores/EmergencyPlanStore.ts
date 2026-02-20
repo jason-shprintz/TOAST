@@ -130,10 +130,10 @@ export class EmergencyPlanStore {
       await this.db.executeSql(
         'CREATE TABLE IF NOT EXISTS communication_plan (' +
           'id INTEGER PRIMARY KEY DEFAULT 1, ' +
-          'whoCallsWhom TEXT NOT NULL DEFAULT \'\', ' +
-          'ifPhonesDown TEXT NOT NULL DEFAULT \'\', ' +
-          'outOfAreaContact TEXT NOT NULL DEFAULT \'\', ' +
-          'checkInSchedule TEXT NOT NULL DEFAULT \'\', ' +
+          "whoCallsWhom TEXT NOT NULL DEFAULT '', " +
+          "ifPhonesDown TEXT NOT NULL DEFAULT '', " +
+          "outOfAreaContact TEXT NOT NULL DEFAULT '', " +
+          "checkInSchedule TEXT NOT NULL DEFAULT '', " +
           'updatedAt INTEGER NOT NULL DEFAULT 0' +
           ')',
       );
