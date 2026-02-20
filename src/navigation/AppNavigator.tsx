@@ -17,6 +17,14 @@ import SearchScreen from '../screens/Common/SearchScreen';
 import DecibelMeterScreen from '../screens/DecibelMeter/DecibelMeterScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import DigitalWhistleScreen from '../screens/DigitalWhistle/DigitalWhistleScreen';
+import CommunicationPlanScreen from '../screens/EmergencyPlan/CommunicationPlanScreen';
+import EditEmergencyContactScreen from '../screens/EmergencyPlan/EditEmergencyContactScreen';
+import EditRallyPointScreen from '../screens/EmergencyPlan/EditRallyPointScreen';
+import EmergencyContactsScreen from '../screens/EmergencyPlan/EmergencyContactsScreen';
+import EmergencyPlanScreen from '../screens/EmergencyPlan/EmergencyPlanScreen';
+import NewEmergencyContactScreen from '../screens/EmergencyPlan/NewEmergencyContactScreen';
+import NewRallyPointScreen from '../screens/EmergencyPlan/NewRallyPointScreen';
+import RallyPointsScreen from '../screens/EmergencyPlan/RallyPointsScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
@@ -265,6 +273,30 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="ScenarioBookmarks"
             component={ScenarioBookmarksScreen}
+          />
+          {/* Emergency Planner */}
+          <Stack.Screen name="EmergencyPlan" component={EmergencyPlanScreen} />
+          <Stack.Screen
+            name="EmergencyContacts"
+            component={EmergencyContactsScreen}
+          />
+          <Stack.Screen
+            name="NewEmergencyContact"
+            component={NewEmergencyContactScreen}
+          />
+          <Stack.Screen
+            name="EditEmergencyContact"
+            component={EditEmergencyContactScreen}
+          />
+          <Stack.Screen name="RallyPoints" component={RallyPointsScreen} />
+          <Stack.Screen name="NewRallyPoint" component={NewRallyPointScreen} />
+          <Stack.Screen
+            name="EditRallyPoint"
+            component={EditRallyPointScreen}
+          />
+          <Stack.Screen
+            name="CommunicationPlan"
+            component={CommunicationPlanScreen}
           />
         </Stack.Navigator>
       </AppShell>

@@ -241,4 +241,10 @@ export const PREPPER_TOOLS: ToolType[] = [
     icon: 'swap-horizontal-outline',
     id: 'prepper_barter_estimator',
   },
+  {
+    name: 'Emergency Planner',
+    screen: 'EmergencyPlan',
+    icon: 'people-outline',
+    id: 'prepper_emergency_planner',
+  },
 ];
