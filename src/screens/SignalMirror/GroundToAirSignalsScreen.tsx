@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../theme';
 import { GROUND_TO_AIR_SIGNALS } from './data';
@@ -35,12 +36,12 @@ export default function GroundToAirSignalsScreen() {
           contentContainerStyle={dynamicStyles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={dynamicStyles.introText}>
+          <SectionSubHeader>
             Lay these symbols on open ground using rocks, logs, or any
             high-contrast material. Minimum 3 m per character. Best viewed from
             aircraft at altitude — choose a clearing with maximum sky
             visibility.
-          </Text>
+          </SectionSubHeader>
 
           {GROUND_TO_AIR_SIGNALS.map((signal, index) => (
             <View key={signal.symbol + index} style={dynamicStyles.signalCard}>
@@ -72,10 +73,10 @@ export default function GroundToAirSignalsScreen() {
           ))}
 
           <View style={dynamicStyles.separator} />
-          <Text style={dynamicStyles.introText}>
+          <SectionSubHeader>
             Tip: Pair ground signals with audio signals (whistle, Morse code)
             and movement at regular intervals to increase detectability.
-          </Text>
+          </SectionSubHeader>
         </ScrollView>
       </View>
     </ScreenBody>

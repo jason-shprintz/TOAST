@@ -63,7 +63,6 @@ import ScenarioCardsScreen from '../screens/ScenarioCards/ScenarioCardsScreen';
 import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScreen';
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
 import GroundToAirSignalsScreen from '../screens/SignalMirror/GroundToAirSignalsScreen';
-import SignalMirrorScreen from '../screens/SignalMirror/SignalMirrorScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
@@ -151,7 +150,6 @@ function NavigatorContent(): JSX.Element {
             name="DigitalWhistle"
             component={DigitalWhistleScreen}
           />
-          <Stack.Screen name="SignalMirror" component={SignalMirrorScreen} />
           <Stack.Screen
             name="GroundToAirSignals"
             component={GroundToAirSignalsScreen}

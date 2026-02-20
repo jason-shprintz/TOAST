@@ -13,14 +13,6 @@ export const createStyles = (COLORS: ColorScheme) =>
       paddingTop: 10,
       paddingBottom: 30,
     },
-    introText: {
-      fontSize: 13,
-      color: COLORS.PRIMARY_DARK,
-      textAlign: 'center',
-      marginBottom: 16,
-      opacity: 0.8,
-      lineHeight: 18,
-    },
     signalCard: {
       backgroundColor: COLORS.BACKGROUND,
       borderRadius: 12,

@@ -125,10 +125,10 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
     id: 'comm_decibel_meter',
   },
   {
-    name: 'Signal Mirror',
-    screen: 'SignalMirror',
+    name: 'Ground-to-Air Signals',
+    screen: 'GroundToAirSignals',
     icon: 'sunny-outline',
-    id: 'comm_signal_mirror',
+    id: 'comm_ground_to_air',
   },
 ];
 
