@@ -9,6 +9,7 @@ import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
 import DownloadRegionScreenContainer from '../offlineMaps/ui/download/DownloadRegionScreenContainer';
 import OfflineMapScreenContainer from '../offlineMaps/ui/OfflineMapScreenContainer';
+import BarometricPressureScreen from '../screens/BarometricPressure/BarometricPressureScreen';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
@@ -178,6 +179,10 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
           <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
+          <Stack.Screen
+            name="BarometricPressure"
+            component={BarometricPressureScreen}
+          />
           {/* Unit Conversion */}
           <Stack.Screen
             name="UnitConversion"

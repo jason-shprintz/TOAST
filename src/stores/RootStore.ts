@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { BarometerStore } from './BarometerStore';
 import { CoreStore } from './CoreStore';
 import { InventoryStore } from './InventoryStore';
 import { NavigationStore } from './NavigationStore';
@@ -17,6 +18,7 @@ export class RootStore {
   settingsStore: SettingsStore;
   signalsStore: SignalsStore;
   solarCycleNotificationStore: SolarCycleNotificationStore;
+  barometerStore: BarometerStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -28,6 +30,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.barometerStore = new BarometerStore();
     this.initializeSettings();
   }
 
@@ -65,6 +68,7 @@ export class RootStore {
     this.inventoryStore.dispose();
     this.pantryStore.dispose();
     this.solarCycleNotificationStore.dispose();
+    this.barometerStore.stop();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -73,6 +77,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.barometerStore = new BarometerStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB

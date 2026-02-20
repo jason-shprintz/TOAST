@@ -33,6 +33,8 @@
 			<key>NSAllowsLocalNetworking</key>
 			<true/>
 		</dict>
+		<key>NSMotionUsageDescription</key>
+		<string>We use the barometer sensor to read atmospheric pressure for weather and altitude awareness.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>We use your location to show the last GPS fix on the Device Status screen.</string>
 		<key>NSCameraUsageDescription</key>

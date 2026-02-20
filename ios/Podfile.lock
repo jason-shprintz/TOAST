@@ -2117,6 +2117,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - RNSensors (7.3.6):
+    - React-Core
   - RNSound (0.13.0):
     - hermes-engine
     - RCTRequired
@@ -2299,6 +2301,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSensors (from `../node_modules/react-native-sensors`)
   - RNSound (from `../node_modules/react-native-sound`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -2484,6 +2487,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-localize"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSensors:
+    :path: "../node_modules/react-native-sensors"
   RNSound:
     :path: "../node_modules/react-native-sound"
   RNSVG:
@@ -2583,6 +2588,7 @@ SPEC CHECKSUMS:
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNLocalize: 44b09911588826d01c5b949e8e3f9ed5fae16b32
   RNScreens: a00979e0d17609f1c9b0f97881c34550fc4565bf
+  RNSensors: 111159597ac51505df10413c61b28bcd28e88983
   RNSound: 25cfdc38a1353362053c01ca827d7ddf80860de1
   RNSVG: 507bf2685de6b3d49449efd4aae7e7471bb9c433
   RNVectorIcons: 4351544f100d4f12cac156a7c13399e60bab3e26
