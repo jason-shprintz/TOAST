@@ -4,7 +4,7 @@
 
 /** Convert hPa to inHg */
 export const hpaToInhg = (hpa: number): number => {
-  return hpa * 0.02953;
+  return hpa * 0.0295299830714;
 };
 
 /** Trend direction for pressure readings */

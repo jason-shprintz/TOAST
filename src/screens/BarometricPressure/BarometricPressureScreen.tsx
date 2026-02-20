@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -125,7 +126,11 @@ function BarometricPressureScreen() {
                   style={styles.cardBackground}
                 />
                 <View style={styles.readingRow}>
-                  <View style={styles.readingBlock}>
+                  <View
+                    style={styles.readingBlock}
+                    accessible={true}
+                    accessibilityLabel={`Current pressure: ${pressure.toFixed(1)} hectopascals`}
+                  >
                     <Text
                       style={[
                         styles.readingValue,
@@ -144,7 +149,11 @@ function BarometricPressureScreen() {
                     </Text>
                   </View>
                   <View style={styles.readingDivider} />
-                  <View style={styles.readingBlock}>
+                  <View
+                    style={styles.readingBlock}
+                    accessible={true}
+                    accessibilityLabel={`${hpaToInhg(pressure).toFixed(2)} inches of mercury`}
+                  >
                     <Text
                       style={[
                         styles.readingValue,
@@ -196,6 +205,7 @@ function BarometricPressureScreen() {
                 />
                 <Text
                   style={[styles.trendLabel, { color: COLORS.PRIMARY_DARK }]}
+                  accessibilityLabel={`Pressure trend: ${trend}`}
                 >
                   {TREND_ARROW[trend]} {trend}
                 </Text>
@@ -204,6 +214,7 @@ function BarometricPressureScreen() {
                     styles.trendInterpretation,
                     { color: COLORS.PRIMARY_DARK },
                   ]}
+                  accessibilityLabel={interpretation}
                 >
                   {interpretation}
                 </Text>
@@ -223,7 +234,7 @@ function BarometricPressureScreen() {
   );
 }
 
-export default BarometricPressureScreen;
+export default observer(BarometricPressureScreen);
 
 const styles = StyleSheet.create({
   container: {

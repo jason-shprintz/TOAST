@@ -1,5 +1,9 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import {
+  barometer,
+  setUpdateIntervalForType,
+  SensorTypes,
+} from 'react-native-sensors';
 import { SQLiteDatabase } from '../types/database-types';
 
 export interface PressureSample {
@@ -9,8 +13,9 @@ export interface PressureSample {
 
 const MAX_HISTORY_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_SAMPLES = 1440; // 1 per minute × 60 min × 24 h
-
-const BarometerNative = NativeModules.RNSensorsBarometer;
+const BAROMETER_READ_INTERVAL_MS = 60_000; // 1 reading per minute
+/** Prune stale DB rows every N writes to reduce I/O overhead. */
+const DB_PRUNE_INTERVAL = 10;
 
 /**
  * Manages the device barometer sensor, persisting readings to SQLite so that
@@ -29,7 +34,8 @@ export class BarometerStore {
   error: string | null = null;
 
   private db: SQLiteDatabase | null = null;
-  private subscription: { remove: () => void } | null = null;
+  private subscription: { unsubscribe: () => void } | null = null;
+  private writesSinceLastPrune: number = 0;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -37,25 +43,14 @@ export class BarometerStore {
 
   async start(db: SQLiteDatabase): Promise<void> {
     this.db = db;
-
-    if (!BarometerNative) {
-      runInAction(() => {
-        this.available = false;
-        this.loading = false;
-        this.error = 'Barometer not available on this device.';
-      });
-      return;
-    }
-
     await this.initTable();
     await this.loadHistory();
-    await this.subscribe();
+    this.subscribe();
   }
 
   stop(): void {
-    this.subscription?.remove();
+    this.subscription?.unsubscribe();
     this.subscription = null;
-    BarometerNative?.stopUpdates?.();
   }
 
   private async initTable(): Promise<void> {
@@ -105,26 +100,34 @@ export class BarometerStore {
     }
   }
 
-  private async subscribe(): Promise<void> {
+  private subscribe(): void {
     try {
-      await BarometerNative.isAvailable();
+      setUpdateIntervalForType(
+        SensorTypes.barometer,
+        BAROMETER_READ_INTERVAL_MS,
+      );
+      this.subscription = barometer.subscribe(
+        ({ pressure: p }) => {
+          // Always use Date.now() for a consistent JS-runtime timestamp,
+          // independent of sensor clock format or timezone variations.
+          this.handleReading({ pressure: p, timestamp: Date.now() });
+        },
+        (err: Error) => {
+          runInAction(() => {
+            this.available = false;
+            this.loading = false;
+            this.error =
+              err?.message ?? 'Barometer not available on this device.';
+          });
+        },
+      );
     } catch {
       runInAction(() => {
         this.available = false;
         this.loading = false;
         this.error = 'Barometer not available on this device.';
       });
-      return;
     }
-
-    const emitter = new NativeEventEmitter(BarometerNative);
-    this.subscription = emitter.addListener(
-      'RNSensorsBarometer',
-      ({ pressure: p, timestamp }: { pressure: number; timestamp: number }) => {
-        this.handleReading({ pressure: p, timestamp: timestamp ?? Date.now() });
-      },
-    );
-    BarometerNative.startUpdates();
   }
 
   private async handleReading(sample: PressureSample): Promise<void> {
@@ -132,26 +135,38 @@ export class BarometerStore {
       this.currentPressure = sample.pressure;
       this.loading = false;
       this.available = true;
-      const next = [...this.history, sample];
-      this.history =
-        next.length > MAX_SAMPLES
-          ? next.slice(next.length - MAX_SAMPLES)
-          : next;
+      // Circular buffer — drop the oldest entry before pushing to avoid
+      // creating large temporary arrays when the buffer is full.
+      if (this.history.length >= MAX_SAMPLES) {
+        this.history.shift();
+      }
+      this.history.push(sample);
     });
 
     if (!this.db) {
       return;
     }
     try {
-      await this.db.executeSql(
-        'INSERT INTO pressure_history (pressure, timestamp) VALUES (?, ?)',
-        [sample.pressure, sample.timestamp],
-      );
-      // Prune rows beyond the 24 h retention window
-      await this.db.executeSql(
-        'DELETE FROM pressure_history WHERE timestamp < ?',
-        [Date.now() - MAX_HISTORY_MS],
-      );
+      this.writesSinceLastPrune += 1;
+      // Group INSERT and periodic prune inside a single transaction to
+      // reduce database round-trips.
+      await this.db.executeSql('BEGIN TRANSACTION');
+      try {
+        await this.db.executeSql(
+          'INSERT INTO pressure_history (pressure, timestamp) VALUES (?, ?)',
+          [sample.pressure, sample.timestamp],
+        );
+        if (this.writesSinceLastPrune % DB_PRUNE_INTERVAL === 0) {
+          await this.db.executeSql(
+            'DELETE FROM pressure_history WHERE timestamp < ?',
+            [Date.now() - MAX_HISTORY_MS],
+          );
+        }
+        await this.db.executeSql('COMMIT');
+      } catch (e) {
+        await this.db.executeSql('ROLLBACK');
+        throw e;
+      }
     } catch (e) {
       console.warn('BarometerStore: failed to persist reading', e);
     }
