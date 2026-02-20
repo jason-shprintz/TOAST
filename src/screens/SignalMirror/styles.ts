@@ -1,0 +1,146 @@
+import { StyleSheet } from 'react-native';
+import { ColorScheme } from '../../theme/colors';
+
+/**
+ * Creates styles for the SignalMirror screens.
+ * @param COLORS - Theme colors from useTheme hook
+ * @returns StyleSheet for the SignalMirror screens
+ */
+export const createStyles = (COLORS: ColorScheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      paddingHorizontal: 14,
+      paddingTop: 10,
+    },
+    // ScreenFlashSOS styles
+    flashContainer: {
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingBottom: 40,
+    },
+    flashScreen: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    sosDescription: {
+      fontSize: 14,
+      color: COLORS.PRIMARY_DARK,
+      textAlign: 'center',
+      paddingHorizontal: 20,
+      marginBottom: 20,
+      opacity: 0.8,
+    },
+    patternLabel: {
+      fontSize: 24,
+      fontWeight: '800',
+      letterSpacing: 8,
+      color: COLORS.PRIMARY_DARK,
+      textAlign: 'center',
+      marginTop: 20,
+    },
+    activationButton: {
+      marginTop: 'auto',
+      backgroundColor: COLORS.ACCENT,
+      paddingVertical: 18,
+      paddingHorizontal: 48,
+      borderRadius: 14,
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 10,
+    },
+    activationButtonStop: {
+      backgroundColor: COLORS.TOAST_BROWN,
+    },
+    activationButtonText: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: COLORS.PRIMARY_DARK,
+    },
+    warningText: {
+      fontSize: 12,
+      color: COLORS.PRIMARY_DARK,
+      textAlign: 'center',
+      opacity: 0.6,
+      marginTop: 12,
+      paddingHorizontal: 20,
+    },
+    // GroundToAirSignals styles
+    scrollContent: {
+      paddingHorizontal: 14,
+      paddingTop: 10,
+      paddingBottom: 30,
+    },
+    introText: {
+      fontSize: 13,
+      color: COLORS.PRIMARY_DARK,
+      textAlign: 'center',
+      marginBottom: 16,
+      opacity: 0.8,
+      lineHeight: 18,
+    },
+    signalCard: {
+      backgroundColor: COLORS.BACKGROUND,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 14,
+      borderLeftWidth: 5,
+      borderLeftColor: COLORS.ACCENT,
+    },
+    signalHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+      gap: 14,
+    },
+    signalSymbol: {
+      fontSize: 40,
+      fontWeight: '900',
+      color: COLORS.ACCENT,
+      minWidth: 56,
+      textAlign: 'center',
+    },
+    signalMeaning: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: COLORS.PRIMARY_DARK,
+      flex: 1,
+    },
+    signalDetail: {
+      fontSize: 13,
+      color: COLORS.PRIMARY_DARK,
+      marginTop: 4,
+      opacity: 0.75,
+      lineHeight: 18,
+    },
+    signalDetailLabel: {
+      fontWeight: '700',
+      opacity: 1,
+    },
+    sizeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 6,
+      gap: 6,
+    },
+    sizeText: {
+      fontSize: 13,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.75,
+    },
+    resizeIcon: {
+      opacity: 0.6,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: COLORS.TOAST_BROWN,
+      marginVertical: 16,
+      opacity: 0.2,
+    },
+  });

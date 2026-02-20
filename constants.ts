@@ -124,6 +124,12 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
     icon: 'volume-high-outline',
     id: 'comm_decibel_meter',
   },
+  {
+    name: 'Signal Mirror',
+    screen: 'SignalMirror',
+    icon: 'sunny-outline',
+    id: 'comm_signal_mirror',
+  },
 ];
 
 export const NAVIGATION_TOOLS: ToolType[] = [

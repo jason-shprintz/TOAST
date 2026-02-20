@@ -1,0 +1,73 @@
+import React from 'react';
+import { ScrollView, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
+import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
+import { GROUND_TO_AIR_SIGNALS } from './data';
+import { createStyles } from './styles';
+
+export { GROUND_TO_AIR_SIGNALS };
+
+/**
+ * GroundToAirSignalsScreen component
+ *
+ * Displays a fully offline reference guide to internationally recognised
+ * ground-to-air distress symbols. Each entry shows the symbol, its meaning,
+ * recommended minimum construction size, and suggested materials.
+ *
+ * Based on ICAO Annex 12 and standard Search & Rescue conventions.
+ *
+ * @returns A React element rendering the Ground-to-Air Signals reference screen.
+ */
+export default function GroundToAirSignalsScreen() {
+  const COLORS = useTheme();
+  const styles = createStyles(COLORS);
+
+  return (
+    <>
+      <SectionHeader>Ground-to-Air Signals</SectionHeader>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.introText}>
+          Lay these symbols on open ground using rocks, logs, or any
+          high-contrast material. Minimum 3 m per character. Best viewed from
+          aircraft at altitude — choose a clearing with maximum sky visibility.
+        </Text>
+
+        {GROUND_TO_AIR_SIGNALS.map((signal, index) => (
+          <View key={signal.symbol + index} style={styles.signalCard}>
+            <View style={styles.signalHeader}>
+              <Text style={styles.signalSymbol}>{signal.symbol}</Text>
+              <Text style={styles.signalMeaning}>{signal.meaning}</Text>
+            </View>
+            <View style={styles.sizeRow}>
+              <Icon
+                name="resize-outline"
+                size={14}
+                color={COLORS.PRIMARY_DARK}
+                style={styles.resizeIcon}
+              />
+              <Text style={styles.sizeText}>
+                <Text style={styles.signalDetailLabel}>Min size: </Text>
+                {signal.minSize}
+              </Text>
+            </View>
+            <Text style={styles.signalDetail}>
+              <Text style={styles.signalDetailLabel}>Materials: </Text>
+              {signal.materials}
+            </Text>
+          </View>
+        ))}
+
+        <View style={styles.separator} />
+        <Text style={styles.introText}>
+          Tip: Pair ground signals with audio signals (whistle, Morse code) and
+          movement at regular intervals to increase detectability.
+        </Text>
+      </ScrollView>
+    </>
+  );
+}
