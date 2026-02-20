@@ -21,7 +21,7 @@ export const GROUND_TO_AIR_SIGNALS: GroundSignal[] = [
     symbol: 'X',
     meaning: 'Need medical help',
     minSize: '3 m × 3 m',
-    materials: 'Rocks, logs, brightly coloured fabric, snow trench',
+    materials: 'Rocks, logs, brightly colored fabric, snow trench',
   },
   {
     symbol: '→',
