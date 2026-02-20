@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -9,6 +10,11 @@ import { useTheme } from '../../hooks/useTheme';
 import { useEmergencyPlanStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 import { FormButtonRow, FormTextArea } from '../Shared/Prepper';
+import { ImportModal } from './ImportModal';
+import {
+  parseSharedCommunicationPlan,
+  shareCommunicationPlan,
+} from './shareUtils';
 
 /**
  * Structured communication plan template screen.
@@ -18,6 +24,9 @@ import { FormButtonRow, FormTextArea } from '../Shared/Prepper';
  * - What to do if phones are down
  * - Out-of-area contact
  * - Check-in schedule
+ *
+ * Share exports the plan via the native share sheet; Import accepts a
+ * paste of the same format from another TOAST user.
  *
  * @returns The communication plan screen.
  */
@@ -34,6 +43,7 @@ export default observer(function CommunicationPlanScreen() {
   );
   const [checkInSchedule, setCheckInSchedule] = useState(plan.checkInSchedule);
   const [isDirty, setIsDirty] = useState(false);
+  const [importVisible, setImportVisible] = useState(false);
 
   const markDirty = (setter: (v: string) => void) => (v: string) => {
     setter(v);
@@ -55,9 +65,59 @@ export default observer(function CommunicationPlanScreen() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      await shareCommunicationPlan(store.communicationPlan);
+    } catch {
+      // User cancelled or share failed — no-op
+    }
+  };
+
+  const handleImport = async (raw: string) => {
+    const data = parseSharedCommunicationPlan(raw);
+    if (!data) {
+      Alert.alert(
+        'Invalid data',
+        'The pasted text is not a valid TOAST communication plan.',
+      );
+      return;
+    }
+    setWhoCallsWhom(data.whoCallsWhom);
+    setIfPhonesDown(data.ifPhonesDown);
+    setOutOfAreaContact(data.outOfAreaContact);
+    setCheckInSchedule(data.checkInSchedule);
+    setIsDirty(true);
+    setImportVisible(false);
+    Alert.alert(
+      'Plan imported',
+      'Review the imported plan and tap "Save Plan" to save it.',
+    );
+  };
+
   return (
     <ScreenBody>
       <SectionHeader>Communication Plan</SectionHeader>
+
+      {/* Share / Import toolbar */}
+      <View style={styles.toolbar}>
+        <TouchableOpacity
+          style={[styles.iconButton, { borderColor: COLORS.SECONDARY_ACCENT }]}
+          onPress={() => setImportVisible(true)}
+          accessibilityLabel="Import communication plan"
+          accessibilityRole="button"
+        >
+          <Ionicons name="download-outline" size={20} color={COLORS.PRIMARY_DARK} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.iconButton, { borderColor: COLORS.SECONDARY_ACCENT }]}
+          onPress={handleShare}
+          accessibilityLabel="Share communication plan"
+          accessibilityRole="button"
+        >
+          <Ionicons name="share-outline" size={20} color={COLORS.PRIMARY_DARK} />
+        </TouchableOpacity>
+      </View>
+
       <View style={[styles.container, { paddingBottom: FOOTER_HEIGHT }]}>
         <ScrollView
           style={styles.scrollView}
@@ -109,11 +169,32 @@ export default observer(function CommunicationPlanScreen() {
           />
         </ScrollView>
       </View>
+
+      <ImportModal
+        visible={importVisible}
+        title="Import Communication Plan"
+        hint="Paste the share code received from another TOAST user. Existing content will be replaced."
+        onClose={() => setImportVisible(false)}
+        onImport={handleImport}
+      />
     </ScreenBody>
   );
 });
 
 const styles = StyleSheet.create({
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 4,
+    gap: 8,
+  },
+  iconButton: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+  },
   container: {
     flex: 1,
     width: '100%',

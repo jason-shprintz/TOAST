@@ -1,26 +1,36 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useEmergencyPlanStore } from '../../stores';
 import { FormButtonRow, FormInput, FormTextArea } from '../Shared/Prepper';
 import { formStyles as styles } from '../Shared/Prepper/formStyles';
+import { ContactPickerModal } from './ContactPickerModal';
 
 /**
  * Screen for adding a new emergency contact.
+ *
+ * Supports two entry methods:
+ * - Manual entry of name, relationship, phone, and notes.
+ * - Import from the device's native contacts (pre-fills name and phone).
  *
  * @returns The new emergency contact form screen.
  */
 export default observer(function NewEmergencyContactScreen() {
   const navigation = useNavigation<any>();
   const store = useEmergencyPlanStore();
+  const COLORS = useTheme();
 
   const [name, setName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -44,9 +54,44 @@ export default observer(function NewEmergencyContactScreen() {
     }
   };
 
+  const handleContactSelected = (contactName: string, contactPhone: string) => {
+    setName(contactName);
+    setPhone(contactPhone);
+  };
+
   return (
     <ScreenBody>
       <SectionHeader>New Contact</SectionHeader>
+
+      {/* Import from device contacts */}
+      <TouchableOpacity
+        style={[
+          localStyles.importBanner,
+          {
+            backgroundColor: COLORS.PRIMARY_LIGHT,
+            borderColor: COLORS.SECONDARY_ACCENT,
+          },
+        ]}
+        onPress={() => setPickerVisible(true)}
+        accessibilityLabel="Import from contacts"
+        accessibilityRole="button"
+      >
+        <Ionicons
+          name="people-outline"
+          size={20}
+          color={COLORS.PRIMARY_DARK}
+          style={localStyles.importIcon}
+        />
+        <Text style={[localStyles.importText, { color: COLORS.PRIMARY_DARK }]}>
+          Import from Contacts
+        </Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={16}
+          color={COLORS.PRIMARY_DARK}
+        />
+      </TouchableOpacity>
+
       <View style={styles.container}>
         <ScrollView
           style={styles.scrollView}
@@ -57,7 +102,6 @@ export default observer(function NewEmergencyContactScreen() {
             placeholder="Enter full name..."
             value={name}
             onChangeText={setName}
-            autoFocus
             accessibilityLabel="Contact name"
           />
           <FormInput
@@ -89,6 +133,34 @@ export default observer(function NewEmergencyContactScreen() {
           />
         </ScrollView>
       </View>
+
+      <ContactPickerModal
+        visible={pickerVisible}
+        onClose={() => setPickerVisible(false)}
+        onSelect={handleContactSelected}
+      />
     </ScreenBody>
   );
+});
+
+const localStyles = StyleSheet.create({
+  importBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 12,
+    marginTop: 8,
+    marginBottom: 4,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  importIcon: {
+    marginRight: 8,
+  },
+  importText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '500',
+  },
 });
