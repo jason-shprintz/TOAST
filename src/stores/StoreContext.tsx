@@ -19,6 +19,10 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
         await rootStore.coreStore.initNotesDb();
         if (rootStore.coreStore.notesDb) {
           await rootStore.coreStore.loadCategories();
+          // Start barometer collection now that the DB is available so pressure
+          // history accumulates while the user uses the app, not just while the
+          // Barometric Pressure screen is open.
+          rootStore.barometerStore.start(rootStore.coreStore.notesDb);
         }
         await rootStore.coreStore.loadNotes();
         await rootStore.coreStore.loadChecklists();
@@ -30,6 +34,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     // Cleanup device status monitoring on unmount
     return () => {
       rootStore.coreStore.stopDeviceStatusMonitoring();
+      rootStore.barometerStore.stop();
     };
   }, [rootStore]);
 
@@ -56,3 +61,4 @@ export const useSettingsStore = () => useStores().settingsStore;
 export const useSignalsStore = () => useStores().signalsStore;
 export const useSolarCycleNotificationStore = () =>
   useStores().solarCycleNotificationStore;
+export const useBarometerStore = () => useStores().barometerStore;
