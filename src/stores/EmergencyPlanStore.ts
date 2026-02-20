@@ -224,11 +224,11 @@ export class EmergencyPlanStore {
         const row = results.rows.item(0);
         runInAction(() => {
           this.communicationPlan = {
-            whoCallsWhom: row.whoCallsWhom || '',
-            ifPhonesDown: row.ifPhonesDown || '',
-            outOfAreaContact: row.outOfAreaContact || '',
-            checkInSchedule: row.checkInSchedule || '',
-            updatedAt: row.updatedAt || 0,
+            whoCallsWhom: row.whoCallsWhom,
+            ifPhonesDown: row.ifPhonesDown,
+            outOfAreaContact: row.outOfAreaContact,
+            checkInSchedule: row.checkInSchedule,
+            updatedAt: row.updatedAt,
           };
         });
       }
