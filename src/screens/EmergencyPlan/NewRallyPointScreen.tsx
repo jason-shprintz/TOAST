@@ -49,7 +49,7 @@ export default observer(function NewRallyPointScreen() {
         >
           <FormInput
             label="Name *"
-            placeholder='e.g. "Primary: Grandma\'s house"'
+            placeholder={`e.g. "Primary: Grandma's house"`}
             value={name}
             onChangeText={setName}
             autoFocus

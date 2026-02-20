@@ -25,15 +25,15 @@ export default observer(function EditEmergencyContactScreen() {
 
   const { contact } = route.params || {};
 
-  if (!contact) {
-    navigation.goBack();
-    return null;
-  }
-
   const [name, setName] = useState(contact?.name || '');
   const [relationship, setRelationship] = useState(contact?.relationship || '');
   const [phone, setPhone] = useState(contact?.phone || '');
   const [notes, setNotes] = useState(contact?.notes || '');
+
+  if (!contact) {
+    navigation.goBack();
+    return null;
+  }
 
   const handleSave = async () => {
     if (!name.trim()) {
