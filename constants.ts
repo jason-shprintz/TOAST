@@ -140,6 +140,12 @@ export const NAVIGATION_TOOLS: ToolType[] = [
     id: 'nav_offline_map_tiles',
   },
   {
+    name: 'Star Map & Celestial Navigation',
+    screen: 'StarMap',
+    icon: 'star-outline',
+    id: 'nav_star_map',
+  },
+  {
     name: 'Compass & Gyro Orientation',
     screen: 'ComingSoon',
     icon: 'compass-outline',

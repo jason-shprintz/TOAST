@@ -35,6 +35,7 @@ import InventoryScreen from '../screens/Inventory/InventoryScreen';
 import ManageInventoryCategoriesScreen from '../screens/Inventory/ManageInventoryCategoriesScreen';
 import NewInventoryItemScreen from '../screens/Inventory/NewInventoryItemScreen';
 import LunarCyclesScreen from '../screens/LunarCycles/LunarCyclesScreen';
+import StarMapScreen from '../screens/StarMap/StarMapScreen';
 import AlphaToMorseScreen from '../screens/MorseCode/AlphaToMorseScreen';
 import MorseCodeCheatSheet from '../screens/MorseCode/MorseCodeCheatSheet';
 import MorseCodeScreen from '../screens/MorseCode/MorseCodeScreen';
@@ -192,6 +193,7 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
           <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
+          <Stack.Screen name="StarMap" component={StarMapScreen} />
           <Stack.Screen
             name="BarometricPressure"
             component={BarometricPressureScreen}
