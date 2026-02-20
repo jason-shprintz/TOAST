@@ -4,7 +4,7 @@
 
 import { GROUND_TO_AIR_SIGNALS } from '../src/screens/SignalMirror/data';
 
-describe('SignalMirror', () => {
+describe('GroundToAirSignals', () => {
   describe('GROUND_TO_AIR_SIGNALS', () => {
     it('should define at least 8 signals', () => {
       expect(GROUND_TO_AIR_SIGNALS.length).toBeGreaterThanOrEqual(8);

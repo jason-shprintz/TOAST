@@ -10,8 +10,6 @@ import { FOOTER_HEIGHT } from '../../theme';
 import { GROUND_TO_AIR_SIGNALS } from './data';
 import { createStyles } from './styles';
 
-export { GROUND_TO_AIR_SIGNALS };
-
 /**
  * GroundToAirSignalsScreen component
  *
@@ -43,8 +41,8 @@ export default function GroundToAirSignalsScreen() {
             visibility.
           </SectionSubHeader>
 
-          {GROUND_TO_AIR_SIGNALS.map((signal, index) => (
-            <View key={signal.symbol + index} style={dynamicStyles.signalCard}>
+          {GROUND_TO_AIR_SIGNALS.map((signal) => (
+            <View key={signal.symbol} style={dynamicStyles.signalCard}>
               <View style={dynamicStyles.signalHeader}>
                 <Text style={dynamicStyles.signalSymbol}>{signal.symbol}</Text>
                 <Text style={dynamicStyles.signalMeaning}>

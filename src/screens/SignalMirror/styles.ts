@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native';
 import { ColorScheme } from '../../theme/colors';
 
 /**
- * Creates styles for the SignalMirror screens.
+ * Creates styles for the Ground-to-Air Signals reference screen within the SignalMirror module.
  * @param COLORS - Theme colors from useTheme hook
- * @returns StyleSheet for the SignalMirror screens
+ * @returns StyleSheet for the Ground-to-Air Signals reference screen
  */
 export const createStyles = (COLORS: ColorScheme) =>
   StyleSheet.create({
