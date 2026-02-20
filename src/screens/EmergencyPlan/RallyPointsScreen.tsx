@@ -1,7 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -41,20 +47,30 @@ export default observer(function RallyPointsScreen() {
   const handleImport = async (raw: string) => {
     const points = parseSharedRallyPoints(raw);
     if (!points || points.length === 0) {
-      Alert.alert('Invalid data', 'The pasted text is not a valid TOAST rally-points share.');
+      Alert.alert(
+        'Invalid data',
+        'The pasted text is not a valid TOAST rally-points share.',
+      );
       return;
     }
     let added = 0;
     for (const point of points) {
       try {
-        await store.createRallyPoint(point.name, point.description, point.coordinates);
+        await store.createRallyPoint(
+          point.name,
+          point.description,
+          point.coordinates,
+        );
         added++;
       } catch {
         // Skip duplicates or invalid entries
       }
     }
     setImportVisible(false);
-    Alert.alert('Import complete', `${added} rally point${added !== 1 ? 's' : ''} imported.`);
+    Alert.alert(
+      'Import complete',
+      `${added} rally point${added !== 1 ? 's' : ''} imported.`,
+    );
   };
 
   return (
@@ -68,7 +84,11 @@ export default observer(function RallyPointsScreen() {
           accessibilityLabel="Import rally points"
           accessibilityRole="button"
         >
-          <Ionicons name="download-outline" size={20} color={COLORS.PRIMARY_DARK} />
+          <Ionicons
+            name="download-outline"
+            size={20}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconButton, { borderColor: COLORS.SECONDARY_ACCENT }]}
@@ -76,7 +96,11 @@ export default observer(function RallyPointsScreen() {
           accessibilityLabel="Share rally points"
           accessibilityRole="button"
         >
-          <Ionicons name="share-outline" size={20} color={COLORS.PRIMARY_DARK} />
+          <Ionicons
+            name="share-outline"
+            size={20}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.addButton, { backgroundColor: COLORS.PRIMARY_DARK }]}

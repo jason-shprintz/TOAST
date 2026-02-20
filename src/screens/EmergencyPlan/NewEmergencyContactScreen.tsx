@@ -1,7 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -10,7 +16,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useEmergencyPlanStore } from '../../stores';
 import { FormButtonRow, FormInput, FormTextArea } from '../Shared/Prepper';
 import { formStyles as styles } from '../Shared/Prepper/formStyles';
-import { ContactPickerModal } from './ContactPickerModal';
+import { ContactPickerModal, contactsAvailable } from './ContactPickerModal';
 
 /**
  * Screen for adding a new emergency contact.
@@ -63,34 +69,38 @@ export default observer(function NewEmergencyContactScreen() {
     <ScreenBody>
       <SectionHeader>New Contact</SectionHeader>
 
-      {/* Import from device contacts */}
-      <TouchableOpacity
-        style={[
-          localStyles.importBanner,
-          {
-            backgroundColor: COLORS.PRIMARY_LIGHT,
-            borderColor: COLORS.SECONDARY_ACCENT,
-          },
-        ]}
-        onPress={() => setPickerVisible(true)}
-        accessibilityLabel="Import from contacts"
-        accessibilityRole="button"
-      >
-        <Ionicons
-          name="people-outline"
-          size={20}
-          color={COLORS.PRIMARY_DARK}
-          style={localStyles.importIcon}
-        />
-        <Text style={[localStyles.importText, { color: COLORS.PRIMARY_DARK }]}>
-          Import from Contacts
-        </Text>
-        <Ionicons
-          name="chevron-forward-outline"
-          size={16}
-          color={COLORS.PRIMARY_DARK}
-        />
-      </TouchableOpacity>
+      {/* Import from device contacts — only shown when native module is available */}
+      {contactsAvailable && (
+        <TouchableOpacity
+          style={[
+            localStyles.importBanner,
+            {
+              backgroundColor: COLORS.PRIMARY_LIGHT,
+              borderColor: COLORS.SECONDARY_ACCENT,
+            },
+          ]}
+          onPress={() => setPickerVisible(true)}
+          accessibilityLabel="Import from contacts"
+          accessibilityRole="button"
+        >
+          <Ionicons
+            name="people-outline"
+            size={20}
+            color={COLORS.PRIMARY_DARK}
+            style={localStyles.importIcon}
+          />
+          <Text
+            style={[localStyles.importText, { color: COLORS.PRIMARY_DARK }]}
+          >
+            Import from Contacts
+          </Text>
+          <Ionicons
+            name="chevron-forward-outline"
+            size={16}
+            color={COLORS.PRIMARY_DARK}
+          />
+        </TouchableOpacity>
+      )}
 
       <View style={styles.container}>
         <ScrollView

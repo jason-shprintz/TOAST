@@ -21,6 +21,8 @@ try {
   // react-native-contacts not available
 }
 
+export const contactsAvailable = !!Contacts;
+
 interface DeviceContact {
   id: string;
   name: string;
@@ -78,9 +80,14 @@ export function ContactPickerModal({
 
       const all = await Contacts.getAll();
       const withPhones: DeviceContact[] = (all as any[])
-        .filter((c: any) => Array.isArray(c.phoneNumbers) && c.phoneNumbers.length > 0)
+        .filter(
+          (c: any) =>
+            Array.isArray(c.phoneNumbers) && c.phoneNumbers.length > 0,
+        )
         .map((c: any) => ({
-          id: c.recordID ?? `${c.givenName ?? ''}-${c.familyName ?? ''}-${c.phoneNumbers[0].number}`,
+          id:
+            c.recordID ??
+            `${c.givenName ?? ''}-${c.familyName ?? ''}-${c.phoneNumbers[0].number}`,
           name:
             [c.givenName, c.familyName].filter(Boolean).join(' ') ||
             c.company ||
@@ -126,9 +133,7 @@ export function ContactPickerModal({
       onRequestClose={onClose}
       testID="contact-picker-modal"
     >
-      <View
-        style={[styles.container, { backgroundColor: COLORS.BACKGROUND }]}
-      >
+      <View style={[styles.container, { backgroundColor: COLORS.BACKGROUND }]}>
         {/* Header */}
         <View
           style={[
@@ -183,7 +188,9 @@ export function ContactPickerModal({
           />
         )}
         {!loading && error ? (
-          <Text style={[styles.center, styles.errorText, { color: COLORS.ERROR }]}>
+          <Text
+            style={[styles.center, styles.errorText, { color: COLORS.ERROR }]}
+          >
             {error}
           </Text>
         ) : null}
@@ -215,7 +222,9 @@ export function ContactPickerModal({
                   />
                 </View>
                 <View style={styles.itemBody}>
-                  <Text style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}>
+                  <Text
+                    style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}
+                  >
                     {item.name}
                   </Text>
                   <Text
@@ -228,7 +237,11 @@ export function ContactPickerModal({
             )}
             ListEmptyComponent={
               <Text
-                style={[styles.center, styles.emptyText, { color: COLORS.PRIMARY_DARK }]}
+                style={[
+                  styles.center,
+                  styles.emptyText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
               >
                 No contacts with phone numbers found.
               </Text>

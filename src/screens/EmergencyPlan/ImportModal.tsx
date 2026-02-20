@@ -108,9 +108,7 @@ export function ImportModal({
               accessibilityLabel="Cancel"
               accessibilityRole="button"
             >
-              <Text
-                style={[styles.buttonText, { color: COLORS.PRIMARY_DARK }]}
-              >
+              <Text style={[styles.buttonText, { color: COLORS.PRIMARY_DARK }]}>
                 Cancel
               </Text>
             </TouchableOpacity>

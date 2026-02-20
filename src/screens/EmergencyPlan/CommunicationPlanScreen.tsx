@@ -1,7 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
@@ -106,7 +112,11 @@ export default observer(function CommunicationPlanScreen() {
           accessibilityLabel="Import communication plan"
           accessibilityRole="button"
         >
-          <Ionicons name="download-outline" size={20} color={COLORS.PRIMARY_DARK} />
+          <Ionicons
+            name="download-outline"
+            size={20}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconButton, { borderColor: COLORS.SECONDARY_ACCENT }]}
@@ -114,7 +124,11 @@ export default observer(function CommunicationPlanScreen() {
           accessibilityLabel="Share communication plan"
           accessibilityRole="button"
         >
-          <Ionicons name="share-outline" size={20} color={COLORS.PRIMARY_DARK} />
+          <Ionicons
+            name="share-outline"
+            size={20}
+            color={COLORS.PRIMARY_DARK}
+          />
         </TouchableOpacity>
       </View>
 

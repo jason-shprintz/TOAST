@@ -82,8 +82,7 @@ export function parseSharedRallyPoints(
     // Basic shape validation
     const valid = parsed.data.every(
       (item) =>
-        typeof item.name === 'string' &&
-        typeof item.description === 'string',
+        typeof item.name === 'string' && typeof item.description === 'string',
     );
     return valid ? parsed.data : null;
   } catch {
