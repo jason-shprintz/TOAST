@@ -1,0 +1,43 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Snow/Brush Sandals diagram -->
+  
+  <!-- Left sandal frame (oval) -->
+  <ellipse cx="60" cy="100" rx="35" ry="55" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  
+  <!-- Cross-hatching/webbing on left sandal -->
+  <path d="M 40 70 L 80 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 45 70 L 75 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 80 70 L 40 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 75 70 L 45 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 25 100 L 95 100" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 30 90 L 90 110" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 30 110 L 90 90" fill="none" stroke="#8B7355" strokeWidth="2" />
+  
+  <!-- Binding straps on left -->
+  <ellipse cx="60" cy="85" rx="25" ry="8" fill="none" stroke="#654321" strokeWidth="2.5"/>
+  <ellipse cx="60" cy="100" rx="25" ry="8" fill="none" stroke="#654321" strokeWidth="2.5"/>
+  
+  <!-- Right sandal frame (oval) -->
+  <ellipse cx="140" cy="100" rx="35" ry="55" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  
+  <!-- Cross-hatching/webbing on right sandal -->
+  <path d="M 120 70 L 160 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 125 70 L 155 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 160 70 L 120 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 155 70 L 125 130" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 105 100 L 175 100" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 110 90 L 170 110" fill="none" stroke="#8B7355" strokeWidth="2" />
+  <path d="M 110 110 L 170 90" fill="none" stroke="#8B7355" strokeWidth="2" />
+  
+  <!-- Binding straps on right -->
+  <ellipse cx="140" cy="85" rx="25" ry="8" fill="none" stroke="#654321" strokeWidth="2.5"/>
+  <ellipse cx="140" cy="100" rx="25" ry="8" fill="none" stroke="#654321" strokeWidth="2.5"/>
+  
+  <!-- Labels -->
+  <text x="25" y="170" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">Bent sapling frame</text>
+  <text x="25" y="182" fill="#333" fontFamily="Arial, sans-serif" fontSize="11px">with woven brush/bark</text>
+  
+  <!-- Title -->
+  <text x="100" y="25" fill="#333" fontFamily="Arial, sans-serif" fontSize="13px" textAnchor="middle" fontWeight="bold">Snow/Brush Sandals</text>
+  <text x="100" y="190" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px" textAnchor="middle">(Impromptu snowshoes)</text>
+</svg>

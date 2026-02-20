@@ -1,0 +1,21 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sheet Bend diagram -->
+  
+  <!-- Thick rope loop -->
+  <path fill="none" stroke="#654321" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 80 70 Q 80 90, 95 95 L 145 95 Q 160 95, 160 80 L 160 50" />
+  <path fill="none" stroke="#654321" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 80 120 Q 80 100, 95 95" />
+  
+  <!-- Thin rope threading through -->
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 40 110 L 75 110 Q 85 110, 90 105 L 100 95" />
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 100 95 Q 110 85, 125 85 L 145 85 Q 155 85, 157 95 L 157 105 Q 157 115, 145 120 L 110 120 Q 95 120, 90 110 L 85 100" />
+  
+  <!-- Working end -->
+  <path fill="none" stroke="#8B4513" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" d="M 85 100 L 70 90" />
+  
+  <!-- Labels -->
+  <text x="165" y="65" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Thick rope</text>
+  <text x="25" y="115" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Thin rope</text>
+  
+  <!-- Title -->
+  <text x="100" y="25" fill="#333" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle">Sheet Bend</text>
+</svg>

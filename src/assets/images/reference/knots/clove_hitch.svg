@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clove Hitch diagram -->
+  
+  <!-- Pole/post -->
+  <rect x="90" y="40" width="20" height="140" fill="#654321" rx="10"/>
+  
+  <!-- First wrap -->
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 40 80 Q 70 80, 90 95 L 90 110 Q 90 120, 110 120 L 130 120 Q 140 120, 140 110" />
+  
+  <!-- Second wrap crossing -->
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 40 120 Q 70 120, 90 105 L 90 90 Q 90 80, 110 80 L 130 80 Q 140 80, 140 90" />
+  
+  <!-- Working ends -->
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 140 90 L 160 70" />
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 140 110 L 160 130" />
+  
+  <!-- Labels -->
+  <text x="165" y="75" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">End 1</text>
+  <text x="165" y="135" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">End 2</text>
+  
+  <!-- Title -->
+  <text x="100" y="25" fill="#333" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle">Clove Hitch</text>
+</svg>

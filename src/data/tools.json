@@ -40,7 +40,8 @@
       "notes": [
         "A small, sharp knife used carefully is more effective and safer than a large dull one.",
         "Establish a habit of sheathing the knife immediately after each use to avoid accidents."
-      ]
+      ],
+      "image": "tools_fixed_blade_knife_basics"
     },
     {
       "id": "tools_multitool_usage",
@@ -137,7 +138,8 @@
       "notes": [
         "In confined spaces or when tired, baton with a hatchet instead of swinging it to reduce risk.",
         "Regularly touch up the edge; a sharp tool requires less force and is easier to control."
-      ]
+      ],
+      "image": "tools_hatchet_small_axe"
     },
     {
       "id": "tools_firestarter_ferro_rod",
@@ -168,7 +170,8 @@
       "notes": [
         "Scraping slowly and firmly often produces better sparks than fast, light strokes.",
         "If possible, scrape some fine shavings from the ferro rod directly into the tinder to increase ignition chances."
-      ]
+      ],
+      "image": "tools_firestarter_ferro_rod"
     },
     {
       "id": "tools_basic_repair_kit",
@@ -201,7 +204,6 @@
         "Plan to carry repair materials that match your most important gear (for example, webbing for packs, patches for inflatable items)."
       ]
     },
-
     {
       "id": "tools_wild_primitive_mallet",
       "category": "Tools (Wilderness)",
@@ -232,7 +234,8 @@
       "notes": [
         "Green hardwood is ideal because it is more resistant to splitting while you shape it.",
         "A good mallet protects your knife spine and hatchet from damage when batoning or driving stakes."
-      ]
+      ],
+      "image": "tools_wild_primitive_mallet"
     },
     {
       "id": "tools_wild_wooden_stakes_pegs",
@@ -294,7 +297,8 @@
       "notes": [
         "A tripod and hanger keep cookware out of the flames and are more efficient for simmering than balancing pots on rocks.",
         "You can adapt the same tripod frame for hanging clothes, drying meat, or creating a lantern stand."
-      ]
+      ],
+      "image": "tools_wild_pot_hanger_and_tripod"
     },
     {
       "id": "tools_wild_toggle_and_spreader",
@@ -357,7 +361,8 @@
       "notes": [
         "Natural cordage is excellent for lashings, light tie-downs, and repairs when commercial rope is limited.",
         "Practice the reverse-wrap technique at home with string or yarn before relying on plant fibers in the field."
-      ]
+      ],
+      "image": "tools_wild_natural_cordage"
     },
     {
       "id": "tools_wild_snow_or_brush_sandals",
@@ -388,9 +393,9 @@
       "notes": [
         "These improvised sandals are a last-resort option to improve flotation in soft terrain, not a replacement for real snowshoes.",
         "They can also be used to protect bare or lightly shod feet from sharp rocks and thorns in emergency scenarios."
-      ]
+      ],
+      "image": "tools_wild_snow_or_brush_sandals"
     },
-
     {
       "id": "knots_overhand_and_stopper",
       "category": "Knots",
@@ -416,7 +421,8 @@
       "notes": [
         "The overhand knot is the foundation of many other knots; practice until you can tie it by feel.",
         "Use stopper knots near the ends of ropes used for tie-downs to prevent knots from pulling through under tension."
-      ]
+      ],
+      "image": "knots_overhand_and_stopper"
     },
     {
       "id": "knots_square_reef",
@@ -443,7 +449,8 @@
       "notes": [
         "Remember the phrase \"right over left, left over right\" to avoid tying a granny knot.",
         "Use the square knot for bandages, bundles, and tying packages where loads are low and steady."
-      ]
+      ],
+      "image": "knots_square_reef"
     },
     {
       "id": "knots_sheet_bend",
@@ -470,7 +477,8 @@
       "notes": [
         "For extra security, make a double sheet bend by wrapping the working end twice around the bight before tucking.",
         "Sheet bends are useful when extending ropes or tying to loops in tarps and nets."
-      ]
+      ],
+      "image": "knots_sheet_bend"
     },
     {
       "id": "knots_bowline_fixed_loop",
@@ -497,7 +505,8 @@
       "notes": [
         "A simple backup is to tie an overhand stopper knot in the tail around the loop part.",
         "The bowline is easy to untie after loading, making it useful for temporary anchor points and around-the-waist loops in non-life-critical situations."
-      ]
+      ],
+      "image": "knots_bowline_fixed_loop"
     },
     {
       "id": "knots_round_turn_two_half_hitches",
@@ -524,7 +533,8 @@
       "notes": [
         "This knot is useful for tying off boats, hanging items from trees, or tensioning light lines.",
         "The round turn provides extra friction and reduces strain on the hitches."
-      ]
+      ],
+      "image": "knots_round_turn_two_half_hitches"
     },
     {
       "id": "knots_clove_hitch",
@@ -551,7 +561,8 @@
       "notes": [
         "Clove hitches are ideal as starting or finishing knots in lashings and for temporary tie-offs.",
         "Adding extra half hitches or a backup knot increases security for longer-term use."
-      ]
+      ],
+      "image": "knots_clove_hitch"
     },
     {
       "id": "knots_taut_line_hitch",
@@ -579,7 +590,8 @@
       "notes": [
         "This knot is very useful for adjusting tent and tarp tension without retying.",
         "If it slips, add an extra wrap on the standing part or switch to a different adjustable system."
-      ]
+      ],
+      "image": "knots_taut_line_hitch"
     },
     {
       "id": "knots_truckers_hitch",
@@ -610,7 +622,8 @@
       "notes": [
         "The trucker’s hitch is excellent for securing loads on vehicles, tightening tarps, and making ridgelines taut.",
         "Practice the loop and finish hitches in low-stress situations before using this knot with critical loads."
-      ]
+      ],
+      "image": "knots_truckers_hitch"
     },
     {
       "id": "knots_prusik_friction_hitch",
@@ -641,7 +654,8 @@
       "notes": [
         "The Prusik is useful for hauling systems, improvised backups, and attaching loops to ridgelines.",
         "Use smaller-diameter cord (often about two-thirds the diameter of the main rope) for better grip."
-      ]
+      ],
+      "image": "knots_prusik_friction_hitch"
     }
   ]
 }

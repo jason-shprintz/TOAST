@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bowline knot diagram -->
+  
+  <!-- Standing part -->
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 100 180 L 100 140" />
+  
+  <!-- Small loop -->
+  <ellipse cx="100" cy="110" rx="15" ry="25" fill="none" stroke="#8B4513" strokeWidth="8"/>
+  
+  <!-- Working end going through loop -->
+  <path fill="none" stroke="#654321" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 100 85 Q 80 95, 80 115 L 80 130 Q 80 145, 95 150 Q 120 155, 130 145 Q 140 135, 135 120 L 130 100" />
+  
+  <!-- Working end -->
+  <path fill="none" stroke="#8B4513" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M 130 100 L 130 60" />
+  
+  <!-- Labels -->
+  <text x="140" y="70" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Working end</text>
+  <text x="110" y="185" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Standing part</text>
+  <text x="20" y="115" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Loop</text>
+  
+  <!-- Title -->
+  <text x="100" y="20" fill="#333" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle">Bowline Knot</text>
+</svg>

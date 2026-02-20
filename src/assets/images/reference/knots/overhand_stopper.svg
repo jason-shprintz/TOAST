@@ -1,0 +1,22 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Overhand/Stopper Knot diagram -->
+  
+  <!-- Standing part -->
+  <path fill="none" stroke="#8B4513" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 100 40 L 100 80" />
+  
+  <!-- Loop formation -->
+  <path fill="none" stroke="#8B4513" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 100 80 Q 60 100, 70 130 Q 75 145, 100 145" />
+  
+  <!-- Working end passing through -->
+  <path fill="none" stroke="#8B4513" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 100 145 Q 125 145, 130 130 Q 140 100, 100 80" />
+  
+  <!-- Working end -->
+  <path fill="none" stroke="#8B4513" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 100 145 L 100 170" />
+  
+  <!-- Labels -->
+  <text x="110" y="50" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Standing part</text>
+  <text x="110" y="175" fill="#333" fontFamily="Arial, sans-serif" fontSize="12">Working end</text>
+  
+  <!-- Title -->
+  <text x="100" y="25" fill="#333" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle">Overhand/Stopper Knot</text>
+</svg>

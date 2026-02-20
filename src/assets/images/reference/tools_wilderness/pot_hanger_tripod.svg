@@ -1,0 +1,40 @@
+<svg width="220" height="200" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pot Hanger and Tripod diagram -->
+  
+  <!-- Tripod legs -->
+  <path d="M 110 30 L 80 140" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  <path d="M 110 30 L 140 140" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  <path d="M 110 30 L 110 130" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  
+  <!-- Rope binding at top -->
+  <ellipse cx="110" cy="30" rx="15" ry="10" fill="none" stroke="#654321" strokeWidth="3"/>
+  
+  <!-- Cross bar -->
+  <path d="M 85 70 L 135 70" fill="none" stroke="#8B4513" strokeWidth="4" strokeLinecap="round" />
+  
+  <!-- Rope hanging down with pot -->
+  <path d="M 110 70 L 110 95" fill="none" stroke="#654321" strokeWidth="3" />
+  
+  <!-- Pot -->
+  <ellipse cx="110" cy="95" rx="15" ry="8" fill="#333" stroke="#000" strokeWidth="2"/>
+  <rect x="95" y="95" width="30" height="25" fill="#333" stroke="#000" strokeWidth="2" rx="3"/>
+  <ellipse cx="110" cy="120" rx="15" ry="8" fill="#333" stroke="#000" strokeWidth="2"/>
+  <path d="M 95 100 L 85 95 L 85 105 L 95 110" fill="#333" stroke="#000" strokeWidth="2"/>
+  
+  <!-- Fire below -->
+  <ellipse cx="110" cy="155" rx="25" ry="15" fill="#FF6B35" opacity="0.7"/>
+  <path d="M 90 145 L 95 135 L 100 145" fill="#FF6B35" opacity="0.7"/>
+  <path d="M 110 145 L 110 130" fill="#FF6B35" opacity="0.7"/>
+  <path d="M 125 145 L 120 135 L 115 145" fill="#FF6B35" opacity="0.7"/>
+  
+  <!-- Labels -->
+  <text x="140" y="40" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px">Lashed</text>
+  <text x="140" y="50" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px">together</text>
+  <text x="140" y="75" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px">Cross bar</text>
+  <text x="125" y="105" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px">Pot</text>
+  <text x="45" y="160" fill="#333" fontFamily="Arial, sans-serif" fontSize="10px">Fire</text>
+  
+  <!-- Title -->
+  <text x="110" y="20" fill="#333" fontFamily="Arial, sans-serif" fontSize="12px" textAnchor="middle" fontWeight="bold">Pot Hanger &amp; Tripod</text>
+  <text x="110" y="190" fill="#333" fontFamily="Arial, sans-serif" fontSize="9px" textAnchor="middle">(Adjustable height cooking)</text>
+</svg>
