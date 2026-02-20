@@ -127,7 +127,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   {
     name: 'Ground-to-Air Signals',
     screen: 'GroundToAirSignals',
-    icon: 'sunny-outline',
+    icon: 'triangle-outline',
     id: 'comm_ground_to_air',
   },
 ];
