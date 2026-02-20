@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,6 +35,7 @@ type EntryScreenRouteProp = RouteProp<
  */
 export default function EntryScreen(): JSX.Element {
   const route = useRoute<EntryScreenRouteProp>();
+  const navigation = useNavigation<any>();
   const { entry: routeEntry } = route.params || {};
 
   const resolvedEntry: ReferenceEntryType | null = useMemo(() => {
@@ -166,6 +167,28 @@ export default function EntryScreen(): JSX.Element {
               ))}
             </View>
           )}
+          {/* Related Screen Link */}
+          {!!resolvedEntry.related_screen && (
+            <TouchableOpacity
+              style={styles.relatedScreenBtn}
+              onPress={() => navigation.navigate(resolvedEntry.related_screen!)}
+            >
+              <Ionicons
+                name="open-outline"
+                size={18}
+                color={COLORS.PRIMARY_DARK}
+                style={styles.relatedScreenIcon}
+              />
+              <Text style={styles.relatedScreenLabel}>
+                {resolvedEntry.related_screen_label ?? 'Open Reference Tool'}
+              </Text>
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color={COLORS.PRIMARY_DARK}
+              />
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </View>
     </ScreenBody>
@@ -240,5 +263,23 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     marginBottom: 6,
+  },
+  relatedScreenBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.TOAST_BROWN,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
+  },
+  relatedScreenIcon: {
+    marginRight: 8,
+  },
+  relatedScreenLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

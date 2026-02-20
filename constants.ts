@@ -124,6 +124,12 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
     icon: 'volume-high-outline',
     id: 'comm_decibel_meter',
   },
+  {
+    name: 'Ground-to-Air Signals',
+    screen: 'GroundToAirSignals',
+    icon: 'triangle-outline',
+    id: 'comm_ground_to_air',
+  },
 ];
 
 export const NAVIGATION_TOOLS: ToolType[] = [

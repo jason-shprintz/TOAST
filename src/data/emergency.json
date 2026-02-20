@@ -174,7 +174,9 @@
       ],
       "notes": [
         "Size matters. Think in terms of what is visible from far above, not from where you stand."
-      ]
+      ],
+      "related_screen": "GroundToAirSignals",
+      "related_screen_label": "View Symbol Reference"
     },
     {
       "id": "signaling_smoke_signal_fire",

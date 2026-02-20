@@ -10,6 +10,8 @@ type ReferenceEntryType = {
   watch_for: string[];
   notes: string[];
   image?: string; // optional — maps to key in referenceImages.ts
+  related_screen?: string; // optional — navigator screen name to link to
+  related_screen_label?: string; // optional — label for the link button
 };
 
 export type ScenarioCardType = {
