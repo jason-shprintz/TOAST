@@ -85,6 +85,12 @@ export const CORE_TOOLS: ToolType[] = [
     icon: 'moon-outline',
     id: 'core_lunar_cycles',
   },
+  {
+    name: 'Barometric Pressure',
+    screen: 'BarometricPressure',
+    icon: 'analytics-outline',
+    id: 'core_barometric_pressure',
+  },
 ];
 
 export const COMMUNICATION_TOOLS: ToolType[] = [
