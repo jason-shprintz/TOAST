@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { BarometerStore } from './BarometerStore';
 import { CoreStore } from './CoreStore';
+import { EmergencyPlanStore } from './EmergencyPlanStore';
 import { InventoryStore } from './InventoryStore';
 import { NavigationStore } from './NavigationStore';
 import { PantryStore } from './PantryStore';
@@ -13,6 +14,7 @@ export class RootStore {
   coreStore: CoreStore;
   inventoryStore: InventoryStore;
   pantryStore: PantryStore;
+  emergencyPlanStore: EmergencyPlanStore;
   navigationStore: NavigationStore;
   referenceStore: ReferenceStore;
   settingsStore: SettingsStore;
@@ -25,6 +27,7 @@ export class RootStore {
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
+    this.emergencyPlanStore = new EmergencyPlanStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();
@@ -53,6 +56,7 @@ export class RootStore {
     // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
     await this.pantryStore.initDatabase();
+    await this.emergencyPlanStore.initDatabase();
   }
 
   // Global app state
@@ -67,11 +71,13 @@ export class RootStore {
     this.coreStore.dispose();
     this.inventoryStore.dispose();
     this.pantryStore.dispose();
+    this.emergencyPlanStore.dispose();
     this.solarCycleNotificationStore.dispose();
     this.barometerStore.stop();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
+    this.emergencyPlanStore = new EmergencyPlanStore();
     this.navigationStore = new NavigationStore();
     this.referenceStore = new ReferenceStore();
     this.settingsStore = new SettingsStore();

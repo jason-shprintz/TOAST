@@ -55,6 +55,7 @@ export const useStores = (): RootStore => {
 export const useCoreStore = () => useStores().coreStore;
 export const useInventoryStore = () => useStores().inventoryStore;
 export const usePantryStore = () => useStores().pantryStore;
+export const useEmergencyPlanStore = () => useStores().emergencyPlanStore;
 export const useNavigationStore = () => useStores().navigationStore;
 export const useReferenceStore = () => useStores().referenceStore;
 export const useSettingsStore = () => useStores().settingsStore;
