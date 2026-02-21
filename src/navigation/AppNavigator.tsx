@@ -71,6 +71,7 @@ import ScenarioCardsScreen from '../screens/ScenarioCards/ScenarioCardsScreen';
 import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScreen';
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
 import GroundToAirSignalsScreen from '../screens/SignalMirror/GroundToAirSignalsScreen';
+import StarMapScreen from '../screens/StarMap/StarMapScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
@@ -192,6 +193,7 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
           <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
+          <Stack.Screen name="StarMap" component={StarMapScreen} />
           <Stack.Screen
             name="BarometricPressure"
             component={BarometricPressureScreen}

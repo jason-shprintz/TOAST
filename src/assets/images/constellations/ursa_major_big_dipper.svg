@@ -1,0 +1,49 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" rx="10" fill="#0d0d2e"/>
+
+  <!-- Title -->
+  <text x="100" y="18" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="11" fontWeight="bold" textAnchor="middle">Ursa Major (Big Dipper)</text>
+
+  <!-- Constellation lines -->
+  <!-- Handle: Alkaid → Mizar → Alioth → Megrez -->
+  <line x1="38" y1="38" x2="62" y2="58" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="62" y1="58" x2="90" y2="72" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="90" y1="72" x2="118" y2="72" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Bowl: Megrez → Dubhe → Merak → Phecda → Megrez -->
+  <line x1="118" y1="72" x2="158" y2="58" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="158" y1="58" x2="160" y2="100" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="160" y1="100" x2="118" y2="110" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="118" y1="110" x2="118" y2="72" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+
+  <!-- Pointer arrow toward Polaris (dashed) -->
+  <line x1="158" y1="58" x2="175" y2="30" stroke="#FFD700" strokeWidth="1" strokeDasharray="3,3" strokeLinecap="round"/>
+  <line x1="160" y1="100" x2="175" y2="30" stroke="#FFD700" strokeWidth="1" strokeDasharray="3,3" strokeLinecap="round"/>
+
+  <!-- Stars -->
+  <!-- Alkaid (handle end) -->
+  <circle cx="38" cy="38" r="4" fill="#FFFFFF"/>
+  <!-- Mizar (mid handle) -->
+  <circle cx="62" cy="58" r="3.5" fill="#FFFFFF"/>
+  <!-- Alioth (near bowl) -->
+  <circle cx="90" cy="72" r="4" fill="#FFFFFF"/>
+  <!-- Megrez (bowl corner) -->
+  <circle cx="118" cy="72" r="3" fill="#FFFFFF"/>
+  <!-- Dubhe (pointer, top) -->
+  <circle cx="158" cy="58" r="5" fill="#FFD700"/>
+  <!-- Merak (pointer, bottom) -->
+  <circle cx="160" cy="100" r="5" fill="#FFD700"/>
+  <!-- Phecda -->
+  <circle cx="118" cy="110" r="3.5" fill="#FFFFFF"/>
+  <!-- Polaris (faint label) -->
+  <circle cx="178" cy="27" r="3" fill="#FFD700" opacity="0.7"/>
+
+  <!-- Labels -->
+  <text x="38" y="53" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Alkaid</text>
+  <text x="158" y="52" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Dubhe</text>
+  <text x="160" y="116" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Merak</text>
+  <text x="178" y="22" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Polaris</text>
+
+  <!-- Pointer label -->
+  <text x="100" y="185" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="9" textAnchor="middle">Dubhe &amp; Merak point to Polaris</text>
+</svg>

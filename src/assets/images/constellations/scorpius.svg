@@ -1,0 +1,52 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" rx="10" fill="#0d0d2e"/>
+
+  <!-- Title -->
+  <text x="100" y="18" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="11" fontWeight="bold" textAnchor="middle">Scorpius</text>
+
+  <!-- Scorpius body lines (J-shape) -->
+  <!-- Head / claws to Antares -->
+  <line x1="140" y1="42" x2="130" y2="55" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="150" y1="55" x2="130" y2="55" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="130" y1="55" x2="115" y2="70" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Body down through Antares -->
+  <line x1="115" y1="70" x2="100" y2="85" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="100" y1="85" x2="90" y2="105" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="90" y1="105" x2="80" y2="122" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Tail curving -->
+  <line x1="80" y1="122" x2="72" y2="140" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="72" y1="140" x2="68" y2="158" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Sting tip -->
+  <line x1="68" y1="158" x2="58" y2="168" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="58" y1="168" x2="70" y2="175" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+
+  <!-- Stars -->
+  <!-- Claw stars -->
+  <circle cx="140" cy="42" r="3" fill="#FFFFFF"/>
+  <circle cx="150" cy="55" r="3" fill="#FFFFFF"/>
+  <!-- Graffias (head) -->
+  <circle cx="130" cy="55" r="3.5" fill="#FFFFFF"/>
+  <!-- Dschubba -->
+  <circle cx="115" cy="70" r="3.5" fill="#FFFFFF"/>
+  <!-- Antares (heart - bright red) -->
+  <circle cx="100" cy="85" r="7" fill="#FF5533"/>
+  <!-- Body stars -->
+  <circle cx="90" cy="105" r="3.5" fill="#FFFFFF"/>
+  <circle cx="80" cy="122" r="3" fill="#FFFFFF"/>
+  <circle cx="72" cy="140" r="3" fill="#FFFFFF"/>
+  <circle cx="68" cy="158" r="3" fill="#FFFFFF"/>
+  <!-- Sting: Shaula and Lesath -->
+  <circle cx="58" cy="168" r="4" fill="#FFFFFF"/>
+  <circle cx="70" cy="175" r="3.5" fill="#FFFFFF"/>
+
+  <!-- Labels -->
+  <text x="108" y="80" fill="#FF5533" fontFamily="Arial, sans-serif" fontSize="9" fontWeight="bold">Antares</text>
+  <text x="58" y="163" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="7">Shaula</text>
+  <text x="72" y="188" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="7">Lesath (sting)</text>
+
+  <!-- Note -->
+  <text x="165" y="115" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">J-shape</text>
+  <text x="165" y="126" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">tail curves</text>
+  <text x="165" y="137" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">southward</text>
+</svg>

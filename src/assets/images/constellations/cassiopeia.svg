@@ -1,0 +1,41 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" rx="10" fill="#0d0d2e"/>
+
+  <!-- Title -->
+  <text x="100" y="18" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="11" fontWeight="bold" textAnchor="middle">Cassiopeia</text>
+
+  <!-- W shape constellation lines -->
+  <line x1="30" y1="65" x2="65" y2="110" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="65" y1="110" x2="100" y2="70" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="100" y1="70" x2="135" y2="110" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="135" y1="110" x2="170" y2="65" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+
+  <!-- Stars -->
+  <!-- Segin (left end) -->
+  <circle cx="30" cy="65" r="3.5" fill="#FFFFFF"/>
+  <!-- Ruchbah (left dip) -->
+  <circle cx="65" cy="110" r="4" fill="#FFFFFF"/>
+  <!-- Gamma Cas (middle peak) -->
+  <circle cx="100" cy="70" r="5" fill="#FFD700"/>
+  <!-- Schedar (right dip) -->
+  <circle cx="135" cy="110" r="4.5" fill="#FFD700"/>
+  <!-- Caph (right end) -->
+  <circle cx="170" cy="65" r="3.5" fill="#FFFFFF"/>
+
+  <!-- Labels -->
+  <text x="30" y="80" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Segin</text>
+  <text x="65" y="125" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Ruchbah</text>
+  <text x="100" y="60" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">γ Cas</text>
+  <text x="135" y="125" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Schedar</text>
+  <text x="170" y="80" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Caph</text>
+
+  <!-- "W" label -->
+  <text x="100" y="155" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="9" textAnchor="middle">Distinctive W (or M) shape</text>
+  <text x="100" y="168" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="9" textAnchor="middle">Open side points to Polaris</text>
+
+  <!-- Direction indicator line toward Polaris -->
+  <line x1="100" y1="70" x2="100" y2="35" stroke="#FFD700" strokeWidth="1" strokeDasharray="3,3" strokeLinecap="round"/>
+  <circle cx="100" cy="32" r="2.5" fill="#FFD700" opacity="0.7"/>
+  <text x="100" y="28" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="7" textAnchor="middle">Polaris →</text>
+</svg>
