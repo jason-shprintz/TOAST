@@ -79,7 +79,7 @@ export const NAVIGATIONAL_STARS: NavigationalStar[] = [
     dec: -8.2,
     magnitude: 0.13,
     significance:
-      "Foot of Orion. Orion's Belt points roughly east–west; Rigel is below the belt on the western side.",
+      "Foot of Orion. Orion's Belt points roughly east–west; Rigel is below the belt on the eastern side.",
     hemisphere: 'both',
   },
   {
@@ -119,9 +119,9 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
   {
     name: 'Ursa Major (Big Dipper)',
     howToFind:
-      'Look for seven bright stars in the shape of a ladle or plough. The two outer stars of the "bowl" (Dubhe and Merak) are the Pointer Stars.',
+      'Look for seven bright stars in the shape of a ladle or plow. The two outer stars of the "bowl" (Dubhe and Merak) are the Pointer Stars.',
     navigationUse:
-      'Draw a line through the Pointer Stars (Dubhe to Merak) and extend it about 5× the distance between them — it points directly to Polaris (North Star).',
+      'Draw a line from Merak through Dubhe and extend it about 5× the distance between them — it points directly to Polaris (North Star).',
     hemisphere: 'northern',
     bestMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     imageKey: 'ursa_major_big_dipper',
@@ -139,7 +139,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
   {
     name: "Orion's Belt",
     howToFind:
-      'Three bright stars in a straight line close together in Orion. One of the most recognisable patterns in the sky.',
+      'Three bright stars in a straight line close together in Orion. One of the most recognizable patterns in the sky.',
     navigationUse:
       "Orion's Belt rises almost exactly due east and sets almost exactly due west anywhere on Earth — a reliable east–west reference year-round.",
     hemisphere: 'both',
@@ -162,7 +162,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       'J-shaped curve of bright stars with the bright reddish Antares at its heart. Visible in the southern sky from temperate and tropical latitudes.',
     navigationUse:
       'The tail of Scorpius curves toward the south and can help confirm a southerly bearing. Antares rises roughly in the southeast.',
-    hemisphere: 'southern',
+    hemisphere: 'both',
     bestMonths: [5, 6, 7, 8],
     imageKey: 'scorpius',
   },

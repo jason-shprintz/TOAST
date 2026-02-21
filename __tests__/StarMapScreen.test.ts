@@ -117,6 +117,11 @@ describe('starNavigation utilities', () => {
       expect(guides.some((g) => g.name.includes('Crux'))).toBe(true);
     });
 
+    test('returns Scorpius for northern hemisphere in July (visible both hemispheres)', () => {
+      const guides = getConstellationGuides('northern', 7);
+      expect(guides.some((g) => g.name === 'Scorpius')).toBe(true);
+    });
+
     test('does not return northern-only constellations for southern hemisphere', () => {
       const guides = getConstellationGuides('southern', 1);
       expect(guides.some((g) => g.hemisphere === 'northern')).toBe(false);

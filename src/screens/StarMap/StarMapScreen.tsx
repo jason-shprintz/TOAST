@@ -39,8 +39,8 @@ function StarMapScreen() {
     'northern',
   );
 
-  const now = useMemo(() => new Date(), []);
-  const month = now.getMonth() + 1;
+  const now = new Date();
+  const month = now.getUTCMonth() + 1;
 
   useEffect(() => {
     if (core.lastFix) {
@@ -48,10 +48,7 @@ function StarMapScreen() {
     }
   }, [core.lastFix]);
 
-  const season = useMemo(
-    () => getCurrentSeason(now, hemisphere),
-    [now, hemisphere],
-  );
+  const season = getCurrentSeason(now, hemisphere);
   const instructions = useMemo(
     () => getNavigationInstructions(hemisphere, month),
     [hemisphere, month],
