@@ -190,8 +190,8 @@ export function getCurrentSeason(
   date: Date,
   hemisphere: 'northern' | 'southern',
 ): string {
-  const month = date.getMonth() + 1; // 1-based
-  const day = date.getDate();
+  const month = date.getUTCMonth() + 1; // 1-based
+  const day = date.getUTCDate();
 
   let northernSeason: string;
   if (month < 3 || (month === 3 && day < 20)) {
