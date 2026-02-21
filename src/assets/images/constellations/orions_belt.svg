@@ -1,0 +1,48 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" rx="10" fill="#0d0d2e"/>
+
+  <!-- Title -->
+  <text x="100" y="18" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="11" fontWeight="bold" textAnchor="middle">Orion</text>
+
+  <!-- Orion body lines -->
+  <!-- Shoulders: Betelgeuse - Bellatrix -->
+  <line x1="68" y1="58" x2="132" y2="58" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Betelgeuse → Alnitak (left body) -->
+  <line x1="68" y1="58" x2="72" y2="108" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Bellatrix → Mintaka (right body) -->
+  <line x1="132" y1="58" x2="128" y2="108" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Belt: Alnitak - Alnilam - Mintaka -->
+  <line x1="72" y1="108" x2="100" y2="108" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="100" y1="108" x2="128" y2="108" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Legs: Alnitak → Saiph, Mintaka → Rigel -->
+  <line x1="72" y1="108" x2="68" y2="158" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <line x1="128" y1="108" x2="138" y2="158" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+
+  <!-- Stars -->
+  <!-- Betelgeuse (bright orange-red shoulder) -->
+  <circle cx="68" cy="58" r="6" fill="#FF8C42"/>
+  <!-- Bellatrix (shoulder) -->
+  <circle cx="132" cy="58" r="4.5" fill="#FFFFFF"/>
+  <!-- Alnitak (left belt) -->
+  <circle cx="72" cy="108" r="4" fill="#FFFFFF"/>
+  <!-- Alnilam (center belt) -->
+  <circle cx="100" cy="108" r="4.5" fill="#FFFFFF"/>
+  <!-- Mintaka (right belt) -->
+  <circle cx="128" cy="108" r="4" fill="#FFFFFF"/>
+  <!-- Saiph (lower left) -->
+  <circle cx="68" cy="158" r="4" fill="#FFFFFF"/>
+  <!-- Rigel (bright blue-white foot) -->
+  <circle cx="138" cy="158" r="6" fill="#aac4ff"/>
+
+  <!-- Labels -->
+  <text x="54" y="52" fill="#FF8C42" fontFamily="Arial, sans-serif" fontSize="8">Betelgeuse</text>
+  <text x="134" y="52" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8">Bellatrix</text>
+  <text x="60" y="122" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8">Alnitak</text>
+  <text x="96" y="122" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Alnilam</text>
+  <text x="130" y="122" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8">Mintaka</text>
+  <text x="138" y="173" fill="#aac4ff" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Rigel</text>
+
+  <!-- Belt label -->
+  <text x="100" y="185" fill="#7a9fd4" fontFamily="Arial, sans-serif" fontSize="9" textAnchor="middle">Belt rises/sets due East &amp; West</text>
+</svg>

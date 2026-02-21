@@ -1,0 +1,44 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" rx="10" fill="#0d0d2e"/>
+
+  <!-- Title -->
+  <text x="100" y="18" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="11" fontWeight="bold" textAnchor="middle">Crux (Southern Cross)</text>
+
+  <!-- Cross lines -->
+  <!-- Vertical axis: Gacrux (top) → Acrux (bottom) -->
+  <line x1="88" y1="38" x2="88" y2="148" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+  <!-- Horizontal axis: Delta Crux (left) → Mimosa (right) -->
+  <line x1="35" y1="95" x2="150" y2="95" stroke="#7a9fd4" strokeWidth="1.5" strokeLinecap="round"/>
+
+  <!-- Pointer Stars (Alpha & Beta Centauri) -->
+  <line x1="155" y1="150" x2="170" y2="130" stroke="#8B9DC3" strokeWidth="1" strokeDasharray="3,3" strokeLinecap="round"/>
+
+  <!-- Extension line showing south celestial pole -->
+  <line x1="88" y1="148" x2="88" y2="178" stroke="#FFD700" strokeWidth="1" strokeDasharray="4,3" strokeLinecap="round"/>
+  <text x="88" y="195" fill="#FFD700" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">→ South Celestial Pole (×4.5)</text>
+
+  <!-- Stars -->
+  <!-- Gacrux (top) -->
+  <circle cx="88" cy="38" r="4.5" fill="#FF8C8C"/>
+  <!-- Acrux (bottom - brightest) -->
+  <circle cx="88" cy="148" r="6" fill="#FFFFFF"/>
+  <!-- Mimosa / Beta Crux (right) -->
+  <circle cx="150" cy="95" r="5" fill="#aac4ff"/>
+  <!-- Delta Crux (left) -->
+  <circle cx="35" cy="95" r="3.5" fill="#FFFFFF"/>
+  <!-- Epsilon Crux (inside, optional) -->
+  <circle cx="75" cy="110" r="2.5" fill="#AAAAAA"/>
+  <!-- Pointer stars -->
+  <circle cx="155" cy="150" r="4.5" fill="#FFFFFF"/>
+  <circle cx="170" cy="130" r="4" fill="#FFFFFF"/>
+
+  <!-- Labels -->
+  <text x="88" y="32" fill="#FF8C8C" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Gacrux</text>
+  <text x="88" y="163" fill="#FFFFFF" fontFamily="Arial, sans-serif" fontSize="8" textAnchor="middle">Acrux ★</text>
+  <text x="162" y="92" fill="#aac4ff" fontFamily="Arial, sans-serif" fontSize="8">Mimosa</text>
+  <text x="10" y="92" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="8">δ Cru</text>
+  <text x="158" y="148" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="7">α Cen</text>
+  <text x="172" y="128" fill="#aac4e8" fontFamily="Arial, sans-serif" fontSize="7">β Cen</text>
+  <text x="148" y="118" fill="#8B9DC3" fontFamily="Arial, sans-serif" fontSize="7">Pointers</text>
+</svg>

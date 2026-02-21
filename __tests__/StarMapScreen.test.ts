@@ -199,6 +199,7 @@ describe('starNavigation utilities', () => {
           expect(m).toBeGreaterThanOrEqual(1);
           expect(m).toBeLessThanOrEqual(12);
         });
+        expect(guide.imageKey).toBeTruthy();
       });
     });
 

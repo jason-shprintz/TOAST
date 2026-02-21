@@ -36,6 +36,8 @@ export interface ConstellationGuide {
   hemisphere: 'northern' | 'southern' | 'both';
   /** Approximate months (1-based) when the constellation is best visible at night */
   bestMonths: number[];
+  /** Key into the constellationImages asset map for the diagram SVG */
+  imageKey: string;
 }
 
 /** Minimal catalog of navigational stars used for celestial navigation */
@@ -122,6 +124,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       'Draw a line through the Pointer Stars (Dubhe to Merak) and extend it about 5× the distance between them — it points directly to Polaris (North Star).',
     hemisphere: 'northern',
     bestMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    imageKey: 'ursa_major_big_dipper',
   },
   {
     name: 'Cassiopeia',
@@ -131,6 +134,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       "When the Big Dipper is low on the horizon, use Cassiopeia instead. The middle point of the W's open side points toward Polaris.",
     hemisphere: 'northern',
     bestMonths: [1, 2, 3, 10, 11, 12],
+    imageKey: 'cassiopeia',
   },
   {
     name: "Orion's Belt",
@@ -140,6 +144,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       "Orion's Belt rises almost exactly due east and sets almost exactly due west anywhere on Earth — a reliable east–west reference year-round.",
     hemisphere: 'both',
     bestMonths: [12, 1, 2, 3],
+    imageKey: 'orions_belt',
   },
   {
     name: 'Crux (Southern Cross)',
@@ -149,6 +154,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       'Extend the long axis of the cross (Gacrux to Acrux) by 4.5 times its length to locate the south celestial pole. Drop a vertical line from that point to the horizon to find true south.',
     hemisphere: 'southern',
     bestMonths: [3, 4, 5, 6, 7, 8],
+    imageKey: 'crux_southern_cross',
   },
   {
     name: 'Scorpius',
@@ -158,6 +164,7 @@ export const CONSTELLATION_GUIDES: ConstellationGuide[] = [
       'The tail of Scorpius curves toward the south and can help confirm a southerly bearing. Antares rises roughly in the southeast.',
     hemisphere: 'southern',
     bestMonths: [5, 6, 7, 8],
+    imageKey: 'scorpius',
   },
 ];
 

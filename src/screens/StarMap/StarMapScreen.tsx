@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import constellationImages from '../../assets/constellationImages';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -111,37 +112,47 @@ function StarMapScreen() {
   const renderConstellationCard = (
     guide: ConstellationGuide,
     index: number,
-  ) => (
-    <View
-      key={index}
-      style={[
-        styles.constellationCard,
-        { borderColor: COLORS.SECONDARY_ACCENT },
-      ]}
-    >
-      <LinearGradient
-        colors={COLORS.TOAST_BROWN_GRADIENT}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.cardBackground}
-      />
-      <Text style={[styles.constellationName, { color: COLORS.PRIMARY_DARK }]}>
-        {guide.name}
-      </Text>
-      <Text style={[styles.guideLabel, { color: COLORS.PRIMARY_DARK }]}>
-        How to find it
-      </Text>
-      <Text style={[styles.guideText, { color: COLORS.PRIMARY_DARK }]}>
-        {guide.howToFind}
-      </Text>
-      <Text style={[styles.guideLabel, { color: COLORS.PRIMARY_DARK }]}>
-        Navigation use
-      </Text>
-      <Text style={[styles.guideText, { color: COLORS.PRIMARY_DARK }]}>
-        {guide.navigationUse}
-      </Text>
-    </View>
-  );
+  ) => {
+    const SvgDiagram = constellationImages[guide.imageKey];
+    return (
+      <View
+        key={index}
+        style={[
+          styles.constellationCard,
+          { borderColor: COLORS.SECONDARY_ACCENT },
+        ]}
+      >
+        <LinearGradient
+          colors={COLORS.TOAST_BROWN_GRADIENT}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.cardBackground}
+        />
+        <Text
+          style={[styles.constellationName, { color: COLORS.PRIMARY_DARK }]}
+        >
+          {guide.name}
+        </Text>
+        {SvgDiagram && (
+          <View style={styles.diagramContainer}>
+            <SvgDiagram width="100%" height={180} />
+          </View>
+        )}
+        <Text style={[styles.guideLabel, { color: COLORS.PRIMARY_DARK }]}>
+          How to find it
+        </Text>
+        <Text style={[styles.guideText, { color: COLORS.PRIMARY_DARK }]}>
+          {guide.howToFind}
+        </Text>
+        <Text style={[styles.guideLabel, { color: COLORS.PRIMARY_DARK }]}>
+          Navigation use
+        </Text>
+        <Text style={[styles.guideText, { color: COLORS.PRIMARY_DARK }]}>
+          {guide.navigationUse}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <ScreenBody>
@@ -214,14 +225,6 @@ function StarMapScreen() {
               )}
             </View>
           )}
-
-          {/* Offline note */}
-          <View style={styles.section}>
-            <Text style={[styles.offlineNote, { color: COLORS.PRIMARY_DARK }]}>
-              ✓ This guide works fully offline — no internet connection
-              required. Star positions are based on an embedded catalog.
-            </Text>
-          </View>
         </ScrollView>
       </View>
     </ScreenBody>
@@ -327,6 +330,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     overflow: 'hidden',
   },
+  diagramContainer: {
+    width: '100%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
   constellationName: {
     fontSize: 17,
     fontWeight: 'bold',
@@ -343,13 +352,6 @@ const styles = StyleSheet.create({
   guideText: {
     fontSize: 13,
     lineHeight: 19,
-  },
-  offlineNote: {
-    fontSize: 12,
-    textAlign: 'center',
-    opacity: 0.65,
-    marginTop: 8,
-    lineHeight: 18,
   },
   cardBackground: {
     ...StyleSheet.absoluteFill,
