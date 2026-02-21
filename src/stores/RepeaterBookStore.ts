@@ -198,7 +198,12 @@ export class RepeaterBookStore {
         `${REPEATERBOOK_URL}?lat=${lat}&lng=${lng}` +
         `&distance=${DEFAULT_RADIUS_MILES}&Dunit=m&freq=0&band=%25&mode=%25`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent':
+            'TOAST Survival App (https://github.com/jason-shprintz/TOAST)',
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }

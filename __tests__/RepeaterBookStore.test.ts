@@ -183,6 +183,26 @@ describe('RepeaterBookStore', () => {
 
   // ── fetchRepeaters ─────────────────────────────────────────────────────────
 
+  it('fetchRepeaters sends User-Agent header', async () => {
+    const apiResponse = { results: [makeApiRow()], count: 1 };
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => apiResponse,
+    } as any);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+
+    await store.fetchRepeaters(27.9506, -82.4572);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'User-Agent': expect.stringContaining('TOAST'),
+        }),
+      }),
+    );
+  });
+
   it('fetchRepeaters populates repeaters on success', async () => {
     const apiResponse = { results: [makeApiRow()], count: 1 };
     global.fetch = jest.fn().mockResolvedValueOnce({
