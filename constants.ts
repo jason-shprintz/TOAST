@@ -95,6 +95,12 @@ export const CORE_TOOLS: ToolType[] = [
 
 export const COMMUNICATION_TOOLS: ToolType[] = [
   {
+    name: 'Local Repeaters',
+    screen: 'RepeaterBook',
+    icon: 'radio-outline',
+    id: 'comm_local_repeaters',
+  },
+  {
     name: 'Morse Code',
     screen: 'MorseCode',
     icon: 'flash-outline',
