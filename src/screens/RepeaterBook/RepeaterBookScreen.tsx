@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { JSX, useEffect } from 'react';
+import React, { JSX, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -34,6 +34,14 @@ const RepeaterBookScreen = observer((): JSX.Element => {
     store.initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const chipTextColor = useMemo(
+    () => ({
+      selected: { color: '#fff' as const },
+      unselected: { color: COLORS.PRIMARY_DARK },
+    }),
+    [COLORS.PRIMARY_DARK],
+  );
 
   const handleModePress = (mode: string) => {
     store.setSelectedMode(mode);
@@ -116,12 +124,9 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                 <Text
                   style={[
                     styles.chipText,
-                    {
-                      color:
-                        store.selectedMode === mode
-                          ? '#fff'
-                          : COLORS.PRIMARY_DARK,
-                    },
+                    store.selectedMode === mode
+                      ? chipTextColor.selected
+                      : chipTextColor.unselected,
                   ]}
                 >
                   {mode}
