@@ -14,6 +14,11 @@ export { SettingsStore } from './SettingsStore';
 export { SignalsStore } from './SignalsStore';
 export { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
 export {
+  RepeaterBookStore,
+  type Repeater,
+  type RepeaterCache,
+} from './RepeaterBookStore';
+export {
   StoreProvider,
   useStores,
   useCoreStore,
@@ -25,4 +30,5 @@ export {
   useSettingsStore,
   useSignalsStore,
   useSolarCycleNotificationStore,
+  useRepeaterBookStore,
 } from './StoreContext';

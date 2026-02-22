@@ -20,9 +20,10 @@ const radioCategories = [
 /**
  * Displays radio frequency categories for different communication systems.
  *
- * Shows categories for HAM, CB, GMRS, FRS, and MURS radio frequencies
- * in a grid layout using standard cards. Content includes proper bottom
- * padding to prevent overflow into the footer.
+ * Shows categories for HAM, CB, GMRS, FRS, and MURS radio frequencies as well
+ * as a Local Repeaters entry (powered by RepeaterBook) in a grid layout using
+ * standard cards. Content includes proper bottom padding to prevent overflow
+ * into the footer.
  *
  * @component
  * @returns {JSX.Element} The rendered radio frequencies screen.
@@ -63,6 +64,11 @@ export default function RadioFrequenciesScreen(): JSX.Element {
                 onPress={() => handleCategoryPress(category.id)}
               />
             ))}
+            <CardTopic
+              title="Local Repeaters"
+              icon="location-outline"
+              onPress={() => navigation.navigate('RepeaterBook')}
+            />
           </Grid>
         </ScrollView>
       </View>

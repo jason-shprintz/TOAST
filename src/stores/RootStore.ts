@@ -6,6 +6,7 @@ import { InventoryStore } from './InventoryStore';
 import { NavigationStore } from './NavigationStore';
 import { PantryStore } from './PantryStore';
 import { ReferenceStore } from './ReferenceStore';
+import { RepeaterBookStore } from './RepeaterBookStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
 import { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
@@ -21,6 +22,7 @@ export class RootStore {
   signalsStore: SignalsStore;
   solarCycleNotificationStore: SolarCycleNotificationStore;
   barometerStore: BarometerStore;
+  repeaterBookStore: RepeaterBookStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -34,6 +36,7 @@ export class RootStore {
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.barometerStore = new BarometerStore();
+    this.repeaterBookStore = new RepeaterBookStore();
     this.initializeSettings();
   }
 
@@ -74,6 +77,7 @@ export class RootStore {
     this.emergencyPlanStore.dispose();
     this.solarCycleNotificationStore.dispose();
     this.barometerStore.stop();
+    this.repeaterBookStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -84,6 +88,7 @@ export class RootStore {
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.barometerStore = new BarometerStore();
+    this.repeaterBookStore = new RepeaterBookStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB
