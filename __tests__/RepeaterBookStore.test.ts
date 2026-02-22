@@ -3,8 +3,16 @@
  * Tests for RepeaterBookStore
  */
 
-// Silence AsyncStorage warnings that appear in tests
+// Silence AsyncStorage/geolocation warnings that appear in tests
 jest.spyOn(console, 'warn').mockImplementation(() => {});
+jest.spyOn(console, 'error').mockImplementation(() => {});
+
+// Fix stateFromCoordinates so tests are not sensitive to bounding-box details.
+// All tests that hit fetchRepeaters will see: state = 'Florida',
+// neighbours = ['Alabama', 'Georgia']  → 3 parallel fetch calls.
+jest.mock('../src/utils/stateFromCoordinates', () => ({
+  stateFromCoordinates: jest.fn().mockReturnValue('Florida'),
+}));
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from 'react-native-geolocation-service';
@@ -12,11 +20,15 @@ import {
   RepeaterBookStore,
   RepeaterCache,
 } from '../src/stores/RepeaterBookStore';
+import { stateFromCoordinates } from '../src/utils/stateFromCoordinates';
 
-// Silence network-related errors in tests
-jest.spyOn(console, 'error').mockImplementation(() => {});
+// Tampa, FL coordinates used throughout
+const TEST_LAT = 27.9506;
+const TEST_LNG = -82.4572;
 
-const CACHE_KEY = '@repeaterbook/cache';
+// Florida's neighbours from the real data file → 3 total fetch calls
+// (Florida + Alabama + Georgia)
+const FL_TOTAL_STATES = 3;
 
 /** A minimal valid repeater row as returned by the RepeaterBook API */
 const makeApiRow = (overrides: Record<string, string> = {}) => ({
@@ -30,8 +42,8 @@ const makeApiRow = (overrides: Record<string, string> = {}) => ({
   DCS: '',
   'Nearest City': 'Tampa',
   State: 'FL',
-  Lat: '27.9506',
-  Long: '-82.4572',
+  Lat: String(TEST_LAT),
+  Long: String(TEST_LNG),
   'Operational Status': 'On-air',
   Use: 'OPEN',
   Notes: '',
@@ -59,19 +71,30 @@ const mockCache: RepeaterCache = {
       mode: 'FM',
       city: 'Tampa',
       state: 'FL',
-      lat: 27.9506,
-      lng: -82.4572,
+      lat: TEST_LAT,
+      lng: TEST_LNG,
       operationalStatus: 'On-air',
       use: 'OPEN',
       notes: '',
       lastEdited: '2024-01-01',
-      distance: 5.2,
+      distance: 0,
     },
   ],
-  queryLat: 27.9506,
-  queryLng: -82.4572,
+  queryLat: TEST_LAT,
+  queryLng: TEST_LNG,
   lastUpdated: '2024-01-01T00:00:00.000Z',
+  queriedStates: ['Florida', 'Alabama', 'Georgia'],
 };
+
+/** Helper: mock all three parallel state fetches to return the same rows. */
+function mockFetchSuccess(rows: Record<string, string>[] = [makeApiRow()]) {
+  const mockResponse = {
+    ok: true,
+    json: async () => ({ results: rows, count: rows.length }),
+  };
+  global.fetch = jest.fn().mockResolvedValue(mockResponse as any);
+  (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+}
 
 describe('RepeaterBookStore', () => {
   let store: RepeaterBookStore;
@@ -117,7 +140,6 @@ describe('RepeaterBookStore', () => {
   });
 
   it('modes includes unique modes from repeaters', () => {
-    // Manually inject repeaters for this test
     (store as any).repeaters = [
       { ...mockCache.repeaters[0], mode: 'FM' },
       { ...mockCache.repeaters[0], id: 'x', mode: 'DMR' },
@@ -128,15 +150,24 @@ describe('RepeaterBookStore', () => {
 
   // ── filteredRepeaters ──────────────────────────────────────────────────────
 
-  it('filteredRepeaters returns all repeaters when selectedMode is All', () => {
-    (store as any).repeaters = mockCache.repeaters;
+  it('filteredRepeaters returns repeaters within 50 miles when selectedMode is All', () => {
+    (store as any).repeaters = mockCache.repeaters; // distance = 0
     expect(store.filteredRepeaters).toHaveLength(1);
+  });
+
+  it('filteredRepeaters excludes repeaters beyond 50 miles', () => {
+    (store as any).repeaters = [
+      { ...mockCache.repeaters[0], id: 'near', distance: 10 },
+      { ...mockCache.repeaters[0], id: 'far', distance: 75 },
+    ];
+    expect(store.filteredRepeaters).toHaveLength(1);
+    expect(store.filteredRepeaters[0].id).toBe('near');
   });
 
   it('filteredRepeaters filters by selectedMode', () => {
     (store as any).repeaters = [
-      { ...mockCache.repeaters[0], mode: 'FM' },
-      { ...mockCache.repeaters[0], id: 'dmr-1', mode: 'DMR' },
+      { ...mockCache.repeaters[0], mode: 'FM', distance: 5 },
+      { ...mockCache.repeaters[0], id: 'dmr-1', mode: 'DMR', distance: 5 },
     ];
     store.setSelectedMode('DMR');
     expect(store.filteredRepeaters).toHaveLength(1);
@@ -163,8 +194,8 @@ describe('RepeaterBookStore', () => {
 
     expect(store.repeaters).toHaveLength(1);
     expect(store.repeaters[0].callSign).toBe('W4TST');
-    expect(store.queryLat).toBe(27.9506);
-    expect(store.queryLng).toBe(-82.4572);
+    expect(store.queryLat).toBe(TEST_LAT);
+    expect(store.queryLng).toBe(TEST_LNG);
     expect(store.lastUpdated).toBe('2024-01-01T00:00:00.000Z');
     expect(store.isCachedData).toBe(true);
   });
@@ -183,35 +214,100 @@ describe('RepeaterBookStore', () => {
 
   // ── fetchRepeaters ─────────────────────────────────────────────────────────
 
-  it('fetchRepeaters sends User-Agent header', async () => {
-    const apiResponse = { results: [makeApiRow()], count: 1 };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+  it('fetchRepeaters queries current state and all neighbours in parallel', async () => {
+    mockFetchSuccess();
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          'User-Agent': expect.stringContaining('TOAST'),
-        }),
-      }),
+    // Florida + Alabama + Georgia = FL_TOTAL_STATES calls
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
+  });
+
+  it('fetchRepeaters uses state-based URL (not proximity params)', async () => {
+    mockFetchSuccess();
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    const calls = (global.fetch as jest.Mock).mock.calls as [string, any][];
+    const urls = calls.map(([url]) => url as string);
+    expect(urls.some((u) => u.includes('state=Florida'))).toBe(true);
+    expect(urls.some((u) => u.includes('state=Alabama'))).toBe(true);
+    expect(urls.some((u) => u.includes('state=Georgia'))).toBe(true);
+    // Must NOT use the old proximity params
+    expect(urls.every((u) => !u.includes('lat='))).toBe(true);
+    expect(urls.every((u) => !u.includes('distance='))).toBe(true);
+  });
+
+  it('fetchRepeaters sends User-Agent header with app name and email', async () => {
+    mockFetchSuccess();
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    const calls = (global.fetch as jest.Mock).mock.calls as [string, any][];
+    calls.forEach(([, opts]) => {
+      expect(opts?.headers?.['User-Agent']).toContain('TOAST');
+      expect(opts?.headers?.['User-Agent']).toContain('toastbyte.studio');
+    });
+  });
+
+  it('fetchRepeaters deduplicates repeaters with same State ID / Rptr ID', async () => {
+    // All three state calls return the same repeater row
+    mockFetchSuccess([makeApiRow()]);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    // Despite 3 fetch calls each returning 1 row, only 1 unique repeater
+    expect(store.repeaters).toHaveLength(1);
+  });
+
+  it('fetchRepeaters merges distinct repeaters from multiple states', async () => {
+    const row1 = makeApiRow({ 'Rptr ID': '1', 'Call Sign': 'W1TST' });
+    const row2 = makeApiRow({ 'Rptr ID': '2', 'Call Sign': 'W2TST' });
+    const row3 = makeApiRow({ 'Rptr ID': '3', 'Call Sign': 'W3TST' });
+
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [row1] }),
+      } as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [row2] }),
+      } as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [row3] }),
+      } as any);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    expect(store.repeaters).toHaveLength(3);
+  });
+
+  it('fetchRepeaters caches all results (not just within 50 miles)', async () => {
+    // Row far away (>50mi) — should still be cached
+    const farRow = makeApiRow({ Lat: '35.0', Long: '-90.0' }); // ~900 mi away
+    mockFetchSuccess([farRow]);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    const savedArg = (AsyncStorage.setItem as jest.Mock).mock
+      .calls[0][1] as string;
+    const saved: RepeaterCache = JSON.parse(savedArg);
+    // All repeaters (including far ones) are in the cache
+    expect(saved.repeaters).toHaveLength(1);
+    // The cache entry includes queriedStates
+    expect(saved.queriedStates).toEqual(
+      expect.arrayContaining(['Florida', 'Alabama', 'Georgia']),
     );
   });
 
-  it('fetchRepeaters populates repeaters on success', async () => {
-    const apiResponse = { results: [makeApiRow()], count: 1 };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+  it('fetchRepeaters populates store on success', async () => {
+    mockFetchSuccess();
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.repeaters).toHaveLength(1);
     expect(store.repeaters[0].callSign).toBe('W4TST');
@@ -220,60 +316,62 @@ describe('RepeaterBookStore', () => {
     expect(store.isCachedData).toBe(false);
   });
 
-  it('fetchRepeaters saves data to AsyncStorage on success', async () => {
-    const apiResponse = { results: [makeApiRow()], count: 1 };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
+  it('fetchRepeaters sets error when all state queries fail', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      json: async () => ({}),
     } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      CACHE_KEY,
-      expect.stringContaining('W4TST'),
-    );
+    expect(store.error).toContain('Failed to load repeaters');
+    expect(store.isLoading).toBe(false);
   });
 
-  it('fetchRepeaters sets error and keeps existing data on HTTP error', async () => {
-    // Pre-populate with cached data
+  it('fetchRepeaters keeps existing cached data when all queries fail', async () => {
     (store as any).repeaters = mockCache.repeaters;
     (store as any).isCachedData = true;
 
-    global.fetch = jest.fn().mockResolvedValueOnce({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 500,
       json: async () => ({}),
     } as any);
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    expect(store.error).toContain('Failed to load repeaters');
-    expect(store.isLoading).toBe(false);
-    // Existing data preserved
     expect(store.repeaters).toHaveLength(1);
+  });
+
+  it('fetchRepeaters sets error when location is outside supported region', async () => {
+    (stateFromCoordinates as jest.Mock).mockReturnValueOnce(null);
+
+    await store.fetchRepeaters(48.8566, 2.3522); // Paris, France
+
+    expect(store.error).toContain('not in a supported region');
+    expect(store.isLoading).toBe(false);
   });
 
   it('fetchRepeaters sets error on network failure', async () => {
     global.fetch = jest
       .fn()
-      .mockRejectedValueOnce(new Error('Network request failed'));
+      .mockRejectedValue(new Error('Network request failed'));
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.error).toContain('Network request failed');
     expect(store.isLoading).toBe(false);
   });
 
-  it('fetchRepeaters handles empty results array', async () => {
-    global.fetch = jest.fn().mockResolvedValueOnce({
+  it('fetchRepeaters handles empty results from all states', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ results: [], count: 0 }),
     } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.repeaters).toHaveLength(0);
     expect(store.error).toBeNull();
@@ -282,33 +380,17 @@ describe('RepeaterBookStore', () => {
   // ── mode detection ─────────────────────────────────────────────────────────
 
   it('detects DMR mode correctly', async () => {
-    const apiResponse = {
-      results: [makeApiRow({ DMR: 'Yes', 'FM Analog': 'No' })],
-      count: 1,
-    };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+    mockFetchSuccess([makeApiRow({ DMR: 'Yes', 'FM Analog': 'No' })]);
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.repeaters[0].mode).toBe('DMR');
   });
 
   it('detects D-STAR mode correctly', async () => {
-    const apiResponse = {
-      results: [makeApiRow({ 'D-Star': 'Yes', 'FM Analog': 'No' })],
-      count: 1,
-    };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+    mockFetchSuccess([makeApiRow({ 'D-Star': 'Yes', 'FM Analog': 'No' })]);
 
-    await store.fetchRepeaters(27.9506, -82.4572);
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.repeaters[0].mode).toBe('D-STAR');
   });
@@ -316,18 +398,12 @@ describe('RepeaterBookStore', () => {
   // ── checkAndFetchIfNeeded ──────────────────────────────────────────────────
 
   it('checkAndFetchIfNeeded fetches when no cache exists', async () => {
-    const apiResponse = { results: [makeApiRow()], count: 1 };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+    mockFetchSuccess();
 
-    // Mock location same as mock cache location
     (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
       (success: any) => {
         success({
-          coords: { latitude: 27.9506, longitude: -82.4572 },
+          coords: { latitude: TEST_LAT, longitude: TEST_LNG },
           timestamp: Date.now(),
         });
       },
@@ -335,18 +411,16 @@ describe('RepeaterBookStore', () => {
 
     await store.checkAndFetchIfNeeded();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
   });
 
-  it('checkAndFetchIfNeeded skips fetch when location is within threshold', async () => {
-    // Populate cache at the same location
+  it('checkAndFetchIfNeeded skips fetch when within threshold', async () => {
     (store as any).repeaters = mockCache.repeaters;
-    (store as any).queryLat = 27.9506;
-    (store as any).queryLng = -82.4572;
+    (store as any).queryLat = TEST_LAT;
+    (store as any).queryLng = TEST_LNG;
 
     global.fetch = jest.fn();
 
-    // Return location very close to query location
     (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
       (success: any) => {
         success({
@@ -362,19 +436,12 @@ describe('RepeaterBookStore', () => {
   });
 
   it('checkAndFetchIfNeeded re-fetches when user moved more than 50 miles', async () => {
-    // Cache at Tampa, FL
     (store as any).repeaters = mockCache.repeaters;
-    (store as any).queryLat = 27.9506;
-    (store as any).queryLng = -82.4572;
+    (store as any).queryLat = TEST_LAT;
+    (store as any).queryLng = TEST_LNG;
 
-    const apiResponse = { results: [makeApiRow()], count: 1 };
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      ok: true,
-      json: async () => apiResponse,
-    } as any);
-    (AsyncStorage.setItem as jest.Mock).mockResolvedValueOnce(undefined);
+    mockFetchSuccess();
 
-    // Mock location ~200 miles away (near Orlando → Jacksonville-ish)
     (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
       (success: any) => {
         success({
@@ -386,7 +453,7 @@ describe('RepeaterBookStore', () => {
 
     await store.checkAndFetchIfNeeded();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
   });
 
   it('checkAndFetchIfNeeded handles location error gracefully', async () => {
