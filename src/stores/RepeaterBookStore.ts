@@ -110,12 +110,12 @@ async function fetchStateRepeaters(
  * Store that fetches and caches local ham radio repeaters from the
  * RepeaterBook API using a state-based query strategy.
  *
- * Behaviour:
+ * Behavior:
  * - On `initialize()`, cached results are loaded immediately.
  * - A live fetch is triggered when there is no cached data, or when the
  *   user's current location is more than 50 miles from the location used
  *   for the previous query.
- * - The user's state is determined from coordinates; all neighbouring states
+ * - The user's state is determined from coordinates; all neighboring states
  *   are queried in parallel to ensure repeaters across state borders are found.
  * - All results are deduplicated and cached without a distance filter so that
  *   the cached data remains useful as the user moves.
@@ -221,7 +221,7 @@ export class RepeaterBookStore {
   }
 
   /**
-   * Fetch repeaters for the user's current state and all neighbouring states
+   * Fetch repeaters for the user's current state and all neighboring states
    * in parallel. Results are merged, deduplicated by repeater ID, and cached
    * without a distance filter so cached data stays useful after the user moves.
    */
@@ -238,7 +238,7 @@ export class RepeaterBookStore {
         throw new Error('Location not in a supported region');
       }
 
-      // 2. Build the list of states to query (current + all neighbours).
+      // 2. Build the list of states to query (current + all neighbors).
       const neighbors = NEIGHBORING_STATES[currentState] ?? [];
       const statesToQuery = [currentState, ...neighbors];
 
