@@ -68,29 +68,47 @@ const RepeaterBookScreen = observer((): JSX.Element => {
       <SectionHeader>Local Repeaters</SectionHeader>
 
       <View style={styles.container}>
-        {/* Status bar */}
-        {(store.lastUpdated || store.isCachedData) && (
-          <View
-            style={[
-              styles.statusBar,
-              {
-                backgroundColor: store.isCachedData
-                  ? COLORS.BACKGROUND
-                  : COLORS.SUCCESS_LIGHT,
-                borderColor: store.isCachedData
-                  ? COLORS.TOAST_BROWN
-                  : COLORS.SUCCESS,
-              },
-            ]}
-          >
-            <Text style={[styles.statusText, { color: COLORS.PRIMARY_DARK }]}>
-              {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
-              {store.lastUpdated
-                ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
-                : ''}
-            </Text>
-          </View>
-        )}
+        {/* HAM / GMRS / All type filter chips */}
+        <View style={styles.typeFilterRow}>
+          {(['All', 'HAM', 'GMRS'] as const).map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={[
+                styles.typeChip,
+                {
+                  backgroundColor:
+                    store.selectedRepeaterType === type
+                      ? COLORS.ACCENT
+                      : COLORS.PRIMARY_LIGHT,
+                  borderColor:
+                    store.selectedRepeaterType === type
+                      ? COLORS.ACCENT
+                      : COLORS.TOAST_BROWN,
+                },
+              ]}
+              onPress={() => store.setSelectedRepeaterType(type)}
+              accessibilityRole="button"
+              accessibilityLabel={`Show ${type} repeaters`}
+              accessibilityState={{
+                selected: store.selectedRepeaterType === type,
+              }}
+            >
+              <Text
+                style={[
+                  styles.typeChipText,
+                  {
+                    color:
+                      store.selectedRepeaterType === type
+                        ? COLORS.PRIMARY_LIGHT
+                        : COLORS.PRIMARY_DARK,
+                  },
+                ]}
+              >
+                {type}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
         {/* Filter row: mode dropdown + on-air toggle */}
         <View style={styles.filterRow}>
@@ -314,8 +332,10 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               </Text>
             </View>
           )}
+        </ScrollView>
 
-          {/* Data source disclaimer */}
+        {/* Attribution + status badge — fixed at the bottom of the screen */}
+        <View style={styles.bottomBar}>
           <TouchableOpacity
             onPress={() => Linking.openURL('https://www.repeaterbook.com')}
             accessibilityRole="link"
@@ -328,7 +348,30 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
             </Text>
           </TouchableOpacity>
-        </ScrollView>
+
+          {(store.lastUpdated || store.isCachedData) && (
+            <View
+              style={[
+                styles.statusBar,
+                {
+                  backgroundColor: store.isCachedData
+                    ? COLORS.BACKGROUND
+                    : COLORS.SUCCESS_LIGHT,
+                  borderColor: store.isCachedData
+                    ? COLORS.TOAST_BROWN
+                    : COLORS.SUCCESS,
+                },
+              ]}
+            >
+              <Text style={[styles.statusText, { color: COLORS.PRIMARY_DARK }]}>
+                {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
+                {store.lastUpdated
+                  ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
+                  : ''}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
 
       {/* Mode picker modal */}
@@ -407,9 +450,26 @@ const createStyles = (COLORS: ColorScheme) =>
       alignSelf: 'stretch',
       paddingBottom: FOOTER_HEIGHT,
     },
-    statusBar: {
+    typeFilterRow: {
+      flexDirection: 'row',
       marginHorizontal: 14,
-      marginTop: 8,
+      marginTop: 10,
+      gap: 8,
+    },
+    typeChip: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderRadius: 20,
+      paddingVertical: 6,
+    },
+    typeChipText: {
+      fontSize: 13,
+      fontWeight: '600',
+    },
+    statusBar: {
+      marginTop: 6,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 8,
@@ -419,12 +479,17 @@ const createStyles = (COLORS: ColorScheme) =>
       fontSize: 12,
       fontWeight: '500',
     },
+    bottomBar: {
+      paddingHorizontal: 14,
+      paddingBottom: 8,
+      gap: 0,
+    },
     filterRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       marginHorizontal: 14,
-      marginTop: 10,
+      marginTop: 8,
       gap: 12,
     },
     dropdown: {

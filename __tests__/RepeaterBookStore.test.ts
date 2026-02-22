@@ -26,9 +26,10 @@ import { stateFromCoordinates } from '../src/utils/stateFromCoordinates';
 const TEST_LAT = 27.9506;
 const TEST_LNG = -82.4572;
 
-// Florida's neighbours from the real data file → 3 total fetch calls
-// (Florida + Alabama + Georgia)
+// Florida's neighbours from the real data file → 3 states, each queried for
+// both ham and GMRS → 6 total fetch calls.
 const FL_TOTAL_STATES = 3;
+const FL_TOTAL_FETCHES = FL_TOTAL_STATES * 2; // ham + gmrs per state
 
 /** A minimal valid repeater row as returned by the RepeaterBook API */
 const makeApiRow = (overrides: Record<string, string> = {}) => ({
@@ -80,6 +81,7 @@ const mockCache: RepeaterCache = {
       lastEdited: '2024-01-01',
       distance: 0,
       emcomm: '',
+      repeaterType: 'ham',
     },
   ],
   queryLat: TEST_LAT,
@@ -128,6 +130,10 @@ describe('RepeaterBookStore', () => {
     expect(store.selectedMode).toBe('All');
   });
 
+  it('starts with selectedRepeaterType All', () => {
+    expect(store.selectedRepeaterType).toBe('All');
+  });
+
   it('starts with onAirOnly true', () => {
     expect(store.onAirOnly).toBe(true);
   });
@@ -157,6 +163,19 @@ describe('RepeaterBookStore', () => {
     expect(store.emergencyOnly).toBe(true);
   });
 
+  // ── setSelectedRepeaterType ────────────────────────────────────────────────
+
+  it('setSelectedRepeaterType updates selectedRepeaterType', () => {
+    store.setSelectedRepeaterType('GMRS');
+    expect(store.selectedRepeaterType).toBe('GMRS');
+  });
+
+  it('setSelectedRepeaterType resets selectedMode to All', () => {
+    store.setSelectedMode('DMR');
+    store.setSelectedRepeaterType('GMRS');
+    expect(store.selectedMode).toBe('All');
+  });
+
   // ── modes computed ─────────────────────────────────────────────────────────
 
   it('modes always includes All', () => {
@@ -170,6 +189,92 @@ describe('RepeaterBookStore', () => {
     ];
     expect(store.modes).toContain('FM');
     expect(store.modes).toContain('DMR');
+  });
+
+  it('modes only includes modes from HAM repeaters when selectedRepeaterType is HAM', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'ham-1',
+        mode: 'FM',
+        repeaterType: 'ham',
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'gmrs-1',
+        mode: 'FM',
+        repeaterType: 'gmrs',
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'gmrs-2',
+        mode: 'P-25',
+        repeaterType: 'gmrs',
+      },
+    ];
+    store.setSelectedRepeaterType('HAM');
+    expect(store.modes).toContain('FM');
+    expect(store.modes).not.toContain('P-25');
+  });
+
+  it('modes only includes modes from GMRS repeaters when selectedRepeaterType is GMRS', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'ham-1',
+        mode: 'D-STAR',
+        repeaterType: 'ham',
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'gmrs-1',
+        mode: 'FM',
+        repeaterType: 'gmrs',
+      },
+    ];
+    store.setSelectedRepeaterType('GMRS');
+    expect(store.modes).toContain('FM');
+    expect(store.modes).not.toContain('D-STAR');
+  });
+
+  it('filteredRepeaters filters to HAM repeaters when selectedRepeaterType is HAM', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'ham-1',
+        repeaterType: 'ham',
+        distance: 5,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'gmrs-1',
+        repeaterType: 'gmrs',
+        distance: 5,
+      },
+    ];
+    store.setSelectedRepeaterType('HAM');
+    expect(store.filteredRepeaters).toHaveLength(1);
+    expect(store.filteredRepeaters[0].id).toBe('ham-1');
+  });
+
+  it('filteredRepeaters filters to GMRS repeaters when selectedRepeaterType is GMRS', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'ham-1',
+        repeaterType: 'ham',
+        distance: 5,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'gmrs-1',
+        repeaterType: 'gmrs',
+        distance: 5,
+      },
+    ];
+    store.setSelectedRepeaterType('GMRS');
+    expect(store.filteredRepeaters).toHaveLength(1);
+    expect(store.filteredRepeaters[0].id).toBe('gmrs-1');
   });
 
   // ── filteredRepeaters ──────────────────────────────────────────────────────
@@ -306,8 +411,25 @@ describe('RepeaterBookStore', () => {
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    // Florida + Alabama + Georgia = FL_TOTAL_STATES calls
-    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
+    // (Florida + Alabama + Georgia) × (ham + gmrs) = FL_TOTAL_FETCHES calls
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_FETCHES);
+  });
+
+  it('fetchRepeaters fetches both ham and GMRS for each state', async () => {
+    mockFetchSuccess();
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    const calls = (global.fetch as jest.Mock).mock.calls as [string, any][];
+    const urls = calls.map(([url]) => url as string);
+    // Ham URLs must NOT have stype param
+    expect(
+      urls.some((u) => u.includes('state=Florida') && !u.includes('stype=')),
+    ).toBe(true);
+    // GMRS URLs must have stype=gmrs
+    expect(
+      urls.some((u) => u.includes('state=Florida') && u.includes('stype=gmrs')),
+    ).toBe(true);
   });
 
   it('fetchRepeaters uses state-based URL (not proximity params)', async () => {
@@ -337,23 +459,73 @@ describe('RepeaterBookStore', () => {
     });
   });
 
-  it('fetchRepeaters deduplicates repeaters with same State ID / Rptr ID', async () => {
-    // All three state calls return the same repeater row
-    mockFetchSuccess([makeApiRow()]);
+  it('fetchRepeaters deduplicates repeaters with same State ID / Rptr ID within same type', async () => {
+    // All ham state calls return the same repeater row; GMRS calls return empty
+    const emptyResponse = { ok: true, json: async () => ({ results: [] }) };
+    global.fetch = jest
+      .fn()
+      // ham: FL, AL, GA → all return the same row
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [makeApiRow()] }),
+      } as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [makeApiRow()] }),
+      } as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [makeApiRow()] }),
+      } as any)
+      // gmrs: FL, AL, GA → empty
+      .mockResolvedValue(emptyResponse as any);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    // Despite 3 fetch calls each returning 1 row, only 1 unique repeater
+    // Despite 3 ham calls each returning 1 row, only 1 unique ham repeater
     expect(store.repeaters).toHaveLength(1);
+    expect(store.repeaters[0].repeaterType).toBe('ham');
+  });
+
+  it('fetchRepeaters does not deduplicate ham and GMRS repeaters with the same ID', async () => {
+    // Both ham and GMRS return a row with the same State/Rptr ID
+    const row = makeApiRow();
+    const emptyResponse = { ok: true, json: async () => ({ results: [] }) };
+    global.fetch = jest
+      .fn()
+      // ham: FL returns row; AL, GA empty
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [row] }),
+      } as any)
+      .mockResolvedValueOnce(emptyResponse as any)
+      .mockResolvedValueOnce(emptyResponse as any)
+      // gmrs: FL returns same row; AL, GA empty
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ results: [row] }),
+      } as any)
+      .mockResolvedValue(emptyResponse as any);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    // One ham + one gmrs = 2 distinct repeaters
+    expect(store.repeaters).toHaveLength(2);
+    const types = store.repeaters.map((r) => r.repeaterType).sort();
+    expect(types).toEqual(['gmrs', 'ham']);
   });
 
   it('fetchRepeaters merges distinct repeaters from multiple states', async () => {
     const row1 = makeApiRow({ 'Rptr ID': '1', 'Call Sign': 'W1TST' });
     const row2 = makeApiRow({ 'Rptr ID': '2', 'Call Sign': 'W2TST' });
     const row3 = makeApiRow({ 'Rptr ID': '3', 'Call Sign': 'W3TST' });
+    const emptyResponse = { ok: true, json: async () => ({ results: [] }) };
 
     global.fetch = jest
       .fn()
+      // ham calls: FL, AL, GA
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({ results: [row1] }),
@@ -365,7 +537,9 @@ describe('RepeaterBookStore', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({ results: [row3] }),
-      } as any);
+      } as any)
+      // gmrs calls: FL, AL, GA → empty
+      .mockResolvedValue(emptyResponse as any);
     (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
@@ -383,8 +557,9 @@ describe('RepeaterBookStore', () => {
     const savedArg = (AsyncStorage.setItem as jest.Mock).mock
       .calls[0][1] as string;
     const saved: RepeaterCache = JSON.parse(savedArg);
-    // All repeaters (including far ones) are in the cache
-    expect(saved.repeaters).toHaveLength(1);
+    // All repeaters (including far ones) are in the cache; one ham + one gmrs
+    expect(saved.repeaters).toHaveLength(2);
+    expect(saved.repeaters.every((r) => r.distance > 50)).toBe(true);
     // The cache entry includes queriedStates
     expect(saved.queriedStates).toEqual(
       expect.arrayContaining(['Florida', 'Alabama', 'Georgia']),
@@ -396,7 +571,9 @@ describe('RepeaterBookStore', () => {
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    expect(store.repeaters).toHaveLength(1);
+    // mockFetchSuccess returns the same row for all calls; with type-scoped
+    // dedup we get one ham + one gmrs entry (both have callSign W4TST).
+    expect(store.repeaters).toHaveLength(2);
     expect(store.repeaters[0].callSign).toBe('W4TST');
     expect(store.isLoading).toBe(false);
     expect(store.error).toBeNull();
@@ -558,7 +735,7 @@ describe('RepeaterBookStore', () => {
 
     await store.checkAndFetchIfNeeded();
 
-    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_FETCHES);
   });
 
   it('checkAndFetchIfNeeded skips fetch when within threshold', async () => {
@@ -600,7 +777,7 @@ describe('RepeaterBookStore', () => {
 
     await store.checkAndFetchIfNeeded();
 
-    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
+    expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_FETCHES);
   });
 
   it('checkAndFetchIfNeeded sets error when location fails with no cache', async () => {
