@@ -405,12 +405,11 @@ const styles = StyleSheet.create({
   },
   ruleWrap: {
     marginTop: 10,
-    paddingHorizontal: 14,
   },
   scrollView: {
     flex: 1,
     width: '100%',
-    marginTop: 8,
+    paddingTop: 8,
   },
   scrollContent: {
     paddingHorizontal: 14,
