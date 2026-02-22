@@ -1,13 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { JSX, useEffect, useMemo } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Modal,
   ScrollView,
   StyleSheet,
+  Switch,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -29,23 +34,12 @@ const RepeaterBookScreen = observer((): JSX.Element => {
   const COLORS = useTheme();
   const navigation = useNavigation<any>();
   const store = useRepeaterBookStore();
+  const [modePickerVisible, setModePickerVisible] = useState(false);
 
   useEffect(() => {
     store.initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const chipTextColor = useMemo(
-    () => ({
-      selected: { color: '#fff' as const },
-      unselected: { color: COLORS.PRIMARY_DARK },
-    }),
-    [COLORS.PRIMARY_DARK],
-  );
-
-  const handleModePress = (mode: string) => {
-    store.setSelectedMode(mode);
-  };
 
   const handleRepeaterPress = (repeater: Repeater) => {
     navigation.navigate('RepeaterDetail', { repeater });
@@ -95,46 +89,55 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           </View>
         )}
 
-        {/* Mode filter chips */}
-        {store.modes.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.filterRow}
-            contentContainerStyle={styles.filterRowContent}
+        {/* Filter row: mode dropdown + on-air toggle */}
+        <View style={styles.filterRow}>
+          {/* Mode dropdown */}
+          <TouchableOpacity
+            style={[
+              styles.dropdown,
+              {
+                backgroundColor: COLORS.PRIMARY_LIGHT,
+                borderColor: COLORS.TOAST_BROWN,
+              },
+            ]}
+            onPress={() => setModePickerVisible(true)}
+            accessibilityLabel="Mode filter"
+            accessibilityHint={`Currently ${store.selectedMode}. Tap to change mode.`}
+            accessibilityRole="button"
           >
-            {store.modes.map((mode) => (
-              <TouchableOpacity
-                key={mode}
-                onPress={() => handleModePress(mode)}
-                style={[
-                  styles.chip,
-                  {
-                    backgroundColor:
-                      store.selectedMode === mode
-                        ? COLORS.ACCENT
-                        : COLORS.PRIMARY_LIGHT,
-                    borderColor:
-                      store.selectedMode === mode
-                        ? COLORS.ACCENT
-                        : COLORS.TOAST_BROWN,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    store.selectedMode === mode
-                      ? chipTextColor.selected
-                      : chipTextColor.unselected,
-                  ]}
-                >
-                  {mode}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
+            <Text style={[styles.dropdownText, { color: COLORS.PRIMARY_DARK }]}>
+              {store.selectedMode}
+            </Text>
+            <Ionicons
+              name="chevron-down-outline"
+              size={14}
+              color={COLORS.PRIMARY_DARK}
+            />
+          </TouchableOpacity>
+
+          {/* On-air toggle */}
+          <View style={styles.toggleGroup}>
+            <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+              On-air
+            </Text>
+            <Switch
+              value={store.onAirOnly}
+              onValueChange={(v) => store.setOnAirOnly(v)}
+              trackColor={{
+                false: COLORS.TOAST_BROWN,
+                true: COLORS.SUCCESS,
+              }}
+              thumbColor={COLORS.PRIMARY_LIGHT}
+              accessibilityLabel="Filter to show only on-air repeaters"
+              accessibilityRole="switch"
+            />
+          </View>
+        </View>
+
+        {/* Divider */}
+        <View style={styles.ruleWrap}>
+          <HorizontalRule />
+        </View>
 
         <ScrollView
           style={styles.scrollView}
@@ -278,6 +281,72 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           )}
         </ScrollView>
       </View>
+
+      {/* Mode picker modal */}
+      <Modal
+        visible={modePickerVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setModePickerVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModePickerVisible(false)}>
+          <View style={styles.modalBackdrop}>
+            <TouchableWithoutFeedback>
+              <View
+                style={[
+                  styles.modalSheet,
+                  {
+                    backgroundColor: COLORS.PRIMARY_LIGHT,
+                    borderColor: COLORS.TOAST_BROWN,
+                  },
+                ]}
+              >
+                <Text
+                  style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Mode
+                </Text>
+                {store.modes.map((mode) => (
+                  <TouchableOpacity
+                    key={mode}
+                    onPress={() => {
+                      store.setSelectedMode(mode);
+                      setModePickerVisible(false);
+                    }}
+                    style={[
+                      styles.modalOption,
+                      mode === store.selectedMode && {
+                        backgroundColor: COLORS.ACCENT,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.modalOptionText,
+                        {
+                          color:
+                            mode === store.selectedMode
+                              ? '#fff'
+                              : COLORS.PRIMARY_DARK,
+                        },
+                      ]}
+                    >
+                      {mode}
+                    </Text>
+                    {mode === store.selectedMode && (
+                      <Ionicons
+                        name="checkmark-outline"
+                        size={16}
+                        color="#fff"
+                      />
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </ScreenBody>
   );
 });
@@ -304,22 +373,39 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   filterRow: {
-    maxHeight: 48,
-    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 14,
+    marginTop: 10,
+    gap: 12,
   },
-  filterRowContent: {
-    paddingHorizontal: 14,
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
+  dropdown: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  chipText: {
-    fontSize: 13,
+  dropdownText: {
+    fontSize: 14,
     fontWeight: '600',
+  },
+  toggleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  toggleLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  ruleWrap: {
+    marginTop: 10,
+    paddingHorizontal: 14,
   },
   scrollView: {
     flex: 1,
@@ -422,6 +508,37 @@ const styles = StyleSheet.create({
   refreshText: {
     fontSize: 13,
     opacity: 0.7,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  modalSheet: {
+    width: '100%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+    gap: 4,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+  },
+  modalOptionText: {
+    fontSize: 15,
+    fontWeight: '500',
   },
 });
 

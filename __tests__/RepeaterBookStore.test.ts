@@ -126,11 +126,22 @@ describe('RepeaterBookStore', () => {
     expect(store.selectedMode).toBe('All');
   });
 
+  it('starts with onAirOnly true', () => {
+    expect(store.onAirOnly).toBe(true);
+  });
+
   // ── setSelectedMode ────────────────────────────────────────────────────────
 
   it('setSelectedMode updates selectedMode', () => {
     store.setSelectedMode('DMR');
     expect(store.selectedMode).toBe('DMR');
+  });
+
+  // ── setOnAirOnly ───────────────────────────────────────────────────────────
+
+  it('setOnAirOnly updates onAirOnly', () => {
+    store.setOnAirOnly(false);
+    expect(store.onAirOnly).toBe(false);
   });
 
   // ── modes computed ─────────────────────────────────────────────────────────
@@ -172,6 +183,45 @@ describe('RepeaterBookStore', () => {
     store.setSelectedMode('DMR');
     expect(store.filteredRepeaters).toHaveLength(1);
     expect(store.filteredRepeaters[0].mode).toBe('DMR');
+  });
+
+  it('filteredRepeaters excludes off-air repeaters when onAirOnly is true', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'on',
+        operationalStatus: 'On-air',
+        distance: 5,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'off',
+        operationalStatus: 'Off-air',
+        distance: 5,
+      },
+    ];
+    expect(store.onAirOnly).toBe(true);
+    expect(store.filteredRepeaters).toHaveLength(1);
+    expect(store.filteredRepeaters[0].id).toBe('on');
+  });
+
+  it('filteredRepeaters includes off-air repeaters when onAirOnly is false', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'on',
+        operationalStatus: 'On-air',
+        distance: 5,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'off',
+        operationalStatus: 'Off-air',
+        distance: 5,
+      },
+    ];
+    store.setOnAirOnly(false);
+    expect(store.filteredRepeaters).toHaveLength(2);
   });
 
   it('filteredRepeaters sorts by distance ascending', () => {

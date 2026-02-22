@@ -130,6 +130,7 @@ export class RepeaterBookStore {
   queryLat: number | null = null;
   queryLng: number | null = null;
   selectedMode: string = 'All';
+  onAirOnly: boolean = true;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -144,20 +145,27 @@ export class RepeaterBookStore {
   }
 
   /**
-   * Repeaters filtered by the selected mode and within DEFAULT_RADIUS_MILES
-   * of the last query position, sorted by distance ascending.
+   * Repeaters filtered by the selected mode, on-air toggle, and within
+   * DEFAULT_RADIUS_MILES of the last query position, sorted by distance ascending.
    */
   get filteredRepeaters(): Repeater[] {
     let list =
       this.selectedMode === 'All'
         ? this.repeaters
         : this.repeaters.filter((r) => r.mode === this.selectedMode);
+    if (this.onAirOnly) {
+      list = list.filter((r) => r.operationalStatus === 'On-air');
+    }
     list = list.filter((r) => r.distance <= DEFAULT_RADIUS_MILES);
     return [...list].sort((a, b) => a.distance - b.distance);
   }
 
   setSelectedMode(mode: string) {
     this.selectedMode = mode;
+  }
+
+  setOnAirOnly(value: boolean) {
+    this.onAirOnly = value;
   }
 
   /**
