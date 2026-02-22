@@ -504,6 +504,46 @@ describe('RepeaterBookStore', () => {
 
   // ── checkAndFetchIfNeeded ──────────────────────────────────────────────────
 
+  it('checkAndFetchIfNeeded requests location authorization', async () => {
+    mockFetchSuccess();
+
+    (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
+      (success: any) => {
+        success({
+          coords: { latitude: TEST_LAT, longitude: TEST_LNG },
+          timestamp: Date.now(),
+        });
+      },
+    );
+
+    await store.checkAndFetchIfNeeded();
+
+    expect(Geolocation.requestAuthorization).toHaveBeenCalledWith('whenInUse');
+  });
+
+  it('checkAndFetchIfNeeded sets error when authorization is denied and no cache', async () => {
+    (Geolocation.requestAuthorization as jest.Mock).mockResolvedValueOnce(
+      'denied',
+    );
+
+    await store.checkAndFetchIfNeeded();
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(store.error).toContain('Location permission denied');
+  });
+
+  it('checkAndFetchIfNeeded keeps cache when authorization is denied with cached data', async () => {
+    (store as any).repeaters = mockCache.repeaters;
+    (Geolocation.requestAuthorization as jest.Mock).mockResolvedValueOnce(
+      'denied',
+    );
+
+    await store.checkAndFetchIfNeeded();
+
+    expect(store.repeaters).toHaveLength(1);
+    expect(store.error).toBeNull();
+  });
+
   it('checkAndFetchIfNeeded fetches when no cache exists', async () => {
     mockFetchSuccess();
 
@@ -563,7 +603,23 @@ describe('RepeaterBookStore', () => {
     expect(global.fetch).toHaveBeenCalledTimes(FL_TOTAL_STATES);
   });
 
-  it('checkAndFetchIfNeeded handles location error gracefully', async () => {
+  it('checkAndFetchIfNeeded sets error when location fails with no cache', async () => {
+    global.fetch = jest.fn();
+
+    (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
+      (_success: any, error: any) => {
+        error({ code: 1, message: 'Position unavailable' });
+      },
+    );
+
+    await store.checkAndFetchIfNeeded();
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(store.error).toContain('Unable to determine location');
+  });
+
+  it('checkAndFetchIfNeeded keeps cache and no error when location fails with cached data', async () => {
+    (store as any).repeaters = mockCache.repeaters;
     global.fetch = jest.fn();
 
     (Geolocation.getCurrentPosition as jest.Mock).mockImplementationOnce(
@@ -575,5 +631,7 @@ describe('RepeaterBookStore', () => {
     await store.checkAndFetchIfNeeded();
 
     expect(global.fetch).not.toHaveBeenCalled();
+    expect(store.repeaters).toHaveLength(1);
+    expect(store.error).toBeNull();
   });
 });

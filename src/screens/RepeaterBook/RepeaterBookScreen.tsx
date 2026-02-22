@@ -383,7 +383,7 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                       <Ionicons
                         name="checkmark-outline"
                         size={16}
-                        color="#fff"
+                        color={COLORS.PRIMARY_LIGHT}
                       />
                     )}
                   </TouchableOpacity>
@@ -607,7 +607,7 @@ const createStyles = (COLORS: ColorScheme) =>
       fontWeight: '500',
     },
     modalOptionTextSelected: {
-      color: '#fff',
+      color: COLORS.PRIMARY_LIGHT,
     },
     modalOptionTextUnselected: {
       color: COLORS.PRIMARY_DARK,

@@ -52,9 +52,7 @@ function deriveMode(row: Record<string, string>): string {
   if (row.NXDN === 'Yes') return 'NXDN';
   if (row.M17 === 'Yes') return 'M17';
   if (row.Tetra === 'Yes') return 'TETRA';
-  // Explicit check for FM Analog; falls back to 'FM' as the default mode
-  // since the vast majority of repeaters are FM and the field may be absent.
-  if (row['FM Analog'] === 'Yes' || !row['FM Analog']) return 'FM';
+  // Default: treat as FM (covers both explicit 'FM Analog: Yes' and unset fields).
   return 'FM';
 }
 
@@ -151,6 +149,13 @@ export class RepeaterBookStore {
    * Repeaters filtered by the selected mode, on-air toggle, emergency toggle,
    * and within DEFAULT_RADIUS_MILES of the last query position, sorted by
    * distance ascending.
+   *
+   * @note Distances are calculated once at fetch time relative to the query
+   * location and stored in the cache. They are not recalculated as the user
+   * moves. Since a new fetch is triggered whenever the user moves more than
+   * REFETCH_THRESHOLD_MILES (50 miles), the maximum distance drift before a
+   * refresh is bounded by that threshold — this is an acceptable tradeoff for
+   * an offline-first feature.
    */
   get filteredRepeaters(): Repeater[] {
     let list =
@@ -212,8 +217,24 @@ export class RepeaterBookStore {
    * Compare current location against the cached query location and trigger a
    * fetch when the user has moved more than REFETCH_THRESHOLD_MILES, or when
    * there is no cached data at all.
+   *
+   * Requests location authorization (whenInUse) before attempting to read the
+   * device position, following the same pattern as CoreStore. If authorization
+   * is denied or location is unavailable and there is no cached data, sets an
+   * error message so the UI can explain the empty state to the user.
    */
   async checkAndFetchIfNeeded(): Promise<void> {
+    const auth = await Geolocation.requestAuthorization('whenInUse');
+    if (auth !== 'granted') {
+      runInAction(() => {
+        if (this.repeaters.length === 0) {
+          this.error =
+            'Location permission denied. Enable location access to load repeaters.';
+        }
+      });
+      return;
+    }
+
     return new Promise((resolve) => {
       Geolocation.getCurrentPosition(
         async (position) => {
@@ -231,7 +252,14 @@ export class RepeaterBookStore {
           resolve();
         },
         () => {
-          // Location unavailable – keep cached data if present.
+          // Location unavailable – keep cached data if present, otherwise
+          // surface an error so the user knows why the list is empty.
+          runInAction(() => {
+            if (this.repeaters.length === 0) {
+              this.error =
+                'Unable to determine location. Connect to the internet and enable location access.';
+            }
+          });
           resolve();
         },
         { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 },
