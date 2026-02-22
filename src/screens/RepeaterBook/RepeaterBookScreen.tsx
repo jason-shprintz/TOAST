@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -21,6 +21,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { Repeater } from '../../stores/RepeaterBookStore';
 import { useRepeaterBookStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
+import { ColorScheme } from '../../theme/colors';
 
 /**
  * Displays the list of local ham radio repeaters fetched from RepeaterBook.
@@ -33,6 +34,7 @@ import { FOOTER_HEIGHT } from '../../theme';
  */
 const RepeaterBookScreen = observer((): JSX.Element => {
   const COLORS = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
   const navigation = useNavigation<any>();
   const store = useRepeaterBookStore();
   const [modePickerVisible, setModePickerVisible] = useState(false);
@@ -370,12 +372,9 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                     <Text
                       style={[
                         styles.modalOptionText,
-                        {
-                          color:
-                            mode === store.selectedMode
-                              ? '#fff'
-                              : COLORS.PRIMARY_DARK,
-                        },
+                        mode === store.selectedMode
+                          ? styles.modalOptionTextSelected
+                          : styles.modalOptionTextUnselected,
                       ]}
                     >
                       {mode}
@@ -400,213 +399,220 @@ const RepeaterBookScreen = observer((): JSX.Element => {
 
 export default RepeaterBookScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignSelf: 'stretch',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  statusBar: {
-    marginHorizontal: 14,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  filterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 14,
-    marginTop: 10,
-    gap: 12,
-  },
-  dropdown: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  dropdownText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  toggleGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  toggleLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  ruleWrap: {
-    marginTop: 10,
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-    paddingTop: 8,
-  },
-  scrollContent: {
-    paddingHorizontal: 14,
-    paddingBottom: 24,
-  },
-  centered: {
-    paddingTop: 40,
-    alignItems: 'center',
-    gap: 12,
-  },
-  helperText: {
-    fontSize: 15,
-    opacity: 0.8,
-    textAlign: 'center',
-  },
-  errorCard: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 12,
-    gap: 6,
-  },
-  errorText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 8,
-    gap: 10,
-  },
-  statusDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginTop: 5,
-  },
-  rowBody: {
-    flex: 1,
-    gap: 4,
-  },
-  rowTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  callSign: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  distance: {
-    fontSize: 13,
-    opacity: 0.7,
-  },
-  rowMeta: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  metaText: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  rowBottom: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 2,
-  },
-  modeBadge: {
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  modeText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  emcommBadge: {
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  emcommText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  locationText: {
-    fontSize: 12,
-    opacity: 0.7,
-    flex: 1,
-  },
-  refreshRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    gap: 8,
-  },
-  refreshText: {
-    fontSize: 13,
-    opacity: 0.7,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    opacity: 0.65,
-    textAlign: 'center',
-    marginTop: 4,
-    marginBottom: 8,
-  },
-  disclaimerLink: {
-    textDecorationLine: 'underline',
-  },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-  },
-  modalSheet: {
-    width: '100%',
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 16,
-    gap: 4,
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-  modalOptionText: {
-    fontSize: 15,
-    fontWeight: '500',
-  },
-});
+const createStyles = (COLORS: ColorScheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      alignSelf: 'stretch',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    statusBar: {
+      marginHorizontal: 14,
+      marginTop: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 8,
+      borderWidth: 1,
+    },
+    statusText: {
+      fontSize: 12,
+      fontWeight: '500',
+    },
+    filterRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginHorizontal: 14,
+      marginTop: 10,
+      gap: 12,
+    },
+    dropdown: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+    },
+    dropdownText: {
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    toggleGroup: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    toggleLabel: {
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    ruleWrap: {
+      marginTop: 10,
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+      paddingTop: 8,
+    },
+    scrollContent: {
+      paddingHorizontal: 14,
+      paddingBottom: 24,
+    },
+    centered: {
+      paddingTop: 40,
+      alignItems: 'center',
+      gap: 12,
+    },
+    helperText: {
+      fontSize: 15,
+      opacity: 0.8,
+      textAlign: 'center',
+    },
+    errorCard: {
+      borderWidth: 1,
+      borderRadius: 12,
+      padding: 14,
+      marginTop: 12,
+      gap: 6,
+    },
+    errorText: {
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      borderWidth: 1,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 8,
+      gap: 10,
+    },
+    statusDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      marginTop: 5,
+    },
+    rowBody: {
+      flex: 1,
+      gap: 4,
+    },
+    rowTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    callSign: {
+      fontSize: 16,
+      fontWeight: '700',
+    },
+    distance: {
+      fontSize: 13,
+      opacity: 0.7,
+    },
+    rowMeta: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    metaText: {
+      fontSize: 13,
+      fontWeight: '500',
+    },
+    rowBottom: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 2,
+    },
+    modeBadge: {
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+    },
+    modeText: {
+      fontSize: 11,
+      fontWeight: '700',
+    },
+    emcommBadge: {
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+    },
+    emcommText: {
+      fontSize: 11,
+      fontWeight: '700',
+    },
+    locationText: {
+      fontSize: 12,
+      opacity: 0.7,
+      flex: 1,
+    },
+    refreshRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      gap: 8,
+    },
+    refreshText: {
+      fontSize: 13,
+      opacity: 0.7,
+    },
+    disclaimerText: {
+      fontSize: 12,
+      opacity: 0.65,
+      textAlign: 'center',
+      marginTop: 4,
+      marginBottom: 8,
+    },
+    disclaimerLink: {
+      textDecorationLine: 'underline',
+    },
+    modalBackdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 32,
+    },
+    modalSheet: {
+      width: '100%',
+      borderRadius: 16,
+      borderWidth: 1,
+      padding: 16,
+      gap: 4,
+    },
+    modalTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 8,
+    },
+    modalOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      paddingHorizontal: 8,
+      borderRadius: 8,
+    },
+    modalOptionText: {
+      fontSize: 15,
+      fontWeight: '500',
+    },
+    modalOptionTextSelected: {
+      color: '#fff',
+    },
+    modalOptionTextUnselected: {
+      color: COLORS.PRIMARY_DARK,
+    },
+  });
 
 // Re-export route param type for AppNavigator
 export type RepeaterBookScreenParams = undefined;
