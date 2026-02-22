@@ -57,6 +57,7 @@ const makeApiRow = (overrides: Record<string, string> = {}) => ({
   'APCO P-25': 'No',
   M17: 'No',
   Tetra: 'No',
+  emcomm: '',
   ...overrides,
 });
 
@@ -78,6 +79,7 @@ const mockCache: RepeaterCache = {
       notes: '',
       lastEdited: '2024-01-01',
       distance: 0,
+      emcomm: '',
     },
   ],
   queryLat: TEST_LAT,
@@ -130,6 +132,10 @@ describe('RepeaterBookStore', () => {
     expect(store.onAirOnly).toBe(true);
   });
 
+  it('starts with emergencyOnly false', () => {
+    expect(store.emergencyOnly).toBe(false);
+  });
+
   // ── setSelectedMode ────────────────────────────────────────────────────────
 
   it('setSelectedMode updates selectedMode', () => {
@@ -142,6 +148,13 @@ describe('RepeaterBookStore', () => {
   it('setOnAirOnly updates onAirOnly', () => {
     store.setOnAirOnly(false);
     expect(store.onAirOnly).toBe(false);
+  });
+
+  // ── setEmergencyOnly ───────────────────────────────────────────────────────
+
+  it('setEmergencyOnly updates emergencyOnly', () => {
+    store.setEmergencyOnly(true);
+    expect(store.emergencyOnly).toBe(true);
   });
 
   // ── modes computed ─────────────────────────────────────────────────────────
@@ -221,6 +234,30 @@ describe('RepeaterBookStore', () => {
       },
     ];
     store.setOnAirOnly(false);
+    expect(store.filteredRepeaters).toHaveLength(2);
+  });
+
+  it('filteredRepeaters excludes non-emergency repeaters when emergencyOnly is true', () => {
+    (store as any).repeaters = [
+      { ...mockCache.repeaters[0], id: 'emcomm', emcomm: 'ARES', distance: 5 },
+      { ...mockCache.repeaters[0], id: 'regular', emcomm: '', distance: 5 },
+    ];
+    store.setEmergencyOnly(true);
+    expect(store.filteredRepeaters).toHaveLength(1);
+    expect(store.filteredRepeaters[0].id).toBe('emcomm');
+  });
+
+  it('filteredRepeaters includes all repeaters when emergencyOnly is false', () => {
+    (store as any).repeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'emcomm',
+        emcomm: 'SKYWARN',
+        distance: 5,
+      },
+      { ...mockCache.repeaters[0], id: 'regular', emcomm: '', distance: 5 },
+    ];
+    expect(store.emergencyOnly).toBe(false);
     expect(store.filteredRepeaters).toHaveLength(2);
   });
 
@@ -443,6 +480,26 @@ describe('RepeaterBookStore', () => {
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
     expect(store.repeaters[0].mode).toBe('D-STAR');
+  });
+
+  // ── emcomm field mapping ────────────────────────────────────────────────────
+
+  it('maps emcomm field from API row', async () => {
+    mockFetchSuccess([makeApiRow({ emcomm: 'ARES' })]);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    expect(store.repeaters[0].emcomm).toBe('ARES');
+  });
+
+  it('maps empty emcomm when field is absent', async () => {
+    const rowWithoutEmcomm = makeApiRow();
+    delete (rowWithoutEmcomm as any).emcomm;
+    mockFetchSuccess([rowWithoutEmcomm]);
+
+    await store.fetchRepeaters(TEST_LAT, TEST_LNG);
+
+    expect(store.repeaters[0].emcomm).toBe('');
   });
 
   // ── checkAndFetchIfNeeded ──────────────────────────────────────────────────

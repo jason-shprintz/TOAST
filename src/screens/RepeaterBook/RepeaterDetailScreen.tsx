@@ -1,6 +1,12 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React, { JSX } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Linking,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -47,6 +53,9 @@ export default function RepeaterDetailScreen(): JSX.Element {
     { label: 'Mode', value: repeater.mode },
     { label: 'Use', value: repeater.use || '—' },
     { label: 'Status', value: repeater.operationalStatus || 'Unknown' },
+    ...(repeater.emcomm
+      ? [{ label: 'Emerg. Comms', value: repeater.emcomm }]
+      : []),
     {
       label: 'Location',
       value: [repeater.city, repeater.state].filter(Boolean).join(', ') || '—',
@@ -64,7 +73,7 @@ export default function RepeaterDetailScreen(): JSX.Element {
 
   return (
     <ScreenBody>
-      <SectionHeader>{repeater.callSign}</SectionHeader>
+      <SectionHeader>{repeater.frequency} MHz</SectionHeader>
 
       <View style={styles.container}>
         <ScrollView
@@ -149,6 +158,20 @@ export default function RepeaterDetailScreen(): JSX.Element {
               </Text>
             </View>
           ) : null}
+
+          {/* Data source disclaimer */}
+          <TouchableOpacity
+            onPress={() => Linking.openURL('https://www.repeaterbook.com')}
+            accessibilityRole="link"
+            accessibilityLabel="Open RepeaterBook.com"
+          >
+            <Text
+              style={[styles.disclaimerText, { color: COLORS.PRIMARY_DARK }]}
+            >
+              Data sourced from{' '}
+              <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     </ScreenBody>
@@ -227,5 +250,15 @@ const styles = StyleSheet.create({
   notesText: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    opacity: 0.65,
+    textAlign: 'center',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  disclaimerLink: {
+    textDecorationLine: 'underline',
   },
 });

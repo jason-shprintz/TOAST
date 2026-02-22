@@ -28,6 +28,7 @@ export interface Repeater {
   notes: string;
   lastEdited: string;
   distance: number;
+  emcomm: string;
 }
 
 export interface RepeaterCache {
@@ -85,6 +86,7 @@ function mapRow(
     notes: row.Notes ?? '',
     lastEdited: row['Last Edited'] ?? '',
     distance: Math.round(dist * 10) / 10,
+    emcomm: row.emcomm || '',
   };
 }
 
@@ -131,6 +133,7 @@ export class RepeaterBookStore {
   queryLng: number | null = null;
   selectedMode: string = 'All';
   onAirOnly: boolean = true;
+  emergencyOnly: boolean = false;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -145,8 +148,9 @@ export class RepeaterBookStore {
   }
 
   /**
-   * Repeaters filtered by the selected mode, on-air toggle, and within
-   * DEFAULT_RADIUS_MILES of the last query position, sorted by distance ascending.
+   * Repeaters filtered by the selected mode, on-air toggle, emergency toggle,
+   * and within DEFAULT_RADIUS_MILES of the last query position, sorted by
+   * distance ascending.
    */
   get filteredRepeaters(): Repeater[] {
     let list =
@@ -155,6 +159,9 @@ export class RepeaterBookStore {
         : this.repeaters.filter((r) => r.mode === this.selectedMode);
     if (this.onAirOnly) {
       list = list.filter((r) => r.operationalStatus === 'On-air');
+    }
+    if (this.emergencyOnly) {
+      list = list.filter((r) => Boolean(r.emcomm));
     }
     list = list.filter((r) => r.distance <= DEFAULT_RADIUS_MILES);
     return [...list].sort((a, b) => a.distance - b.distance);
@@ -166,6 +173,10 @@ export class RepeaterBookStore {
 
   setOnAirOnly(value: boolean) {
     this.onAirOnly = value;
+  }
+
+  setEmergencyOnly(value: boolean) {
+    this.emergencyOnly = value;
   }
 
   /**

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import React, { JSX, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -132,6 +133,24 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               accessibilityRole="switch"
             />
           </View>
+
+          {/* Emergency comms toggle */}
+          <View style={styles.toggleGroup}>
+            <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+              🚨
+            </Text>
+            <Switch
+              value={store.emergencyOnly}
+              onValueChange={(v) => store.setEmergencyOnly(v)}
+              trackColor={{
+                false: COLORS.TOAST_BROWN,
+                true: COLORS.ERROR,
+              }}
+              thumbColor={COLORS.PRIMARY_LIGHT}
+              accessibilityLabel="Filter to show only emergency communications repeaters"
+              accessibilityRole="switch"
+            />
+          </View>
         </View>
 
         {/* Divider */}
@@ -254,6 +273,20 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                       {repeater.mode}
                     </Text>
                   </View>
+                  {repeater.emcomm ? (
+                    <View
+                      style={[
+                        styles.emcommBadge,
+                        { borderColor: COLORS.ERROR },
+                      ]}
+                    >
+                      <Text
+                        style={[styles.emcommText, { color: COLORS.ERROR }]}
+                      >
+                        🚨 {repeater.emcomm}
+                      </Text>
+                    </View>
+                  ) : null}
                   <Text
                     style={[
                       styles.locationText,
@@ -279,6 +312,20 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               </Text>
             </View>
           )}
+
+          {/* Data source disclaimer */}
+          <TouchableOpacity
+            onPress={() => Linking.openURL('https://www.repeaterbook.com')}
+            accessibilityRole="link"
+            accessibilityLabel="Open RepeaterBook.com"
+          >
+            <Text
+              style={[styles.disclaimerText, { color: COLORS.PRIMARY_DARK }]}
+            >
+              Data sourced from{' '}
+              <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -492,6 +539,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
   },
+  emcommBadge: {
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  emcommText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
   locationText: {
     fontSize: 12,
     opacity: 0.7,
@@ -507,6 +564,16 @@ const styles = StyleSheet.create({
   refreshText: {
     fontSize: 13,
     opacity: 0.7,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    opacity: 0.65,
+    textAlign: 'center',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  disclaimerLink: {
+    textDecorationLine: 'underline',
   },
   modalBackdrop: {
     flex: 1,
