@@ -350,26 +350,14 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           </TouchableOpacity>
 
           {(store.lastUpdated || store.isCachedData) && (
-            <View
-              style={[
-                styles.statusBar,
-                {
-                  backgroundColor: store.isCachedData
-                    ? COLORS.BACKGROUND
-                    : COLORS.SUCCESS_LIGHT,
-                  borderColor: store.isCachedData
-                    ? COLORS.TOAST_BROWN
-                    : COLORS.SUCCESS,
-                },
-              ]}
+            <Text
+              style={[styles.disclaimerText, { color: COLORS.PRIMARY_DARK }]}
             >
-              <Text style={[styles.statusText, { color: COLORS.PRIMARY_DARK }]}>
-                {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
-                {store.lastUpdated
-                  ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
-                  : ''}
-              </Text>
-            </View>
+              {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
+              {store.lastUpdated
+                ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
+                : ''}
+            </Text>
           )}
         </View>
       </View>
@@ -467,17 +455,6 @@ const createStyles = (COLORS: ColorScheme) =>
     typeChipText: {
       fontSize: 13,
       fontWeight: '600',
-    },
-    statusBar: {
-      marginTop: 6,
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 8,
-      borderWidth: 1,
-    },
-    statusText: {
-      fontSize: 12,
-      fontWeight: '500',
     },
     bottomBar: {
       paddingHorizontal: 14,

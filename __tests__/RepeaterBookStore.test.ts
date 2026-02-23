@@ -81,7 +81,7 @@ const mockCache: RepeaterCache = {
       lastEdited: '2024-01-01',
       distance: 0,
       emcomm: '',
-      repeaterType: 'ham',
+      serviceType: 'HAM',
     },
   ],
   queryLat: TEST_LAT,
@@ -197,19 +197,19 @@ describe('RepeaterBookStore', () => {
         ...mockCache.repeaters[0],
         id: 'ham-1',
         mode: 'FM',
-        repeaterType: 'ham',
+        serviceType: 'HAM',
       },
       {
         ...mockCache.repeaters[0],
         id: 'gmrs-1',
         mode: 'FM',
-        repeaterType: 'gmrs',
+        serviceType: 'GMRS',
       },
       {
         ...mockCache.repeaters[0],
         id: 'gmrs-2',
         mode: 'P-25',
-        repeaterType: 'gmrs',
+        serviceType: 'GMRS',
       },
     ];
     store.setSelectedRepeaterType('HAM');
@@ -223,13 +223,13 @@ describe('RepeaterBookStore', () => {
         ...mockCache.repeaters[0],
         id: 'ham-1',
         mode: 'D-STAR',
-        repeaterType: 'ham',
+        serviceType: 'HAM',
       },
       {
         ...mockCache.repeaters[0],
         id: 'gmrs-1',
         mode: 'FM',
-        repeaterType: 'gmrs',
+        serviceType: 'GMRS',
       },
     ];
     store.setSelectedRepeaterType('GMRS');
@@ -242,13 +242,13 @@ describe('RepeaterBookStore', () => {
       {
         ...mockCache.repeaters[0],
         id: 'ham-1',
-        repeaterType: 'ham',
+        serviceType: 'HAM',
         distance: 5,
       },
       {
         ...mockCache.repeaters[0],
         id: 'gmrs-1',
-        repeaterType: 'gmrs',
+        serviceType: 'GMRS',
         distance: 5,
       },
     ];
@@ -262,13 +262,13 @@ describe('RepeaterBookStore', () => {
       {
         ...mockCache.repeaters[0],
         id: 'ham-1',
-        repeaterType: 'ham',
+        serviceType: 'HAM',
         distance: 5,
       },
       {
         ...mockCache.repeaters[0],
         id: 'gmrs-1',
-        repeaterType: 'gmrs',
+        serviceType: 'GMRS',
         distance: 5,
       },
     ];
@@ -483,9 +483,9 @@ describe('RepeaterBookStore', () => {
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    // Despite 3 ham calls each returning 1 row, only 1 unique ham repeater
+    // Despite 3 HAM calls each returning 1 row, only 1 unique HAM repeater
     expect(store.repeaters).toHaveLength(1);
-    expect(store.repeaters[0].repeaterType).toBe('ham');
+    expect(store.repeaters[0].serviceType).toBe('HAM');
   });
 
   it('fetchRepeaters does not deduplicate ham and GMRS repeaters with the same ID', async () => {
@@ -511,10 +511,10 @@ describe('RepeaterBookStore', () => {
 
     await store.fetchRepeaters(TEST_LAT, TEST_LNG);
 
-    // One ham + one gmrs = 2 distinct repeaters
+    // One HAM + one GMRS = 2 distinct repeaters
     expect(store.repeaters).toHaveLength(2);
-    const types = store.repeaters.map((r) => r.repeaterType).sort();
-    expect(types).toEqual(['gmrs', 'ham']);
+    const types = store.repeaters.map((r) => r.serviceType).sort();
+    expect(types).toEqual(['GMRS', 'HAM']);
   });
 
   it('fetchRepeaters merges distinct repeaters from multiple states', async () => {

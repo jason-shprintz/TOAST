@@ -29,7 +29,7 @@ export interface Repeater {
   lastEdited: string;
   distance: number;
   emcomm: string;
-  repeaterType: 'ham' | 'gmrs';
+  serviceType: 'HAM' | 'GMRS';
 }
 
 export interface RepeaterCache {
@@ -64,7 +64,7 @@ function mapRow(
   row: Record<string, string>,
   queryLat: number,
   queryLng: number,
-  repeaterType: 'ham' | 'gmrs' = 'ham',
+  serviceType: 'HAM' | 'GMRS' = 'HAM',
 ): Repeater {
   const lat = parseFloat(row.Lat ?? '0');
   const lng = parseFloat(row.Long ?? '0');
@@ -87,7 +87,7 @@ function mapRow(
     lastEdited: row['Last Edited'] ?? '',
     distance: Math.round(dist * 10) / 10,
     emcomm: row.emcomm || '',
-    repeaterType,
+    serviceType,
   };
 }
 
@@ -150,9 +150,7 @@ export class RepeaterBookStore {
       this.selectedRepeaterType === 'All'
         ? this.repeaters
         : this.repeaters.filter(
-            (r) =>
-              r.repeaterType ===
-              (this.selectedRepeaterType.toLowerCase() as 'ham' | 'gmrs'),
+            (r) => r.serviceType === this.selectedRepeaterType,
           );
     for (const r of source) {
       if (r.mode) set.add(r.mode);
@@ -175,8 +173,7 @@ export class RepeaterBookStore {
   get filteredRepeaters(): Repeater[] {
     let list = this.repeaters;
     if (this.selectedRepeaterType !== 'All') {
-      const rtype = this.selectedRepeaterType.toLowerCase() as 'ham' | 'gmrs';
-      list = list.filter((r) => r.repeaterType === rtype);
+      list = list.filter((r) => r.serviceType === this.selectedRepeaterType);
     }
     if (this.selectedMode !== 'All') {
       list = list.filter((r) => r.mode === this.selectedMode);
@@ -313,27 +310,27 @@ export class RepeaterBookStore {
       const neighbors = NEIGHBORING_STATES[currentState] ?? [];
       const statesToQuery = [currentState, ...neighbors];
 
-      // 3. Fetch ham and GMRS for all states in parallel; individual failures
+      // 3. Fetch HAM and GMRS for all states in parallel; individual failures
       //    are caught so one bad response doesn't discard all others.
-      //    Each tuple carries the state name and repeater type so results can
+      //    Each tuple carries the state name and service type so results can
       //    be tagged and deduplicated within their respective type spaces.
-      const fetchTargets: Array<{ state: string; rtype: 'ham' | 'gmrs' }> = [
-        ...statesToQuery.map((s) => ({ state: s, rtype: 'ham' as const })),
-        ...statesToQuery.map((s) => ({ state: s, rtype: 'gmrs' as const })),
+      const fetchTargets: Array<{ state: string; stype: 'HAM' | 'GMRS' }> = [
+        ...statesToQuery.map((s) => ({ state: s, stype: 'HAM' as const })),
+        ...statesToQuery.map((s) => ({ state: s, stype: 'GMRS' as const })),
       ];
 
       const settled = await Promise.allSettled(
-        fetchTargets.map(({ state, rtype }) =>
+        fetchTargets.map(({ state, stype }) =>
           fetchStateRepeaters(
             state,
-            rtype === 'gmrs' ? 'gmrs' : undefined,
-          ).then((rows) => ({ rows, rtype })),
+            stype === 'GMRS' ? 'gmrs' : undefined,
+          ).then((rows) => ({ rows, stype })),
         ),
       );
 
       // Collect rows from fulfilled promises.
       const rawRows: Array<
-        Record<string, string> & { _rtype: 'ham' | 'gmrs' }
+        Record<string, string> & { _stype: 'HAM' | 'GMRS' }
       > = [];
       const failedStates: string[] = [];
       settled.forEach((result, i) => {
@@ -341,12 +338,12 @@ export class RepeaterBookStore {
           rawRows.push(
             ...result.value.rows.map((row) => ({
               ...row,
-              _rtype: result.value.rtype,
+              _stype: result.value.stype,
             })),
           );
         } else {
           failedStates.push(
-            `${fetchTargets[i].state} (${fetchTargets[i].rtype})`,
+            `${fetchTargets[i].state} (${fetchTargets[i].stype})`,
           );
         }
       });
@@ -363,15 +360,15 @@ export class RepeaterBookStore {
         throw new Error(firstReason);
       }
 
-      // 4. Deduplicate by repeater type + ID (stateId-rptId) so that a ham and
+      // 4. Deduplicate by service type + ID (stateId-rptId) so that a HAM and
       //    a GMRS repeater sharing the same numeric ID are kept as distinct
       //    entries.
       const seen = new Set<string>();
       const dedupedRows: Array<
-        Record<string, string> & { _rtype: 'ham' | 'gmrs' }
+        Record<string, string> & { _stype: 'HAM' | 'GMRS' }
       > = [];
       for (const row of rawRows) {
-        const id = `${row._rtype}-${row['State ID'] ?? ''}-${row['Rptr ID'] ?? ''}`;
+        const id = `${row._stype}-${row['State ID'] ?? ''}-${row['Rptr ID'] ?? ''}`;
         if (!seen.has(id)) {
           seen.add(id);
           dedupedRows.push(row);
@@ -382,7 +379,7 @@ export class RepeaterBookStore {
       //    ALL results are kept (no distance filter) so the cache is reusable
       //    as the user moves within the queried region.
       const repeaters = dedupedRows.map((row) =>
-        mapRow(row, lat, lng, row._rtype),
+        mapRow(row, lat, lng, row._stype),
       );
       const lastUpdated = new Date().toISOString();
 
