@@ -1,6 +1,14 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { JSX } from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
+import React, { JSX, useCallback, useEffect, useState } from 'react';
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -41,6 +49,31 @@ export default function RadioFrequencyDetailScreen(): JSX.Element {
   const route = useRoute<RadioFrequencyDetailScreenRouteProp>();
   const COLORS = useTheme();
   const { frequencyData } = route.params || {};
+  const [disclaimerVisible, setDisclaimerVisible] = useState(false);
+
+  const disclaimerKey = frequencyData?.requiresLicense
+    ? `@radiofrequency/${frequencyData.id}_disclaimer_dismissed`
+    : null;
+
+  useEffect(() => {
+    if (!disclaimerKey) return;
+    AsyncStorage.getItem(disclaimerKey)
+      .then((value) => {
+        if (value !== 'true') {
+          setDisclaimerVisible(true);
+        }
+      })
+      .catch(() => {
+        setDisclaimerVisible(true);
+      });
+  }, [disclaimerKey]);
+
+  const handleDismissDisclaimer = useCallback(() => {
+    if (disclaimerKey) {
+      AsyncStorage.setItem(disclaimerKey, 'true').catch(() => {});
+    }
+    setDisclaimerVisible(false);
+  }, [disclaimerKey]);
 
   if (!frequencyData) {
     return (
@@ -60,29 +93,28 @@ export default function RadioFrequencyDetailScreen(): JSX.Element {
       <SectionHeader>{frequencyData.title}</SectionHeader>
 
       <View style={styles.container}>
+        {/* License info icon row */}
+        <View style={styles.infoRow}>
+          <TouchableOpacity
+            onPress={() => setDisclaimerVisible(true)}
+            accessibilityLabel="View license information"
+            accessibilityRole="button"
+            style={styles.infoButton}
+          >
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color={
+                frequencyData.requiresLicense ? COLORS.ERROR : COLORS.SUCCESS
+              }
+            />
+          </TouchableOpacity>
+        </View>
+
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* License Information */}
-          <View
-            style={[
-              styles.licenseCard,
-              {
-                backgroundColor: frequencyData.requiresLicense
-                  ? COLORS.ERROR_LIGHT
-                  : COLORS.SUCCESS_LIGHT,
-                borderColor: frequencyData.requiresLicense
-                  ? COLORS.ERROR
-                  : COLORS.SUCCESS,
-              },
-            ]}
-          >
-            <Text style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}>
-              {frequencyData.licenseInfo}
-            </Text>
-          </View>
-
           {/* Description */}
           <View
             style={[
@@ -203,6 +235,60 @@ export default function RadioFrequencyDetailScreen(): JSX.Element {
           </View>
         </ScrollView>
       </View>
+
+      {/* License disclaimer modal */}
+      <Modal
+        visible={disclaimerVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => {}}
+      >
+        <View style={styles.modalBackdrop}>
+          <View
+            style={[
+              styles.modalSheet,
+              {
+                backgroundColor: COLORS.PRIMARY_LIGHT,
+                borderColor: COLORS.TOAST_BROWN,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}>
+              {frequencyData.title} License Information
+            </Text>
+            <View
+              style={[
+                styles.licenseCard,
+                {
+                  backgroundColor: frequencyData.requiresLicense
+                    ? COLORS.ERROR_LIGHT
+                    : COLORS.SUCCESS_LIGHT,
+                  borderColor: frequencyData.requiresLicense
+                    ? COLORS.ERROR
+                    : COLORS.SUCCESS,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
+              >
+                {frequencyData.licenseInfo}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={handleDismissDisclaimer}
+              style={[
+                styles.modalDismissButton,
+                { backgroundColor: COLORS.ACCENT },
+              ]}
+              accessibilityLabel="Dismiss license information"
+              accessibilityRole="button"
+            >
+              <Text style={styles.modalDismissText}>Understood</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScreenBody>
   );
 }
@@ -295,5 +381,44 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     opacity: 0.8,
     lineHeight: 16,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+  },
+  infoButton: {
+    padding: 2,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  modalSheet: {
+    width: '100%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+    gap: 4,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  modalDismissButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  modalDismissText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });

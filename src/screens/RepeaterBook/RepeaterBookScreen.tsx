@@ -436,55 +436,49 @@ const RepeaterBookScreen = observer((): JSX.Element => {
         visible={disclaimerVisible}
         animationType="fade"
         transparent
-        onRequestClose={handleDismissDisclaimer}
+        onRequestClose={() => {}}
       >
-        <TouchableWithoutFeedback onPress={handleDismissDisclaimer}>
-          <View style={styles.modalBackdrop}>
-            <TouchableWithoutFeedback>
-              <View
-                style={[
-                  styles.modalSheet,
-                  {
-                    backgroundColor: COLORS.PRIMARY_LIGHT,
-                    borderColor: COLORS.TOAST_BROWN,
-                  },
-                ]}
+        <View style={styles.modalBackdrop}>
+          <View
+            style={[
+              styles.modalSheet,
+              {
+                backgroundColor: COLORS.PRIMARY_LIGHT,
+                borderColor: COLORS.TOAST_BROWN,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}>
+              HAM License Requirement
+            </Text>
+            <View
+              style={[
+                styles.licenseCard,
+                {
+                  backgroundColor: COLORS.ERROR_LIGHT,
+                  borderColor: COLORS.ERROR,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
               >
-                <Text
-                  style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}
-                >
-                  HAM License Requirement
-                </Text>
-                <View
-                  style={[
-                    styles.licenseCard,
-                    {
-                      backgroundColor: COLORS.ERROR_LIGHT,
-                      borderColor: COLORS.ERROR,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
-                  >
-                    {hamData.licenseInfo}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={handleDismissDisclaimer}
-                  style={[
-                    styles.modalDismissButton,
-                    { backgroundColor: COLORS.ACCENT },
-                  ]}
-                  accessibilityLabel="Dismiss disclaimer"
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.modalDismissText}>Understood</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableWithoutFeedback>
+                {hamData.licenseInfo}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={handleDismissDisclaimer}
+              style={[
+                styles.modalDismissButton,
+                { backgroundColor: COLORS.ACCENT },
+              ]}
+              accessibilityLabel="Dismiss disclaimer"
+              accessibilityRole="button"
+            >
+              <Text style={styles.modalDismissText}>Understood</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     </ScreenBody>
   );
