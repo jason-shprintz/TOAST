@@ -30,6 +30,10 @@ const hamData =
   radioFrequenciesData.frequencies[
     'HAM' as keyof typeof radioFrequenciesData.frequencies
   ];
+const gmrsData =
+  radioFrequenciesData.frequencies[
+    'GMRS' as keyof typeof radioFrequenciesData.frequencies
+  ];
 
 /**
  * Displays the list of local ham radio repeaters fetched from RepeaterBook.
@@ -431,7 +435,7 @@ const RepeaterBookScreen = observer((): JSX.Element => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* HAM license disclaimer modal */}
+      {/* HAM & GMRS license disclaimer modal */}
       <Modal
         visible={disclaimerVisible}
         animationType="fade"
@@ -449,7 +453,7 @@ const RepeaterBookScreen = observer((): JSX.Element => {
             ]}
           >
             <Text style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}>
-              HAM License Requirement
+              License Requirements
             </Text>
             <View
               style={[
@@ -464,6 +468,21 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                 style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
               >
                 {hamData.licenseInfo}
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.licenseCard,
+                {
+                  backgroundColor: COLORS.ERROR_LIGHT,
+                  borderColor: COLORS.ERROR,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
+              >
+                {gmrsData.licenseInfo}
               </Text>
             </View>
             <TouchableOpacity
