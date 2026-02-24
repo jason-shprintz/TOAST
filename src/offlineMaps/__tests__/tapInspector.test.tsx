@@ -120,7 +120,7 @@ describe('Tap Inspector', () => {
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
         // Wait for async update
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.result).toBeDefined();
@@ -168,7 +168,7 @@ describe('Tap Inspector', () => {
 
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.result?.elevationM).toBeNull();
@@ -193,7 +193,7 @@ describe('Tap Inspector', () => {
 
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.result).toBeDefined();
@@ -246,7 +246,7 @@ describe('Tap Inspector', () => {
 
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.result?.features).toHaveLength(3);
@@ -275,7 +275,7 @@ describe('Tap Inspector', () => {
 
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.isOpen).toBe(true);
@@ -318,7 +318,7 @@ describe('Tap Inspector', () => {
 
       await ReactTestRenderer.act(async () => {
         capturedState!.openAt(36.17, -115.14);
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise<void>((resolve) => setTimeout(resolve, 10));
       });
 
       expect(capturedState!.result?.features).toHaveLength(1);

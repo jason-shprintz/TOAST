@@ -60,7 +60,7 @@ const MapFeatureRefSchema = z.object({
   name: z.string().optional(),
   lat: z.number(),
   lng: z.number(),
-  props: z.record(z.unknown()).optional(),
+  props: z.record(z.string(), z.unknown()).optional(),
   geometry: z
     .union([
       z.object({
@@ -84,7 +84,7 @@ const IndexJsonSchema = z.object({
   generatedAt: z.string().datetime(),
   regionId: z.string(),
   cellSizeMeters: z.number(),
-  cells: z.record(z.any()), // Using z.any() due to z.record() validation bug
+  cells: z.record(z.string(), z.any()), // Using z.any() due to z.record() validation bug
 });
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -169,7 +169,7 @@ export function createGeoIndex(paths: RegionPaths, fileOps: FileOps): GeoIndex {
 
       gridIndex = {
         cfg,
-        cells: indexJson.cells,
+        cells: indexJson.cells as Record<string, MapFeatureRef[]>,
       };
 
       currentRegionId = regionId;

@@ -95,7 +95,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for any async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -120,7 +120,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for any async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -153,7 +153,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async distance check
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -186,7 +186,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async distance check
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -226,7 +226,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -268,7 +268,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -303,7 +303,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async distance check
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -312,7 +312,7 @@ describe('Region Update Prompt', () => {
       // Call dismiss
       await ReactTestRenderer.act(async () => {
         capturedState!.dismiss();
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise<void>((resolve) => setTimeout(resolve, 50));
       });
 
       expect(AsyncStorage.setItem).toHaveBeenCalledWith(
@@ -348,7 +348,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async distance check
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -357,7 +357,7 @@ describe('Region Update Prompt', () => {
       // Call accept
       await ReactTestRenderer.act(async () => {
         capturedState!.accept();
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise<void>((resolve) => setTimeout(resolve, 50));
       });
 
       expect(mockOnAccept).toHaveBeenCalled();
@@ -389,7 +389,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       expect(capturedState).toBeDefined();
@@ -426,7 +426,7 @@ describe('Region Update Prompt', () => {
           );
 
           // Wait for async operations
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise<void>((resolve) => setTimeout(resolve, 100));
         });
 
         expect(capturedState).toBeDefined();
@@ -471,7 +471,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       // Update with region2 (far away, should show prompt)
@@ -488,7 +488,7 @@ describe('Region Update Prompt', () => {
         );
 
         // Wait for async operations
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
       });
 
       // Ensure we captured state for both regions
