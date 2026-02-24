@@ -57,15 +57,28 @@ export default function RadioFrequencyDetailScreen(): JSX.Element {
 
   useEffect(() => {
     if (!disclaimerKey) return;
+
+    let isMounted = true;
+
     AsyncStorage.getItem(disclaimerKey)
       .then((value) => {
+        if (!isMounted) {
+          return;
+        }
         if (value !== 'true') {
           setDisclaimerVisible(true);
         }
       })
       .catch(() => {
+        if (!isMounted) {
+          return;
+        }
         setDisclaimerVisible(true);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [disclaimerKey]);
 
   const handleDismissDisclaimer = useCallback(() => {

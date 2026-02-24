@@ -53,16 +53,28 @@ const RepeaterBookScreen = observer((): JSX.Element => {
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     store.initialize();
     AsyncStorage.getItem(DISCLAIMER_KEY)
       .then((value) => {
+        if (!isMounted) {
+          return;
+        }
         if (value !== 'true') {
           setDisclaimerVisible(true);
         }
       })
       .catch(() => {
+        if (!isMounted) {
+          return;
+        }
         setDisclaimerVisible(true);
       });
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -184,7 +196,7 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           {/* License disclaimer info icon */}
           <TouchableOpacity
             onPress={() => setDisclaimerVisible(true)}
-            accessibilityLabel="View HAM license disclaimer"
+            accessibilityLabel="View HAM and GMRS license requirements"
             accessibilityRole="button"
             style={styles.infoButton}
           >
