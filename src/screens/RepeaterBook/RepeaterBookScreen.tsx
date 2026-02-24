@@ -136,7 +136,9 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           {/* Toggles column: On-air + Emergency stacked */}
           <View style={styles.toggleColumn}>
             <View style={styles.toggleGroup}>
-              <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+              <Text
+                style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}
+              >
                 On-air
               </Text>
               <Switch
@@ -152,7 +154,9 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               />
             </View>
             <View style={styles.toggleGroup}>
-              <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+              <Text
+                style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}
+              >
                 🚨
               </Text>
               <Switch
