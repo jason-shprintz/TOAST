@@ -269,6 +269,11 @@ export class RepeaterBookStore {
 
   /**
    * Add a new user-created repeater entry.
+   *
+   * @note Custom entries set `emcomm` to an empty string because the Add
+   * Repeater form does not collect emergency-comms affiliation. As a result,
+   * the emergency filter is intentionally not applied to custom repeaters so
+   * they remain visible even when `emergencyOnly` is enabled.
    */
   async addCustomRepeater(
     data: Omit<
