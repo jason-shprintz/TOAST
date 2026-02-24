@@ -572,6 +572,7 @@ const createStyles = (COLORS: ColorScheme) =>
     },
     toggleColumn: {
       flexDirection: 'column',
+      alignItems: 'flex-end',
       gap: 6,
     },
     toggleGroup: {
