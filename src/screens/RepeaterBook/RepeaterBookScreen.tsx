@@ -107,30 +107,6 @@ const RepeaterBookScreen = observer((): JSX.Element => {
       <SectionHeader>Local Repeaters</SectionHeader>
 
       <View style={styles.container}>
-        {/* Status bar */}
-        {(store.lastUpdated || store.isCachedData) && (
-          <View
-            style={[
-              styles.statusBar,
-              {
-                backgroundColor: store.isCachedData
-                  ? COLORS.BACKGROUND
-                  : COLORS.SUCCESS_LIGHT,
-                borderColor: store.isCachedData
-                  ? COLORS.TOAST_BROWN
-                  : COLORS.SUCCESS,
-              },
-            ]}
-          >
-            <Text style={[styles.statusText, { color: COLORS.PRIMARY_DARK }]}>
-              {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
-              {store.lastUpdated
-                ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
-                : ''}
-            </Text>
-          </View>
-        )}
-
         {/* Filter row: mode dropdown + on-air toggle */}
         <View style={styles.filterRow}>
           {/* Mode dropdown */}
@@ -157,69 +133,69 @@ const RepeaterBookScreen = observer((): JSX.Element => {
             />
           </TouchableOpacity>
 
-          {/* On-air toggle */}
-          <View style={styles.toggleGroup}>
-            <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
-              On-air
-            </Text>
-            <Switch
-              value={store.onAirOnly}
-              onValueChange={(v) => store.setOnAirOnly(v)}
-              trackColor={{
-                false: COLORS.TOAST_BROWN,
-                true: COLORS.SUCCESS,
-              }}
-              thumbColor={COLORS.PRIMARY_LIGHT}
-              accessibilityLabel="Filter to show only on-air repeaters"
-              accessibilityRole="switch"
-            />
+          {/* Toggles column: On-air + Emergency stacked */}
+          <View style={styles.toggleColumn}>
+            <View style={styles.toggleGroup}>
+              <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+                On-air
+              </Text>
+              <Switch
+                value={store.onAirOnly}
+                onValueChange={(v) => store.setOnAirOnly(v)}
+                trackColor={{
+                  false: COLORS.TOAST_BROWN,
+                  true: COLORS.SUCCESS,
+                }}
+                thumbColor={COLORS.PRIMARY_LIGHT}
+                accessibilityLabel="Filter to show only on-air repeaters"
+                accessibilityRole="switch"
+              />
+            </View>
+            <View style={styles.toggleGroup}>
+              <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
+                🚨
+              </Text>
+              <Switch
+                value={store.emergencyOnly}
+                onValueChange={(v) => store.setEmergencyOnly(v)}
+                trackColor={{
+                  false: COLORS.TOAST_BROWN,
+                  true: COLORS.ERROR,
+                }}
+                thumbColor={COLORS.PRIMARY_LIGHT}
+                accessibilityLabel="Filter to show only emergency communications repeaters"
+                accessibilityRole="switch"
+              />
+            </View>
           </View>
 
-          {/* Emergency comms toggle */}
-          <View style={styles.toggleGroup}>
-            <Text style={[styles.toggleLabel, { color: COLORS.PRIMARY_DARK }]}>
-              🚨
-            </Text>
-            <Switch
-              value={store.emergencyOnly}
-              onValueChange={(v) => store.setEmergencyOnly(v)}
-              trackColor={{
-                false: COLORS.TOAST_BROWN,
-                true: COLORS.ERROR,
-              }}
-              thumbColor={COLORS.PRIMARY_LIGHT}
-              accessibilityLabel="Filter to show only emergency communications repeaters"
-              accessibilityRole="switch"
-            />
+          {/* Icons column: license info + add repeater stacked */}
+          <View style={styles.iconColumn}>
+            <TouchableOpacity
+              onPress={() => setDisclaimerVisible(true)}
+              accessibilityLabel="View HAM and GMRS license requirements"
+              accessibilityRole="button"
+              style={styles.iconButton}
+            >
+              <Ionicons
+                name="information-circle-outline"
+                size={28}
+                color={COLORS.ERROR}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AddCustomRepeater')}
+              accessibilityLabel="Add custom repeater"
+              accessibilityRole="button"
+              style={styles.iconButton}
+            >
+              <Ionicons
+                name="add-circle-outline"
+                size={28}
+                color={COLORS.ACCENT}
+              />
+            </TouchableOpacity>
           </View>
-
-          {/* License disclaimer info icon */}
-          <TouchableOpacity
-            onPress={() => setDisclaimerVisible(true)}
-            accessibilityLabel="View HAM and GMRS license requirements"
-            accessibilityRole="button"
-            style={styles.infoButton}
-          >
-            <Ionicons
-              name="information-circle-outline"
-              size={22}
-              color={COLORS.ERROR}
-            />
-          </TouchableOpacity>
-
-          {/* Add custom repeater button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AddCustomRepeater')}
-            accessibilityLabel="Add custom repeater"
-            accessibilityRole="button"
-            style={styles.infoButton}
-          >
-            <Ionicons
-              name="add-circle-outline"
-              size={22}
-              color={COLORS.ACCENT}
-            />
-          </TouchableOpacity>
         </View>
 
         {/* Divider */}
@@ -412,6 +388,18 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
             </Text>
           </TouchableOpacity>
+
+          {/* Cache / live data status */}
+          {(store.lastUpdated || store.isCachedData) && (
+            <Text
+              style={[styles.cacheStatusText, { color: COLORS.PRIMARY_DARK }]}
+            >
+              {store.isCachedData ? '📦 Cached data' : '✅ Live data'}
+              {store.lastUpdated
+                ? `  ·  Updated ${formatLastUpdated(store.lastUpdated)}`
+                : ''}
+            </Text>
+          )}
         </ScrollView>
       </View>
 
@@ -556,18 +544,6 @@ const createStyles = (COLORS: ColorScheme) =>
       alignSelf: 'stretch',
       paddingBottom: FOOTER_HEIGHT,
     },
-    statusBar: {
-      marginHorizontal: 14,
-      marginTop: 8,
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 8,
-      borderWidth: 1,
-    },
-    statusText: {
-      fontSize: 12,
-      fontWeight: '500',
-    },
     filterRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -590,6 +566,10 @@ const createStyles = (COLORS: ColorScheme) =>
       fontSize: 14,
       fontWeight: '600',
     },
+    toggleColumn: {
+      flexDirection: 'column',
+      gap: 6,
+    },
     toggleGroup: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -598,6 +578,14 @@ const createStyles = (COLORS: ColorScheme) =>
     toggleLabel: {
       fontSize: 14,
       fontWeight: '600',
+    },
+    iconColumn: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 4,
+    },
+    iconButton: {
+      padding: 2,
     },
     ruleWrap: {
       marginTop: 10,
@@ -729,10 +717,17 @@ const createStyles = (COLORS: ColorScheme) =>
       opacity: 0.65,
       textAlign: 'center',
       marginTop: 4,
-      marginBottom: 8,
+      marginBottom: 2,
     },
     disclaimerLink: {
       textDecorationLine: 'underline',
+    },
+    cacheStatusText: {
+      fontSize: 12,
+      opacity: 0.65,
+      textAlign: 'center',
+      marginTop: 2,
+      marginBottom: 8,
     },
     modalBackdrop: {
       flex: 1,
@@ -770,9 +765,6 @@ const createStyles = (COLORS: ColorScheme) =>
     },
     modalOptionTextUnselected: {
       color: COLORS.PRIMARY_DARK,
-    },
-    infoButton: {
-      padding: 2,
     },
     licenseCard: {
       borderWidth: 2,

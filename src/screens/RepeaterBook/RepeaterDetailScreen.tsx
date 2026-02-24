@@ -187,27 +187,6 @@ export default function RepeaterDetailScreen(): JSX.Element {
               <TouchableOpacity
                 style={[
                   styles.actionButton,
-                  styles.submitButton,
-                  { borderColor: COLORS.ACCENT },
-                ]}
-                onPress={() =>
-                  Linking.openURL(
-                    'https://www.repeaterbook.com/repeaters/submit.php',
-                  )
-                }
-                accessibilityLabel="Submit this repeater to RepeaterBook.com"
-                accessibilityRole="link"
-              >
-                <Text
-                  style={[styles.actionButtonText, { color: COLORS.ACCENT }]}
-                >
-                  Submit to RepeaterBook
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.actionButton,
                   styles.deleteButton,
                   { borderColor: COLORS.ERROR },
                 ]}
@@ -339,9 +318,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     marginBottom: 10,
-  },
-  submitButton: {
-    borderWidth: 1,
   },
   deleteButton: {
     borderWidth: 1,
