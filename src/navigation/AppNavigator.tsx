@@ -66,6 +66,7 @@ import EntryScreen from '../screens/Reference/Shared/EntryScreen';
 import SurvivalScreen from '../screens/Reference/SurvivalScreen';
 import ToolsAndKnotsScreen from '../screens/Reference/ToolsAndKnotsScreen';
 import WeatherScreen from '../screens/Reference/WeatherScreen';
+import AddCustomRepeaterScreen from '../screens/RepeaterBook/AddCustomRepeaterScreen';
 import RepeaterBookScreen from '../screens/RepeaterBook/RepeaterBookScreen';
 import RepeaterDetailScreen from '../screens/RepeaterBook/RepeaterDetailScreen';
 import ScenarioBookmarksScreen from '../screens/ScenarioCards/ScenarioBookmarksScreen';
@@ -160,6 +161,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="RepeaterDetail"
             component={RepeaterDetailScreen}
+          />
+          <Stack.Screen
+            name="AddCustomRepeater"
+            component={AddCustomRepeaterScreen}
           />
           <Stack.Screen name="DecibelMeter" component={DecibelMeterScreen} />
           <Stack.Screen

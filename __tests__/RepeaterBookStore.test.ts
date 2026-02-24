@@ -634,4 +634,271 @@ describe('RepeaterBookStore', () => {
     expect(store.repeaters).toHaveLength(1);
     expect(store.error).toBeNull();
   });
+
+  // ── custom repeater CRUD ───────────────────────────────────────────────────
+
+  it('starts with empty customRepeaters list', () => {
+    expect(store.customRepeaters).toEqual([]);
+  });
+
+  it('loadCustomRepeaters populates customRepeaters from AsyncStorage', async () => {
+    const custom = [
+      {
+        id: 'custom-1',
+        callSign: 'W4TST',
+        frequency: '146.520',
+        offset: '0',
+        tone: '100.0',
+        mode: 'FM',
+        city: 'Tampa',
+        state: '',
+        lat: 0,
+        lng: 0,
+        operationalStatus: 'On-air',
+        use: '',
+        notes: '',
+        lastEdited: '2024-01-01',
+        distance: 0,
+        emcomm: '',
+        isCustom: true,
+      },
+    ];
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(
+      JSON.stringify(custom),
+    );
+
+    await store.loadCustomRepeaters();
+
+    expect(store.customRepeaters).toHaveLength(1);
+    expect(store.customRepeaters[0].callSign).toBe('W4TST');
+  });
+
+  it('loadCustomRepeaters handles missing storage gracefully', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(null);
+    await store.loadCustomRepeaters();
+    expect(store.customRepeaters).toEqual([]);
+  });
+
+  it('loadCustomRepeaters handles corrupt storage gracefully', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce('not-json{{{');
+    await store.loadCustomRepeaters();
+    expect(store.customRepeaters).toEqual([]);
+  });
+
+  it('addCustomRepeater adds entry with isCustom flag and unique id', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+
+    await store.addCustomRepeater({
+      frequency: '146.520',
+      offset: '0',
+      tone: '100.0',
+      mode: 'FM',
+      city: 'Tampa',
+      callSign: 'W4TST',
+      notes: '',
+      operationalStatus: 'On-air',
+      emcomm: '',
+    });
+
+    expect(store.customRepeaters).toHaveLength(1);
+    expect(store.customRepeaters[0].isCustom).toBe(true);
+    expect(store.customRepeaters[0].id).toMatch(/^custom-/);
+    expect(store.customRepeaters[0].frequency).toBe('146.520');
+  });
+
+  it('addCustomRepeater persists to AsyncStorage', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+
+    await store.addCustomRepeater({
+      frequency: '146.520',
+      offset: '0',
+      tone: '100.0',
+      mode: 'FM',
+      city: 'Tampa',
+      callSign: '',
+      notes: '',
+      operationalStatus: 'On-air',
+      emcomm: '',
+    });
+
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+      '@repeaterbook/custom',
+      expect.any(String),
+    );
+  });
+
+  it('updateCustomRepeater updates matching entry', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+    await store.addCustomRepeater({
+      frequency: '146.520',
+      offset: '0',
+      tone: '100.0',
+      mode: 'FM',
+      city: 'Tampa',
+      callSign: '',
+      notes: '',
+      operationalStatus: 'On-air',
+      emcomm: '',
+    });
+
+    const id = store.customRepeaters[0].id;
+    await store.updateCustomRepeater(id, {
+      callSign: 'W4TST',
+      city: 'Orlando',
+    });
+
+    expect(store.customRepeaters[0].callSign).toBe('W4TST');
+    expect(store.customRepeaters[0].city).toBe('Orlando');
+  });
+
+  it('deleteCustomRepeater removes entry by id', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+    await store.addCustomRepeater({
+      frequency: '146.520',
+      offset: '0',
+      tone: '100.0',
+      mode: 'FM',
+      city: 'Tampa',
+      callSign: '',
+      notes: '',
+      operationalStatus: 'On-air',
+      emcomm: '',
+    });
+
+    const id = store.customRepeaters[0].id;
+    await store.deleteCustomRepeater(id);
+
+    expect(store.customRepeaters).toHaveLength(0);
+  });
+
+  it('filteredRepeaters includes custom repeaters at the top regardless of distance', () => {
+    (store as any).repeaters = [
+      { ...mockCache.repeaters[0], id: 'api-near', distance: 5 },
+    ];
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-1',
+        distance: 0,
+        isCustom: true,
+      },
+    ];
+
+    const filtered = store.filteredRepeaters;
+    expect(filtered).toHaveLength(2);
+    expect(filtered[0].id).toBe('custom-1');
+  });
+
+  it('filteredRepeaters applies mode filter to custom repeaters', () => {
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-fm',
+        mode: 'FM',
+        distance: 0,
+        isCustom: true,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-dmr',
+        mode: 'DMR',
+        distance: 0,
+        isCustom: true,
+      },
+    ];
+
+    store.setSelectedMode('DMR');
+    const filtered = store.filteredRepeaters;
+    expect(filtered.some((r) => r.id === 'custom-dmr')).toBe(true);
+    expect(filtered.some((r) => r.id === 'custom-fm')).toBe(false);
+  });
+
+  it('filteredRepeaters applies on-air filter to custom repeaters', () => {
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-on',
+        operationalStatus: 'On-air',
+        distance: 0,
+        isCustom: true,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-off',
+        operationalStatus: 'Off-air',
+        distance: 0,
+        isCustom: true,
+      },
+    ];
+
+    expect(store.onAirOnly).toBe(true);
+    const filtered = store.filteredRepeaters;
+    expect(filtered.some((r) => r.id === 'custom-on')).toBe(true);
+    expect(filtered.some((r) => r.id === 'custom-off')).toBe(false);
+  });
+
+  it('filteredRepeaters does not apply distance filter to custom repeaters', () => {
+    // distance=0 is outside nothing, but custom entries with any distance should show
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-far',
+        distance: 9999,
+        isCustom: true,
+      },
+    ];
+
+    const filtered = store.filteredRepeaters;
+    expect(filtered.some((r) => r.id === 'custom-far')).toBe(true);
+  });
+
+  it('modes includes modes from custom repeaters', () => {
+    (store as any).customRepeaters = [
+      { ...mockCache.repeaters[0], id: 'c1', mode: 'M17', isCustom: true },
+    ];
+    expect(store.modes).toContain('M17');
+  });
+
+  it('filteredRepeaters applies emergency filter to custom repeaters with emcomm', () => {
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-emcomm',
+        emcomm: 'ARES',
+        distance: 0,
+        isCustom: true,
+      },
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-no-emcomm',
+        emcomm: '',
+        distance: 0,
+        isCustom: true,
+      },
+    ];
+    store.setEmergencyOnly(true);
+    const filtered = store.filteredRepeaters;
+    expect(filtered.some((r) => r.id === 'custom-emcomm')).toBe(true);
+    expect(filtered.some((r) => r.id === 'custom-no-emcomm')).toBe(false);
+  });
+
+  it('saveCustomRepeaters throws a descriptive error on AsyncStorage failure', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(
+      new Error('Storage quota exceeded'),
+    );
+
+    await expect(
+      store.addCustomRepeater({
+        frequency: '146.520',
+        offset: '0',
+        tone: '100.0',
+        mode: 'FM',
+        city: 'Tampa',
+        callSign: '',
+        notes: '',
+        operationalStatus: 'On-air',
+        emcomm: '',
+      }),
+    ).rejects.toThrow('Unable to save custom repeaters');
+  });
 });

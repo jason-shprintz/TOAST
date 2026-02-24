@@ -6,6 +6,7 @@ import { distanceMiles } from '../offlineMaps/location/regionDistance';
 import { stateFromCoordinates } from '../utils/stateFromCoordinates';
 
 const CACHE_KEY = '@repeaterbook/cache';
+const CUSTOM_KEY = '@repeaterbook/custom';
 const REFETCH_THRESHOLD_MILES = 50;
 const DEFAULT_RADIUS_MILES = 50;
 const REPEATERBOOK_URL = 'https://www.repeaterbook.com/api/export.php';
@@ -29,6 +30,8 @@ export interface Repeater {
   lastEdited: string;
   distance: number;
   emcomm: string;
+  /** True when this entry was manually added by the user (not from RepeaterBook). */
+  isCustom?: boolean;
 }
 
 export interface RepeaterCache {
@@ -123,6 +126,7 @@ async function fetchStateRepeaters(
  */
 export class RepeaterBookStore {
   repeaters: Repeater[] = [];
+  customRepeaters: Repeater[] = [];
   isLoading: boolean = false;
   error: string | null = null;
   lastUpdated: string | null = null;
@@ -140,6 +144,9 @@ export class RepeaterBookStore {
   get modes(): string[] {
     const set = new Set<string>(['All']);
     for (const r of this.repeaters) {
+      if (r.mode) set.add(r.mode);
+    }
+    for (const r of this.customRepeaters) {
       if (r.mode) set.add(r.mode);
     }
     return Array.from(set);
@@ -169,7 +176,21 @@ export class RepeaterBookStore {
       list = list.filter((r) => Boolean(r.emcomm));
     }
     list = list.filter((r) => r.distance <= DEFAULT_RADIUS_MILES);
-    return [...list].sort((a, b) => a.distance - b.distance);
+    const sorted = [...list].sort((a, b) => a.distance - b.distance);
+
+    // Custom repeaters are shown at the top, not subject to distance filter.
+    let custom =
+      this.selectedMode === 'All'
+        ? this.customRepeaters
+        : this.customRepeaters.filter((r) => r.mode === this.selectedMode);
+    if (this.onAirOnly) {
+      custom = custom.filter((r) => r.operationalStatus === 'On-air');
+    }
+    if (this.emergencyOnly) {
+      custom = custom.filter((r) => Boolean(r.emcomm));
+    }
+
+    return [...custom, ...sorted];
   }
 
   setSelectedMode(mode: string) {
@@ -189,7 +210,7 @@ export class RepeaterBookStore {
    * Safe to call on every screen mount.
    */
   async initialize(): Promise<void> {
-    await this.loadFromCache();
+    await Promise.all([this.loadFromCache(), this.loadCustomRepeaters()]);
     await this.checkAndFetchIfNeeded();
   }
 
@@ -211,6 +232,103 @@ export class RepeaterBookStore {
     } catch {
       // Cache read failure is non-fatal; the app will attempt a live fetch.
     }
+  }
+
+  /**
+   * Load user-created custom repeaters from AsyncStorage.
+   */
+  async loadCustomRepeaters(): Promise<void> {
+    try {
+      const raw = await AsyncStorage.getItem(CUSTOM_KEY);
+      if (!raw) return;
+      const entries: Repeater[] = JSON.parse(raw);
+      runInAction(() => {
+        this.customRepeaters = entries;
+      });
+    } catch {
+      // Non-fatal; custom repeaters simply won't be shown until a reload.
+    }
+  }
+
+  /**
+   * Persist the current customRepeaters list to AsyncStorage.
+   */
+  private async saveCustomRepeaters(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(
+        CUSTOM_KEY,
+        JSON.stringify(this.customRepeaters),
+      );
+    } catch (error) {
+      // Log for diagnostics and rethrow a more descriptive error so callers
+      // can react appropriately (e.g., show a message to the user).
+      // eslint-disable-next-line no-console
+      console.error(
+        'Failed to persist custom repeaters to AsyncStorage',
+        error,
+      );
+      throw new Error(
+        'Unable to save custom repeaters. Changes may not be persisted.',
+      );
+    }
+  }
+
+  /**
+   * Add a new user-created repeater entry.
+   */
+  async addCustomRepeater(
+    data: Omit<
+      Repeater,
+      | 'id'
+      | 'isCustom'
+      | 'distance'
+      | 'lastEdited'
+      | 'lat'
+      | 'lng'
+      | 'use'
+      | 'state'
+    >,
+  ): Promise<void> {
+    const entry: Repeater = {
+      ...data,
+      id: `custom-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      isCustom: true,
+      distance: 0,
+      lastEdited: new Date().toISOString().slice(0, 10),
+      lat: 0,
+      lng: 0,
+      use: '',
+      state: '',
+    };
+    runInAction(() => {
+      this.customRepeaters = [entry, ...this.customRepeaters];
+    });
+    await this.saveCustomRepeaters();
+  }
+
+  /**
+   * Update an existing user-created repeater entry.
+   */
+  async updateCustomRepeater(
+    id: string,
+    data: Partial<Repeater>,
+  ): Promise<void> {
+    runInAction(() => {
+      this.customRepeaters = this.customRepeaters.map((r) =>
+        r.id === id ? { ...r, ...data } : r,
+      );
+    });
+    await this.saveCustomRepeaters();
+  }
+
+  /**
+   * Delete a user-created repeater entry.
+   */
+  async deleteCustomRepeater(id: string): Promise<void> {
+    runInAction(() => {
+      this.customRepeaters = this.customRepeaters.filter((r) => r.id !== id);
+    });
+    await this.saveCustomRepeaters();
   }
 
   /**
