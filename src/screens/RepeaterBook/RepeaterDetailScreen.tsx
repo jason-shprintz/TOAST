@@ -1,6 +1,7 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { JSX } from 'react';
 import {
+  Alert,
   Linking,
   ScrollView,
   StyleSheet,
@@ -12,6 +13,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { Repeater } from '../../stores/RepeaterBookStore';
+import { useRepeaterBookStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 
 type RepeaterDetailRouteProp = RouteProp<
@@ -28,7 +30,9 @@ type DetailRow = { label: string; value: string };
  */
 export default function RepeaterDetailScreen(): JSX.Element {
   const COLORS = useTheme();
+  const navigation = useNavigation<any>();
   const route = useRoute<RepeaterDetailRouteProp>();
+  const store = useRepeaterBookStore();
   const { repeater } = route.params ?? {};
 
   if (!repeater) {
@@ -159,19 +163,98 @@ export default function RepeaterDetailScreen(): JSX.Element {
             </View>
           ) : null}
 
+          {/* Custom repeater actions */}
+          {repeater.isCustom && (
+            <>
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  { backgroundColor: COLORS.PRIMARY_DARK },
+                ]}
+                onPress={() =>
+                  navigation.navigate('AddCustomRepeater', { repeater })
+                }
+                accessibilityLabel="Edit this custom repeater"
+                accessibilityRole="button"
+              >
+                <Text
+                  style={[styles.actionButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+                >
+                  Edit Repeater
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  styles.submitButton,
+                  { borderColor: COLORS.ACCENT },
+                ]}
+                onPress={() =>
+                  Linking.openURL(
+                    'https://www.repeaterbook.com/repeaters/submit.php',
+                  )
+                }
+                accessibilityLabel="Submit this repeater to RepeaterBook.com"
+                accessibilityRole="link"
+              >
+                <Text
+                  style={[styles.actionButtonText, { color: COLORS.ACCENT }]}
+                >
+                  Submit to RepeaterBook
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  styles.deleteButton,
+                  { borderColor: COLORS.ERROR },
+                ]}
+                onPress={() => {
+                  Alert.alert(
+                    'Delete Repeater',
+                    'Are you sure you want to delete this custom repeater?',
+                    [
+                      { text: 'Cancel', style: 'cancel' },
+                      {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: async () => {
+                          await store.deleteCustomRepeater(repeater.id);
+                          navigation.goBack();
+                        },
+                      },
+                    ],
+                  );
+                }}
+                accessibilityLabel="Delete this custom repeater"
+                accessibilityRole="button"
+              >
+                <Text
+                  style={[styles.actionButtonText, { color: COLORS.ERROR }]}
+                >
+                  Delete Repeater
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+
           {/* Data source disclaimer */}
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.repeaterbook.com')}
-            accessibilityRole="link"
-            accessibilityLabel="Open RepeaterBook.com"
-          >
-            <Text
-              style={[styles.disclaimerText, { color: COLORS.PRIMARY_DARK }]}
+          {!repeater.isCustom && (
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://www.repeaterbook.com')}
+              accessibilityRole="link"
+              accessibilityLabel="Open RepeaterBook.com"
             >
-              Data sourced from{' '}
-              <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[styles.disclaimerText, { color: COLORS.PRIMARY_DARK }]}
+              >
+                Data sourced from{' '}
+                <Text style={styles.disclaimerLink}>RepeaterBook.com</Text>
+              </Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </View>
     </ScreenBody>
@@ -250,6 +333,22 @@ const styles = StyleSheet.create({
   notesText: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  actionButton: {
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  submitButton: {
+    borderWidth: 1,
+  },
+  deleteButton: {
+    borderWidth: 1,
+  },
+  actionButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
   },
   disclaimerText: {
     fontSize: 12,

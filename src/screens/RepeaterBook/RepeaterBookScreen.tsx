@@ -206,6 +206,20 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               color={COLORS.ERROR}
             />
           </TouchableOpacity>
+
+          {/* Add custom repeater button */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AddCustomRepeater')}
+            accessibilityLabel="Add custom repeater"
+            accessibilityRole="button"
+            style={styles.infoButton}
+          >
+            <Ionicons
+              name="add-circle-outline"
+              size={22}
+              color={COLORS.ACCENT}
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Divider */}
@@ -328,6 +342,23 @@ const RepeaterBookScreen = observer((): JSX.Element => {
                       {repeater.mode}
                     </Text>
                   </View>
+                  {repeater.isCustom && (
+                    <View
+                      style={[
+                        styles.customBadge,
+                        { borderColor: COLORS.SUCCESS },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.customBadgeText,
+                          { color: COLORS.SUCCESS },
+                        ]}
+                      >
+                        Custom
+                      </Text>
+                    </View>
+                  )}
                   {repeater.emcomm ? (
                     <View
                       style={[
@@ -664,6 +695,16 @@ const createStyles = (COLORS: ColorScheme) =>
       paddingVertical: 2,
     },
     emcommText: {
+      fontSize: 11,
+      fontWeight: '700',
+    },
+    customBadge: {
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+    },
+    customBadgeText: {
       fontSize: 11,
       fontWeight: '700',
     },
