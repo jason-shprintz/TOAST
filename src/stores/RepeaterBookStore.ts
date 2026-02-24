@@ -254,10 +254,18 @@ export class RepeaterBookStore {
    * Persist the current customRepeaters list to AsyncStorage.
    */
   private async saveCustomRepeaters(): Promise<void> {
-    await AsyncStorage.setItem(
-      CUSTOM_KEY,
-      JSON.stringify(this.customRepeaters),
-    );
+    try {
+      await AsyncStorage.setItem(
+        CUSTOM_KEY,
+        JSON.stringify(this.customRepeaters),
+      );
+    } catch (error) {
+      // Log for diagnostics and rethrow a more descriptive error so callers
+      // can react appropriately (e.g., show a message to the user).
+      // eslint-disable-next-line no-console
+      console.error('Failed to persist custom repeaters to AsyncStorage', error);
+      throw new Error('Unable to save custom repeaters. Changes may not be persisted.');
+    }
   }
 
   /**
