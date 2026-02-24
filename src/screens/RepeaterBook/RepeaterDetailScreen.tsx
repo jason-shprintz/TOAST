@@ -207,7 +207,10 @@ export default function RepeaterDetailScreen(): JSX.Element {
                             await store.deleteCustomRepeater(repeater.id);
                             navigation.goBack();
                           } catch (error) {
-                            console.error('Failed to delete custom repeater', error);
+                            console.error(
+                              'Failed to delete custom repeater',
+                              error,
+                            );
                             Alert.alert(
                               'Error',
                               'Failed to delete this repeater. Please try again.',

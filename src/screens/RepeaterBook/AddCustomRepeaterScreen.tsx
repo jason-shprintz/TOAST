@@ -80,7 +80,7 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
         callSign: callSign.trim(),
         notes: notes.trim(),
         operationalStatus,
-        emcomm: isEmcomm ? (emcomm.trim() || 'Yes') : '',
+        emcomm: isEmcomm ? emcomm.trim() || 'Yes' : '',
       };
 
       if (isEditing && existing) {
@@ -201,7 +201,10 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
                   🚨 Emergency Comms
                 </Text>
                 <Text
-                  style={[styles.switchSubLabel, { color: COLORS.PRIMARY_DARK }]}
+                  style={[
+                    styles.switchSubLabel,
+                    { color: COLORS.PRIMARY_DARK },
+                  ]}
                 >
                   Mark as ARES / RACES / SKYWARN / etc.
                 </Text>
