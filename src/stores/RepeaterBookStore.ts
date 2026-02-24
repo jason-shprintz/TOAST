@@ -179,14 +179,15 @@ export class RepeaterBookStore {
     const sorted = [...list].sort((a, b) => a.distance - b.distance);
 
     // Custom repeaters are shown at the top, not subject to distance filter.
-    // The emergency filter is not applied to custom repeaters because they
-    // carry no emcomm data; they would vanish entirely when that filter is on.
     let custom =
       this.selectedMode === 'All'
         ? this.customRepeaters
         : this.customRepeaters.filter((r) => r.mode === this.selectedMode);
     if (this.onAirOnly) {
       custom = custom.filter((r) => r.operationalStatus === 'On-air');
+    }
+    if (this.emergencyOnly) {
+      custom = custom.filter((r) => Boolean(r.emcomm));
     }
 
     return [...custom, ...sorted];
@@ -269,11 +270,6 @@ export class RepeaterBookStore {
 
   /**
    * Add a new user-created repeater entry.
-   *
-   * @note Custom entries set `emcomm` to an empty string because the Add
-   * Repeater form does not collect emergency-comms affiliation. As a result,
-   * the emergency filter is intentionally not applied to custom repeaters so
-   * they remain visible even when `emergencyOnly` is enabled.
    */
   async addCustomRepeater(
     data: Omit<
@@ -285,7 +281,6 @@ export class RepeaterBookStore {
       | 'lat'
       | 'lng'
       | 'use'
-      | 'emcomm'
       | 'state'
     >,
   ): Promise<void> {
@@ -298,7 +293,6 @@ export class RepeaterBookStore {
       lat: 0,
       lng: 0,
       use: '',
-      emcomm: '',
       state: '',
     };
     runInAction(() => {

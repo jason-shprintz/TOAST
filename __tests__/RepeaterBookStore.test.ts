@@ -697,6 +697,7 @@ describe('RepeaterBookStore', () => {
       callSign: 'W4TST',
       notes: '',
       operationalStatus: 'On-air',
+      emcomm: '',
     });
 
     expect(store.customRepeaters).toHaveLength(1);
@@ -717,6 +718,7 @@ describe('RepeaterBookStore', () => {
       callSign: '',
       notes: '',
       operationalStatus: 'On-air',
+      emcomm: '',
     });
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
@@ -736,6 +738,7 @@ describe('RepeaterBookStore', () => {
       callSign: '',
       notes: '',
       operationalStatus: 'On-air',
+      emcomm: '',
     });
 
     const id = store.customRepeaters[0].id;
@@ -759,6 +762,7 @@ describe('RepeaterBookStore', () => {
       callSign: '',
       notes: '',
       operationalStatus: 'On-air',
+      emcomm: '',
     });
 
     const id = store.customRepeaters[0].id;
@@ -855,10 +859,15 @@ describe('RepeaterBookStore', () => {
     expect(store.modes).toContain('M17');
   });
 
-  it('filteredRepeaters does not apply emergency filter to custom repeaters', () => {
-    // Custom repeaters have no emcomm data; they should always appear regardless
-    // of the emergency-only toggle so users do not lose their custom entries.
+  it('filteredRepeaters applies emergency filter to custom repeaters with emcomm', () => {
     (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-emcomm',
+        emcomm: 'ARES',
+        distance: 0,
+        isCustom: true,
+      },
       {
         ...mockCache.repeaters[0],
         id: 'custom-no-emcomm',
@@ -869,7 +878,8 @@ describe('RepeaterBookStore', () => {
     ];
     store.setEmergencyOnly(true);
     const filtered = store.filteredRepeaters;
-    expect(filtered.some((r) => r.id === 'custom-no-emcomm')).toBe(true);
+    expect(filtered.some((r) => r.id === 'custom-emcomm')).toBe(true);
+    expect(filtered.some((r) => r.id === 'custom-no-emcomm')).toBe(false);
   });
 
   it('saveCustomRepeaters throws a descriptive error on AsyncStorage failure', async () => {
@@ -887,6 +897,7 @@ describe('RepeaterBookStore', () => {
         callSign: '',
         notes: '',
         operationalStatus: 'On-air',
+        emcomm: '',
       }),
     ).rejects.toThrow('Unable to save custom repeaters');
   });

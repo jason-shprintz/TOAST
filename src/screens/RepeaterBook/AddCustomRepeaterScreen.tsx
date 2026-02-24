@@ -6,6 +6,7 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
+  Switch,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -48,6 +49,8 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
   const [city, setCity] = useState(existing?.city ?? '');
   const [callSign, setCallSign] = useState(existing?.callSign ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
+  const [emcomm, setEmcomm] = useState(existing?.emcomm ?? '');
+  const [isEmcomm, setIsEmcomm] = useState(Boolean(existing?.emcomm));
   const [operationalStatus, setOperationalStatus] = useState(
     existing?.operationalStatus ?? 'On-air',
   );
@@ -77,6 +80,7 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
         callSign: callSign.trim(),
         notes: notes.trim(),
         operationalStatus,
+        emcomm: isEmcomm ? (emcomm.trim() || 'Yes') : '',
       };
 
       if (isEditing && existing) {
@@ -188,6 +192,43 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
             autoCapitalize="characters"
             accessibilityLabel="Call sign"
           />
+
+          {/* Emergency Comms toggle */}
+          <View style={styles.formGroup}>
+            <View style={styles.switchRow}>
+              <View style={styles.switchLabelGroup}>
+                <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+                  🚨 Emergency Comms
+                </Text>
+                <Text
+                  style={[styles.switchSubLabel, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Mark as ARES / RACES / SKYWARN / etc.
+                </Text>
+              </View>
+              <Switch
+                value={isEmcomm}
+                onValueChange={(v) => {
+                  setIsEmcomm(v);
+                  if (!v) setEmcomm('');
+                }}
+                trackColor={{ false: COLORS.TOAST_BROWN, true: COLORS.ERROR }}
+                thumbColor={COLORS.PRIMARY_LIGHT}
+                accessibilityLabel="Mark as emergency communications repeater"
+                accessibilityRole="switch"
+              />
+            </View>
+            {isEmcomm && (
+              <FormInput
+                label="Group / Affiliation (optional)"
+                placeholder="e.g. ARES, SKYWARN"
+                value={emcomm}
+                onChangeText={setEmcomm}
+                containerStyle={styles.emcommInput}
+                accessibilityLabel="Emergency communications group or affiliation"
+              />
+            )}
+          </View>
 
           {/* Operational status picker */}
           <View style={styles.formGroup}>
@@ -447,5 +488,23 @@ const createStyles = (COLORS: ColorScheme) =>
     },
     modalOptionSelected: {
       color: COLORS.PRIMARY_LIGHT,
+    },
+    switchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+    },
+    switchLabelGroup: {
+      flex: 1,
+      marginRight: 12,
+    },
+    switchSubLabel: {
+      fontSize: 12,
+      opacity: 0.6,
+      marginTop: 2,
+    },
+    emcommInput: {
+      marginBottom: 0,
     },
   });
