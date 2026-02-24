@@ -16,25 +16,11 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { FOOTER_HEIGHT } from '../../theme';
+import { getCurrentLocation } from '../location/geolocationService';
 import { useRegionUpdatePrompt } from '../location/useRegionUpdatePrompt';
 import OfflineMapView from './OfflineMapView';
 import RegionUpdatePrompt from './RegionUpdatePrompt';
 import { useOfflineRegion } from './useOfflineRegion';
-
-/**
- * Mock location provider - replace with actual implementation
- * TODO: Replace with actual geolocation service using react-native-geolocation-service
- * This mock always returns San Francisco, so the region update prompt will not
- * trigger in production until this is replaced with real location access.
- */
-const getCurrentLocation = async (): Promise<{
-  lat: number;
-  lng: number;
-} | null> => {
-  // TODO: Replace with actual geolocation service
-  // For now, return a default location (San Francisco)
-  return { lat: 37.7749, lng: -122.4194 };
-};
 
 export interface OfflineMapScreenProps {
   /**
