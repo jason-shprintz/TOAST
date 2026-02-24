@@ -1,6 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { JSX, useEffect, useMemo, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -17,11 +18,22 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import radioFrequenciesData from '../../data/radioFrequencies.json';
 import { useTheme } from '../../hooks/useTheme';
 import { Repeater } from '../../stores/RepeaterBookStore';
 import { useRepeaterBookStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 import { ColorScheme } from '../../theme/colors';
+
+const DISCLAIMER_KEY = '@repeaterbook/disclaimer_dismissed';
+const hamData =
+  radioFrequenciesData.frequencies[
+    'HAM' as keyof typeof radioFrequenciesData.frequencies
+  ];
+const gmrsData =
+  radioFrequenciesData.frequencies[
+    'GMRS' as keyof typeof radioFrequenciesData.frequencies
+  ];
 
 /**
  * Displays the list of local ham radio repeaters fetched from RepeaterBook.
@@ -38,10 +50,37 @@ const RepeaterBookScreen = observer((): JSX.Element => {
   const navigation = useNavigation<any>();
   const store = useRepeaterBookStore();
   const [modePickerVisible, setModePickerVisible] = useState(false);
+  const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     store.initialize();
+    AsyncStorage.getItem(DISCLAIMER_KEY)
+      .then((value) => {
+        if (!isMounted) {
+          return;
+        }
+        if (value !== 'true') {
+          setDisclaimerVisible(true);
+        }
+      })
+      .catch(() => {
+        if (!isMounted) {
+          return;
+        }
+        setDisclaimerVisible(true);
+      });
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleDismissDisclaimer = useCallback(() => {
+    AsyncStorage.setItem(DISCLAIMER_KEY, 'true').catch(() => {});
+    setDisclaimerVisible(false);
   }, []);
 
   const handleRepeaterPress = (repeater: Repeater) => {
@@ -153,6 +192,20 @@ const RepeaterBookScreen = observer((): JSX.Element => {
               accessibilityRole="switch"
             />
           </View>
+
+          {/* License disclaimer info icon */}
+          <TouchableOpacity
+            onPress={() => setDisclaimerVisible(true)}
+            accessibilityLabel="View HAM and GMRS license requirements"
+            accessibilityRole="button"
+            style={styles.infoButton}
+          >
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color={COLORS.ERROR}
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Divider */}
@@ -393,6 +446,71 @@ const RepeaterBookScreen = observer((): JSX.Element => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      {/* HAM & GMRS license disclaimer modal */}
+      <Modal
+        visible={disclaimerVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => {}}
+      >
+        <View style={styles.modalBackdrop}>
+          <View
+            style={[
+              styles.modalSheet,
+              {
+                backgroundColor: COLORS.PRIMARY_LIGHT,
+                borderColor: COLORS.TOAST_BROWN,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitle, { color: COLORS.PRIMARY_DARK }]}>
+              License Requirements
+            </Text>
+            <View
+              style={[
+                styles.licenseCard,
+                {
+                  backgroundColor: COLORS.ERROR_LIGHT,
+                  borderColor: COLORS.ERROR,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
+              >
+                {hamData.licenseInfo}
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.licenseCard,
+                {
+                  backgroundColor: COLORS.ERROR_LIGHT,
+                  borderColor: COLORS.ERROR,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.licenseText, { color: COLORS.PRIMARY_DARK }]}
+              >
+                {gmrsData.licenseInfo}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={handleDismissDisclaimer}
+              style={[
+                styles.modalDismissButton,
+                { backgroundColor: COLORS.ACCENT },
+              ]}
+              accessibilityLabel="Dismiss disclaimer"
+              accessibilityRole="button"
+            >
+              <Text style={styles.modalDismissText}>Understood</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScreenBody>
   );
 });
@@ -611,6 +729,31 @@ const createStyles = (COLORS: ColorScheme) =>
     },
     modalOptionTextUnselected: {
       color: COLORS.PRIMARY_DARK,
+    },
+    infoButton: {
+      padding: 2,
+    },
+    licenseCard: {
+      borderWidth: 2,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 8,
+    },
+    licenseText: {
+      fontSize: 14,
+      fontWeight: '600',
+      lineHeight: 20,
+    },
+    modalDismissButton: {
+      borderRadius: 8,
+      paddingVertical: 10,
+      alignItems: 'center',
+      marginTop: 4,
+    },
+    modalDismissText: {
+      color: '#fff',
+      fontSize: 15,
+      fontWeight: '700',
     },
   });
 
