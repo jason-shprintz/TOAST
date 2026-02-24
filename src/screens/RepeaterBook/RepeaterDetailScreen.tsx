@@ -178,7 +178,10 @@ export default function RepeaterDetailScreen(): JSX.Element {
                 accessibilityRole="button"
               >
                 <Text
-                  style={[styles.actionButtonText, { color: COLORS.PRIMARY_LIGHT }]}
+                  style={[
+                    styles.actionButtonText,
+                    { color: COLORS.PRIMARY_LIGHT },
+                  ]}
                 >
                   Edit Repeater
                 </Text>

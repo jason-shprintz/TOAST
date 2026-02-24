@@ -254,14 +254,28 @@ export class RepeaterBookStore {
    * Persist the current customRepeaters list to AsyncStorage.
    */
   private async saveCustomRepeaters(): Promise<void> {
-    await AsyncStorage.setItem(CUSTOM_KEY, JSON.stringify(this.customRepeaters));
+    await AsyncStorage.setItem(
+      CUSTOM_KEY,
+      JSON.stringify(this.customRepeaters),
+    );
   }
 
   /**
    * Add a new user-created repeater entry.
    */
   async addCustomRepeater(
-    data: Omit<Repeater, 'id' | 'isCustom' | 'distance' | 'lastEdited' | 'lat' | 'lng' | 'use' | 'emcomm' | 'state'>,
+    data: Omit<
+      Repeater,
+      | 'id'
+      | 'isCustom'
+      | 'distance'
+      | 'lastEdited'
+      | 'lat'
+      | 'lng'
+      | 'use'
+      | 'emcomm'
+      | 'state'
+    >,
   ): Promise<void> {
     const entry: Repeater = {
       ...data,
@@ -284,7 +298,10 @@ export class RepeaterBookStore {
   /**
    * Update an existing user-created repeater entry.
    */
-  async updateCustomRepeater(id: string, data: Partial<Repeater>): Promise<void> {
+  async updateCustomRepeater(
+    id: string,
+    data: Partial<Repeater>,
+  ): Promise<void> {
     runInAction(() => {
       this.customRepeaters = this.customRepeaters.map((r) =>
         r.id === id ? { ...r, ...data } : r,

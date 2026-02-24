@@ -19,11 +19,7 @@ import { Repeater } from '../../stores/RepeaterBookStore';
 import { useRepeaterBookStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 import { ColorScheme } from '../../theme/colors';
-import {
-  FormButtonRow,
-  FormInput,
-  FormTextArea,
-} from '../Shared/Prepper';
+import { FormButtonRow, FormInput, FormTextArea } from '../Shared/Prepper';
 
 const MODES = ['FM', 'DMR', 'D-STAR', 'Fusion', 'P-25', 'NXDN', 'M17', 'TETRA'];
 const STATUSES = ['On-air', 'Off-air', 'Unknown'];
@@ -368,9 +364,7 @@ const AddCustomRepeaterScreen = observer((): JSX.Element => {
 export default AddCustomRepeaterScreen;
 
 // Re-export route param type for AppNavigator
-export type AddCustomRepeaterScreenParams =
-  | { repeater: Repeater }
-  | undefined;
+export type AddCustomRepeaterScreenParams = { repeater: Repeater } | undefined;
 
 const createStyles = (COLORS: ColorScheme) =>
   StyleSheet.create({

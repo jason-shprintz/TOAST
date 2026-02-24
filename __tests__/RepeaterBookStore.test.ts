@@ -739,7 +739,10 @@ describe('RepeaterBookStore', () => {
     });
 
     const id = store.customRepeaters[0].id;
-    await store.updateCustomRepeater(id, { callSign: 'W4TST', city: 'Orlando' });
+    await store.updateCustomRepeater(id, {
+      callSign: 'W4TST',
+      city: 'Orlando',
+    });
 
     expect(store.customRepeaters[0].callSign).toBe('W4TST');
     expect(store.customRepeaters[0].city).toBe('Orlando');
