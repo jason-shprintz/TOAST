@@ -854,4 +854,40 @@ describe('RepeaterBookStore', () => {
     ];
     expect(store.modes).toContain('M17');
   });
+
+  it('filteredRepeaters does not apply emergency filter to custom repeaters', () => {
+    // Custom repeaters have no emcomm data; they should always appear regardless
+    // of the emergency-only toggle so users do not lose their custom entries.
+    (store as any).customRepeaters = [
+      {
+        ...mockCache.repeaters[0],
+        id: 'custom-no-emcomm',
+        emcomm: '',
+        distance: 0,
+        isCustom: true,
+      },
+    ];
+    store.setEmergencyOnly(true);
+    const filtered = store.filteredRepeaters;
+    expect(filtered.some((r) => r.id === 'custom-no-emcomm')).toBe(true);
+  });
+
+  it('saveCustomRepeaters throws a descriptive error on AsyncStorage failure', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(
+      new Error('Storage quota exceeded'),
+    );
+
+    await expect(
+      store.addCustomRepeater({
+        frequency: '146.520',
+        offset: '0',
+        tone: '100.0',
+        mode: 'FM',
+        city: 'Tampa',
+        callSign: '',
+        notes: '',
+        operationalStatus: 'On-air',
+      }),
+    ).rejects.toThrow('Unable to save custom repeaters');
+  });
 });

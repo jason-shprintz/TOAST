@@ -179,15 +179,14 @@ export class RepeaterBookStore {
     const sorted = [...list].sort((a, b) => a.distance - b.distance);
 
     // Custom repeaters are shown at the top, not subject to distance filter.
+    // The emergency filter is not applied to custom repeaters because they
+    // carry no emcomm data; they would vanish entirely when that filter is on.
     let custom =
       this.selectedMode === 'All'
         ? this.customRepeaters
         : this.customRepeaters.filter((r) => r.mode === this.selectedMode);
     if (this.onAirOnly) {
       custom = custom.filter((r) => r.operationalStatus === 'On-air');
-    }
-    if (this.emergencyOnly) {
-      custom = custom.filter((r) => Boolean(r.emcomm));
     }
 
     return [...custom, ...sorted];
@@ -254,10 +253,18 @@ export class RepeaterBookStore {
    * Persist the current customRepeaters list to AsyncStorage.
    */
   private async saveCustomRepeaters(): Promise<void> {
-    await AsyncStorage.setItem(
-      CUSTOM_KEY,
-      JSON.stringify(this.customRepeaters),
-    );
+    try {
+      await AsyncStorage.setItem(
+        CUSTOM_KEY,
+        JSON.stringify(this.customRepeaters),
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to persist custom repeaters to AsyncStorage', error);
+      throw new Error(
+        'Unable to save custom repeaters. Changes may not be persisted.',
+      );
+    }
   }
 
   /**

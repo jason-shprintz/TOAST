@@ -203,8 +203,15 @@ export default function RepeaterDetailScreen(): JSX.Element {
                         text: 'Delete',
                         style: 'destructive',
                         onPress: async () => {
-                          await store.deleteCustomRepeater(repeater.id);
-                          navigation.goBack();
+                          try {
+                            await store.deleteCustomRepeater(repeater.id);
+                            navigation.goBack();
+                          } catch {
+                            Alert.alert(
+                              'Error',
+                              'Failed to delete this repeater. Please try again.',
+                            );
+                          }
                         },
                       },
                     ],
