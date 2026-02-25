@@ -116,6 +116,20 @@ export function createDownloadManager(
   // Active jobs map
   const jobs = new Map<string, JobState>();
 
+  // Serial queue for background state persistence.
+  // Each ctx.report call and terminal-state update queues a write here so that
+  // (a) writes to the same file are never concurrent, and (b) RNFS hangs on the
+  // native side do not stall the download pipeline.
+  let persistChain: Promise<void> = Promise.resolve();
+
+  function queuePersist(job: JobState): void {
+    persistChain = persistChain
+      .then(() => persistState(job))
+      .catch((err) => {
+        console.warn('[downloadManager] persistState error:', err);
+      });
+  }
+
   /**
    * Emit progress to all subscribers
    */
@@ -193,8 +207,9 @@ export function createDownloadManager(
         // Emit to subscribers
         emitProgress(job.jobId, fullProgress);
 
-        // Persist state
-        await persistState(job);
+        // Queue state persistence without awaiting – RNFS file I/O must not
+        // block the download pipeline. Writes are serialized by persistChain.
+        queuePersist(job);
       },
       isCancelled: () => job.cancelled,
       isPaused: () => job.paused,
@@ -269,7 +284,7 @@ export function createDownloadManager(
 
       // All phases complete
       job.status = 'completed';
-      await persistState(job);
+      queuePersist(job);
 
       emitProgress(job.jobId, {
         jobId: job.jobId,
@@ -282,7 +297,7 @@ export function createDownloadManager(
     } catch (err) {
       if (err instanceof PausedError) {
         job.status = 'paused';
-        await persistState(job);
+        queuePersist(job);
         emitProgress(job.jobId, {
           jobId: job.jobId,
           phase: job.currentPhase,
@@ -292,7 +307,7 @@ export function createDownloadManager(
         });
       } else if (err instanceof CancelledError) {
         job.status = 'cancelled';
-        await persistState(job);
+        queuePersist(job);
         emitProgress(job.jobId, {
           jobId: job.jobId,
           phase: job.currentPhase,
@@ -309,7 +324,9 @@ export function createDownloadManager(
           phase: job.currentPhase,
           code: (error as { code?: string }).code,
         };
-        await persistState(job);
+        // Queue persist without blocking – the error event must reach the UI
+        // even if RNFS is unavailable.
+        queuePersist(job);
         emitProgress(job.jobId, {
           jobId: job.jobId,
           phase: job.currentPhase,
@@ -364,9 +381,19 @@ export function createDownloadManager(
       // Set paused flag
       job.paused = true;
 
-      // Wait for job to pause
+      // Wait for job to reach a pause checkpoint, with a timeout to avoid
+      // blocking indefinitely if the job is stuck in an uninterruptible operation.
       if (job.running) {
-        await job.running;
+        let pauseTimeoutId: ReturnType<typeof setTimeout> | undefined;
+        await Promise.race([
+          job.running,
+          new Promise<void>((resolve) => {
+            pauseTimeoutId = setTimeout(resolve, 5000);
+          }),
+        ]);
+        if (pauseTimeoutId !== undefined) {
+          clearTimeout(pauseTimeoutId);
+        }
       }
     },
 
@@ -459,9 +486,33 @@ export function createDownloadManager(
       // Set cancelled flag
       job.cancelled = true;
 
-      // Wait for job to stop
+      // Wait for the job to acknowledge cancellation, with a timeout to avoid
+      // blocking indefinitely if the job is stuck in an uninterruptible operation
+      // (e.g. a SQLite open or a network fetch that has not yet timed out).
       if (job.running) {
-        await job.running;
+        let cancelTimeoutId: ReturnType<typeof setTimeout> | undefined;
+        await Promise.race([
+          job.running,
+          new Promise<void>((resolve) => {
+            cancelTimeoutId = setTimeout(resolve, 5000);
+          }),
+        ]);
+        if (cancelTimeoutId !== undefined) {
+          clearTimeout(cancelTimeoutId);
+        }
+      }
+
+      // Drain the persist queue before removing the state file so that any
+      // queued 'cancelled' persist does not recreate it after removal.
+      let drainTimeoutId: ReturnType<typeof setTimeout> | undefined;
+      await Promise.race([
+        persistChain,
+        new Promise<void>((resolve) => {
+          drainTimeoutId = setTimeout(resolve, 3000);
+        }),
+      ]);
+      if (drainTimeoutId !== undefined) {
+        clearTimeout(drainTimeoutId);
       }
 
       // Remove persisted state from disk

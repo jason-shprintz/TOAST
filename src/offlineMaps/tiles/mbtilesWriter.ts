@@ -63,6 +63,18 @@ export interface MbtilesWriter {
 export class SqliteMbtilesWriter implements MbtilesWriter {
   private db: SQLiteDatabase | null = null;
   private dbPath: string | null = null;
+  private readonly documentsDir: string | undefined;
+
+  /**
+   * @param documentsDir - The app's Documents directory path
+   *   (e.g. RNFS.DocumentDirectoryPath). When provided, absolute paths that
+   *   start with this prefix are converted to a relative name so that
+   *   react-native-sqlite-storage v6 can open them correctly on iOS via
+   *   `location: 'default'`.
+   */
+  constructor(documentsDir?: string) {
+    this.documentsDir = documentsDir;
+  }
 
   async open(path: string): Promise<void> {
     if (this.db) {
@@ -71,10 +83,63 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
 
     this.dbPath = path;
 
-    // Open database using the provided absolute path
-    // react-native-sqlite-storage will use this full path as-is
-    this.db = await SQLite.openDatabase({
-      name: path,
+    // Ensure promise-based API is active for this module instance.
+    // The types don't expose enablePromise, so cast to any.
+    // Use optional chaining so tests that mock SQLite without enablePromise still work.
+    (SQLite as any).enablePromise?.(true);
+
+    // react-native-sqlite-storage v6 hangs on iOS when given a full absolute
+    // path as `name` without a `location`. Use a path relative to the Documents
+    // directory with location: 'default' to avoid the hang.
+    const docsDir = this.documentsDir;
+    const name =
+      docsDir && path.startsWith(docsDir + '/')
+        ? path.slice(docsDir.length + 1)
+        : path;
+
+    // Wrap with a hard timeout so that if the native callback is never fired
+    // (SQLite bug or unexpected path issue) we surface a clear error rather
+    // than hanging the entire tiles phase indefinitely.
+    this.db = await new Promise<SQLiteDatabase>((resolve, reject) => {
+      const timer = setTimeout(
+        () =>
+          reject(
+            new Error(
+              `SQLite openDatabase timed out after 10s (name: ${name})`,
+            ),
+          ),
+        10000,
+      );
+
+      const openPromise = SQLite.openDatabase({ name, location: 'default' });
+
+      // If enablePromise was not effective, openDatabase returns undefined
+      // (callback-based). Catch that case early with a clear message.
+      if (
+        !openPromise ||
+        typeof (openPromise as unknown as Promise<SQLiteDatabase>).then !==
+          'function'
+      ) {
+        clearTimeout(timer);
+        reject(
+          new Error(
+            'SQLite.openDatabase did not return a Promise — ' +
+              'enablePromise(true) may not have taken effect',
+          ),
+        );
+        return;
+      }
+
+      (openPromise as unknown as Promise<SQLiteDatabase>).then(
+        (db) => {
+          clearTimeout(timer);
+          resolve(db);
+        },
+        (err: unknown) => {
+          clearTimeout(timer);
+          reject(err instanceof Error ? err : new Error(String(err)));
+        },
+      );
     });
   }
 
@@ -213,8 +278,11 @@ function base64ToUint8Array(base64: string): Uint8Array {
 }
 
 /**
- * Factory function to create a new MBTiles writer
+ * Factory function to create a new MBTiles writer.
+ * @param documentsDir - Pass RNFS.DocumentDirectoryPath so that absolute paths
+ *   are converted to relative paths before being handed to
+ *   react-native-sqlite-storage (required on iOS with v6).
  */
-export function createMbtilesWriter(): MbtilesWriter {
-  return new SqliteMbtilesWriter();
+export function createMbtilesWriter(documentsDir?: string): MbtilesWriter {
+  return new SqliteMbtilesWriter(documentsDir);
 }

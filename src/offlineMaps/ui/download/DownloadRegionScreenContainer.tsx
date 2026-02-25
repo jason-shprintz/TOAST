@@ -7,6 +7,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import RNFS from 'react-native-fs';
 import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
 import { createRegionRepository } from '../../db/regionRepository';
@@ -39,7 +40,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 /** Tile zoom range for offline downloads */
 const TILE_MIN_ZOOM = 0;
-const TILE_MAX_ZOOM = 14;
+const TILE_MAX_ZOOM = 10; // TODO: restore to 14 for production
 
 /**
  * Container component that wires all real dependencies into DownloadRegionScreen
@@ -95,9 +96,10 @@ export default function DownloadRegionScreenContainer() {
         paths,
         fileOps,
         fetcher: tileFetcher,
-        writerFactory: createMbtilesWriter,
+        writerFactory: () => createMbtilesWriter(RNFS.DocumentDirectoryPath),
         getRegion,
         getTilesToDownload,
+        batchSize: 1, // TODO: remove for production (default 250)
       }),
 
       dem: createDemPhaseHandler({

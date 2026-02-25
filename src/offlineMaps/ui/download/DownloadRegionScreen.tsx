@@ -68,7 +68,7 @@ export default function DownloadRegionScreen({
     regionRepo,
     downloadManager,
     getCurrentLocation,
-    defaultRadiusMiles: 25,
+    defaultRadiusMiles: 5, // TODO: restore to 25 for production
     regionStorage,
   });
 

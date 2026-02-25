@@ -5,6 +5,13 @@ PODS:
   - hermes-engine (250829098.0.7):
     - hermes-engine/Pre-built (= 250829098.0.7)
   - hermes-engine/Pre-built (250829098.0.7)
+  - maplibre-react-native (10.4.2):
+    - maplibre-react-native/DynamicLibrary (= 10.4.2)
+    - React
+    - React-Core
+  - maplibre-react-native/DynamicLibrary (10.4.2):
+    - React
+    - React-Core
   - NitroModules (0.32.2):
     - hermes-engine
     - RCTRequired
@@ -2236,6 +2243,7 @@ DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - "maplibre-react-native (from `../node_modules/@maplibre/maplibre-react-native`)"
   - NitroModules (from `../node_modules/react-native-nitro-modules`)
   - NitroSound (from `../node_modules/react-native-nitro-sound`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -2338,6 +2346,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v250829098.0.8
+  maplibre-react-native:
+    :path: "../node_modules/@maplibre/maplibre-react-native"
   NitroModules:
     :path: "../node_modules/react-native-nitro-modules"
   NitroSound:
@@ -2527,6 +2537,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   FBLazyVector: c12d2108050e27952983d565a232f6f7b1ad5e69
   hermes-engine: 9a0366433624e40cf64670f937be91a603c153ca
+  maplibre-react-native: 37d86b5b7b04dedaceebc577644e67acd7b5f437
   NitroModules: 3658c57dcdf2ce17f9a1937c501ec4ae977eb06c
   NitroSound: 4546553409c68cacc9ee252808297e0a5c5e565e
   RCTDeprecation: 3280799c14232a56e5a44f92981a8ee33bc69fd9
@@ -2620,6 +2631,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 4351544f100d4f12cac156a7c13399e60bab3e26
   Yoga: 772166513f9cd2d61a6251d0dacbbfaa5b537479
 
-PODFILE CHECKSUM: 62122a6fe4a4bb025649ecd69e1de9fc04f2184a
+PODFILE CHECKSUM: 8be69a85f4fcf2c7027a17d99ecd866c15e95492
 
 COCOAPODS: 1.16.2

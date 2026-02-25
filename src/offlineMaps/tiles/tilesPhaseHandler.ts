@@ -56,15 +56,18 @@ export function createTilesPhaseHandler(
 
     try {
       // 1. Ensure temp region directory exists
+      await ctx.report({ phase: 'tiles', message: '[diag] ensureDir...' });
       const tmpDir = opts.paths.tmpRegionDir(regionId);
       await opts.fileOps.ensureDir(tmpDir);
 
       // 2. Get region info and tile list
+      await ctx.report({ phase: 'tiles', message: '[diag] getRegion...' });
       const region = await opts.getRegion(regionId);
       if (!region) {
         throw new Error(`Region ${regionId} not found`);
       }
 
+      await ctx.report({ phase: 'tiles', message: '[diag] getTiles...' });
       const tiles = await opts.getTilesToDownload(regionId);
       if (tiles.length === 0) {
         await ctx.report({
@@ -76,9 +79,14 @@ export function createTilesPhaseHandler(
       }
 
       // 3. Create/open MBTiles database
+      await ctx.report({
+        phase: 'tiles',
+        message: `[diag] openDB (${tiles.length} tiles)...`,
+      });
       const mbtilesPath = opts.paths.tmpTilesMbtiles(regionId);
       writer = opts.writerFactory();
       await writer.open(mbtilesPath);
+      await ctx.report({ phase: 'tiles', message: '[diag] initSchema...' });
       await writer.initSchema();
 
       // 4. Set metadata

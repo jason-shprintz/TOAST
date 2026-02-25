@@ -70,7 +70,12 @@ export function useDownloadRegion(
   // Store unsubscribe function for progress updates
   const unsubscribeRef = useRef<(() => void) | null>(null);
 
-  // Cleanup progress subscription on unmount or when jobId changes
+  // Cleanup progress subscription on unmount only.
+  // Must NOT depend on jobId — React 18 batches setJobId with setStatus('downloading'),
+  // so this cleanup fires after startDownload() returns, by which time the subscriber
+  // is already registered. A [jobId] dep would immediately unsubscribe it, leaving
+  // the UI stuck on "Preparing..." with no phase updates ever received.
+  // The explicit unsubscribe at the top of startDownload() handles between-job cleanup.
   useEffect(() => {
     return () => {
       if (unsubscribeRef.current) {
@@ -78,7 +83,7 @@ export function useDownloadRegion(
         unsubscribeRef.current = null;
       }
     };
-  }, [jobId]);
+  }, []);
 
   /**
    * Initialize draft with current location
@@ -189,6 +194,13 @@ export function useDownloadRegion(
           setPercent(progress.percent);
           setMessage(progress.message);
 
+          // Detect error events emitted by downloadManager's catch block
+          if (progress.message?.startsWith('Error:')) {
+            setError(progress.message.slice('Error: '.length));
+            setStatus('error');
+            return;
+          }
+
           // Update status based on phase completion
           if (progress.phase === 'finalise' && progress.percent === 100) {
             setStatus('complete');
@@ -272,49 +284,66 @@ export function useDownloadRegion(
       return;
     }
 
+    // Capture refs before clearing state
+    const jobIdToClean = jobId;
+    const regionIdToClean = region?.id;
+
+    // Unsubscribe immediately so we don't receive stale progress events
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
+
+    // Reset UI state immediately (optimistic) — do not wait for async cleanup.
+    // This ensures the buttons respond instantly even if the download is stuck
+    // in an uninterruptible operation (e.g. SQLite open or network fetch).
+    setRegion(null);
+    setStatus('idle');
+    setJobId(undefined);
+    setPhase(undefined);
+    setPercent(undefined);
+    setMessage(undefined);
+    setError(undefined);
+
+    // Async cleanup in the background (UI is already reset above)
     try {
       // Try to resume the job first to ensure it's loaded in memory
       // This is best-effort; ignore failures
       try {
-        const dmStatus = downloadManager.getStatus(jobId);
+        const dmStatus = downloadManager.getStatus(jobIdToClean);
         if (!dmStatus || dmStatus !== 'running') {
-          const regionId = region?.id ?? jobId.substring(4);
-          await downloadManager.resume(jobId, regionId);
+          const regionId =
+            regionIdToClean ??
+            (jobIdToClean.startsWith('job-')
+              ? jobIdToClean.substring(4)
+              : undefined);
+          if (regionId) {
+            await downloadManager.resume(jobIdToClean, regionId);
+          }
         }
       } catch {
         // Ignore resume failures; proceed with cancel
       }
 
-      // Cancel the download job
-      await downloadManager.cancel(jobId);
+      // Cancel the download job (has an internal 5-second timeout)
+      await downloadManager.cancel(jobIdToClean);
 
       // Delete the region record from database
-      if (region?.id) {
-        await regionRepo.deleteRegion(region.id);
+      if (regionIdToClean) {
+        await regionRepo.deleteRegion(regionIdToClean);
       }
 
       // Delete temporary files if regionStorage is available
-      if (regionStorage && region?.id) {
+      if (regionStorage && regionIdToClean) {
         try {
-          await regionStorage.deleteTemp(region.id);
+          await regionStorage.deleteTemp(regionIdToClean);
         } catch (cleanupErr) {
           console.warn('Failed to delete temp files:', cleanupErr);
         }
       }
-
-      // Reset local UI state to idle
-      setRegion(null);
-      setStatus('idle');
-      setJobId(undefined);
-      setPhase(undefined);
-      setPercent(undefined);
-      setMessage(undefined);
-      setError(undefined);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to cancel download',
-      );
-      setStatus('error');
+      // Background cleanup failed — log but do not revert UI state
+      console.warn('[cancel] Background cleanup failed:', err);
     }
   }, [jobId, region, downloadManager, regionRepo, regionStorage]);
 
