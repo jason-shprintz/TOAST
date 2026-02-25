@@ -17,6 +17,8 @@ const MIN_GRID_DIM = 10;
 const MAX_GRID_DIM = 100;
 /** Delay between batch requests to stay within API rate limits */
 const REQUEST_DELAY_MS = 300;
+/** Timeout per batch HTTP request in milliseconds */
+const BATCH_REQUEST_TIMEOUT_MS = 30_000;
 /** Default target resolution if none provided */
 const DEFAULT_RESOLUTION_METERS = 1000;
 
@@ -99,14 +101,33 @@ export class OpenElevationDemProvider implements DemProvider {
     for (let i = 0; i < points.length; i += BATCH_SIZE) {
       const batch = points.slice(i, i + BATCH_SIZE);
 
-      const response = await fetch(OPEN_ELEVATION_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ locations: batch }),
-      });
+      const controller = new AbortController();
+      const timer = setTimeout(
+        () => controller.abort(),
+        BATCH_REQUEST_TIMEOUT_MS,
+      );
+
+      let response: Response;
+      try {
+        response = await fetch(OPEN_ELEVATION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({ locations: batch }),
+          signal: controller.signal,
+        });
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          throw new Error(
+            `Open Elevation API request timed out after ${BATCH_REQUEST_TIMEOUT_MS / 1000}s for batch at index ${i}`,
+          );
+        }
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
 
       if (!response.ok) {
         throw new Error(

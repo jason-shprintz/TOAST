@@ -39,8 +39,8 @@ export function createFinalisePhaseHandler(
       message: 'Validating downloaded files...',
     });
 
-    if (ctx.isCancelled()) {
-      throw new Error('Finalise cancelled');
+    if (ctx.isCancelled() || ctx.isPaused()) {
+      return;
     }
 
     // Validate that all required files are present in the temp package
@@ -52,8 +52,8 @@ export function createFinalisePhaseHandler(
       message: 'Moving files to permanent storage...',
     });
 
-    if (ctx.isCancelled()) {
-      throw new Error('Finalise cancelled');
+    if (ctx.isCancelled() || ctx.isPaused()) {
+      return;
     }
 
     // Atomically move the temp package to the final region directory
