@@ -75,7 +75,7 @@ export class HttpTileFetcher implements TileFetcher {
             if (retryAfterHeader) {
               let retryAfterMs: number | undefined;
               const seconds = Number(retryAfterHeader);
-              if (!Number.isNaN(seconds)) {
+              if (!Number.isNaN(seconds) && seconds > 0) {
                 retryAfterMs = seconds * 1000;
               } else {
                 const retryDate = Date.parse(retryAfterHeader);
