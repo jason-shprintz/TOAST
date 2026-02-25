@@ -45,7 +45,7 @@ export function useTapInspector(
   );
 
   // Store timeout ID for cleanup
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openAt = useCallback(
     (lat: number, lng: number) => {

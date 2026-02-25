@@ -1,84 +1,151 @@
 /**
  * DownloadRegionScreenContainer
- * Wrapper for DownloadRegionScreen that provides dependencies
+ * Wrapper for DownloadRegionScreen that provides all real dependencies
  * @format
  */
 
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Text } from '../../../components/ScaledText';
 import { COLORS } from '../../../theme';
 import { createRegionRepository } from '../../db/regionRepository';
+import { createDemPhaseHandler } from '../../dem/demPhaseHandler';
+import { OpenElevationDemProvider } from '../../dem/openElevationDemProvider';
 import { createDownloadManager } from '../../download/downloadManager';
 import { createDownloadStateStore } from '../../download/downloadStateStore';
+import { createEstimatingPhaseHandler } from '../../download/estimatingPhaseHandler';
+import { createFinalisePhaseHandler } from '../../download/finalisePhaseHandler';
+import { computeTileCoverage } from '../../geo/coverage';
+import { createIndexPhaseHandler } from '../../geoIndex/indexPhaseHandler';
+import { getCurrentLocation } from '../../location/geolocationService';
+import { createOverlayPhaseHandler } from '../../overlays/overlayPhaseHandler';
+import { OverpassOverlayProvider } from '../../overlays/overpassOverlayProvider';
+import {
+  parseCityCollection,
+  parseRoadCollection,
+  parseWaterCollection,
+} from '../../schemas';
 import { createFileOps } from '../../storage/fileOps';
 import { createRegionPaths } from '../../storage/paths';
 import { createRegionStorage } from '../../storage/regionStorage';
+import { HttpTileFetcher } from '../../tiles/httpTileFetcher';
+import { createMbtilesWriter } from '../../tiles/mbtilesWriter';
+import { createTilesPhaseHandler } from '../../tiles/tilesPhaseHandler';
 import DownloadRegionScreen from './DownloadRegionScreen';
 import type { PhaseHandlers } from '../../download/downloadTypes';
 import type { ParamListBase } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-/**
- * Mock location provider - replace with actual implementation
- */
-const getCurrentLocation = async (): Promise<{
-  lat: number;
-  lng: number;
-} | null> => {
-  // TODO: Replace with actual geolocation service
-  // For now, return a default location (San Francisco)
-  return { lat: 37.7749, lng: -122.4194 };
-};
+/** Tile zoom range for offline downloads */
+const TILE_MIN_ZOOM = 0;
+const TILE_MAX_ZOOM = 14;
 
 /**
- * Create stub phase handlers for now
- * TODO: Wire up actual phase handlers from Issue 6/7/9/10/3
- */
-const createStubPhaseHandlers = (): PhaseHandlers => {
-  const stubHandler = async () => {
-    // Stub implementation - will be replaced with actual handlers
-    console.log('Phase handler stub called');
-  };
-
-  return {
-    estimating: stubHandler,
-    tiles: stubHandler,
-    dem: stubHandler,
-    overlays: stubHandler,
-    index: stubHandler,
-    finalise: stubHandler,
-  };
-};
-
-/**
- * Container component that provides dependencies to DownloadRegionScreen
+ * Container component that wires all real dependencies into DownloadRegionScreen
  */
 export default function DownloadRegionScreenContainer() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [isInitializing, setIsInitializing] = useState(true);
   const [initError, setInitError] = useState<string | undefined>();
 
-  // Create dependencies
-  const regionRepo = React.useMemo(() => createRegionRepository(), []);
-  const fileOps = React.useMemo(() => createFileOps(), []);
-  const paths = React.useMemo(() => createRegionPaths(), []);
-  const regionStorage = React.useMemo(
+  // Core infrastructure (stable references throughout component lifetime)
+  const regionRepo = useMemo(() => createRegionRepository(), []);
+  const fileOps = useMemo(() => createFileOps(), []);
+  const paths = useMemo(() => createRegionPaths(), []);
+  const regionStorage = useMemo(
     () => createRegionStorage(paths, fileOps),
     [fileOps, paths],
   );
-  const stateStore = React.useMemo(
+  const stateStore = useMemo(
     () => createDownloadStateStore(fileOps, paths.tmpDir),
     [fileOps, paths],
   );
-  const handlers = React.useMemo(() => createStubPhaseHandlers(), []);
-  const downloadManager = React.useMemo(
+
+  // Data providers (one instance each for the component lifetime)
+  const tileFetcher = useMemo(() => new HttpTileFetcher(), []);
+  const demProvider = useMemo(() => new OpenElevationDemProvider(), []);
+  const overlayProvider = useMemo(() => new OverpassOverlayProvider(), []);
+
+  // Wire up all real phase handlers
+  const handlers = useMemo((): PhaseHandlers => {
+    const getRegion = (id: string) => regionRepo.getRegion(id);
+
+    const getTilesToDownload = async (regionId: string) => {
+      const region = await regionRepo.getRegion(regionId);
+      if (!region) return [];
+      const center = { lat: region.centerLat, lng: region.centerLng };
+      const coverage = computeTileCoverage(center, region.radiusMiles, {
+        minZoom: TILE_MIN_ZOOM,
+        maxZoom: TILE_MAX_ZOOM,
+      });
+      return coverage.tiles;
+    };
+
+    return {
+      estimating: createEstimatingPhaseHandler({
+        paths,
+        fileOps,
+        getRegion,
+        minZoom: TILE_MIN_ZOOM,
+        maxZoom: TILE_MAX_ZOOM,
+      }),
+
+      tiles: createTilesPhaseHandler({
+        paths,
+        fileOps,
+        fetcher: tileFetcher,
+        writerFactory: createMbtilesWriter,
+        getRegion,
+        getTilesToDownload,
+      }),
+
+      dem: createDemPhaseHandler({
+        paths,
+        fileOps,
+        provider: demProvider,
+        encoding: 'int16',
+        targetResolutionMeters: 1000,
+      }),
+
+      overlays: createOverlayPhaseHandler({
+        paths,
+        fileOps,
+        provider: overlayProvider,
+        validate: {
+          water: parseWaterCollection,
+          cities: parseCityCollection,
+          roads: parseRoadCollection,
+        },
+      }),
+
+      index: createIndexPhaseHandler({
+        paths,
+        fileOps,
+      }),
+
+      finalise: createFinalisePhaseHandler({
+        paths,
+        regionStorage,
+        regionRepo,
+      }),
+    };
+  }, [
+    regionRepo,
+    fileOps,
+    paths,
+    tileFetcher,
+    demProvider,
+    overlayProvider,
+    regionStorage,
+  ]);
+
+  const downloadManager = useMemo(
     () => createDownloadManager({ store: stateStore, handlers }),
     [stateStore, handlers],
   );
 
-  // Initialize repository on mount
+  // Initialize the database on mount
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -104,7 +171,6 @@ export default function DownloadRegionScreenContainer() {
     navigation.goBack();
   }, [navigation]);
 
-  // Show loading state while initializing
   if (isInitializing) {
     return (
       <View style={styles.centerContainer}>
@@ -114,7 +180,6 @@ export default function DownloadRegionScreenContainer() {
     );
   }
 
-  // Show error state if initialization failed
   if (initError) {
     return (
       <View style={styles.centerContainer}>

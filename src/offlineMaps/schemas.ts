@@ -36,6 +36,7 @@ const LinearRingSchema = z.array(PositionSchema).superRefine((ring, ctx) => {
       minimum: 4,
       type: 'array',
       inclusive: true,
+      origin: 'array',
       message: 'Linear ring must contain at least 4 positions',
     });
     return;

@@ -262,7 +262,7 @@ export class RepeaterBookStore {
     } catch (error) {
       // Log for diagnostics and rethrow a more descriptive error so callers
       // can react appropriately (e.g., show a message to the user).
-      // eslint-disable-next-line no-console
+
       console.error(
         'Failed to persist custom repeaters to AsyncStorage',
         error,

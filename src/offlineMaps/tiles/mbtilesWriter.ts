@@ -4,6 +4,7 @@
  */
 
 import SQLite from 'react-native-sqlite-storage';
+import type { SQLiteDatabase, Transaction } from 'react-native-sqlite-storage';
 import {
   CREATE_METADATA_TABLE,
   CREATE_TILES_TABLE,
@@ -60,7 +61,7 @@ export interface MbtilesWriter {
  * Implementation of MBTiles writer using react-native-sqlite-storage
  */
 export class SqliteMbtilesWriter implements MbtilesWriter {
-  private db: SQLite.SQLiteDatabase | null = null;
+  private db: SQLiteDatabase | null = null;
   private dbPath: string | null = null;
 
   async open(path: string): Promise<void> {
@@ -95,7 +96,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
     // Insert all metadata entries in a transaction
     await new Promise<void>((resolve, reject) => {
       this.db!.transaction(
-        (tx) => {
+        (tx: Transaction) => {
           for (const [name, value] of Object.entries(meta)) {
             tx.executeSql(
               'INSERT OR REPLACE INTO metadata (name, value) VALUES (?, ?)',
@@ -103,7 +104,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
             );
           }
         },
-        (error) => {
+        (error: Error) => {
           reject(error);
         },
         () => {
@@ -125,7 +126,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
     // Insert all tiles in a single transaction
     await new Promise<void>((resolve, reject) => {
       this.db!.transaction(
-        (tx) => {
+        (tx: Transaction) => {
           for (const tile of tiles) {
             const tmsRow = xyzToTmsRow(tile.z, tile.y);
 
@@ -138,7 +139,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
             );
           }
         },
-        (error) => {
+        (error: Error) => {
           reject(error);
         },
         () => {
@@ -164,7 +165,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
       return null;
     }
 
-    const base64Data = result.rows.item(0).tile_data;
+    const base64Data = result.rows.item(0).tile_data as string;
     return base64ToUint8Array(base64Data);
   }
 
