@@ -12,6 +12,10 @@ import QuickActionsBar from './actions/QuickActionsBar';
 import { useQuickActions } from './actions/useQuickActions';
 import TapInspectorSheet from './inspector/TapInspectorSheet';
 import { useTapInspector } from './inspector/useTapInspector';
+import {
+  MapLibreAdapter,
+  MapLibreMapView,
+} from './mapAdapters/mapLibreAdapter';
 import { createMapAdapter } from './mapAdapters/stubMapAdapter';
 import MapMarkers from './markers/MapMarkers';
 import OverlayToggles from './OverlayToggles';
@@ -46,6 +50,8 @@ export default function OfflineMapView({
 
   const mapAdapterRef = useRef<MapAdapter | null>(null);
   const containerRef = useRef<View>(null) as React.RefObject<View>;
+  // Track whether the active adapter is MapLibreAdapter to drive conditional rendering
+  const [useMapLibre, setUseMapLibre] = useState(false);
 
   // Initialize tap inspector
   const inspector = useTapInspector({ geoIndex, terrain });
@@ -86,6 +92,7 @@ export default function OfflineMapView({
 
     const adapter = createMapAdapter();
     mapAdapterRef.current = adapter;
+    setUseMapLibre(adapter instanceof MapLibreAdapter);
 
     // Render map with current state
     adapter.render({
@@ -98,6 +105,7 @@ export default function OfflineMapView({
     return () => {
       adapter.destroy();
       mapAdapterRef.current = null;
+      setUseMapLibre(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [region.tilesPath]); // Only re-init if tilesPath changes
@@ -179,47 +187,65 @@ export default function OfflineMapView({
       />
 
       <View style={dynamicStyles.mapContainer} ref={containerRef}>
-        {/* Placeholder view showing region info. 
-            The stub adapter doesn't render actual tiles yet.
-            Replace StubMapAdapter with a real map SDK implementation 
-            (MapLibre/Mapbox) to render vector tiles from MBTiles. */}
-        <View style={dynamicStyles.mapPlaceholder}>
-          <Text style={dynamicStyles.placeholderText}>Offline Map View</Text>
-          <Text style={dynamicStyles.placeholderSubtext}>
-            (Stub adapter - awaiting map SDK integration)
-          </Text>
-          <Text style={dynamicStyles.infoText}>
-            Region: {region.centerLat.toFixed(4)}, {region.centerLng.toFixed(4)}
-          </Text>
-          <Text style={dynamicStyles.infoText}>
-            Radius: {region.radiusMiles} miles
-          </Text>
-          <Text style={dynamicStyles.infoText}>Tiles: {region.tilesPath}</Text>
-          <Text style={dynamicStyles.overlayInfo}>
-            Overlays: Water={overlays.water ? 'ON' : 'OFF'}, Cities=
-            {overlays.cities ? 'ON' : 'OFF'}, Terrain=
-            {overlays.terrain ? 'ON' : 'OFF'}
-          </Text>
-
-          {/* Demo button to test tap inspector */}
-          <TouchableOpacity
-            style={dynamicStyles.testButton}
-            onPress={handleTestTap}
-            activeOpacity={0.7}
-          >
-            <Text style={dynamicStyles.testButtonText}>
-              Tap to Test Inspector
+        {useMapLibre ? (
+          /* MapLibre renders tiles from local MBTiles + overlay GeoJSON layers */
+          <MapLibreMapView
+            region={region}
+            overlays={overlays}
+            onTap={handleMapTap}
+            markers={quickActions.markers.map((m) => ({
+              id: m.id,
+              lat: m.lat,
+              lng: m.lng,
+              title: m.title,
+            }))}
+            onMarkerPress={quickActions.onMarkerPress}
+          />
+        ) : (
+          /* Fallback placeholder shown when MapLibre is unavailable */
+          <View style={dynamicStyles.mapPlaceholder}>
+            <Text style={dynamicStyles.placeholderText}>Offline Map View</Text>
+            <Text style={dynamicStyles.placeholderSubtext}>
+              (Stub adapter - awaiting map SDK integration)
             </Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={dynamicStyles.infoText}>
+              Region: {region.centerLat.toFixed(4)},{' '}
+              {region.centerLng.toFixed(4)}
+            </Text>
+            <Text style={dynamicStyles.infoText}>
+              Radius: {region.radiusMiles} miles
+            </Text>
+            <Text style={dynamicStyles.infoText}>
+              Tiles: {region.tilesPath}
+            </Text>
+            <Text style={dynamicStyles.overlayInfo}>
+              Overlays: Water={overlays.water ? 'ON' : 'OFF'}, Cities=
+              {overlays.cities ? 'ON' : 'OFF'}, Terrain=
+              {overlays.terrain ? 'ON' : 'OFF'}
+            </Text>
 
-        {/* Markers overlay */}
-        <MapMarkers
-          markers={quickActions.markers}
-          selectedMarker={quickActions.selectedMarker}
-          onMarkerPress={quickActions.onMarkerPress}
-          onCloseDetails={quickActions.closeDetails}
-        />
+            {/* Demo button to test tap inspector */}
+            <TouchableOpacity
+              style={dynamicStyles.testButton}
+              onPress={handleTestTap}
+              activeOpacity={0.7}
+            >
+              <Text style={dynamicStyles.testButtonText}>
+                Tap to Test Inspector
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Markers overlay (stub adapter only — MapLibre uses PointAnnotation) */}
+        {!useMapLibre && (
+          <MapMarkers
+            markers={quickActions.markers}
+            selectedMarker={quickActions.selectedMarker}
+            onMarkerPress={quickActions.onMarkerPress}
+            onCloseDetails={quickActions.closeDetails}
+          />
+        )}
       </View>
 
       <OverlayToggles overlays={overlays} onToggle={handleToggle} />

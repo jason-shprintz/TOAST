@@ -4,6 +4,7 @@
  * @format
  */
 
+import { MapLibreAdapter } from './mapLibreAdapter';
 import type {
   MapAdapter,
   MapMarkerData,
@@ -61,9 +62,10 @@ export class StubMapAdapter implements MapAdapter {
 }
 
 /**
- * Factory function to create map adapter
- * When a real map SDK is added, this can be updated to return the appropriate adapter
+ * Factory function to create map adapter.
+ * Returns MapLibreAdapter for real map rendering when @maplibre/maplibre-react-native
+ * is available, otherwise falls back to StubMapAdapter for tests/CI environments.
  */
 export function createMapAdapter(): MapAdapter {
-  return new StubMapAdapter();
+  return new MapLibreAdapter();
 }
