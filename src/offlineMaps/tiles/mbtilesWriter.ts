@@ -4,13 +4,13 @@
  */
 
 import SQLite from 'react-native-sqlite-storage';
-import type { SQLiteDatabase, Transaction } from 'react-native-sqlite-storage';
 import {
   CREATE_METADATA_TABLE,
   CREATE_TILES_TABLE,
   CREATE_TILE_INDEX,
   xyzToTmsRow,
 } from './mbtilesSchema';
+import type { SQLiteDatabase, Transaction } from 'react-native-sqlite-storage';
 
 /**
  * Tile data to be inserted

@@ -16,10 +16,7 @@ declare module 'react-native-sqlite-storage' {
   }
 
   interface Transaction {
-    executeSql(
-      sql: string,
-      params?: (string | number | null)[],
-    ): void;
+    executeSql(sql: string, params?: (string | number | null)[]): void;
   }
 
   interface SQLiteDatabase {
@@ -43,8 +40,6 @@ declare module 'react-native-sqlite-storage' {
     createFromLocation?: number | string;
     readOnly?: boolean;
   }
-
-  function openDatabase(params: OpenDatabaseParams): Promise<SQLiteDatabase>;
 
   export type { SQLiteDatabase, Transaction, ResultSet };
 

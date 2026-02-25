@@ -73,7 +73,6 @@ jest.mock('react-native-fs', () => {
     writeFile: jest.fn(
       async (path: string, content: string, encoding: string) => {
         if (encoding === 'base64') {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore -- Buffer is available in Jest/Node.js at runtime
           mockFs[path] = Buffer.from(content, 'base64');
         } else {
@@ -89,9 +88,8 @@ jest.mock('react-native-fs', () => {
       if (encoding === 'utf8') {
         return typeof content === 'string'
           ? content
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore -- Buffer is available in Jest/Node.js at runtime
-          : Buffer.from(content).toString('utf8');
+          : // @ts-ignore -- Buffer is available in Jest/Node.js at runtime
+            Buffer.from(content).toString('utf8');
       }
       return content;
     }),
