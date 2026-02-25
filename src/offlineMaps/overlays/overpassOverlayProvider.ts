@@ -23,6 +23,9 @@ import type {
 
 const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 
+/** Default timeout for Overpass API requests in milliseconds */
+const OVERPASS_TIMEOUT_MS = 120_000;
+
 // ─── Overpass API response shapes ────────────────────────────────────────────
 
 interface OverpassNode {
@@ -57,11 +60,27 @@ async function queryOverpass(
 ): Promise<OverpassResponse> {
   onProgress?.({ message: 'Querying Overpass API...' });
 
-  const response = await fetch(OVERPASS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `data=${encodeURIComponent(query)}`,
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(OVERPASS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `data=${encodeURIComponent(query)}`,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error(
+        `Overpass API request timed out after ${OVERPASS_TIMEOUT_MS / 1000}s`,
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!response.ok) {
     throw new Error(

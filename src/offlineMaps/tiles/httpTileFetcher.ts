@@ -64,9 +64,34 @@ export class HttpTileFetcher implements TileFetcher {
         const error = new Error(
           `HTTP ${response.status} fetching tile z=${req.z} x=${req.x} y=${req.y}: ${response.statusText}`,
         );
-        // Mark server errors as transient so the retry logic will retry them
-        if (response.status >= 500) {
+        // Mark server errors and rate limiting as transient so the retry logic will retry them
+        if (response.status >= 500 || response.status === 429) {
           (error as Error & { code: string }).code = 'TRANSIENT';
+
+          // If the server provides a Retry-After header (commonly with 429),
+          // expose it so callers can implement server-guided backoff.
+          if (response.status === 429) {
+            const retryAfterHeader = response.headers.get('Retry-After');
+            if (retryAfterHeader) {
+              let retryAfterMs: number | undefined;
+              const seconds = Number(retryAfterHeader);
+              if (!Number.isNaN(seconds) && seconds > 0) {
+                retryAfterMs = seconds * 1000;
+              } else {
+                const retryDate = Date.parse(retryAfterHeader);
+                if (!Number.isNaN(retryDate)) {
+                  const delta = retryDate - Date.now();
+                  if (delta > 0) {
+                    retryAfterMs = delta;
+                  }
+                }
+              }
+              if (retryAfterMs !== undefined) {
+                (error as Error & { retryAfterMs?: number }).retryAfterMs =
+                  retryAfterMs;
+              }
+            }
+          }
         }
         throw error;
       }
