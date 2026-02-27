@@ -88,9 +88,12 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
     // Use optional chaining so tests that mock SQLite without enablePromise still work.
     (SQLite as any).enablePromise?.(true);
 
-    // react-native-sqlite-storage v6 hangs on iOS when given a full absolute
-    // path as `name` without a `location`. Use a path relative to the Documents
-    // directory with location: 'default' to avoid the hang.
+    // react-native-sqlite-storage v6: use a path relative to Documents with
+    // location: 'Documents' so the native layer resolves to the same directory
+    // that ensureDir() created. location: 'default' maps to Library/LocalDatabase
+    // which is a flat directory — subdirectory names in the database name are not
+    // created there, causing sqlite3_open_v2 to fail silently (SQLITE_CANTOPEN)
+    // without invoking the error callback, leaving the JS promise permanently hung.
     const docsDir = this.documentsDir;
     const name =
       docsDir && path.startsWith(docsDir + '/')
@@ -111,7 +114,7 @@ export class SqliteMbtilesWriter implements MbtilesWriter {
         10000,
       );
 
-      const openPromise = SQLite.openDatabase({ name, location: 'default' });
+      const openPromise = SQLite.openDatabase({ name, location: 'Documents' });
 
       // If enablePromise was not effective, openDatabase returns undefined
       // (callback-based). Catch that case early with a clear message.

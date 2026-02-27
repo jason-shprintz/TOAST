@@ -26,6 +26,12 @@ const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 /** Default timeout for Overpass API requests in milliseconds */
 const OVERPASS_TIMEOUT_MS = 120_000;
 
+/** Maximum number of retries on HTTP 429 */
+const OVERPASS_MAX_RETRIES = 3;
+
+/** Default retry delay when Retry-After header is absent */
+const OVERPASS_RETRY_DELAY_MS = 30_000;
+
 // ─── Overpass API response shapes ────────────────────────────────────────────
 
 interface OverpassNode {
@@ -60,36 +66,54 @@ async function queryOverpass(
 ): Promise<OverpassResponse> {
   onProgress?.({ message: 'Querying Overpass API...' });
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
+  for (let attempt = 0; attempt <= OVERPASS_MAX_RETRIES; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
 
-  let response: Response;
-  try {
-    response = await fetch(OVERPASS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `data=${encodeURIComponent(query)}`,
-      signal: controller.signal,
-    });
-  } catch (err) {
-    if (err instanceof Error && err.name === 'AbortError') {
+    let response: Response;
+    try {
+      response = await fetch(OVERPASS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: controller.signal,
+      });
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        throw new Error(
+          `Overpass API request timed out after ${OVERPASS_TIMEOUT_MS / 1000}s`,
+        );
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if (response.status === 429 && attempt < OVERPASS_MAX_RETRIES) {
+      const retryAfterHeader = response.headers.get('Retry-After');
+      const delayMs = retryAfterHeader
+        ? parseInt(retryAfterHeader, 10) * 1000
+        : OVERPASS_RETRY_DELAY_MS;
+      onProgress?.({
+        message: `Rate limited — retrying in ${Math.round(delayMs / 1000)}s…`,
+      });
+      await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+      continue;
+    }
+
+    if (!response.ok) {
       throw new Error(
-        `Overpass API request timed out after ${OVERPASS_TIMEOUT_MS / 1000}s`,
+        `Overpass API error: HTTP ${response.status} ${response.statusText}`,
       );
     }
-    throw err;
-  } finally {
-    clearTimeout(timer);
+
+    onProgress?.({ message: 'Processing results...' });
+    return response.json() as Promise<OverpassResponse>;
   }
 
-  if (!response.ok) {
-    throw new Error(
-      `Overpass API error: HTTP ${response.status} ${response.statusText}`,
-    );
-  }
-
-  onProgress?.({ message: 'Processing results...' });
-  return response.json() as Promise<OverpassResponse>;
+  throw new Error(
+    `Overpass API error: rate limited after ${OVERPASS_MAX_RETRIES} retries`,
+  );
 }
 
 /**

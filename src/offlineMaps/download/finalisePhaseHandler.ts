@@ -94,7 +94,11 @@ export function createFinalisePhaseHandler(
       indexPath: paths.index(regionId),
     };
 
+    console.log(
+      `[finalise] updateRegion id=${updatedRegion.id} tilesPath=${updatedRegion.tilesPath}`,
+    );
     await regionRepo.updateRegion(updatedRegion);
+    console.log(`[finalise] updateRegion complete`);
 
     await ctx.report({
       phase: 'finalise',

@@ -230,7 +230,7 @@ export function createRegionRepository(): RegionRepository {
       const updatedAt = new Date().toISOString();
 
       try {
-        await db.executeSql(
+        const result = await db.executeSql(
           `UPDATE ${OFFLINE_REGIONS_TABLE_NAME} SET
             center_lat = ?, center_lng = ?, radius_miles = ?,
             updated_at = ?, version = ?, status = ?,
@@ -255,6 +255,10 @@ export function createRegionRepository(): RegionRepository {
             region.indexPath ?? null,
             region.id,
           ],
+        );
+        const rowsAffected = (result[0] as any)?.rowsAffected ?? 'unknown';
+        console.log(
+          `[regionRepo] updateRegion id=${region.id} rowsAffected=${rowsAffected} tiles_path=${region.tilesPath ?? 'null'}`,
         );
       } catch (e) {
         console.error('Failed to update region', e);

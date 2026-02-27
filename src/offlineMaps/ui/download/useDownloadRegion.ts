@@ -205,18 +205,16 @@ export function useDownloadRegion(
           if (progress.phase === 'finalise' && progress.percent === 100) {
             setStatus('complete');
 
-            // Update region status to 'ready' in repository
+            // finalisePhaseHandler already wrote status='ready' + all paths
+            // (tilesPath, demPath, etc.) via regionRepo.updateRegion(). Just
+            // read back what it wrote so the UI reflects the finalized region.
             try {
-              await regionRepo.updateRegionStatus(newRegionId, 'ready');
               const updatedRegion = await regionRepo.getRegion(newRegionId);
               if (updatedRegion) {
                 setRegion(updatedRegion);
               }
             } catch (repoError) {
-              console.warn(
-                'Failed to update region to ready status',
-                repoError,
-              );
+              console.warn('Failed to read finalized region', repoError);
             }
           }
         },
