@@ -102,7 +102,13 @@ function NavigatorContent(): JSX.Element {
   return (
     <NavigationContainer
       ref={navigationRef}
-      onReady={() => BootSplash.hide()}
+      onReady={async () => {
+        try {
+          await BootSplash.hide({ fade: true });
+        } catch (error) {
+          console.warn('Failed to hide BootSplash', error);
+        }
+      }}
       onStateChange={() => navigationHistory.onNavigationStateChange()}
     >
       <AppShell>
