@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { JSX } from 'react';
+import BootSplash from 'react-native-bootsplash';
 import AppShell from '../components/AppShell';
 import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
@@ -101,6 +102,7 @@ function NavigatorContent(): JSX.Element {
   return (
     <NavigationContainer
       ref={navigationRef}
+      onReady={() => BootSplash.hide()}
       onStateChange={() => navigationHistory.onNavigationStateChange()}
     >
       <AppShell>
