@@ -557,6 +557,70 @@ export class InventoryStore {
   }
 
   /**
+   * Imports inventory data from a backup, either replacing all existing data
+   * ('replace' mode) or merging new items with existing data ('merge' mode).
+   *
+   * @param categories - Category names to import.
+   * @param items - Inventory items to import.
+   * @param mode - 'replace' clears all existing data first; 'merge' adds without deleting.
+   */
+  async importData(
+    categories: string[],
+    items: InventoryItem[],
+    mode: 'replace' | 'merge',
+  ): Promise<void> {
+    if (this.inventoryDb) {
+      const itemSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)';
+      try {
+        await this.inventoryDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.inventoryDb.executeSql('DELETE FROM inventory_items');
+          await this.inventoryDb.executeSql('DELETE FROM inventory_categories');
+        }
+        for (const cat of categories) {
+          await this.inventoryDb.executeSql(
+            'INSERT OR IGNORE INTO inventory_categories (name, createdAt) VALUES (?, ?)',
+            [cat, Date.now()],
+          );
+        }
+        for (const item of items) {
+          await this.inventoryDb.executeSql(itemSql, [
+            item.id,
+            item.name,
+            item.category,
+            item.quantity,
+            item.unit ?? null,
+            item.notes ?? null,
+            item.expirationMonth ?? null,
+            item.expirationYear ?? null,
+            item.createdAt,
+            item.updatedAt,
+          ]);
+        }
+        await this.inventoryDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.inventoryDb.executeSql('ROLLBACK');
+        throw error;
+      }
+    }
+    runInAction(() => {
+      if (mode === 'replace') {
+        this.categories = categories;
+        this.items = items;
+      } else {
+        const newCats = categories.filter((c) => !this.categories.includes(c));
+        const existingIds = new Set(this.items.map((i) => i.id));
+        const newItems = items.filter((i) => !existingIds.has(i.id));
+        this.categories = [...this.categories, ...newCats];
+        this.items = [...this.items, ...newItems];
+      }
+    });
+  }
+
+  /**
    * Cleans up resources.
    */
   dispose(): void {

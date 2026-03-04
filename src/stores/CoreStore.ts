@@ -2059,6 +2059,154 @@ export class CoreStore {
   }
 
   // --------------------------------------------------------------------
+  // ==== Backup / Restore ====
+  // --------------------------------------------------------------------
+
+  /**
+   * Imports notes and note categories from a backup.
+   * In 'replace' mode all existing notes and categories are removed first.
+   * In 'merge' mode new notes and categories are added without removing existing ones.
+   *
+   * @param noteCategories - Category names to import.
+   * @param notes - Notes to import.
+   * @param mode - 'replace' clears all existing data first; 'merge' adds without deleting.
+   */
+  async importNotesData(
+    noteCategories: string[],
+    notes: Note[],
+    mode: 'replace' | 'merge',
+  ): Promise<void> {
+    await this.initNotesDb();
+    if (this.notesDb) {
+      const noteSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      try {
+        await this.notesDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.notesDb.executeSql('DELETE FROM notes');
+          await this.notesDb.executeSql('DELETE FROM categories');
+        }
+        for (const cat of noteCategories) {
+          await this.notesDb.executeSql(
+            'INSERT OR IGNORE INTO categories (name, createdAt) VALUES (?, ?)',
+            [cat, Date.now()],
+          );
+        }
+        for (const note of notes) {
+          await this.notesDb.executeSql(noteSql, [
+            note.id,
+            note.createdAt,
+            note.latitude ?? null,
+            note.longitude ?? null,
+            note.category,
+            note.type,
+            note.title ?? null,
+            note.text ?? null,
+            note.bookmarked ? 1 : 0,
+            note.sketchDataUri ?? null,
+            JSON.stringify(note.photoUris ?? []),
+            note.audioUri ?? null,
+            note.transcription ?? null,
+            note.duration ?? null,
+          ]);
+        }
+        await this.notesDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.notesDb.executeSql('ROLLBACK');
+        throw error;
+      }
+    }
+    runInAction(() => {
+      if (mode === 'replace') {
+        this.categories = noteCategories;
+        this.notes = notes;
+      } else {
+        const newCats = noteCategories.filter(
+          (c) => !this.categories.includes(c),
+        );
+        const existingIds = new Set(this.notes.map((n) => n.id));
+        const newNotes = notes.filter((n) => !existingIds.has(n.id));
+        this.categories = [...this.categories, ...newCats];
+        this.notes = [...this.notes, ...newNotes];
+      }
+    });
+  }
+
+  /**
+   * Imports checklists and checklist items from a backup.
+   * In 'replace' mode all existing checklists and items are removed first.
+   * In 'merge' mode new checklists are added without removing existing ones.
+   *
+   * @param checklists - Checklists to import.
+   * @param checklistItems - Checklist items to import.
+   * @param mode - 'replace' clears all existing data first; 'merge' adds without deleting.
+   */
+  async importChecklistsData(
+    checklists: Checklist[],
+    checklistItems: ChecklistItem[],
+    mode: 'replace' | 'merge',
+  ): Promise<void> {
+    await this.initChecklistsDb();
+    if (this.notesDb) {
+      const checklistSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)'
+          : 'INSERT OR IGNORE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)';
+      const itemSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)';
+      try {
+        await this.notesDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.notesDb.executeSql('DELETE FROM checklist_items');
+          await this.notesDb.executeSql('DELETE FROM checklists');
+        }
+        for (const checklist of checklists) {
+          await this.notesDb.executeSql(checklistSql, [
+            checklist.id,
+            checklist.name,
+            checklist.createdAt,
+            checklist.isDefault ? 1 : 0,
+          ]);
+        }
+        for (const item of checklistItems) {
+          await this.notesDb.executeSql(itemSql, [
+            item.id,
+            item.checklistId,
+            item.text,
+            item.checked ? 1 : 0,
+            item.order,
+          ]);
+        }
+        await this.notesDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.notesDb.executeSql('ROLLBACK');
+        throw error;
+      }
+    }
+    runInAction(() => {
+      if (mode === 'replace') {
+        this.checklists = checklists;
+        this.checklistItems = checklistItems;
+      } else {
+        const existingChecklistIds = new Set(this.checklists.map((c) => c.id));
+        const newChecklists = checklists.filter(
+          (c) => !existingChecklistIds.has(c.id),
+        );
+        const existingItemIds = new Set(this.checklistItems.map((i) => i.id));
+        const newItems = checklistItems.filter(
+          (i) => !existingItemIds.has(i.id),
+        );
+        this.checklists = [...this.checklists, ...newChecklists];
+        this.checklistItems = [...this.checklistItems, ...newItems];
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------
   // ==== Cleanup on store disposal ====
   // --------------------------------------------------------------------
   dispose() {

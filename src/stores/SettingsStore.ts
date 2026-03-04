@@ -18,6 +18,7 @@ export class SettingsStore {
   fontSize: FontSize = 'small';
   themeMode: ThemeMode = 'system';
   noteSortOrder: NoteSortOrder = 'newest-oldest';
+  lastBackupAt: number | null = null;
   private settingsDb: any | null = null;
 
   constructor() {
@@ -53,6 +54,17 @@ export class SettingsStore {
   async setNoteSortOrder(order: NoteSortOrder) {
     runInAction(() => {
       this.noteSortOrder = order;
+    });
+    await this.persistSettings();
+  }
+
+  /**
+   * Records the timestamp of the most recent successful backup.
+   * @param timestamp - Unix timestamp (ms) of the backup.
+   */
+  async setLastBackupAt(timestamp: number) {
+    runInAction(() => {
+      this.lastBackupAt = timestamp;
     });
     await this.persistSettings();
   }
@@ -172,6 +184,19 @@ export class SettingsStore {
           );
         }
       }
+
+      // Load last backup timestamp
+      const lastBackupRes = await this.settingsDb.executeSql(
+        "SELECT value FROM settings WHERE key = 'lastBackupAt'",
+      );
+      if (lastBackupRes[0].rows.length > 0) {
+        const value = Number(lastBackupRes[0].rows.item(0).value);
+        if (!isNaN(value)) {
+          runInAction(() => {
+            this.lastBackupAt = value;
+          });
+        }
+      }
     } catch (error) {
       console.error('Failed to load settings:', error);
     }
@@ -196,6 +221,12 @@ export class SettingsStore {
         "INSERT OR REPLACE INTO settings (key, value) VALUES ('noteSortOrder', ?)",
         [this.noteSortOrder],
       );
+      if (this.lastBackupAt !== null) {
+        await this.settingsDb.executeSql(
+          "INSERT OR REPLACE INTO settings (key, value) VALUES ('lastBackupAt', ?)",
+          [String(this.lastBackupAt)],
+        );
+      }
     } catch (error) {
       console.error('Failed to persist settings:', error);
     }
