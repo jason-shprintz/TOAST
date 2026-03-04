@@ -96,7 +96,7 @@ export function createBackupData(
 /**
  * Validates the structure of a parsed backup JSON object.
  * Returns true only if the object matches the expected BackupData shape
- * and has a recognised backup version.
+ * and has a recognized backup version.
  */
 export function validateBackup(json: any): json is BackupData {
   if (!json || typeof json !== 'object') {

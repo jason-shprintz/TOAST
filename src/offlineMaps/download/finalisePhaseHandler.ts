@@ -1,5 +1,5 @@
 /**
- * Phase handler for finalising a downloaded region
+ * Phase handler for finalizing a downloaded region
  * Validates the temp package, moves files to permanent storage, and
  * marks the region as ready in the database.
  * @format
