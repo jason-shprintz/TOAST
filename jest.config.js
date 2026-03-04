@@ -8,5 +8,6 @@ module.exports = {
       '<rootDir>/__mocks__/@react-native-async-storage/async-storage.ts',
     '@maplibre/maplibre-react-native':
       '<rootDir>/__mocks__/@maplibre/maplibre-react-native.ts',
+    'react-native-fs': '<rootDir>/__mocks__/react-native-fs.ts',
   },
 };
