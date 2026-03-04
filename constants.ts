@@ -134,9 +134,15 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
 
 export const NAVIGATION_TOOLS: ToolType[] = [
   {
+    name: 'Map',
+    screen: 'NativeMapView',
+    icon: 'map-outline',
+    id: 'nav_map',
+  },
+  {
     name: 'Offline Map Tiles',
     screen: 'OfflineMapScreen',
-    icon: 'map-outline',
+    icon: 'cloud-download-outline',
     id: 'nav_offline_map_tiles',
   },
   {
