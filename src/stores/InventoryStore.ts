@@ -570,20 +570,24 @@ export class InventoryStore {
     mode: 'replace' | 'merge',
   ): Promise<void> {
     if (this.inventoryDb) {
-      if (mode === 'replace') {
-        await this.inventoryDb.executeSql('DELETE FROM inventory_items');
-        await this.inventoryDb.executeSql('DELETE FROM inventory_categories');
-      }
-      for (const cat of categories) {
-        await this.inventoryDb.executeSql(
-          'INSERT OR IGNORE INTO inventory_categories (name, createdAt) VALUES (?, ?)',
-          [cat, Date.now()],
-        );
-      }
-      for (const item of items) {
-        await this.inventoryDb.executeSql(
-          'INSERT OR REPLACE INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)',
-          [
+      const itemSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO inventory_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)';
+      try {
+        await this.inventoryDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.inventoryDb.executeSql('DELETE FROM inventory_items');
+          await this.inventoryDb.executeSql('DELETE FROM inventory_categories');
+        }
+        for (const cat of categories) {
+          await this.inventoryDb.executeSql(
+            'INSERT OR IGNORE INTO inventory_categories (name, createdAt) VALUES (?, ?)',
+            [cat, Date.now()],
+          );
+        }
+        for (const item of items) {
+          await this.inventoryDb.executeSql(itemSql, [
             item.id,
             item.name,
             item.category,
@@ -594,8 +598,12 @@ export class InventoryStore {
             item.expirationYear ?? null,
             item.createdAt,
             item.updatedAt,
-          ],
-        );
+          ]);
+        }
+        await this.inventoryDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.inventoryDb.executeSql('ROLLBACK');
+        throw error;
       }
     }
     runInAction(() => {

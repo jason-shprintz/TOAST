@@ -2078,20 +2078,24 @@ export class CoreStore {
   ): Promise<void> {
     await this.initNotesDb();
     if (this.notesDb) {
-      if (mode === 'replace') {
-        await this.notesDb.executeSql('DELETE FROM notes');
-        await this.notesDb.executeSql('DELETE FROM categories');
-      }
-      for (const cat of noteCategories) {
-        await this.notesDb.executeSql(
-          'INSERT OR IGNORE INTO categories (name, createdAt) VALUES (?, ?)',
-          [cat, Date.now()],
-        );
-      }
-      for (const note of notes) {
-        await this.notesDb.executeSql(
-          'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-          [
+      const noteSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO notes (id, createdAt, latitude, longitude, category, type, title, text, bookmarked, sketchDataUri, photoUris, audioUri, transcription, duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+      try {
+        await this.notesDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.notesDb.executeSql('DELETE FROM notes');
+          await this.notesDb.executeSql('DELETE FROM categories');
+        }
+        for (const cat of noteCategories) {
+          await this.notesDb.executeSql(
+            'INSERT OR IGNORE INTO categories (name, createdAt) VALUES (?, ?)',
+            [cat, Date.now()],
+          );
+        }
+        for (const note of notes) {
+          await this.notesDb.executeSql(noteSql, [
             note.id,
             note.createdAt,
             note.latitude ?? null,
@@ -2106,8 +2110,12 @@ export class CoreStore {
             note.audioUri ?? null,
             note.transcription ?? null,
             note.duration ?? null,
-          ],
-        );
+          ]);
+        }
+        await this.notesDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.notesDb.executeSql('ROLLBACK');
+        throw error;
       }
     }
     runInAction(() => {
@@ -2142,32 +2150,41 @@ export class CoreStore {
   ): Promise<void> {
     await this.initChecklistsDb();
     if (this.notesDb) {
-      if (mode === 'replace') {
-        await this.notesDb.executeSql('DELETE FROM checklist_items');
-        await this.notesDb.executeSql('DELETE FROM checklists');
-      }
-      for (const checklist of checklists) {
-        await this.notesDb.executeSql(
-          'INSERT OR REPLACE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)',
-          [
+      const checklistSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)'
+          : 'INSERT OR IGNORE INTO checklists (id, name, createdAt, isDefault) VALUES (?,?,?,?)';
+      const itemSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)';
+      try {
+        await this.notesDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.notesDb.executeSql('DELETE FROM checklist_items');
+          await this.notesDb.executeSql('DELETE FROM checklists');
+        }
+        for (const checklist of checklists) {
+          await this.notesDb.executeSql(checklistSql, [
             checklist.id,
             checklist.name,
             checklist.createdAt,
             checklist.isDefault ? 1 : 0,
-          ],
-        );
-      }
-      for (const item of checklistItems) {
-        await this.notesDb.executeSql(
-          'INSERT OR REPLACE INTO checklist_items (id, checklistId, text, checked, "order") VALUES (?,?,?,?,?)',
-          [
+          ]);
+        }
+        for (const item of checklistItems) {
+          await this.notesDb.executeSql(itemSql, [
             item.id,
             item.checklistId,
             item.text,
             item.checked ? 1 : 0,
             item.order,
-          ],
-        );
+          ]);
+        }
+        await this.notesDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.notesDb.executeSql('ROLLBACK');
+        throw error;
       }
     }
     runInAction(() => {

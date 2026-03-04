@@ -637,20 +637,24 @@ export class PantryStore {
     mode: 'replace' | 'merge',
   ): Promise<void> {
     if (this.pantryDb) {
-      if (mode === 'replace') {
-        await this.pantryDb.executeSql('DELETE FROM pantry_items');
-        await this.pantryDb.executeSql('DELETE FROM pantry_categories');
-      }
-      for (const cat of categories) {
-        await this.pantryDb.executeSql(
-          'INSERT OR IGNORE INTO pantry_categories (name, createdAt) VALUES (?, ?)',
-          [cat, Date.now()],
-        );
-      }
-      for (const item of items) {
-        await this.pantryDb.executeSql(
-          'INSERT OR REPLACE INTO pantry_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)',
-          [
+      const itemSql =
+        mode === 'replace'
+          ? 'INSERT OR REPLACE INTO pantry_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)'
+          : 'INSERT OR IGNORE INTO pantry_items (id, name, category, quantity, unit, notes, expirationMonth, expirationYear, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)';
+      try {
+        await this.pantryDb.executeSql('BEGIN TRANSACTION');
+        if (mode === 'replace') {
+          await this.pantryDb.executeSql('DELETE FROM pantry_items');
+          await this.pantryDb.executeSql('DELETE FROM pantry_categories');
+        }
+        for (const cat of categories) {
+          await this.pantryDb.executeSql(
+            'INSERT OR IGNORE INTO pantry_categories (name, createdAt) VALUES (?, ?)',
+            [cat, Date.now()],
+          );
+        }
+        for (const item of items) {
+          await this.pantryDb.executeSql(itemSql, [
             item.id,
             item.name,
             item.category,
@@ -661,8 +665,12 @@ export class PantryStore {
             item.expirationYear ?? null,
             item.createdAt,
             item.updatedAt,
-          ],
-        );
+          ]);
+        }
+        await this.pantryDb.executeSql('COMMIT');
+      } catch (error) {
+        await this.pantryDb.executeSql('ROLLBACK');
+        throw error;
       }
     }
     runInAction(() => {

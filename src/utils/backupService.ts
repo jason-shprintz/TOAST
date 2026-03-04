@@ -71,7 +71,9 @@ export function createBackupData(
   settings: BackupSettings,
 ): BackupData {
   const now = new Date();
-  const backupDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  // Use local time components so the date matches the user's local calendar day
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const backupDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
   return {
     version: BACKUP_VERSION,
     backupDate,
@@ -93,13 +95,14 @@ export function createBackupData(
 
 /**
  * Validates the structure of a parsed backup JSON object.
- * Returns true only if the object matches the expected BackupData shape.
+ * Returns true only if the object matches the expected BackupData shape
+ * and has a recognised backup version.
  */
 export function validateBackup(json: any): json is BackupData {
   if (!json || typeof json !== 'object') {
     return false;
   }
-  if (typeof json.version !== 'string') {
+  if (json.version !== BACKUP_VERSION) {
     return false;
   }
   if (typeof json.backupDate !== 'string') {
@@ -217,15 +220,13 @@ export async function readBackupFile(
 /**
  * Exports a backup by writing it to a temporary file and opening
  * the native share sheet so the user can save it to Files, email it, etc.
+ * Both iOS and Android share the file URI so the filename and extension
+ * are preserved by all share targets.
  */
 export async function exportBackup(backupData: BackupData): Promise<void> {
   const filename = `${BACKUP_FILE_PREFIX}${backupData.backupDate}.json`;
   const destPath = `${RNFS.CachesDirectoryPath}/${filename}`;
   const json = JSON.stringify(backupData, null, 2);
   await RNFS.writeFile(destPath, json, 'utf8');
-  if (Platform.OS === 'ios') {
-    await Share.share({ url: `file://${destPath}`, title: filename });
-  } else {
-    await Share.share({ message: json, title: filename });
-  }
+  await Share.share({ url: `file://${destPath}`, title: filename });
 }
