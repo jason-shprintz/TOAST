@@ -14,9 +14,7 @@ const RNFS = {
   mkdir: jest.fn(() => Promise.resolve()),
   moveFile: jest.fn(() => Promise.resolve()),
   copyFile: jest.fn(() => Promise.resolve()),
-  stat: jest.fn(() =>
-    Promise.resolve({ size: 0, isDirectory: () => false }),
-  ),
+  stat: jest.fn(() => Promise.resolve({ size: 0, isDirectory: () => false })),
 };
 
 export default RNFS;

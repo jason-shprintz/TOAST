@@ -19,12 +19,12 @@ import {
   usePantryStore,
   useSettingsStore,
 } from '../stores';
-import { FontSize, ThemeMode } from '../stores/SettingsStore';
 import {
   addBookmark,
   clearBookmarks,
   getBookmarks,
 } from '../stores/BookmarksStore';
+import { FontSize, ThemeMode } from '../stores/SettingsStore';
 import {
   BackupData,
   BackupPreview,
@@ -194,9 +194,7 @@ export const SettingsModal = observer(
               await settingsStore.setFontSize(data.settings.fontSize as any);
             }
             if (data.settings.themeMode) {
-              await settingsStore.setThemeMode(
-                data.settings.themeMode as any,
-              );
+              await settingsStore.setThemeMode(data.settings.themeMode as any);
             }
             if (data.settings.noteSortOrder) {
               await settingsStore.setNoteSortOrder(
@@ -228,18 +226,14 @@ export const SettingsModal = observer(
           mode === 'replace'
             ? 'replace all existing data'
             : 'merge with existing data';
-        Alert.alert(
-          'Confirm Restore',
-          `This will ${modeLabel}. Continue?`,
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Restore',
-              style: 'destructive',
-              onPress: () => handleRestore(mode),
-            },
-          ],
-        );
+        Alert.alert('Confirm Restore', `This will ${modeLabel}. Continue?`, [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Restore',
+            style: 'destructive',
+            onPress: () => handleRestore(mode),
+          },
+        ]);
       },
       [handleRestore],
     );
@@ -592,8 +586,8 @@ export const SettingsModal = observer(
                                   {
                                     borderColor: COLORS.TOAST_BROWN,
                                     backgroundColor: COLORS.BACKGROUND,
-                                    opacity: isRestoring ? 0.5 : 1,
                                   },
+                                  isRestoring && styles.restoreButtonDisabled,
                                 ]}
                                 onPress={() => confirmRestore('replace')}
                                 disabled={isRestoring}
@@ -622,8 +616,8 @@ export const SettingsModal = observer(
                                   {
                                     borderColor: COLORS.TOAST_BROWN,
                                     backgroundColor: COLORS.BACKGROUND,
-                                    opacity: isRestoring ? 0.5 : 1,
                                   },
+                                  isRestoring && styles.restoreButtonDisabled,
                                 ]}
                                 onPress={() => confirmRestore('merge')}
                                 disabled={isRestoring}
@@ -804,5 +798,8 @@ const styles = StyleSheet.create({
   restoreButtonText: {
     fontSize: 14,
     fontWeight: '700',
+  },
+  restoreButtonDisabled: {
+    opacity: 0.5,
   },
 });

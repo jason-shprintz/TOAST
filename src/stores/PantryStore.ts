@@ -670,9 +670,7 @@ export class PantryStore {
         this.categories = categories;
         this.items = items;
       } else {
-        const newCats = categories.filter(
-          (c) => !this.categories.includes(c),
-        );
+        const newCats = categories.filter((c) => !this.categories.includes(c));
         const existingIds = new Set(this.items.map((i) => i.id));
         const newItems = items.filter((i) => !existingIds.has(i.id));
         this.categories = [...this.categories, ...newCats];

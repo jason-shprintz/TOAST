@@ -68,7 +68,12 @@ const SAMPLE_BACKUP: BackupData = {
     ],
     pantryCategories: ['Grains', 'Canned'],
     bookmarks: [
-      { id: 'bm-1', title: 'First Aid', category: 'Health', createdAt: 1740000000000 },
+      {
+        id: 'bm-1',
+        title: 'First Aid',
+        category: 'Health',
+        createdAt: 1740000000000,
+      },
     ],
     settings: {
       fontSize: 'medium',
@@ -95,7 +100,8 @@ describe('BackupService', () => {
     });
 
     it('should return false when version is missing', () => {
-      const { version: _v, ...noVersion } = SAMPLE_BACKUP as any;
+      const noVersion = { ...(SAMPLE_BACKUP as any) };
+      delete noVersion.version;
       expect(validateBackup(noVersion)).toBe(false);
     });
 
@@ -110,7 +116,8 @@ describe('BackupService', () => {
     });
 
     it('should return false when data is missing', () => {
-      const { data: _d, ...noData } = SAMPLE_BACKUP as any;
+      const noData = { ...(SAMPLE_BACKUP as any) };
+      delete noData.data;
       expect(validateBackup(noData)).toBe(false);
     });
 

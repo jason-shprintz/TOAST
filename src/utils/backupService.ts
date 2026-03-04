@@ -5,10 +5,10 @@
 
 import { Platform, Share } from 'react-native';
 import RNFS from 'react-native-fs';
+import type { BookmarkItem } from '../stores/BookmarksStore';
 import type { Checklist, ChecklistItem, Note } from '../stores/CoreStore';
 import type { InventoryItem } from '../stores/InventoryStore';
 import type { PantryItem } from '../stores/PantryStore';
-import type { BookmarkItem } from '../stores/BookmarksStore';
 
 export const BACKUP_VERSION = '1.0';
 export const BACKUP_FILE_PREFIX = 'toast-backup-';
