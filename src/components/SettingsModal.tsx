@@ -69,6 +69,9 @@ export const SettingsModal = observer(
       { name: string; path: string }[]
     >([]);
     const [showFileList, setShowFileList] = useState(false);
+    const [selectedFilePath, setSelectedFilePath] = useState<string | null>(
+      null,
+    );
     const [selectedBackup, setSelectedBackup] = useState<BackupData | null>(
       null,
     );
@@ -126,6 +129,7 @@ export const SettingsModal = observer(
       const files = await listBackupFiles();
       setBackupFiles(files);
       setShowFileList(true);
+      setSelectedFilePath(null);
       setSelectedBackup(null);
       setBackupPreview(null);
     }, []);
@@ -139,6 +143,7 @@ export const SettingsModal = observer(
         );
         return;
       }
+      setSelectedFilePath(filePath);
       setSelectedBackup(data);
       setBackupPreview(createBackupPreview(data));
     }, []);
@@ -188,7 +193,7 @@ export const SettingsModal = observer(
             mode,
           );
 
-          // Restore settings (apply to store, but don't overwrite current UI prefs in replace mode)
+          // Restore settings — only applied in replace mode, overwriting current preferences
           if (mode === 'replace' && data.settings) {
             if (data.settings.fontSize) {
               await settingsStore.setFontSize(data.settings.fontSize as any);
@@ -206,6 +211,7 @@ export const SettingsModal = observer(
           }
 
           setShowFileList(false);
+          setSelectedFilePath(null);
           setSelectedBackup(null);
           setBackupPreview(null);
           Alert.alert('Restore Complete', 'Your data has been restored.');
@@ -503,6 +509,7 @@ export const SettingsModal = observer(
                           <TouchableOpacity
                             onPress={() => {
                               setShowFileList(false);
+                              setSelectedFilePath(null);
                               setSelectedBackup(null);
                               setBackupPreview(null);
                             }}
@@ -536,12 +543,7 @@ export const SettingsModal = observer(
                                 {
                                   borderColor: COLORS.TOAST_BROWN,
                                   backgroundColor:
-                                    selectedBackup &&
-                                    backupPreview?.backupDate ===
-                                      file.name.replace(
-                                        /^toast-backup-(.+)\.json$/,
-                                        '$1',
-                                      )
+                                    selectedFilePath === file.path
                                       ? COLORS.TOAST_BROWN
                                       : COLORS.BACKGROUND,
                                 },

@@ -99,6 +99,11 @@ describe('BackupService', () => {
       expect(validateBackup(noVersion)).toBe(false);
     });
 
+    it('should return false when version does not match BACKUP_VERSION', () => {
+      const bad = { ...SAMPLE_BACKUP, version: '2.0' };
+      expect(validateBackup(bad)).toBe(false);
+    });
+
     it('should return false when backupDate is missing', () => {
       const bad = { ...SAMPLE_BACKUP, backupDate: undefined };
       expect(validateBackup(bad)).toBe(false);
