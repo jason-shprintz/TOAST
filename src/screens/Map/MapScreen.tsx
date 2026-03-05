@@ -21,6 +21,7 @@ import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
+import { Text as ScaledText } from '../../components/ScaledText';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
@@ -464,8 +465,8 @@ export default function MapScreen() {
               { label: 'Location', value: locationName ?? '--' },
             ].map(({ label, value }) => (
               <View key={label} style={styles.dataRow}>
-                <Text style={styles.dataLabel}>{label}</Text>
-                <Text style={styles.dataValue}>{value}</Text>
+                <ScaledText style={styles.dataLabel}>{label}</ScaledText>
+                <ScaledText style={styles.dataValue}>{value}</ScaledText>
               </View>
             ))}
           </ScrollView>
