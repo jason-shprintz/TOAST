@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useGestureNavigation } from '../NavigationHistoryContext';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
@@ -60,10 +61,18 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
  */
 export default function NativeMapView() {
   const COLORS = useTheme();
+  const { setDisableGestureNavigation } = useGestureNavigation();
   const mapRef = useRef<MapView>(null);
   const [permissionStatus, setPermissionStatus] =
     useState<LocationPermissionStatus>('undetermined');
   const [locationReady, setLocationReady] = useState(false);
+
+  useEffect(() => {
+    setDisableGestureNavigation(true);
+    return () => {
+      setDisableGestureNavigation(false);
+    };
+  }, [setDisableGestureNavigation]);
 
   useEffect(() => {
     requestLocationPermission().then((status) => {
@@ -126,9 +135,9 @@ export default function NativeMapView() {
               style={styles.map}
               provider={PROVIDER_DEFAULT}
               showsUserLocation={permissionStatus === 'granted'}
-              followsUserLocation={permissionStatus === 'granted'}
               showsCompass
               showsScale
+              onMapReady={handleLocateMe}
               initialRegion={{
                 latitude: 37.7749,
                 longitude: -122.4194,
@@ -160,10 +169,14 @@ export default function NativeMapView() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '80%',
+    height: '50%',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   map: {
     flex: 1,
+    borderRadius: 10,
   },
   loadingContainer: {
     flex: 1,
