@@ -15,12 +15,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useGestureNavigation } from '../NavigationHistoryContext';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
+import { useGestureNavigation } from '../NavigationHistoryContext';
 
 type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
 
@@ -104,12 +104,7 @@ export default function NativeMapView() {
   };
 
   const renderDeniedBanner = () => (
-    <View
-      style={[
-        styles.deniedBanner,
-        { backgroundColor: COLORS.ERROR },
-      ]}
-    >
+    <View style={[styles.deniedBanner, { backgroundColor: COLORS.ERROR }]}>
       <Text style={[styles.deniedText, { color: COLORS.PRIMARY_LIGHT }]}>
         Location access denied — enable it in Settings to see your position.
       </Text>
@@ -154,6 +149,8 @@ export default function NativeMapView() {
                 ]}
                 onPress={handleLocateMe}
                 activeOpacity={0.8}
+                accessibilityLabel="Center map on my location"
+                accessibilityRole="button"
               >
                 <Text
                   style={[styles.locateMeText, { color: COLORS.PRIMARY_LIGHT }]}
