@@ -137,10 +137,12 @@ export default function NativeMapView() {
               showsUserLocation={permissionStatus === 'granted'}
               showsCompass
               showsScale
-              onMapReady={handleLocateMe}
+              onMapReady={
+                permissionStatus === 'granted' ? handleLocateMe : undefined
+              }
               initialRegion={{
-                latitude: 37.7749,
-                longitude: -122.4194,
+                latitude: 0,
+                longitude: 0,
                 ...DELTA,
               }}
             />
