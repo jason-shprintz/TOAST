@@ -16,13 +16,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
-import {
-  magnetometer,
-  SensorTypes,
-  setUpdateIntervalForType,
-} from 'react-native-sensors';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
@@ -44,6 +40,12 @@ const CARDINALS = [
   { label: 'W', deg: 270 },
   { label: 'NW', deg: 315 },
 ];
+
+// 24 ticks every 15°; major ticks coincide with the 8 cardinals
+const TICKS = Array.from({ length: 24 }, (_, i) => {
+  const deg = i * 15;
+  return { deg, isMajor: deg % 45 === 0 };
+});
 
 /**
  * Requests location permission on the current platform.
@@ -73,22 +75,9 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
 }
 
 /**
- * Converts magnetometer x/y readings to a compass heading in degrees (0–360).
- * 0 = North, 90 = East, 180 = South, 270 = West.
- */
-function toHeading(x: number, y: number): number {
-  let angle = Math.atan2(y, x) * (180 / Math.PI);
-  if (angle < 0) {
-    angle += 360;
-  }
-  // atan2 is clockwise from East; convert to clockwise from North
-  return (360 - angle) % 360;
-}
-
-/**
  * MapScreen renders the platform's native map (MapKit on iOS,
  * Google Maps on Android) with a live GPS blue-dot and a
- * magnetometer-driven compass below the map.
+ * CLLocationManager-driven compass below the map.
  */
 export default function MapScreen() {
   const COLORS = useTheme();
@@ -116,12 +105,11 @@ export default function MapScreen() {
     });
   }, []);
 
-  // Subscribe to magnetometer for live compass heading
+  // Subscribe to CLLocationManager heading (tilt-compensated, same as native compass)
   useEffect(() => {
-    setUpdateIntervalForType(SensorTypes.magnetometer, 100);
-    const subscription = magnetometer.subscribe(({ x, y }) => {
-      const newHeading = toHeading(x, y);
-
+    type HeadingData = { heading: number; accuracy: number };
+    // Degree threshold before a heading update is fired (1° = smooth)
+    CompassHeading.start(1, ({ heading: newHeading }: HeadingData) => {
       // Always take the shortest arc to avoid spinning past 360°
       let delta = newHeading - lastHeading.current;
       if (delta > 180) {
@@ -141,7 +129,7 @@ export default function MapScreen() {
         bounciness: 0,
       }).start();
     });
-    return () => subscription.unsubscribe();
+    return () => CompassHeading.stop();
   }, [needleRotation]);
 
   const handleLocateMe = () => {
@@ -164,7 +152,13 @@ export default function MapScreen() {
     );
   };
 
-  const needleSpin = needleRotation.interpolate({
+  // Ring rotates opposite to heading so the needle appears fixed pointing up
+  const ringSpin = needleRotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '-360deg'],
+  });
+  // Counter-rotation keeps each cardinal label upright as the ring spins
+  const labelSpin = needleRotation.interpolate({
     inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   });
@@ -226,37 +220,69 @@ export default function MapScreen() {
         <View style={styles.compassContainer}>
           {/* Compass ring with fixed cardinal labels */}
           <View style={styles.compassRing}>
-            {CARDINALS.map(({ label, deg }) => {
-              const rad = (deg * Math.PI) / 180;
-              const radius = 46;
-              const x = Math.sin(rad) * radius;
-              const y = -Math.cos(rad) * radius;
-              const isNorth = label === 'N';
-              return (
-                <Text
-                  key={label}
-                  style={[
-                    isNorth ? styles.cardinalLabelNorth : styles.cardinalLabel,
-                    {
-                      transform: [{ translateX: x - 7 }, { translateY: y - 8 }],
-                    },
-                  ]}
-                >
-                  {label}
-                </Text>
-              );
-            })}
-
-            {/* Rotating needle — north half red, south half muted */}
+            {/* Rotating ring — cardinals spin opposite to heading */}
             <Animated.View
               style={[
-                styles.needleWrapper,
-                { transform: [{ rotate: needleSpin }] },
+                styles.cardinalRing,
+                { transform: [{ rotate: ringSpin }] },
               ]}
             >
+              {TICKS.map(({ deg, isMajor }) => {
+                const rad = (deg * Math.PI) / 180;
+                const r = isMajor ? 49 : 50.5;
+                const tx = Math.sin(rad) * r;
+                const ty = -Math.cos(rad) * r;
+                const hw = isMajor ? 1 : 0.75; // half-width
+                const hh = isMajor ? 4 : 2.5; // half-height
+                return (
+                  <View
+                    key={`tick-${deg}`}
+                    style={[
+                      isMajor ? styles.tickMajor : styles.tickMinor,
+                      {
+                        transform: [
+                          { translateX: tx - hw },
+                          { translateY: ty - hh },
+                          { rotate: `${deg}deg` },
+                        ],
+                      },
+                    ]}
+                  />
+                );
+              })}
+              {CARDINALS.map(({ label, deg }) => {
+                const rad = (deg * Math.PI) / 180;
+                const radius = 38;
+                const x = Math.sin(rad) * radius;
+                const y = -Math.cos(rad) * radius;
+                const isNorth = label === 'N';
+                return (
+                  <Animated.Text
+                    key={label}
+                    style={[
+                      isNorth
+                        ? styles.cardinalLabelNorth
+                        : styles.cardinalLabel,
+                      {
+                        transform: [
+                          { translateX: x - 7 },
+                          { translateY: y - 8 },
+                          { rotate: labelSpin },
+                        ],
+                      },
+                    ]}
+                  >
+                    {label}
+                  </Animated.Text>
+                );
+              })}
+            </Animated.View>
+
+            {/* Fixed needle — always points up */}
+            <View style={styles.needleWrapper}>
               <View style={styles.needleNorth} />
               <View style={styles.needleSouth} />
-            </Animated.View>
+            </View>
 
             {/* Center pivot dot */}
             <View style={styles.pivot} />
@@ -355,6 +381,32 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       justifyContent: 'center',
       position: 'relative',
     },
+    cardinalRing: {
+      position: 'absolute',
+      width: 110,
+      height: 110,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    tickMajor: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: 2,
+      height: 8,
+      borderRadius: 1,
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    tickMinor: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: 1.5,
+      height: 5,
+      borderRadius: 1,
+      backgroundColor: colors.PRIMARY_DARK,
+      opacity: 0.4,
+    },
     cardinalLabel: {
       position: 'absolute',
       fontSize: 11,
@@ -373,20 +425,20 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
     },
     needleWrapper: {
       width: 6,
-      height: 72,
+      height: 48,
       alignItems: 'center',
       justifyContent: 'center',
     },
     needleNorth: {
       width: 6,
-      height: 36,
+      height: 24,
       borderTopLeftRadius: 3,
       borderTopRightRadius: 3,
       backgroundColor: colors.ERROR,
     },
     needleSouth: {
       width: 6,
-      height: 36,
+      height: 24,
       borderBottomLeftRadius: 3,
       borderBottomRightRadius: 3,
       backgroundColor: colors.PRIMARY_DARK,
