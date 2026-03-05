@@ -85,6 +85,7 @@ import {
   useNavigationHistory,
 } from './NavigationHistoryContext';
 import { navigationRef } from './navigationRef';
+import NativeMapView from './ui/NativeMapView';
 
 const Stack = createNativeStackNavigator();
 
@@ -132,6 +133,7 @@ function NavigatorContent(): JSX.Element {
           />
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
           {/* Navigation Module Screens */}
+          <Stack.Screen name="NativeMapView" component={NativeMapView} />
           <Stack.Screen
             name="OfflineMapScreen"
             component={OfflineMapScreenContainer}

@@ -134,9 +134,15 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
 
 export const NAVIGATION_TOOLS: ToolType[] = [
   {
+    name: 'Map',
+    screen: 'NativeMapView',
+    icon: 'map-outline',
+    id: 'nav_map',
+  },
+  {
     name: 'Offline Map Tiles',
     screen: 'OfflineMapScreen',
-    icon: 'map-outline',
+    icon: 'cloud-download-outline',
     id: 'nav_offline_map_tiles',
   },
   {
@@ -144,36 +150,6 @@ export const NAVIGATION_TOOLS: ToolType[] = [
     screen: 'StarMap',
     icon: 'star-outline',
     id: 'nav_star_map',
-  },
-  {
-    name: 'Compass & Gyro Orientation',
-    screen: 'ComingSoon',
-    icon: 'compass-outline',
-    id: 'nav_compass_gyro',
-  },
-  {
-    name: 'Waypoints & Breadcrumbs',
-    screen: 'ComingSoon',
-    icon: 'location-outline',
-    id: 'nav_waypoints_breadcrumbs',
-  },
-  {
-    name: 'Return to Start',
-    screen: 'ComingSoon',
-    icon: 'arrow-undo-outline',
-    id: 'nav_return_to_start',
-  },
-  {
-    name: 'Elevation Graphs',
-    screen: 'ComingSoon',
-    icon: 'trending-up-outline',
-    id: 'nav_elevation_graphs',
-  },
-  {
-    name: 'Downloadable Trail Packs',
-    screen: 'ComingSoon',
-    icon: 'download-outline',
-    id: 'nav_trail_packs',
   },
 ];
 
@@ -228,12 +204,6 @@ export const PREPPER_TOOLS: ToolType[] = [
     screen: 'Inventory',
     icon: 'cube-outline',
     id: 'prepper_inventory',
-  },
-  {
-    name: 'Bug-Out',
-    screen: 'ComingSoon',
-    icon: 'bag-outline',
-    id: 'prepper_bug_out',
   },
   {
     name: 'Scenario Cards',
