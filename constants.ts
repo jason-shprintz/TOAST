@@ -135,7 +135,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
 export const NAVIGATION_TOOLS: ToolType[] = [
   {
     name: 'Map',
-    screen: 'NativeMapView',
+    screen: 'MapScreen',
     icon: 'map-outline',
     id: 'nav_map',
   },
