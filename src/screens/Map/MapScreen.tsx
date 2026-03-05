@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -18,7 +18,11 @@ import {
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
-import { magnetometer, SensorTypes, setUpdateIntervalForType } from 'react-native-sensors';
+import {
+  magnetometer,
+  SensorTypes,
+  setUpdateIntervalForType,
+} from 'react-native-sensors';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
@@ -88,6 +92,7 @@ function toHeading(x: number, y: number): number {
  */
 export default function MapScreen() {
   const COLORS = useTheme();
+  const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const { setDisableGestureNavigation } = useGestureNavigation();
   const mapRef = useRef<MapView>(null);
   const [permissionStatus, setPermissionStatus] =
@@ -119,8 +124,12 @@ export default function MapScreen() {
 
       // Always take the shortest arc to avoid spinning past 360°
       let delta = newHeading - lastHeading.current;
-      if (delta > 180) { delta -= 360; }
-      if (delta < -180) { delta += 360; }
+      if (delta > 180) {
+        delta -= 360;
+      }
+      if (delta < -180) {
+        delta += 360;
+      }
       const smoothed = lastHeading.current + delta;
       lastHeading.current = smoothed;
 
@@ -136,7 +145,9 @@ export default function MapScreen() {
   }, [needleRotation]);
 
   const handleLocateMe = () => {
-    if (!mapRef.current || permissionStatus === 'denied') { return; }
+    if (!mapRef.current || permissionStatus === 'denied') {
+      return;
+    }
     Geolocation.getCurrentPosition(
       (position) => {
         mapRef.current?.animateToRegion(
@@ -159,8 +170,8 @@ export default function MapScreen() {
   });
 
   const renderDeniedBanner = () => (
-    <View style={[styles.deniedBanner, { backgroundColor: COLORS.ERROR }]}>
-      <Text style={[styles.deniedText, { color: COLORS.PRIMARY_LIGHT }]}>
+    <View style={styles.deniedBanner}>
+      <Text style={styles.deniedText}>
         Location access denied — enable it in Settings to see your position.
       </Text>
     </View>
@@ -170,15 +181,12 @@ export default function MapScreen() {
     <ScreenBody>
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
-
         {/* Map */}
-        <View style={[styles.mapContainer, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+        <View style={styles.mapContainer}>
           {!locationReady ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-              <Text style={[styles.loadingText, { color: COLORS.PRIMARY_DARK }]}>
-                Requesting location…
-              </Text>
+              <Text style={styles.loadingText}>Requesting location…</Text>
             </View>
           ) : (
             <>
@@ -201,18 +209,13 @@ export default function MapScreen() {
               />
               {permissionStatus === 'granted' && (
                 <TouchableOpacity
-                  style={[
-                    styles.locateMeButton,
-                    { backgroundColor: COLORS.SECONDARY_ACCENT },
-                  ]}
+                  style={styles.locateMeButton}
                   onPress={handleLocateMe}
                   activeOpacity={0.8}
                   accessibilityLabel="Center map on my location"
                   accessibilityRole="button"
                 >
-                  <Text style={[styles.locateMeText, { color: COLORS.PRIMARY_LIGHT }]}>
-                    ⌖
-                  </Text>
+                  <Text style={styles.locateMeText}>⌖</Text>
                 </TouchableOpacity>
               )}
             </>
@@ -220,9 +223,9 @@ export default function MapScreen() {
         </View>
 
         {/* Compass */}
-        <View style={[styles.compassContainer, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+        <View style={styles.compassContainer}>
           {/* Compass ring with fixed cardinal labels */}
-          <View style={[styles.compassRing, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+          <View style={styles.compassRing}>
             {CARDINALS.map(({ label, deg }) => {
               const rad = (deg * Math.PI) / 180;
               const radius = 46;
@@ -233,10 +236,8 @@ export default function MapScreen() {
                 <Text
                   key={label}
                   style={[
-                    styles.cardinalLabel,
+                    isNorth ? styles.cardinalLabelNorth : styles.cardinalLabel,
                     {
-                      color: isNorth ? COLORS.ERROR : COLORS.PRIMARY_DARK,
-                      fontWeight: isNorth ? '700' : '400',
                       transform: [{ translateX: x - 7 }, { translateY: y - 8 }],
                     },
                   ]}
@@ -253,136 +254,158 @@ export default function MapScreen() {
                 { transform: [{ rotate: needleSpin }] },
               ]}
             >
-              <View style={[styles.needleNorth, { backgroundColor: COLORS.ERROR }]} />
-              <View style={[styles.needleSouth, { backgroundColor: COLORS.PRIMARY_DARK, opacity: 0.35 }]} />
+              <View style={styles.needleNorth} />
+              <View style={styles.needleSouth} />
             </Animated.View>
 
             {/* Center pivot dot */}
-            <View style={[styles.pivot, { backgroundColor: COLORS.SECONDARY_ACCENT }]} />
+            <View style={styles.pivot} />
           </View>
 
           {/* Numeric heading readout */}
-          <Text style={[styles.headingText, { color: COLORS.PRIMARY_DARK }]}>
-            {heading}°
-          </Text>
+          <Text style={styles.headingText}>{heading}°</Text>
         </View>
-
       </View>
     </ScreenBody>
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    paddingBottom: FOOTER_HEIGHT,
-    gap: 16,
-  },
-  // ─── Map ───────────────────────────────────────────────────────────────────
-  mapContainer: {
-    width: '90%',
-    flex: 1,
-    borderRadius: 12,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  map: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-  },
-  loadingText: {
-    fontSize: 14,
-  },
-  deniedBanner: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  deniedText: {
-    fontSize: 13,
-    textAlign: 'center',
-  },
-  locateMeButton: {
-    position: 'absolute',
-    bottom: 24,
-    right: 16,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  locateMeText: {
-    fontSize: 24,
-    lineHeight: 28,
-  },
-  // ─── Compass ───────────────────────────────────────────────────────────────
-  compassContainer: {
-    width: '90%',
-    height: 140,
-    borderRadius: 12,
-    borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24,
-    paddingHorizontal: 24,
-  },
-  compassRing: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  cardinalLabel: {
-    position: 'absolute',
-    fontSize: 11,
-    top: '50%',
-    left: '50%',
-  },
-  needleWrapper: {
-    width: 6,
-    height: 72,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  needleNorth: {
-    width: 6,
-    height: 36,
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-  },
-  needleSouth: {
-    width: 6,
-    height: 36,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-  },
-  pivot: {
-    position: 'absolute',
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  headingText: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-    minWidth: 70,
-    textAlign: 'center',
-  },
-});
+function makeStyles(colors: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    wrapper: {
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      paddingBottom: FOOTER_HEIGHT,
+      gap: 16,
+    },
+    // ─── Map ─────────────────────────────────────────────────────────────────
+    mapContainer: {
+      width: '90%',
+      flex: 1,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.SECONDARY_ACCENT,
+      overflow: 'hidden',
+    },
+    map: {
+      flex: 1,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 12,
+    },
+    loadingText: {
+      fontSize: 14,
+      color: colors.PRIMARY_DARK,
+    },
+    deniedBanner: {
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      backgroundColor: colors.ERROR,
+    },
+    deniedText: {
+      fontSize: 13,
+      textAlign: 'center',
+      color: colors.PRIMARY_LIGHT,
+    },
+    locateMeButton: {
+      position: 'absolute',
+      bottom: 24,
+      right: 16,
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    locateMeText: {
+      fontSize: 24,
+      lineHeight: 28,
+      color: colors.PRIMARY_LIGHT,
+    },
+    // ─── Compass ─────────────────────────────────────────────────────────────
+    compassContainer: {
+      width: '90%',
+      height: 140,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.SECONDARY_ACCENT,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 24,
+      paddingHorizontal: 24,
+    },
+    compassRing: {
+      width: 110,
+      height: 110,
+      borderRadius: 55,
+      borderWidth: 2,
+      borderColor: colors.SECONDARY_ACCENT,
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+    },
+    cardinalLabel: {
+      position: 'absolute',
+      fontSize: 11,
+      top: '50%',
+      left: '50%',
+      color: colors.PRIMARY_DARK,
+      fontWeight: '400',
+    },
+    cardinalLabelNorth: {
+      position: 'absolute',
+      fontSize: 11,
+      top: '50%',
+      left: '50%',
+      color: colors.ERROR,
+      fontWeight: '700',
+    },
+    needleWrapper: {
+      width: 6,
+      height: 72,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    needleNorth: {
+      width: 6,
+      height: 36,
+      borderTopLeftRadius: 3,
+      borderTopRightRadius: 3,
+      backgroundColor: colors.ERROR,
+    },
+    needleSouth: {
+      width: 6,
+      height: 36,
+      borderBottomLeftRadius: 3,
+      borderBottomRightRadius: 3,
+      backgroundColor: colors.PRIMARY_DARK,
+      opacity: 0.35,
+    },
+    pivot: {
+      position: 'absolute',
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    headingText: {
+      fontSize: 28,
+      fontWeight: '700',
+      fontVariant: ['tabular-nums'],
+      minWidth: 70,
+      textAlign: 'center',
+      color: colors.PRIMARY_DARK,
+    },
+  });
+}
