@@ -11,6 +11,7 @@ import {
   Animated,
   PermissionsAndroid,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -46,6 +47,69 @@ const TICKS = Array.from({ length: 24 }, (_, i) => {
   const deg = i * 15;
   return { deg, isMajor: deg % 45 === 0 };
 });
+
+// US state name → 2-letter abbreviation
+const US_STATE_ABBR: Record<string, string> = {
+  Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR',
+  California: 'CA', Colorado: 'CO', Connecticut: 'CT', Delaware: 'DE',
+  Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID',
+  Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS',
+  Kentucky: 'KY', Louisiana: 'LA', Maine: 'ME', Maryland: 'MD',
+  Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN', Mississippi: 'MS',
+  Missouri: 'MO', Montana: 'MT', Nebraska: 'NE', Nevada: 'NV',
+  'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM',
+  'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND',
+  Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR', Pennsylvania: 'PA',
+  'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD',
+  Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT',
+  Virginia: 'VA', Washington: 'WA', 'West Virginia': 'WV',
+  Wisconsin: 'WI', Wyoming: 'WY', 'District of Columbia': 'DC',
+};
+
+/**
+ * Reverse geocodes a lat/lng via Nominatim and calls setName with the result.
+ * Falls back to county/country, then '--' on any error.
+ */
+async function fetchLocationName(
+  lat: number,
+  lng: number,
+  setName: (name: string) => void,
+): Promise<void> {
+  try {
+    const resp = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+      {
+        headers: {
+          'Accept-Language': 'en',
+          'User-Agent': 'TOAST-App/0.1.0 (github.com/jason-shprintz/TOAST)',
+        },
+      },
+    );
+    const data = await resp.json();
+    const addr = data?.address;
+    if (!addr) {
+      setName('--');
+      return;
+    }
+    const city =
+      addr.city ?? addr.town ?? addr.village ?? addr.hamlet ?? null;
+    const state: string | undefined = addr.state;
+    const county: string | undefined = addr.county;
+    const country: string | undefined = addr.country;
+    if (city && state) {
+      const abbr = US_STATE_ABBR[state] ?? state;
+      setName(`${city}, ${abbr}`);
+    } else if (county && country) {
+      setName(`${county}, ${country}`);
+    } else if (country) {
+      setName(country);
+    } else {
+      setName('--');
+    }
+  } catch {
+    setName('--');
+  }
+}
 
 /**
  * Requests location permission on the current platform.
@@ -90,6 +154,13 @@ export default function MapScreen() {
   const [heading, setHeading] = useState(0);
   const needleRotation = useRef(new Animated.Value(0)).current;
   const lastHeading = useRef(0);
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+  } | null>(null);
+  const [locationName, setLocationName] = useState<string | null>(null);
+  const watchIdRef = useRef<number | null>(null);
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -131,6 +202,45 @@ export default function MapScreen() {
     });
     return () => CompassHeading.stop();
   }, [needleRotation]);
+
+  // Watch GPS position for live coordinates and elevation
+  useEffect(() => {
+    if (permissionStatus !== 'granted') {
+      return;
+    }
+    // Track last geocoded position to avoid excessive Nominatim requests
+    let lastGeocodedLat: number | null = null;
+    let lastGeocodedLng: number | null = null;
+    const GEOCODE_THRESHOLD = 0.001; // ~100 m in degrees
+
+    watchIdRef.current = Geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude, altitude } = position.coords;
+        setCoords({ latitude, longitude, altitude });
+        // Only reverse-geocode when position has moved meaningfully
+        if (
+          lastGeocodedLat === null ||
+          lastGeocodedLng === null ||
+          Math.abs(latitude - lastGeocodedLat) > GEOCODE_THRESHOLD ||
+          Math.abs(longitude - lastGeocodedLng) > GEOCODE_THRESHOLD
+        ) {
+          lastGeocodedLat = latitude;
+          lastGeocodedLng = longitude;
+          fetchLocationName(latitude, longitude, setLocationName);
+        }
+      },
+      (err) => {
+        console.warn('MapScreen watchPosition error:', err.message);
+      },
+      { enableHighAccuracy: true, distanceFilter: 5 },
+    );
+    return () => {
+      if (watchIdRef.current !== null) {
+        Geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+    };
+  }, [permissionStatus]);
 
   const handleLocateMe = () => {
     if (!mapRef.current || permissionStatus === 'denied') {
@@ -218,7 +328,7 @@ export default function MapScreen() {
 
         {/* Compass */}
         <View style={styles.compassContainer}>
-          {/* Compass ring with fixed cardinal labels */}
+          {/* Left: compass ring with fixed cardinal labels */}
           <View style={styles.compassRing}>
             {/* Rotating ring — cardinals spin opposite to heading */}
             <Animated.View
@@ -288,8 +398,41 @@ export default function MapScreen() {
             <View style={styles.pivot} />
           </View>
 
-          {/* Numeric heading readout */}
-          <Text style={styles.headingText}>{heading}°</Text>
+          {/* Right: data panel */}
+          <ScrollView
+            style={styles.dataPanel}
+            contentContainerStyle={styles.dataPanelContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {[
+              { label: 'Heading', value: `${heading}°` },
+              {
+                label: 'Latitude',
+                value: coords
+                  ? `${Math.abs(coords.latitude).toFixed(4)}° ${coords.latitude >= 0 ? 'N' : 'S'}`
+                  : '--',
+              },
+              {
+                label: 'Longitude',
+                value: coords
+                  ? `${Math.abs(coords.longitude).toFixed(4)}° ${coords.longitude >= 0 ? 'E' : 'W'}`
+                  : '--',
+              },
+              {
+                label: 'Elevation',
+                value:
+                  coords?.altitude != null
+                    ? `${Math.round(coords.altitude * 3.28084)} ft`
+                    : '--',
+              },
+              { label: 'Location', value: locationName ?? '--' },
+            ].map(({ label, value }) => (
+              <View key={label} style={styles.dataRow}>
+                <Text style={styles.dataLabel}>{label}</Text>
+                <Text style={styles.dataValue}>{value}</Text>
+              </View>
+            ))}
+          </ScrollView>
         </View>
       </View>
     </ScreenBody>
@@ -303,12 +446,13 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       width: '100%',
       alignItems: 'center',
       paddingBottom: FOOTER_HEIGHT,
-      gap: 16,
+      gap: 5,
     },
     // ─── Map ─────────────────────────────────────────────────────────────────
     mapContainer: {
       width: '90%',
       flex: 1,
+      marginTop: 5,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: colors.SECONDARY_ACCENT,
@@ -362,14 +506,14 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
     compassContainer: {
       width: '90%',
       height: 140,
+      marginBottom: 5,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: colors.SECONDARY_ACCENT,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: 24,
-      paddingHorizontal: 24,
+      gap: 12,
+      paddingHorizontal: 16,
     },
     compassRing: {
       width: 110,
@@ -451,13 +595,37 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       borderRadius: 5,
       backgroundColor: colors.SECONDARY_ACCENT,
     },
-    headingText: {
-      fontSize: 28,
-      fontWeight: '700',
-      fontVariant: ['tabular-nums'],
-      minWidth: 70,
-      textAlign: 'center',
+    // ─── Data panel ──────────────────────────────────────────────────────────
+    dataPanel: {
+      flex: 1,
+      alignSelf: 'stretch',
+    },
+    dataPanelContent: {
+      justifyContent: 'center',
+      flexGrow: 1,
+      paddingVertical: 8,
+      gap: 4,
+    },
+    dataRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 2,
+    },
+    dataLabel: {
+      fontSize: 11,
       color: colors.PRIMARY_DARK,
+      opacity: 0.6,
+      flexShrink: 0,
+      marginRight: 4,
+    },
+    dataValue: {
+      fontSize: 11,
+      fontWeight: '600',
+      fontVariant: ['tabular-nums'],
+      color: colors.PRIMARY_DARK,
+      textAlign: 'right',
+      flexShrink: 1,
     },
   });
 }
