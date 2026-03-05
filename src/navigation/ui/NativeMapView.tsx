@@ -107,7 +107,7 @@ export default function NativeMapView() {
     <View
       style={[
         styles.deniedBanner,
-        { backgroundColor: COLORS.ERROR ?? '#c0392b' },
+        { backgroundColor: COLORS.ERROR },
       ]}
     >
       <Text style={[styles.deniedText, { color: COLORS.PRIMARY_LIGHT }]}>
