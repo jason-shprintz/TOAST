@@ -8,8 +8,6 @@ import CoreModule from '../modules/Core/CoreModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
-import DownloadRegionScreenContainer from '../offlineMaps/ui/download/DownloadRegionScreenContainer';
-import OfflineMapScreenContainer from '../offlineMaps/ui/OfflineMapScreenContainer';
 import BarometricPressureScreen from '../screens/BarometricPressure/BarometricPressureScreen';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
@@ -134,14 +132,6 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
           {/* Navigation Module Screens */}
           <Stack.Screen name="NativeMapView" component={NativeMapView} />
-          <Stack.Screen
-            name="OfflineMapScreen"
-            component={OfflineMapScreenContainer}
-          />
-          <Stack.Screen
-            name="DownloadOfflineRegion"
-            component={DownloadRegionScreenContainer}
-          />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />

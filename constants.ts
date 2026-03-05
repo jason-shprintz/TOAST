@@ -140,12 +140,6 @@ export const NAVIGATION_TOOLS: ToolType[] = [
     id: 'nav_map',
   },
   {
-    name: 'Offline Map Tiles',
-    screen: 'OfflineMapScreen',
-    icon: 'cloud-download-outline',
-    id: 'nav_offline_map_tiles',
-  },
-  {
     name: 'Star Map & Celestial Navigation',
     screen: 'StarMap',
     icon: 'star-outline',

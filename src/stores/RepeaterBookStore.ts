@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeAutoObservable, runInAction } from 'mobx';
 import Geolocation from 'react-native-geolocation-service';
 import { NEIGHBORING_STATES } from '../data/neighboringStates';
-import { distanceMiles } from '../offlineMaps/location/regionDistance';
+import { distanceMiles } from '../utils/distanceMiles';
 import { stateFromCoordinates } from '../utils/stateFromCoordinates';
 
 const CACHE_KEY = '@repeaterbook/cache';
