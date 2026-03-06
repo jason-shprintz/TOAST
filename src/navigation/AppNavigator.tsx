@@ -12,6 +12,7 @@ import BarometricPressureScreen from '../screens/BarometricPressure/BarometricPr
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
+import RagAssistantScreen from '../screens/Common/RagAssistantScreen';
 import SearchScreen from '../screens/Common/SearchScreen';
 import DecibelMeterScreen from '../screens/DecibelMeter/DecibelMeterScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
@@ -135,6 +136,7 @@ function NavigatorContent(): JSX.Element {
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />
+          <Stack.Screen name="RagAssistant" component={RagAssistantScreen} />
           {/* Communications Module */}
           <Stack.Screen name="MorseCode" component={MorseCodeScreen} />
           <Stack.Screen name="AlphaToMorse" component={AlphaToMorseScreen} />
