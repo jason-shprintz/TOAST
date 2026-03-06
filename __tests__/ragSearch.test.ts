@@ -271,4 +271,77 @@ describe('ragSearch', () => {
     expect(morseEntry).toBeDefined();
     expect(morseEntry!.entry.related_screen).toBe('MorseCode');
   });
+
+  // --- Core module synthetic entries ---
+
+  test('finds Unit Conversion via synthetic index entry', () => {
+    const result = ragSearch('unit conversion convert miles kilometers');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('unit') || t.includes('conversion'))).toBe(true);
+  });
+
+  test('finds Lunar Cycles via synthetic index entry', () => {
+    const result = ragSearch('moon phase lunar cycle full moon');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('lunar') || t.includes('moon'))).toBe(true);
+  });
+
+  test('finds Barometric Pressure via synthetic index entry', () => {
+    const result = ragSearch('barometric pressure weather forecast storm');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('barometric') || t.includes('pressure'))).toBe(true);
+  });
+
+  test('finds Sun Times via synthetic index entry', () => {
+    const result = ragSearch('sunrise sunset golden hour');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('sun'))).toBe(true);
+  });
+
+  test('finds Flashlight via synthetic index entry', () => {
+    const result = ragSearch('flashlight strobe light');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('flashlight'))).toBe(true);
+  });
+
+  // --- Navigation module synthetic entries ---
+
+  test('finds Star Map via synthetic index entry', () => {
+    const result = ragSearch('star map celestial navigation polaris north star');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('star') || t.includes('celestial'))).toBe(true);
+  });
+
+  // --- Prepper module synthetic entries ---
+
+  test('finds Emergency Planner via synthetic index entry', () => {
+    const result = ragSearch('emergency contacts rally point communication plan');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('emergency') || t.includes('planner'))).toBe(true);
+  });
+
+  test('all new synthetic entries have a related_screen set', () => {
+    const queries: Array<[string, string]> = [
+      ['unit conversion', 'UnitConversion'],
+      ['lunar cycles moon phase', 'LunarCycles'],
+      ['barometric pressure sensor', 'BarometricPressure'],
+      ['sunrise sunset times', 'SunTime'],
+      ['star celestial navigation', 'StarMap'],
+      ['emergency contacts rally point', 'EmergencyPlan'],
+    ];
+    for (const [query, expectedScreen] of queries) {
+      const result = ragSearch(query);
+      const match = result.results.find(
+        (r) => r.entry.related_screen === expectedScreen,
+      );
+      expect(match).toBeDefined();
+    }
+  });
 });

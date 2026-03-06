@@ -37,6 +37,17 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
   RadioFrequencies: undefined;
   GroundToAirSignals: undefined;
   DigitalWhistle: undefined;
+  UnitConversion: undefined;
+  LunarCycles: undefined;
+  BarometricPressure: undefined;
+  SunTime: undefined;
+  DeviceStatus: undefined;
+  Flashlight: undefined;
+  VoiceLog: undefined;
+  DecibelMeter: undefined;
+  MapScreen: undefined;
+  StarMap: undefined;
+  EmergencyPlan: undefined;
   [key: string]: undefined | object;
 }>;
 
@@ -211,7 +222,18 @@ export default observer(function SearchScreen(): JSX.Element {
             | 'NatoPhonetic'
             | 'RadioFrequencies'
             | 'GroundToAirSignals'
-            | 'DigitalWhistle',
+            | 'DigitalWhistle'
+            | 'UnitConversion'
+            | 'LunarCycles'
+            | 'BarometricPressure'
+            | 'SunTime'
+            | 'DeviceStatus'
+            | 'Flashlight'
+            | 'VoiceLog'
+            | 'DecibelMeter'
+            | 'MapScreen'
+            | 'StarMap'
+            | 'EmergencyPlan',
         );
       } else {
         navigation.navigate('Entry', { entry });
