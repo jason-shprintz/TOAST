@@ -31,6 +31,12 @@ type SearchScreenNavigationProp = NativeStackNavigationProp<{
   ChecklistEntry: { checklist: Checklist };
   InventoryCategory: { category: string };
   PantryCategory: { category: string };
+  // Screens navigated to via synthetic RAG entry related_screen
+  MorseCode: undefined;
+  NatoPhonetic: undefined;
+  RadioFrequencies: undefined;
+  GroundToAirSignals: undefined;
+  DigitalWhistle: undefined;
   [key: string]: undefined | object;
 }>;
 
@@ -73,13 +79,20 @@ export default observer(function SearchScreen(): JSX.Element {
   const [isSearching, setIsSearching] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const hasQuery = query.trim().length > 0;
+  // Tracks the Y offset of each message within the scroll content for targeted scrolling
+  const messageLayouts = useRef<Map<string, number>>(new Map());
+  // Holds the ID of the most recent user message so we can scroll back to it
+  const latestUserMsgId = useRef<string | null>(null);
 
   const handleSend = useCallback(() => {
     const trimmed = query.trim();
     if (!trimmed || isSearching) return;
 
+    const userMsgId = `user-${Date.now()}`;
+    latestUserMsgId.current = userMsgId;
+
     const userMessage: SearchMessage = {
-      id: `user-${Date.now()}`,
+      id: userMsgId,
       role: 'user',
       text: trimmed,
     };
@@ -145,8 +158,21 @@ export default observer(function SearchScreen(): JSX.Element {
       setMessages((prev) => [...prev, assistantMessage]);
       setIsSearching(false);
 
-      // Wait one render cycle for the new message to be laid out before scrolling
+      // Scroll to the user's question so they see it at the top and can scroll
+      // down through the (potentially long) response at their own pace.
       setTimeout(() => {
+        const msgId = latestUserMsgId.current;
+        if (msgId !== null) {
+          const y = messageLayouts.current.get(msgId);
+          if (y !== undefined) {
+            scrollViewRef.current?.scrollTo({
+              y: Math.max(0, y - 8),
+              animated: true,
+            });
+            return;
+          }
+        }
+        // Fallback: scroll to end if layout not yet available
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }, 0);
@@ -178,7 +204,18 @@ export default observer(function SearchScreen(): JSX.Element {
 
   const handleJumpToEntry = useCallback(
     (entry: ReferenceEntryType) => {
-      navigation.navigate('Entry', { entry });
+      if (entry.related_screen) {
+        navigation.navigate(
+          entry.related_screen as
+            | 'MorseCode'
+            | 'NatoPhonetic'
+            | 'RadioFrequencies'
+            | 'GroundToAirSignals'
+            | 'DigitalWhistle',
+        );
+      } else {
+        navigation.navigate('Entry', { entry });
+      }
     },
     [navigation],
   );
@@ -224,7 +261,7 @@ export default observer(function SearchScreen(): JSX.Element {
           <Text
             style={[styles.jumpButtonText, { color: COLORS.PRIMARY_LIGHT }]}
           >
-            Jump to full section
+            {result.entry.related_screen_label ?? 'Jump to full section'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -276,6 +313,9 @@ export default observer(function SearchScreen(): JSX.Element {
       return (
         <View
           key={message.id}
+          onLayout={(e) =>
+            messageLayouts.current.set(message.id, e.nativeEvent.layout.y)
+          }
           style={[
             styles.messageRow,
             isUser ? styles.messageRowUser : styles.messageRowAssistant,

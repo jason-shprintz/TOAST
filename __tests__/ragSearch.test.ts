@@ -2,13 +2,13 @@
  * @format
  */
 
+import ReferenceEntryType from '../src/types/data-type';
 import {
   createExcerpt,
   ragSearch,
   scoreEntry,
   tokenize,
 } from '../src/utils/ragSearch';
-import ReferenceEntryType from '../src/types/data-type';
 
 // --- tokenize ---
 
@@ -213,5 +213,62 @@ describe('ragSearch', () => {
     // A very high threshold so nothing can match
     const result = ragSearch('xyzzy foobar quux', 3, 999);
     expect(result.hasResults).toBe(false);
+  });
+
+  // --- Extended coverage: scenario cards + synthetic tool entries ---
+
+  test('finds Morse Code via synthetic index entry', () => {
+    const result = ragSearch('morse code');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(titles.some((t) => t.includes('morse'))).toBe(true);
+  });
+
+  test('finds Morse Code when searching SOS signals', () => {
+    const result = ragSearch('sos signal dots dashes');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(
+      titles.some((t) => t.includes('morse') || t.includes('ground')),
+    ).toBe(true);
+  });
+
+  test('finds Radio Frequencies via synthetic index entry', () => {
+    const result = ragSearch('ham radio frequency');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(
+      titles.some((t) => t.includes('radio') || t.includes('frequency')),
+    ).toBe(true);
+  });
+
+  test('finds Ground-to-Air Signals when searching aircraft signaling', () => {
+    const result = ragSearch('signal rescue aircraft');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(
+      titles.some(
+        (t) =>
+          t.includes('ground') || t.includes('air') || t.includes('signal'),
+      ),
+    ).toBe(true);
+  });
+
+  test('finds scenario cards when searching for power outage', () => {
+    const result = ragSearch('power outage electricity grid');
+    expect(result.hasResults).toBe(true);
+    const titles = result.results.map((r) => r.entry.title.toLowerCase());
+    expect(
+      titles.some((t) => t.includes('power') || t.includes('outage')),
+    ).toBe(true);
+  });
+
+  test('synthetic entries have a related_screen set', () => {
+    const morseResult = ragSearch('morse code translator');
+    const morseEntry = morseResult.results.find((r) =>
+      r.entry.title.toLowerCase().includes('morse'),
+    );
+    expect(morseEntry).toBeDefined();
+    expect(morseEntry!.entry.related_screen).toBe('MorseCode');
   });
 });
