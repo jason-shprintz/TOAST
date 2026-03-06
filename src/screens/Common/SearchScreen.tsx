@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import { useTheme } from '../../hooks/useTheme';
@@ -71,6 +72,7 @@ export default observer(function SearchScreen(): JSX.Element {
   const [messages, setMessages] = useState<SearchMessage[]>([WELCOME_MESSAGE]);
   const [isSearching, setIsSearching] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const hasQuery = query.trim().length > 0;
 
   const handleSend = useCallback(() => {
     const trimmed = query.trim();
@@ -359,6 +361,53 @@ export default observer(function SearchScreen(): JSX.Element {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
+          {/* Input bar — top of screen, styled like SectionHeader */}
+          <View style={styles.inputWrapper}>
+            <View
+              style={[
+                styles.inputRow,
+                {
+                  backgroundColor: COLORS.SECONDARY_ACCENT,
+                  borderColor: COLORS.TOAST_BROWN,
+                },
+              ]}
+            >
+              <TextInput
+                style={[styles.textInput, { color: COLORS.PRIMARY_DARK }]}
+                placeholder="Search or ask a question…"
+                placeholderTextColor={COLORS.PRIMARY_DARK + '80'}
+                value={query}
+                onChangeText={setQuery}
+                onSubmitEditing={handleSend}
+                returnKeyType="send"
+                multiline={false}
+                editable={!isSearching}
+                autoFocus
+                accessibilityLabel="Search or ask a question"
+              />
+              {hasQuery && (
+                <TouchableOpacity
+                  style={[
+                    styles.sendButton,
+                    { backgroundColor: COLORS.TOAST_BROWN },
+                  ]}
+                  onPress={handleSend}
+                  disabled={isSearching}
+                  accessibilityLabel="Send"
+                  accessibilityRole="button"
+                >
+                  <Ionicons
+                    name="send"
+                    size={16}
+                    color={COLORS.PRIMARY_LIGHT}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          <HorizontalRule />
+
           {/* Message history */}
           <ScrollView
             ref={scrollViewRef}
@@ -404,54 +453,6 @@ export default observer(function SearchScreen(): JSX.Element {
               </View>
             )}
           </ScrollView>
-
-          {/* Input bar */}
-          <View
-            style={[
-              styles.inputBar,
-              {
-                borderColor: COLORS.TOAST_BROWN,
-                backgroundColor: COLORS.SECONDARY_ACCENT,
-              },
-            ]}
-          >
-            <Ionicons
-              name="search-outline"
-              size={18}
-              color={COLORS.PRIMARY_DARK}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.textInput, { color: COLORS.PRIMARY_DARK }]}
-              placeholder="Search or ask a question…"
-              placeholderTextColor={COLORS.PRIMARY_DARK + '80'}
-              value={query}
-              onChangeText={setQuery}
-              onSubmitEditing={handleSend}
-              returnKeyType="send"
-              multiline={false}
-              editable={!isSearching}
-              autoFocus
-              accessibilityLabel="Search or ask a question"
-            />
-            <TouchableOpacity
-              style={[
-                styles.sendButton,
-                {
-                  backgroundColor:
-                    query.trim().length > 0
-                      ? COLORS.TOAST_BROWN
-                      : COLORS.TOAST_BROWN + '44',
-                },
-              ]}
-              onPress={handleSend}
-              disabled={query.trim().length === 0 || isSearching}
-              accessibilityLabel="Send"
-              accessibilityRole="button"
-            >
-              <Ionicons name="send" size={16} color={COLORS.PRIMARY_LIGHT} />
-            </TouchableOpacity>
-          </View>
         </KeyboardAvoidingView>
       </View>
     </ScreenBody>
@@ -467,6 +468,36 @@ const styles = StyleSheet.create({
   keyboardAvoid: {
     flex: 1,
     width: '100%',
+  },
+  // Input is positioned at the top, styled to match SectionHeader
+  inputWrapper: {
+    width: '80%',
+    alignSelf: 'center',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginVertical: 12,
+    gap: 8,
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: '800',
+    padding: 0,
+    minHeight: 28,
+  },
+  sendButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   scrollView: {
     flex: 1,
@@ -576,31 +607,5 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     fontWeight: '500',
-  },
-  inputBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderTopWidth: 2,
-    gap: 8,
-  },
-  inputIcon: {
-    flexShrink: 0,
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 15,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    minHeight: 40,
-  },
-  sendButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
   },
 });
