@@ -93,6 +93,13 @@ function mapRow(
 
 /**
  * Fetches all repeaters for a single state from the RepeaterBook API.
+ *
+ * React Native's fetch implementation (and some Android WebView versions) can
+ * silently strip the `User-Agent` header, which causes RepeaterBook to return
+ * HTTP 401. We send the identifying string in both `User-Agent` and the custom
+ * `X-App-Info` header so that RepeaterBook can authenticate the request even
+ * if one of the two is dropped by the runtime.
+ *
  * Returns an empty array on any error (other states' results are unaffected).
  */
 async function fetchStateRepeaters(
@@ -100,7 +107,12 @@ async function fetchStateRepeaters(
 ): Promise<Record<string, string>[]> {
   const url = `${REPEATERBOOK_URL}?state=${encodeURIComponent(state)}&format=json`;
   const response = await fetch(url, {
-    headers: { 'User-Agent': USER_AGENT },
+    headers: {
+      'User-Agent': USER_AGENT,
+      // Fallback for environments that strip User-Agent (some Android versions
+      // and certain React Native fetch implementations silently drop it).
+      'X-App-Info': USER_AGENT,
+    },
   });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
