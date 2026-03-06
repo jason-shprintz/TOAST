@@ -7,45 +7,139 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Animated,
   PermissionsAndroid,
   Platform,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { FOOTER_HEIGHT } from '../../theme';
+import CompassDataPanel from './components/CompassDataPanel';
+import CompassRing from './components/CompassRing';
+import MapPanel, {
+  DELTA,
+  LocationPermissionStatus,
+} from './components/MapPanel';
 
-type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
+// US state name → 2-letter abbreviation
+const US_STATE_ABBR: Record<string, string> = {
+  Alabama: 'AL',
+  Alaska: 'AK',
+  Arizona: 'AZ',
+  Arkansas: 'AR',
+  California: 'CA',
+  Colorado: 'CO',
+  Connecticut: 'CT',
+  Delaware: 'DE',
+  Florida: 'FL',
+  Georgia: 'GA',
+  Hawaii: 'HI',
+  Idaho: 'ID',
+  Illinois: 'IL',
+  Indiana: 'IN',
+  Iowa: 'IA',
+  Kansas: 'KS',
+  Kentucky: 'KY',
+  Louisiana: 'LA',
+  Maine: 'ME',
+  Maryland: 'MD',
+  Massachusetts: 'MA',
+  Michigan: 'MI',
+  Minnesota: 'MN',
+  Mississippi: 'MS',
+  Missouri: 'MO',
+  Montana: 'MT',
+  Nebraska: 'NE',
+  Nevada: 'NV',
+  'New Hampshire': 'NH',
+  'New Jersey': 'NJ',
+  'New Mexico': 'NM',
+  'New York': 'NY',
+  'North Carolina': 'NC',
+  'North Dakota': 'ND',
+  Ohio: 'OH',
+  Oklahoma: 'OK',
+  Oregon: 'OR',
+  Pennsylvania: 'PA',
+  'Rhode Island': 'RI',
+  'South Carolina': 'SC',
+  'South Dakota': 'SD',
+  Tennessee: 'TN',
+  Texas: 'TX',
+  Utah: 'UT',
+  Vermont: 'VT',
+  Virginia: 'VA',
+  Washington: 'WA',
+  'West Virginia': 'WV',
+  Wisconsin: 'WI',
+  Wyoming: 'WY',
+  'District of Columbia': 'DC',
+};
 
-const DELTA = { latitudeDelta: 0.05, longitudeDelta: 0.05 };
+const NOMINATIM_USER_AGENT =
+  'TOAST Survival App (toastbyte.studio, support@toastbyte.studio)';
 
-// Cardinal labels and their degree positions around the ring
-const CARDINALS = [
-  { label: 'N', deg: 0 },
-  { label: 'NE', deg: 45 },
-  { label: 'E', deg: 90 },
-  { label: 'SE', deg: 135 },
-  { label: 'S', deg: 180 },
-  { label: 'SW', deg: 225 },
-  { label: 'W', deg: 270 },
-  { label: 'NW', deg: 315 },
-];
-
-// 24 ticks every 15°; major ticks coincide with the 8 cardinals
-const TICKS = Array.from({ length: 24 }, (_, i) => {
-  const deg = i * 15;
-  return { deg, isMajor: deg % 45 === 0 };
-});
+/**
+ * Reverse geocodes a lat/lng via Nominatim and calls setName with the result.
+ * Falls back to county/country, then '--' on any error.
+ * Pass an AbortSignal to cancel an in-flight request (e.g. on unmount or new position).
+ */
+async function fetchLocationName(
+  lat: number,
+  lng: number,
+  setName: (name: string) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  try {
+    const resp = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+      {
+        signal,
+        headers: {
+          'Accept-Language': 'en',
+          'User-Agent': NOMINATIM_USER_AGENT,
+        },
+      },
+    );
+    if (!resp.ok) {
+      setName('--');
+      return;
+    }
+    const data = await resp.json();
+    const addr = data?.address;
+    if (!addr) {
+      setName('--');
+      return;
+    }
+    const city = addr.city ?? addr.town ?? addr.village ?? addr.hamlet ?? null;
+    const state: string | undefined = addr.state;
+    const county: string | undefined = addr.county;
+    const country: string | undefined = addr.country;
+    if (city && state) {
+      const abbr = US_STATE_ABBR[state] ?? state;
+      setName(`${city}, ${abbr}`);
+    } else if (county && country) {
+      setName(`${county}, ${country}`);
+    } else if (country) {
+      setName(country);
+    } else {
+      setName('--');
+    }
+  } catch (err: unknown) {
+    // Ignore AbortError — request was intentionally cancelled
+    if (err instanceof Error && err.name === 'AbortError') {
+      return;
+    }
+    setName('--');
+  }
+}
 
 /**
  * Requests location permission on the current platform.
@@ -90,6 +184,15 @@ export default function MapScreen() {
   const [heading, setHeading] = useState(0);
   const needleRotation = useRef(new Animated.Value(0)).current;
   const lastHeading = useRef(0);
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+  } | null>(null);
+  const [locationName, setLocationName] = useState<string | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+  // Holds the AbortController for the in-flight Nominatim request
+  const geocodeAbortRef = useRef<AbortController | null>(null);
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -132,6 +235,56 @@ export default function MapScreen() {
     return () => CompassHeading.stop();
   }, [needleRotation]);
 
+  // Watch GPS position for live coordinates and elevation
+  useEffect(() => {
+    if (permissionStatus !== 'granted') {
+      return;
+    }
+    // Track last geocoded position to avoid excessive Nominatim requests
+    let lastGeocodedLat: number | null = null;
+    let lastGeocodedLng: number | null = null;
+    const GEOCODE_THRESHOLD = 0.001; // ~100 m in degrees
+
+    watchIdRef.current = Geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude, altitude } = position.coords;
+        setCoords({ latitude, longitude, altitude });
+        // Only reverse-geocode when position has moved meaningfully
+        if (
+          lastGeocodedLat === null ||
+          lastGeocodedLng === null ||
+          Math.abs(latitude - lastGeocodedLat) > GEOCODE_THRESHOLD ||
+          Math.abs(longitude - lastGeocodedLng) > GEOCODE_THRESHOLD
+        ) {
+          lastGeocodedLat = latitude;
+          lastGeocodedLng = longitude;
+          // Abort any in-flight geocode request before starting a new one
+          geocodeAbortRef.current?.abort();
+          geocodeAbortRef.current = new AbortController();
+          fetchLocationName(
+            latitude,
+            longitude,
+            setLocationName,
+            geocodeAbortRef.current.signal,
+          );
+        }
+      },
+      (err) => {
+        console.warn('MapScreen watchPosition error:', err.message);
+      },
+      { enableHighAccuracy: true, distanceFilter: 5 },
+    );
+    return () => {
+      if (watchIdRef.current !== null) {
+        Geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      // Cancel any in-flight geocode request on unmount
+      geocodeAbortRef.current?.abort();
+      geocodeAbortRef.current = null;
+    };
+  }, [permissionStatus]);
+
   const handleLocateMe = () => {
     if (!mapRef.current || permissionStatus === 'denied') {
       return;
@@ -163,133 +316,26 @@ export default function MapScreen() {
     outputRange: ['0deg', '360deg'],
   });
 
-  const renderDeniedBanner = () => (
-    <View style={styles.deniedBanner}>
-      <Text style={styles.deniedText}>
-        Location access denied — enable it in Settings to see your position.
-      </Text>
-    </View>
-  );
-
   return (
     <ScreenBody>
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
         {/* Map */}
-        <View style={styles.mapContainer}>
-          {!locationReady ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-              <Text style={styles.loadingText}>Requesting location…</Text>
-            </View>
-          ) : (
-            <>
-              {permissionStatus === 'denied' && renderDeniedBanner()}
-              <MapView
-                ref={mapRef}
-                style={styles.map}
-                provider={PROVIDER_DEFAULT}
-                showsUserLocation={permissionStatus === 'granted'}
-                showsCompass
-                showsScale
-                onMapReady={
-                  permissionStatus === 'granted' ? handleLocateMe : undefined
-                }
-                initialRegion={{
-                  latitude: 0,
-                  longitude: 0,
-                  ...DELTA,
-                }}
-              />
-              {permissionStatus === 'granted' && (
-                <TouchableOpacity
-                  style={styles.locateMeButton}
-                  onPress={handleLocateMe}
-                  activeOpacity={0.8}
-                  accessibilityLabel="Center map on my location"
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.locateMeText}>⌖</Text>
-                </TouchableOpacity>
-              )}
-            </>
-          )}
-        </View>
+        <MapPanel
+          permissionStatus={permissionStatus}
+          locationReady={locationReady}
+          mapRef={mapRef}
+          onLocateMe={handleLocateMe}
+        />
 
         {/* Compass */}
         <View style={styles.compassContainer}>
-          {/* Compass ring with fixed cardinal labels */}
-          <View style={styles.compassRing}>
-            {/* Rotating ring — cardinals spin opposite to heading */}
-            <Animated.View
-              style={[
-                styles.cardinalRing,
-                { transform: [{ rotate: ringSpin }] },
-              ]}
-            >
-              {TICKS.map(({ deg, isMajor }) => {
-                const rad = (deg * Math.PI) / 180;
-                const r = isMajor ? 49 : 50.5;
-                const tx = Math.sin(rad) * r;
-                const ty = -Math.cos(rad) * r;
-                const hw = isMajor ? 1 : 0.75; // half-width
-                const hh = isMajor ? 4 : 2.5; // half-height
-                return (
-                  <View
-                    key={`tick-${deg}`}
-                    style={[
-                      isMajor ? styles.tickMajor : styles.tickMinor,
-                      {
-                        transform: [
-                          { translateX: tx - hw },
-                          { translateY: ty - hh },
-                          { rotate: `${deg}deg` },
-                        ],
-                      },
-                    ]}
-                  />
-                );
-              })}
-              {CARDINALS.map(({ label, deg }) => {
-                const rad = (deg * Math.PI) / 180;
-                const radius = 38;
-                const x = Math.sin(rad) * radius;
-                const y = -Math.cos(rad) * radius;
-                const isNorth = label === 'N';
-                return (
-                  <Animated.Text
-                    key={label}
-                    style={[
-                      isNorth
-                        ? styles.cardinalLabelNorth
-                        : styles.cardinalLabel,
-                      {
-                        transform: [
-                          { translateX: x - 7 },
-                          { translateY: y - 8 },
-                          { rotate: labelSpin },
-                        ],
-                      },
-                    ]}
-                  >
-                    {label}
-                  </Animated.Text>
-                );
-              })}
-            </Animated.View>
-
-            {/* Fixed needle — always points up */}
-            <View style={styles.needleWrapper}>
-              <View style={styles.needleNorth} />
-              <View style={styles.needleSouth} />
-            </View>
-
-            {/* Center pivot dot */}
-            <View style={styles.pivot} />
-          </View>
-
-          {/* Numeric heading readout */}
-          <Text style={styles.headingText}>{heading}°</Text>
+          <CompassRing ringSpin={ringSpin} labelSpin={labelSpin} />
+          <CompassDataPanel
+            heading={heading}
+            coords={coords}
+            locationName={locationName}
+          />
         </View>
       </View>
     </ScreenBody>
@@ -303,161 +349,19 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       width: '100%',
       alignItems: 'center',
       paddingBottom: FOOTER_HEIGHT,
-      gap: 16,
+      gap: 5,
     },
-    // ─── Map ─────────────────────────────────────────────────────────────────
-    mapContainer: {
-      width: '90%',
-      flex: 1,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.SECONDARY_ACCENT,
-      overflow: 'hidden',
-    },
-    map: {
-      flex: 1,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: 12,
-    },
-    loadingText: {
-      fontSize: 14,
-      color: colors.PRIMARY_DARK,
-    },
-    deniedBanner: {
-      paddingHorizontal: 16,
-      paddingVertical: 10,
-      backgroundColor: colors.ERROR,
-    },
-    deniedText: {
-      fontSize: 13,
-      textAlign: 'center',
-      color: colors.PRIMARY_LIGHT,
-    },
-    locateMeButton: {
-      position: 'absolute',
-      bottom: 24,
-      right: 16,
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      justifyContent: 'center',
-      alignItems: 'center',
-      elevation: 4,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    locateMeText: {
-      fontSize: 24,
-      lineHeight: 28,
-      color: colors.PRIMARY_LIGHT,
-    },
-    // ─── Compass ─────────────────────────────────────────────────────────────
     compassContainer: {
       width: '90%',
       height: 140,
+      marginBottom: 5,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: colors.SECONDARY_ACCENT,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: 24,
-      paddingHorizontal: 24,
-    },
-    compassRing: {
-      width: 110,
-      height: 110,
-      borderRadius: 55,
-      borderWidth: 2,
-      borderColor: colors.SECONDARY_ACCENT,
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-    },
-    cardinalRing: {
-      position: 'absolute',
-      width: 110,
-      height: 110,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    tickMajor: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      width: 2,
-      height: 8,
-      borderRadius: 1,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    tickMinor: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      width: 1.5,
-      height: 5,
-      borderRadius: 1,
-      backgroundColor: colors.PRIMARY_DARK,
-      opacity: 0.4,
-    },
-    cardinalLabel: {
-      position: 'absolute',
-      fontSize: 11,
-      top: '50%',
-      left: '50%',
-      color: colors.PRIMARY_DARK,
-      fontWeight: '400',
-    },
-    cardinalLabelNorth: {
-      position: 'absolute',
-      fontSize: 11,
-      top: '50%',
-      left: '50%',
-      color: colors.ERROR,
-      fontWeight: '700',
-    },
-    needleWrapper: {
-      width: 6,
-      height: 48,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    needleNorth: {
-      width: 6,
-      height: 24,
-      borderTopLeftRadius: 3,
-      borderTopRightRadius: 3,
-      backgroundColor: colors.ERROR,
-    },
-    needleSouth: {
-      width: 6,
-      height: 24,
-      borderBottomLeftRadius: 3,
-      borderBottomRightRadius: 3,
-      backgroundColor: colors.PRIMARY_DARK,
-      opacity: 0.35,
-    },
-    pivot: {
-      position: 'absolute',
-      width: 10,
-      height: 10,
-      borderRadius: 5,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    headingText: {
-      fontSize: 28,
-      fontWeight: '700',
-      fontVariant: ['tabular-nums'],
-      minWidth: 70,
-      textAlign: 'center',
-      color: colors.PRIMARY_DARK,
+      gap: 12,
+      paddingHorizontal: 16,
     },
   });
 }
