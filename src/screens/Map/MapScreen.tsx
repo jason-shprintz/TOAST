@@ -83,25 +83,35 @@ const US_STATE_ABBR: Record<string, string> = {
   'District of Columbia': 'DC',
 };
 
+const NOMINATIM_USER_AGENT =
+  'TOAST Survival App (toastbyte.studio, support@toastbyte.studio)';
+
 /**
  * Reverse geocodes a lat/lng via Nominatim and calls setName with the result.
  * Falls back to county/country, then '--' on any error.
+ * Pass an AbortSignal to cancel an in-flight request (e.g. on unmount or new position).
  */
 async function fetchLocationName(
   lat: number,
   lng: number,
   setName: (name: string) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   try {
     const resp = await fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
       {
+        signal,
         headers: {
           'Accept-Language': 'en',
-          'User-Agent': 'TOAST-App/0.1.0 (github.com/jason-shprintz/TOAST)',
+          'User-Agent': NOMINATIM_USER_AGENT,
         },
       },
     );
+    if (!resp.ok) {
+      setName('--');
+      return;
+    }
     const data = await resp.json();
     const addr = data?.address;
     if (!addr) {
@@ -122,7 +132,11 @@ async function fetchLocationName(
     } else {
       setName('--');
     }
-  } catch {
+  } catch (err: unknown) {
+    // Ignore AbortError — request was intentionally cancelled
+    if (err instanceof Error && err.name === 'AbortError') {
+      return;
+    }
     setName('--');
   }
 }
@@ -177,6 +191,8 @@ export default function MapScreen() {
   } | null>(null);
   const [locationName, setLocationName] = useState<string | null>(null);
   const watchIdRef = useRef<number | null>(null);
+  // Holds the AbortController for the in-flight Nominatim request
+  const geocodeAbortRef = useRef<AbortController | null>(null);
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -242,7 +258,15 @@ export default function MapScreen() {
         ) {
           lastGeocodedLat = latitude;
           lastGeocodedLng = longitude;
-          fetchLocationName(latitude, longitude, setLocationName);
+          // Abort any in-flight geocode request before starting a new one
+          geocodeAbortRef.current?.abort();
+          geocodeAbortRef.current = new AbortController();
+          fetchLocationName(
+            latitude,
+            longitude,
+            setLocationName,
+            geocodeAbortRef.current.signal,
+          );
         }
       },
       (err) => {
@@ -255,6 +279,9 @@ export default function MapScreen() {
         Geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      // Cancel any in-flight geocode request on unmount
+      geocodeAbortRef.current?.abort();
+      geocodeAbortRef.current = null;
     };
   }, [permissionStatus]);
 
