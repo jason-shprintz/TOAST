@@ -2,13 +2,13 @@
  * @format
  */
 
+import ReferenceEntryType from '../src/types/data-type';
 import {
   createExcerpt,
   ragSearch,
   scoreEntry,
   tokenize,
 } from '../src/utils/ragSearch';
-import ReferenceEntryType from '../src/types/data-type';
 
 // --- tokenize ---
 
