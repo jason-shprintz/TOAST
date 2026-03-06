@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { JSX, useCallback, useRef, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -94,6 +94,15 @@ export default observer(function SearchScreen(): JSX.Element {
   const messageLayouts = useRef<Map<string, number>>(new Map());
   // Holds the ID of the most recent user message so we can scroll back to it
   const latestUserMsgId = useRef<string | null>(null);
+  // Tracks pending timeouts so they can be cancelled if the screen unmounts
+  const timeoutIds = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    return () => {
+      timeoutIds.current.forEach(clearTimeout);
+      timeoutIds.current = [];
+    };
+  }, []);
 
   const handleSend = useCallback(() => {
     const trimmed = query.trim();
@@ -114,7 +123,7 @@ export default observer(function SearchScreen(): JSX.Element {
 
     // Defer the synchronous search to the next event-loop tick so the user
     // message bubble appears in the chat before the results are computed.
-    setTimeout(() => {
+    const outerTimer = setTimeout(() => {
       // RAG search for reference content (offline, on-device)
       const ragResponse = ragSearch(trimmed);
 
@@ -171,7 +180,7 @@ export default observer(function SearchScreen(): JSX.Element {
 
       // Scroll to the user's question so they see it at the top and can scroll
       // down through the (potentially long) response at their own pace.
-      setTimeout(() => {
+      const scrollTimer = setTimeout(() => {
         const msgId = latestUserMsgId.current;
         if (msgId !== null) {
           const y = messageLayouts.current.get(msgId);
@@ -186,7 +195,9 @@ export default observer(function SearchScreen(): JSX.Element {
         // Fallback: scroll to end if layout not yet available
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
+      timeoutIds.current.push(scrollTimer);
     }, 0);
+    timeoutIds.current.push(outerTimer);
   }, [query, isSearching, coreStore, inventoryStore, pantryStore]);
 
   const handleItemPress = useCallback(
