@@ -278,21 +278,27 @@ describe('ragSearch', () => {
     const result = ragSearch('unit conversion convert miles kilometers');
     expect(result.hasResults).toBe(true);
     const titles = result.results.map((r) => r.entry.title.toLowerCase());
-    expect(titles.some((t) => t.includes('unit') || t.includes('conversion'))).toBe(true);
+    expect(
+      titles.some((t) => t.includes('unit') || t.includes('conversion')),
+    ).toBe(true);
   });
 
   test('finds Lunar Cycles via synthetic index entry', () => {
     const result = ragSearch('moon phase lunar cycle full moon');
     expect(result.hasResults).toBe(true);
     const titles = result.results.map((r) => r.entry.title.toLowerCase());
-    expect(titles.some((t) => t.includes('lunar') || t.includes('moon'))).toBe(true);
+    expect(titles.some((t) => t.includes('lunar') || t.includes('moon'))).toBe(
+      true,
+    );
   });
 
   test('finds Barometric Pressure via synthetic index entry', () => {
     const result = ragSearch('barometric pressure weather forecast storm');
     expect(result.hasResults).toBe(true);
     const titles = result.results.map((r) => r.entry.title.toLowerCase());
-    expect(titles.some((t) => t.includes('barometric') || t.includes('pressure'))).toBe(true);
+    expect(
+      titles.some((t) => t.includes('barometric') || t.includes('pressure')),
+    ).toBe(true);
   });
 
   test('finds Sun Times via synthetic index entry', () => {
@@ -312,19 +318,27 @@ describe('ragSearch', () => {
   // --- Navigation module synthetic entries ---
 
   test('finds Star Map via synthetic index entry', () => {
-    const result = ragSearch('star map celestial navigation polaris north star');
+    const result = ragSearch(
+      'star map celestial navigation polaris north star',
+    );
     expect(result.hasResults).toBe(true);
     const titles = result.results.map((r) => r.entry.title.toLowerCase());
-    expect(titles.some((t) => t.includes('star') || t.includes('celestial'))).toBe(true);
+    expect(
+      titles.some((t) => t.includes('star') || t.includes('celestial')),
+    ).toBe(true);
   });
 
   // --- Prepper module synthetic entries ---
 
   test('finds Emergency Planner via synthetic index entry', () => {
-    const result = ragSearch('emergency contacts rally point communication plan');
+    const result = ragSearch(
+      'emergency contacts rally point communication plan',
+    );
     expect(result.hasResults).toBe(true);
     const titles = result.results.map((r) => r.entry.title.toLowerCase());
-    expect(titles.some((t) => t.includes('emergency') || t.includes('planner'))).toBe(true);
+    expect(
+      titles.some((t) => t.includes('emergency') || t.includes('planner')),
+    ).toBe(true);
   });
 
   test('all new synthetic entries have a related_screen set', () => {
