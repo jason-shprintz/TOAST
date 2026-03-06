@@ -7,47 +7,26 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Animated,
   PermissionsAndroid,
   Platform,
-  ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
-import { Text as ScaledText } from '../../components/ScaledText';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { FOOTER_HEIGHT } from '../../theme';
-
-type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
-
-const DELTA = { latitudeDelta: 0.05, longitudeDelta: 0.05 };
-
-// Cardinal labels and their degree positions around the ring
-const CARDINALS = [
-  { label: 'N', deg: 0 },
-  { label: 'NE', deg: 45 },
-  { label: 'E', deg: 90 },
-  { label: 'SE', deg: 135 },
-  { label: 'S', deg: 180 },
-  { label: 'SW', deg: 225 },
-  { label: 'W', deg: 270 },
-  { label: 'NW', deg: 315 },
-];
-
-// 24 ticks every 15°; major ticks coincide with the 8 cardinals
-const TICKS = Array.from({ length: 24 }, (_, i) => {
-  const deg = i * 15;
-  return { deg, isMajor: deg % 45 === 0 };
-});
+import CompassDataPanel from './components/CompassDataPanel';
+import CompassRing from './components/CompassRing';
+import MapPanel, {
+  DELTA,
+  LocationPermissionStatus,
+} from './components/MapPanel';
 
 // US state name → 2-letter abbreviation
 const US_STATE_ABBR: Record<string, string> = {
@@ -310,166 +289,26 @@ export default function MapScreen() {
     outputRange: ['0deg', '360deg'],
   });
 
-  const renderDeniedBanner = () => (
-    <View style={styles.deniedBanner}>
-      <Text style={styles.deniedText}>
-        Location access denied — enable it in Settings to see your position.
-      </Text>
-    </View>
-  );
-
   return (
     <ScreenBody>
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
         {/* Map */}
-        <View style={styles.mapContainer}>
-          {!locationReady ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={COLORS.SECONDARY_ACCENT} />
-              <Text style={styles.loadingText}>Requesting location…</Text>
-            </View>
-          ) : (
-            <>
-              {permissionStatus === 'denied' && renderDeniedBanner()}
-              <MapView
-                ref={mapRef}
-                style={styles.map}
-                provider={PROVIDER_DEFAULT}
-                showsUserLocation={permissionStatus === 'granted'}
-                showsCompass
-                showsScale
-                onMapReady={
-                  permissionStatus === 'granted' ? handleLocateMe : undefined
-                }
-                initialRegion={{
-                  latitude: 0,
-                  longitude: 0,
-                  ...DELTA,
-                }}
-              />
-              {permissionStatus === 'granted' && (
-                <TouchableOpacity
-                  style={styles.locateMeButton}
-                  onPress={handleLocateMe}
-                  activeOpacity={0.8}
-                  accessibilityLabel="Center map on my location"
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.locateMeText}>⌖</Text>
-                </TouchableOpacity>
-              )}
-            </>
-          )}
-        </View>
+        <MapPanel
+          permissionStatus={permissionStatus}
+          locationReady={locationReady}
+          mapRef={mapRef}
+          onLocateMe={handleLocateMe}
+        />
 
         {/* Compass */}
         <View style={styles.compassContainer}>
-          {/* Left: compass ring with fixed cardinal labels */}
-          <View style={styles.compassRing}>
-            {/* Rotating ring — cardinals spin opposite to heading */}
-            <Animated.View
-              style={[
-                styles.cardinalRing,
-                { transform: [{ rotate: ringSpin }] },
-              ]}
-            >
-              {TICKS.map(({ deg, isMajor }) => {
-                const rad = (deg * Math.PI) / 180;
-                const r = isMajor ? 49 : 50.5;
-                const tx = Math.sin(rad) * r;
-                const ty = -Math.cos(rad) * r;
-                const hw = isMajor ? 1 : 0.75; // half-width
-                const hh = isMajor ? 4 : 2.5; // half-height
-                return (
-                  <View
-                    key={`tick-${deg}`}
-                    style={[
-                      isMajor ? styles.tickMajor : styles.tickMinor,
-                      {
-                        transform: [
-                          { translateX: tx - hw },
-                          { translateY: ty - hh },
-                          { rotate: `${deg}deg` },
-                        ],
-                      },
-                    ]}
-                  />
-                );
-              })}
-              {CARDINALS.map(({ label, deg }) => {
-                const rad = (deg * Math.PI) / 180;
-                const radius = 38;
-                const x = Math.sin(rad) * radius;
-                const y = -Math.cos(rad) * radius;
-                const isNorth = label === 'N';
-                return (
-                  <Animated.Text
-                    key={label}
-                    style={[
-                      isNorth
-                        ? styles.cardinalLabelNorth
-                        : styles.cardinalLabel,
-                      {
-                        transform: [
-                          { translateX: x - 7 },
-                          { translateY: y - 8 },
-                          { rotate: labelSpin },
-                        ],
-                      },
-                    ]}
-                  >
-                    {label}
-                  </Animated.Text>
-                );
-              })}
-            </Animated.View>
-
-            {/* Fixed needle — always points up */}
-            <View style={styles.needleWrapper}>
-              <View style={styles.needleNorth} />
-              <View style={styles.needleSouth} />
-            </View>
-
-            {/* Center pivot dot */}
-            <View style={styles.pivot} />
-          </View>
-
-          {/* Right: data panel */}
-          <ScrollView
-            style={styles.dataPanel}
-            contentContainerStyle={styles.dataPanelContent}
-            showsVerticalScrollIndicator={false}
-          >
-            {[
-              { label: 'Heading', value: `${heading}°` },
-              {
-                label: 'Latitude',
-                value: coords
-                  ? `${Math.abs(coords.latitude).toFixed(4)}° ${coords.latitude >= 0 ? 'N' : 'S'}`
-                  : '--',
-              },
-              {
-                label: 'Longitude',
-                value: coords
-                  ? `${Math.abs(coords.longitude).toFixed(4)}° ${coords.longitude >= 0 ? 'E' : 'W'}`
-                  : '--',
-              },
-              {
-                label: 'Elevation',
-                value:
-                  coords?.altitude != null
-                    ? `${Math.round(coords.altitude * 3.28084)} ft`
-                    : '--',
-              },
-              { label: 'Location', value: locationName ?? '--' },
-            ].map(({ label, value }) => (
-              <View key={label} style={styles.dataRow}>
-                <ScaledText style={styles.dataLabel}>{label}</ScaledText>
-                <ScaledText style={styles.dataValue}>{value}</ScaledText>
-              </View>
-            ))}
-          </ScrollView>
+          <CompassRing ringSpin={ringSpin} labelSpin={labelSpin} />
+          <CompassDataPanel
+            heading={heading}
+            coords={coords}
+            locationName={locationName}
+          />
         </View>
       </View>
     </ScreenBody>
@@ -485,61 +324,6 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       paddingBottom: FOOTER_HEIGHT,
       gap: 5,
     },
-    // ─── Map ─────────────────────────────────────────────────────────────────
-    mapContainer: {
-      width: '90%',
-      flex: 1,
-      marginTop: 5,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.SECONDARY_ACCENT,
-      overflow: 'hidden',
-    },
-    map: {
-      flex: 1,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: 12,
-    },
-    loadingText: {
-      fontSize: 14,
-      color: colors.PRIMARY_DARK,
-    },
-    deniedBanner: {
-      paddingHorizontal: 16,
-      paddingVertical: 10,
-      backgroundColor: colors.ERROR,
-    },
-    deniedText: {
-      fontSize: 13,
-      textAlign: 'center',
-      color: colors.PRIMARY_LIGHT,
-    },
-    locateMeButton: {
-      position: 'absolute',
-      bottom: 24,
-      right: 16,
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      justifyContent: 'center',
-      alignItems: 'center',
-      elevation: 4,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    locateMeText: {
-      fontSize: 24,
-      lineHeight: 28,
-      color: colors.PRIMARY_LIGHT,
-    },
-    // ─── Compass ─────────────────────────────────────────────────────────────
     compassContainer: {
       width: '90%',
       height: 140,
@@ -551,118 +335,6 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       alignItems: 'center',
       gap: 12,
       paddingHorizontal: 16,
-    },
-    compassRing: {
-      width: 110,
-      height: 110,
-      borderRadius: 55,
-      borderWidth: 2,
-      borderColor: colors.SECONDARY_ACCENT,
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-    },
-    cardinalRing: {
-      position: 'absolute',
-      width: 110,
-      height: 110,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    tickMajor: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      width: 2,
-      height: 8,
-      borderRadius: 1,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    tickMinor: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      width: 1.5,
-      height: 5,
-      borderRadius: 1,
-      backgroundColor: colors.PRIMARY_DARK,
-      opacity: 0.4,
-    },
-    cardinalLabel: {
-      position: 'absolute',
-      fontSize: 11,
-      top: '50%',
-      left: '50%',
-      color: colors.PRIMARY_DARK,
-      fontWeight: '400',
-    },
-    cardinalLabelNorth: {
-      position: 'absolute',
-      fontSize: 11,
-      top: '50%',
-      left: '50%',
-      color: colors.ERROR,
-      fontWeight: '700',
-    },
-    needleWrapper: {
-      width: 6,
-      height: 48,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    needleNorth: {
-      width: 6,
-      height: 24,
-      borderTopLeftRadius: 3,
-      borderTopRightRadius: 3,
-      backgroundColor: colors.ERROR,
-    },
-    needleSouth: {
-      width: 6,
-      height: 24,
-      borderBottomLeftRadius: 3,
-      borderBottomRightRadius: 3,
-      backgroundColor: colors.PRIMARY_DARK,
-      opacity: 0.35,
-    },
-    pivot: {
-      position: 'absolute',
-      width: 10,
-      height: 10,
-      borderRadius: 5,
-      backgroundColor: colors.SECONDARY_ACCENT,
-    },
-    // ─── Data panel ──────────────────────────────────────────────────────────
-    dataPanel: {
-      flex: 1,
-      alignSelf: 'stretch',
-    },
-    dataPanelContent: {
-      justifyContent: 'center',
-      flexGrow: 1,
-      paddingVertical: 8,
-      gap: 4,
-    },
-    dataRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 2,
-    },
-    dataLabel: {
-      fontSize: 11,
-      color: colors.PRIMARY_DARK,
-      opacity: 0.6,
-      flexShrink: 0,
-      marginRight: 4,
-    },
-    dataValue: {
-      fontSize: 11,
-      fontWeight: '600',
-      fontVariant: ['tabular-nums'],
-      color: colors.PRIMARY_DARK,
-      textAlign: 'right',
-      flexShrink: 1,
     },
   });
 }
