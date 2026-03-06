@@ -1,8 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
@@ -16,7 +15,6 @@ type Props = TextProps & {
 
 type SectionHeaderNavigationProp = NativeStackNavigationProp<{
   Search: undefined;
-  RagAssistant: undefined;
 }>;
 
 /**
@@ -43,12 +41,8 @@ export default function SectionHeader({
   const navigation = useNavigation<SectionHeaderNavigationProp>();
   const COLORS = useTheme();
 
-  const handleSearchPress = () => {
+  const handlePress = () => {
     navigation.navigate('Search');
-  };
-
-  const handleRagPress = () => {
-    navigation.navigate('RagAssistant');
   };
 
   const header = (
@@ -71,38 +65,16 @@ export default function SectionHeader({
   return (
     <>
       {enableSearch ? (
-        <View style={styles.headerRow}>
-          <TouchableOpacity
-            onPress={handleSearchPress}
-            activeOpacity={0.7}
-            style={styles.searchBar}
-            accessibilityRole="button"
-            accessibilityLabel="Search"
-            accessibilityHint="Double tap to open search screen"
-          >
-            {header}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleRagPress}
-            activeOpacity={0.7}
-            style={[
-              styles.ragButton,
-              {
-                backgroundColor: COLORS.SECONDARY_ACCENT,
-                borderColor: COLORS.TOAST_BROWN,
-              },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Reference Assistant"
-            accessibilityHint="Double tap to ask the reference assistant a question"
-          >
-            <Ionicons
-              name="chatbubble-ellipses-outline"
-              size={20}
-              color={COLORS.PRIMARY_DARK}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={handlePress}
+          activeOpacity={0.7}
+          style={styles.searchBar}
+          accessibilityRole="button"
+          accessibilityLabel="Search"
+          accessibilityHint="Double tap to open search screen"
+        >
+          {header}
+        </TouchableOpacity>
       ) : (
         header
       )}
@@ -112,13 +84,6 @@ export default function SectionHeader({
 }
 
 const styles = StyleSheet.create({
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '90%',
-    alignSelf: 'center',
-    gap: 8,
-  },
   header: {
     fontSize: 20,
     fontWeight: '800',
@@ -132,15 +97,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   searchBar: {
-    flex: 1,
-  },
-  ragButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+    width: '80%',
+    alignSelf: 'center',
   },
 });
