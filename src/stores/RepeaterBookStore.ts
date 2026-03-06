@@ -100,7 +100,9 @@ function mapRow(
  * `X-App-Info` header so that RepeaterBook can authenticate the request even
  * if one of the two is dropped by the runtime.
  *
- * Returns an empty array on any error (other states' results are unaffected).
+ * On network errors, non-OK HTTP responses, or JSON parsing failures, this
+ * function rejects (throws). Callers such as `fetchRepeaters` use
+ * `Promise.allSettled` so that a failure for one state does not affect others.
  */
 async function fetchStateRepeaters(
   state: string,
