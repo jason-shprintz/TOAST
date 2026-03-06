@@ -10,8 +10,11 @@ const CUSTOM_KEY = '@repeaterbook/custom';
 const REFETCH_THRESHOLD_MILES = 50;
 const DEFAULT_RADIUS_MILES = 50;
 const REPEATERBOOK_URL = 'https://www.repeaterbook.com/api/export.php';
+// RepeaterBook requires a User-Agent with a URL and contact email in the form:
+// "AppName/version (+https://url; email)"
+// See: https://www.repeaterbook.com/wiki/doku.php?id=api
 const USER_AGENT =
-  'TOAST Survival App (toastbyte.studio, support@toastbyte.studio)';
+  'TOAST/1.0 (+https://toastbyte.studio; support@toastbyte.studio)';
 
 export interface Repeater {
   id: string;
