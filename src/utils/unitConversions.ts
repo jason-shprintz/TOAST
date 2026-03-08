@@ -500,3 +500,17 @@ export const conversionCategories: ConversionCategory[] = [
     units: lightConversions,
   },
 ];
+
+/**
+ * Converts a Celsius temperature value to a display string in the preferred unit.
+ * @param celsius - Temperature in Celsius
+ * @param unit - 'F' for Fahrenheit or 'C' for Celsius
+ * @returns Formatted temperature string, e.g. "72°F" or "22°C"
+ */
+export function displayTemp(celsius: number, unit: 'F' | 'C'): string {
+  if (unit === 'F') {
+    const f = celsius * (9 / 5) + 32;
+    return `${Math.round(f)}°F`;
+  }
+  return `${Math.round(celsius)}°C`;
+}

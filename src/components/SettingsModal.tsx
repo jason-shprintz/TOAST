@@ -24,7 +24,7 @@ import {
   clearBookmarks,
   getBookmarks,
 } from '../stores/BookmarksStore';
-import { FontSize, ThemeMode } from '../stores/SettingsStore';
+import { FontSize, TemperatureUnit, ThemeMode } from '../stores/SettingsStore';
 import {
   BackupData,
   BackupPreview,
@@ -91,6 +91,12 @@ export const SettingsModal = observer(
       { value: 'dark', label: 'Dark Mode' },
       { value: 'system', label: 'System' },
     ];
+
+    const temperatureUnitOptions: { value: TemperatureUnit; label: string }[] =
+      [
+        { value: 'F', label: '°F' },
+        { value: 'C', label: '°C' },
+      ];
 
     const handleExport = useCallback(async () => {
       setIsExporting(true);
@@ -379,6 +385,52 @@ export const SettingsModal = observer(
                               styles.optionText,
                               { color: COLORS.PRIMARY_DARK },
                               settingsStore.themeMode === option.value &&
+                                styles.optionTextSelected,
+                            ]}
+                          >
+                            {option.label}
+                          </RNText>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Temperature Unit Section */}
+                  <View style={styles.section}>
+                    <RNText
+                      style={[
+                        styles.sectionTitle,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                    >
+                      Temperature Unit
+                    </RNText>
+                    <View style={styles.optionsContainer}>
+                      {temperatureUnitOptions.map((option) => (
+                        <TouchableOpacity
+                          key={option.value}
+                          style={[
+                            styles.optionButton,
+                            {
+                              borderColor: COLORS.TOAST_BROWN,
+                              backgroundColor: COLORS.BACKGROUND,
+                            },
+                            settingsStore.temperatureUnit === option.value && {
+                              backgroundColor: COLORS.TOAST_BROWN,
+                              borderColor: COLORS.PRIMARY_DARK,
+                            },
+                          ]}
+                          onPress={() =>
+                            settingsStore.setTemperatureUnit(option.value)
+                          }
+                          accessibilityLabel={`Set temperature unit to ${option.label}`}
+                          accessibilityRole="button"
+                        >
+                          <RNText
+                            style={[
+                              styles.optionText,
+                              { color: COLORS.PRIMARY_DARK },
+                              settingsStore.temperatureUnit === option.value &&
                                 styles.optionTextSelected,
                             ]}
                           >
