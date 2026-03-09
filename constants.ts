@@ -100,6 +100,12 @@ export const EARTH_TOOLS: ToolType[] = [
     icon: 'analytics-outline',
     id: 'earth_barometric_pressure',
   },
+  {
+    name: 'Seasonal Outlook',
+    screen: 'SeasonalOutlook',
+    icon: 'calendar-outline',
+    id: 'earth_seasonal_outlook',
+  },
 ];
 
 export const COMMUNICATION_TOOLS: ToolType[] = [

@@ -80,6 +80,7 @@ import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
 import VoiceLogScreen from '../screens/VoiceLog/VoiceLogScreen';
+import SeasonalOutlookScreen from '../screens/SeasonalOutlook/SeasonalOutlookScreen';
 import {
   NavigationHistoryProvider,
   useNavigationHistory,
@@ -212,6 +213,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="BarometricPressure"
             component={BarometricPressureScreen}
+          />
+          <Stack.Screen
+            name="SeasonalOutlook"
+            component={SeasonalOutlookScreen}
           />
           {/* Unit Conversion */}
           <Stack.Screen

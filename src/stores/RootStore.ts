@@ -10,6 +10,7 @@ import { RepeaterBookStore } from './RepeaterBookStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
 import { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
+import { WeatherOutlookStore } from './WeatherOutlookStore';
 
 export class RootStore {
   coreStore: CoreStore;
@@ -23,6 +24,7 @@ export class RootStore {
   solarCycleNotificationStore: SolarCycleNotificationStore;
   barometerStore: BarometerStore;
   repeaterBookStore: RepeaterBookStore;
+  weatherOutlookStore: WeatherOutlookStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -37,6 +39,7 @@ export class RootStore {
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
+    this.weatherOutlookStore = new WeatherOutlookStore();
     this.initializeSettings();
   }
 
@@ -55,6 +58,8 @@ export class RootStore {
         this.coreStore.notesDb,
       );
       await this.solarCycleNotificationStore.loadSettings();
+      // Initialize weather outlook cache table
+      await this.weatherOutlookStore.initDatabase(this.coreStore.notesDb);
     }
     // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
@@ -78,6 +83,7 @@ export class RootStore {
     this.solarCycleNotificationStore.dispose();
     this.barometerStore.stop();
     this.repeaterBookStore.dispose();
+    this.weatherOutlookStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -89,6 +95,7 @@ export class RootStore {
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
+    this.weatherOutlookStore = new WeatherOutlookStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB
