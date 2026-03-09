@@ -113,6 +113,7 @@ export const SettingsModal = observer(
             fontSize: settingsStore.fontSize,
             themeMode: settingsStore.themeMode,
             noteSortOrder: settingsStore.noteSortOrder,
+            temperatureUnit: settingsStore.temperatureUnit,
           },
         );
         await exportBackup(backupData);
@@ -207,6 +208,11 @@ export const SettingsModal = observer(
             if (data.settings.noteSortOrder) {
               await settingsStore.setNoteSortOrder(
                 data.settings.noteSortOrder as any,
+              );
+            }
+            if (data.settings.temperatureUnit) {
+              await settingsStore.setTemperatureUnit(
+                data.settings.temperatureUnit as any,
               );
             }
           }

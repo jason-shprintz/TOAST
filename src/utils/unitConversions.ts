@@ -3,6 +3,8 @@
  * Provides two-way conversions for various unit categories.
  */
 
+import type { TemperatureUnit } from '../stores/SettingsStore';
+
 export type ConversionCategory = {
   id: string;
   name: string;
@@ -507,7 +509,7 @@ export const conversionCategories: ConversionCategory[] = [
  * @param unit - 'F' for Fahrenheit or 'C' for Celsius
  * @returns Formatted temperature string, e.g. "72°F" or "22°C"
  */
-export function displayTemp(celsius: number, unit: 'F' | 'C'): string {
+export function displayTemp(celsius: number, unit: TemperatureUnit): string {
   if (unit === 'F') {
     const f = celsius * (9 / 5) + 32;
     return `${Math.round(f)}°F`;
