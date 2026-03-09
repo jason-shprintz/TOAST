@@ -4,9 +4,9 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
   ScrollView,
   Text as RNText,
@@ -46,9 +46,6 @@ interface SettingsModalProps {
  *
  * Note: Uses React Native's Text directly to avoid scaling issues in the settings UI.
  */
-
-// No-op handler to prevent backdrop touch from propagating
-const preventClose = () => {};
 
 /** Formats a Unix timestamp (ms) as a locale date-time string. */
 function formatBackupDate(timestamp: number): string {
@@ -257,454 +254,436 @@ export const SettingsModal = observer(
         transparent
         onRequestClose={onClose}
       >
-        <TouchableWithoutFeedback
-          onPress={onClose}
-          accessibilityLabel="Close settings modal"
-          accessibilityRole="button"
-          accessibilityHint="Tap to dismiss the settings"
-        >
-          <View style={styles.overlay}>
-            <TouchableWithoutFeedback onPress={preventClose}>
-              <View
-                style={[
-                  styles.modalContainer,
-                  {
-                    backgroundColor: COLORS.PRIMARY_LIGHT,
-                    borderColor: COLORS.TOAST_BROWN,
-                  },
-                ]}
+        <View style={styles.overlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessibilityLabel="Close settings modal"
+            accessibilityRole="button"
+            accessibilityHint="Tap to dismiss the settings"
+          />
+          <View
+            style={[
+              styles.modalContainer,
+              {
+                backgroundColor: COLORS.PRIMARY_LIGHT,
+                borderColor: COLORS.TOAST_BROWN,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.header,
+                {
+                  backgroundColor: COLORS.SECONDARY_ACCENT,
+                  borderBottomColor: COLORS.TOAST_BROWN,
+                },
+              ]}
+            >
+              <RNText
+                style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}
               >
+                Settings
+              </RNText>
+              <TouchableOpacity
+                onPress={onClose}
+                style={styles.closeButton}
+                accessibilityLabel="Close settings"
+                accessibilityRole="button"
+              >
+                <Ionicons
+                  name="close-outline"
+                  size={28}
+                  color={COLORS.PRIMARY_DARK}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.content}>
+              {/* Font Size Section */}
+              <View style={styles.section}>
+                <RNText
+                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Font Size
+                </RNText>
+                <View style={styles.optionsContainer}>
+                  {fontSizeOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.optionButton,
+                        {
+                          borderColor: COLORS.TOAST_BROWN,
+                          backgroundColor: COLORS.BACKGROUND,
+                        },
+                        settingsStore.fontSize === option.value && {
+                          backgroundColor: COLORS.TOAST_BROWN,
+                          borderColor: COLORS.PRIMARY_DARK,
+                        },
+                      ]}
+                      onPress={() => settingsStore.setFontSize(option.value)}
+                      accessibilityLabel={`Set font size to ${option.label}`}
+                      accessibilityRole="button"
+                    >
+                      <RNText
+                        style={[
+                          styles.optionText,
+                          { color: COLORS.PRIMARY_DARK },
+                          settingsStore.fontSize === option.value &&
+                            styles.optionTextSelected,
+                        ]}
+                      >
+                        {option.label}
+                      </RNText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Theme Mode Section */}
+              <View style={styles.section}>
+                <RNText
+                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Theme
+                </RNText>
+                <View style={styles.optionsContainer}>
+                  {themeModeOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.optionButton,
+                        {
+                          borderColor: COLORS.TOAST_BROWN,
+                          backgroundColor: COLORS.BACKGROUND,
+                        },
+                        settingsStore.themeMode === option.value && {
+                          backgroundColor: COLORS.TOAST_BROWN,
+                          borderColor: COLORS.PRIMARY_DARK,
+                        },
+                      ]}
+                      onPress={() => settingsStore.setThemeMode(option.value)}
+                      accessibilityLabel={`Set theme to ${option.label}`}
+                      accessibilityRole="button"
+                    >
+                      <RNText
+                        style={[
+                          styles.optionText,
+                          { color: COLORS.PRIMARY_DARK },
+                          settingsStore.themeMode === option.value &&
+                            styles.optionTextSelected,
+                        ]}
+                      >
+                        {option.label}
+                      </RNText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Temperature Unit Section */}
+              <View style={styles.section}>
+                <RNText
+                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Temperature Unit
+                </RNText>
                 <View
+                  style={[styles.optionsContainer, { flexDirection: 'row' }]}
+                >
+                  {temperatureUnitOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.optionButton,
+                        {
+                          flex: 1,
+                          borderColor: COLORS.TOAST_BROWN,
+                          backgroundColor: COLORS.BACKGROUND,
+                        },
+                        settingsStore.temperatureUnit === option.value && {
+                          backgroundColor: COLORS.TOAST_BROWN,
+                          borderColor: COLORS.PRIMARY_DARK,
+                        },
+                      ]}
+                      onPress={() =>
+                        settingsStore.setTemperatureUnit(option.value)
+                      }
+                      accessibilityLabel={`Set temperature unit to ${option.label}`}
+                      accessibilityRole="button"
+                    >
+                      <RNText
+                        style={[
+                          styles.optionText,
+                          { color: COLORS.PRIMARY_DARK },
+                          settingsStore.temperatureUnit === option.value &&
+                            styles.optionTextSelected,
+                        ]}
+                      >
+                        {option.label}
+                      </RNText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Data & Backup Section */}
+              <View style={styles.section}>
+                <RNText
+                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  Data &amp; Backup
+                </RNText>
+
+                {/* Last backup timestamp */}
+                <RNText
+                  style={[styles.backupStatus, { color: COLORS.PRIMARY_DARK }]}
+                >
+                  {settingsStore.lastBackupAt
+                    ? `Last backed up: ${formatBackupDate(settingsStore.lastBackupAt)}`
+                    : 'No backup yet'}
+                </RNText>
+
+                {/* Export Now button */}
+                <TouchableOpacity
                   style={[
-                    styles.header,
+                    styles.actionButton,
                     {
-                      backgroundColor: COLORS.SECONDARY_ACCENT,
-                      borderBottomColor: COLORS.TOAST_BROWN,
+                      borderColor: COLORS.TOAST_BROWN,
+                      backgroundColor: COLORS.BACKGROUND,
                     },
                   ]}
+                  onPress={handleExport}
+                  disabled={isExporting}
+                  accessibilityLabel="Export backup now"
+                  accessibilityRole="button"
                 >
-                  <RNText
-                    style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}
-                  >
-                    Settings
-                  </RNText>
-                  <TouchableOpacity
-                    onPress={onClose}
-                    style={styles.closeButton}
-                    accessibilityLabel="Close settings"
-                    accessibilityRole="button"
-                  >
-                    <Ionicons
-                      name="close-outline"
-                      size={28}
+                  {isExporting ? (
+                    <ActivityIndicator
+                      size="small"
                       color={COLORS.PRIMARY_DARK}
                     />
-                  </TouchableOpacity>
-                </View>
-
-                <ScrollView style={styles.content}>
-                  {/* Font Size Section */}
-                  <View style={styles.section}>
-                    <RNText
-                      style={[
-                        styles.sectionTitle,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      Font Size
-                    </RNText>
-                    <View style={styles.optionsContainer}>
-                      {fontSizeOptions.map((option) => (
-                        <TouchableOpacity
-                          key={option.value}
-                          style={[
-                            styles.optionButton,
-                            {
-                              borderColor: COLORS.TOAST_BROWN,
-                              backgroundColor: COLORS.BACKGROUND,
-                            },
-                            settingsStore.fontSize === option.value && {
-                              backgroundColor: COLORS.TOAST_BROWN,
-                              borderColor: COLORS.PRIMARY_DARK,
-                            },
-                          ]}
-                          onPress={() =>
-                            settingsStore.setFontSize(option.value)
-                          }
-                          accessibilityLabel={`Set font size to ${option.label}`}
-                          accessibilityRole="button"
-                        >
-                          <RNText
-                            style={[
-                              styles.optionText,
-                              { color: COLORS.PRIMARY_DARK },
-                              settingsStore.fontSize === option.value &&
-                                styles.optionTextSelected,
-                            ]}
-                          >
-                            {option.label}
-                          </RNText>
-                        </TouchableOpacity>
-                      ))}
+                  ) : (
+                    <View style={styles.actionButtonInner}>
+                      <Ionicons
+                        name="share-outline"
+                        size={20}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                      <RNText
+                        style={[
+                          styles.actionButtonText,
+                          { color: COLORS.PRIMARY_DARK },
+                        ]}
+                      >
+                        Export Now
+                      </RNText>
                     </View>
+                  )}
+                </TouchableOpacity>
+
+                {/* Restore from Backup button */}
+                <TouchableOpacity
+                  style={[
+                    styles.actionButton,
+                    {
+                      borderColor: COLORS.TOAST_BROWN,
+                      backgroundColor: COLORS.BACKGROUND,
+                    },
+                  ]}
+                  onPress={handleOpenRestorePanel}
+                  accessibilityLabel="Restore from backup"
+                  accessibilityRole="button"
+                >
+                  <View style={styles.actionButtonInner}>
+                    <Ionicons
+                      name="cloud-download-outline"
+                      size={20}
+                      color={COLORS.PRIMARY_DARK}
+                    />
+                    <RNText
+                      style={[
+                        styles.actionButtonText,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                    >
+                      Restore from Backup
+                    </RNText>
                   </View>
+                </TouchableOpacity>
 
-                  {/* Theme Mode Section */}
-                  <View style={styles.section}>
-                    <RNText
-                      style={[
-                        styles.sectionTitle,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      Theme
-                    </RNText>
-                    <View style={styles.optionsContainer}>
-                      {themeModeOptions.map((option) => (
-                        <TouchableOpacity
-                          key={option.value}
-                          style={[
-                            styles.optionButton,
-                            {
-                              borderColor: COLORS.TOAST_BROWN,
-                              backgroundColor: COLORS.BACKGROUND,
-                            },
-                            settingsStore.themeMode === option.value && {
-                              backgroundColor: COLORS.TOAST_BROWN,
-                              borderColor: COLORS.PRIMARY_DARK,
-                            },
-                          ]}
-                          onPress={() =>
-                            settingsStore.setThemeMode(option.value)
-                          }
-                          accessibilityLabel={`Set theme to ${option.label}`}
-                          accessibilityRole="button"
-                        >
-                          <RNText
-                            style={[
-                              styles.optionText,
-                              { color: COLORS.PRIMARY_DARK },
-                              settingsStore.themeMode === option.value &&
-                                styles.optionTextSelected,
-                            ]}
-                          >
-                            {option.label}
-                          </RNText>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-
-                  {/* Temperature Unit Section */}
-                  <View style={styles.section}>
-                    <RNText
-                      style={[
-                        styles.sectionTitle,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      Temperature Unit
-                    </RNText>
-                    <View style={styles.optionsContainer}>
-                      {temperatureUnitOptions.map((option) => (
-                        <TouchableOpacity
-                          key={option.value}
-                          style={[
-                            styles.optionButton,
-                            {
-                              borderColor: COLORS.TOAST_BROWN,
-                              backgroundColor: COLORS.BACKGROUND,
-                            },
-                            settingsStore.temperatureUnit === option.value && {
-                              backgroundColor: COLORS.TOAST_BROWN,
-                              borderColor: COLORS.PRIMARY_DARK,
-                            },
-                          ]}
-                          onPress={() =>
-                            settingsStore.setTemperatureUnit(option.value)
-                          }
-                          accessibilityLabel={`Set temperature unit to ${option.label}`}
-                          accessibilityRole="button"
-                        >
-                          <RNText
-                            style={[
-                              styles.optionText,
-                              { color: COLORS.PRIMARY_DARK },
-                              settingsStore.temperatureUnit === option.value &&
-                                styles.optionTextSelected,
-                            ]}
-                          >
-                            {option.label}
-                          </RNText>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-
-                  {/* Data & Backup Section */}
-                  <View style={styles.section}>
-                    <RNText
-                      style={[
-                        styles.sectionTitle,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      Data &amp; Backup
-                    </RNText>
-
-                    {/* Last backup timestamp */}
-                    <RNText
-                      style={[
-                        styles.backupStatus,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      {settingsStore.lastBackupAt
-                        ? `Last backed up: ${formatBackupDate(settingsStore.lastBackupAt)}`
-                        : 'No backup yet'}
-                    </RNText>
-
-                    {/* Export Now button */}
-                    <TouchableOpacity
-                      style={[
-                        styles.actionButton,
-                        {
-                          borderColor: COLORS.TOAST_BROWN,
-                          backgroundColor: COLORS.BACKGROUND,
-                        },
-                      ]}
-                      onPress={handleExport}
-                      disabled={isExporting}
-                      accessibilityLabel="Export backup now"
-                      accessibilityRole="button"
-                    >
-                      {isExporting ? (
-                        <ActivityIndicator
-                          size="small"
-                          color={COLORS.PRIMARY_DARK}
-                        />
-                      ) : (
-                        <View style={styles.actionButtonInner}>
-                          <Ionicons
-                            name="share-outline"
-                            size={20}
-                            color={COLORS.PRIMARY_DARK}
-                          />
-                          <RNText
-                            style={[
-                              styles.actionButtonText,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            Export Now
-                          </RNText>
-                        </View>
-                      )}
-                    </TouchableOpacity>
-
-                    {/* Restore from Backup button */}
-                    <TouchableOpacity
-                      style={[
-                        styles.actionButton,
-                        {
-                          borderColor: COLORS.TOAST_BROWN,
-                          backgroundColor: COLORS.BACKGROUND,
-                        },
-                      ]}
-                      onPress={handleOpenRestorePanel}
-                      accessibilityLabel="Restore from backup"
-                      accessibilityRole="button"
-                    >
-                      <View style={styles.actionButtonInner}>
+                {/* Restore panel — file list */}
+                {showFileList && (
+                  <View
+                    style={[
+                      styles.restorePanel,
+                      {
+                        borderColor: COLORS.TOAST_BROWN,
+                        backgroundColor: COLORS.SECONDARY_ACCENT,
+                      },
+                    ]}
+                  >
+                    <View style={styles.restorePanelHeader}>
+                      <RNText
+                        style={[
+                          styles.restorePanelTitle,
+                          { color: COLORS.PRIMARY_DARK },
+                        ]}
+                      >
+                        Select a Backup File
+                      </RNText>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setShowFileList(false);
+                          setSelectedFilePath(null);
+                          setSelectedBackup(null);
+                          setBackupPreview(null);
+                        }}
+                        accessibilityLabel="Close restore panel"
+                        accessibilityRole="button"
+                      >
                         <Ionicons
-                          name="cloud-download-outline"
-                          size={20}
+                          name="close-circle-outline"
+                          size={22}
                           color={COLORS.PRIMARY_DARK}
                         />
+                      </TouchableOpacity>
+                    </View>
+
+                    {backupFiles.length === 0 ? (
+                      <RNText
+                        style={[
+                          styles.noFilesText,
+                          { color: COLORS.PRIMARY_DARK },
+                        ]}
+                      >
+                        No backup files found. Export a backup first, then save
+                        it to your Documents folder to restore.
+                      </RNText>
+                    ) : (
+                      backupFiles.map((file) => (
+                        <TouchableOpacity
+                          key={file.path}
+                          style={[
+                            styles.fileItem,
+                            {
+                              borderColor: COLORS.TOAST_BROWN,
+                              backgroundColor:
+                                selectedFilePath === file.path
+                                  ? COLORS.TOAST_BROWN
+                                  : COLORS.BACKGROUND,
+                            },
+                          ]}
+                          onPress={() => handleSelectFile(file.path)}
+                          accessibilityLabel={`Select backup file ${file.name}`}
+                          accessibilityRole="button"
+                        >
+                          <RNText
+                            style={[
+                              styles.fileName,
+                              { color: COLORS.PRIMARY_DARK },
+                            ]}
+                          >
+                            {file.name}
+                          </RNText>
+                        </TouchableOpacity>
+                      ))
+                    )}
+
+                    {/* Backup preview and restore options */}
+                    {backupPreview && (
+                      <View style={styles.previewContainer}>
                         <RNText
                           style={[
-                            styles.actionButtonText,
+                            styles.previewTitle,
                             { color: COLORS.PRIMARY_DARK },
                           ]}
                         >
-                          Restore from Backup
+                          Backup from {backupPreview.backupDate}
                         </RNText>
-                      </View>
-                    </TouchableOpacity>
-
-                    {/* Restore panel — file list */}
-                    {showFileList && (
-                      <View
-                        style={[
-                          styles.restorePanel,
-                          {
-                            borderColor: COLORS.TOAST_BROWN,
-                            backgroundColor: COLORS.SECONDARY_ACCENT,
-                          },
-                        ]}
-                      >
-                        <View style={styles.restorePanelHeader}>
-                          <RNText
-                            style={[
-                              styles.restorePanelTitle,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            Select a Backup File
-                          </RNText>
+                        <RNText
+                          style={[
+                            styles.previewText,
+                            { color: COLORS.PRIMARY_DARK },
+                          ]}
+                        >
+                          {backupPreview.pantryItemCount} pantry items,{' '}
+                          {backupPreview.inventoryItemCount} inventory items,{' '}
+                          {backupPreview.noteCount} notes,{' '}
+                          {backupPreview.checklistCount} checklists,{' '}
+                          {backupPreview.bookmarkCount} bookmarks
+                        </RNText>
+                        <View style={styles.restoreButtons}>
                           <TouchableOpacity
-                            onPress={() => {
-                              setShowFileList(false);
-                              setSelectedFilePath(null);
-                              setSelectedBackup(null);
-                              setBackupPreview(null);
-                            }}
-                            accessibilityLabel="Close restore panel"
+                            style={[
+                              styles.restoreButton,
+                              {
+                                borderColor: COLORS.TOAST_BROWN,
+                                backgroundColor: COLORS.BACKGROUND,
+                              },
+                              isRestoring && styles.restoreButtonDisabled,
+                            ]}
+                            onPress={() => confirmRestore('replace')}
+                            disabled={isRestoring}
+                            accessibilityLabel="Replace all data with backup"
                             accessibilityRole="button"
                           >
-                            <Ionicons
-                              name="close-circle-outline"
-                              size={22}
-                              color={COLORS.PRIMARY_DARK}
-                            />
-                          </TouchableOpacity>
-                        </View>
-
-                        {backupFiles.length === 0 ? (
-                          <RNText
-                            style={[
-                              styles.noFilesText,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
-                            No backup files found. Export a backup first, then
-                            save it to your Documents folder to restore.
-                          </RNText>
-                        ) : (
-                          backupFiles.map((file) => (
-                            <TouchableOpacity
-                              key={file.path}
-                              style={[
-                                styles.fileItem,
-                                {
-                                  borderColor: COLORS.TOAST_BROWN,
-                                  backgroundColor:
-                                    selectedFilePath === file.path
-                                      ? COLORS.TOAST_BROWN
-                                      : COLORS.BACKGROUND,
-                                },
-                              ]}
-                              onPress={() => handleSelectFile(file.path)}
-                              accessibilityLabel={`Select backup file ${file.name}`}
-                              accessibilityRole="button"
-                            >
+                            {isRestoring ? (
+                              <ActivityIndicator
+                                size="small"
+                                color={COLORS.PRIMARY_DARK}
+                              />
+                            ) : (
                               <RNText
                                 style={[
-                                  styles.fileName,
+                                  styles.restoreButtonText,
                                   { color: COLORS.PRIMARY_DARK },
                                 ]}
                               >
-                                {file.name}
+                                Replace
                               </RNText>
-                            </TouchableOpacity>
-                          ))
-                        )}
-
-                        {/* Backup preview and restore options */}
-                        {backupPreview && (
-                          <View style={styles.previewContainer}>
-                            <RNText
-                              style={[
-                                styles.previewTitle,
-                                { color: COLORS.PRIMARY_DARK },
-                              ]}
-                            >
-                              Backup from {backupPreview.backupDate}
-                            </RNText>
-                            <RNText
-                              style={[
-                                styles.previewText,
-                                { color: COLORS.PRIMARY_DARK },
-                              ]}
-                            >
-                              {backupPreview.pantryItemCount} pantry items,{' '}
-                              {backupPreview.inventoryItemCount} inventory
-                              items, {backupPreview.noteCount} notes,{' '}
-                              {backupPreview.checklistCount} checklists,{' '}
-                              {backupPreview.bookmarkCount} bookmarks
-                            </RNText>
-                            <View style={styles.restoreButtons}>
-                              <TouchableOpacity
+                            )}
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[
+                              styles.restoreButton,
+                              {
+                                borderColor: COLORS.TOAST_BROWN,
+                                backgroundColor: COLORS.BACKGROUND,
+                              },
+                              isRestoring && styles.restoreButtonDisabled,
+                            ]}
+                            onPress={() => confirmRestore('merge')}
+                            disabled={isRestoring}
+                            accessibilityLabel="Merge backup with existing data"
+                            accessibilityRole="button"
+                          >
+                            {isRestoring ? (
+                              <ActivityIndicator
+                                size="small"
+                                color={COLORS.PRIMARY_DARK}
+                              />
+                            ) : (
+                              <RNText
                                 style={[
-                                  styles.restoreButton,
-                                  {
-                                    borderColor: COLORS.TOAST_BROWN,
-                                    backgroundColor: COLORS.BACKGROUND,
-                                  },
-                                  isRestoring && styles.restoreButtonDisabled,
+                                  styles.restoreButtonText,
+                                  { color: COLORS.PRIMARY_DARK },
                                 ]}
-                                onPress={() => confirmRestore('replace')}
-                                disabled={isRestoring}
-                                accessibilityLabel="Replace all data with backup"
-                                accessibilityRole="button"
                               >
-                                {isRestoring ? (
-                                  <ActivityIndicator
-                                    size="small"
-                                    color={COLORS.PRIMARY_DARK}
-                                  />
-                                ) : (
-                                  <RNText
-                                    style={[
-                                      styles.restoreButtonText,
-                                      { color: COLORS.PRIMARY_DARK },
-                                    ]}
-                                  >
-                                    Replace
-                                  </RNText>
-                                )}
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={[
-                                  styles.restoreButton,
-                                  {
-                                    borderColor: COLORS.TOAST_BROWN,
-                                    backgroundColor: COLORS.BACKGROUND,
-                                  },
-                                  isRestoring && styles.restoreButtonDisabled,
-                                ]}
-                                onPress={() => confirmRestore('merge')}
-                                disabled={isRestoring}
-                                accessibilityLabel="Merge backup with existing data"
-                                accessibilityRole="button"
-                              >
-                                {isRestoring ? (
-                                  <ActivityIndicator
-                                    size="small"
-                                    color={COLORS.PRIMARY_DARK}
-                                  />
-                                ) : (
-                                  <RNText
-                                    style={[
-                                      styles.restoreButtonText,
-                                      { color: COLORS.PRIMARY_DARK },
-                                    ]}
-                                  >
-                                    Merge
-                                  </RNText>
-                                )}
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        )}
+                                Merge
+                              </RNText>
+                            )}
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     )}
                   </View>
-                </ScrollView>
+                )}
               </View>
-            </TouchableWithoutFeedback>
+            </ScrollView>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     );
   },
