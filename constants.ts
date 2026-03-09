@@ -34,6 +34,12 @@ export const MODULES: ToolType[] = [
     icon: 'shield-checkmark-outline',
     id: 'home_prepper',
   },
+  {
+    name: 'Earth',
+    screen: 'EarthModule',
+    icon: 'earth-outline',
+    id: 'home_earth',
+  },
 ];
 
 export const CORE_TOOLS: ToolType[] = [
@@ -73,23 +79,26 @@ export const CORE_TOOLS: ToolType[] = [
     icon: 'list-outline',
     id: 'core_checklist',
   },
+];
+
+export const EARTH_TOOLS: ToolType[] = [
   {
     name: 'Sun Times',
     screen: 'SunTime',
     icon: 'sunny-outline',
-    id: 'core_sun_time',
+    id: 'earth_sun_time',
   },
   {
     name: 'Lunar Cycles',
     screen: 'LunarCycles',
     icon: 'moon-outline',
-    id: 'core_lunar_cycles',
+    id: 'earth_lunar_cycles',
   },
   {
     name: 'Barometric Pressure',
     screen: 'BarometricPressure',
     icon: 'analytics-outline',
-    id: 'core_barometric_pressure',
+    id: 'earth_barometric_pressure',
   },
 ];
 
