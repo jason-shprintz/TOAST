@@ -134,6 +134,7 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen name="EarthModule" component={EarthModule} />
           {/* Navigation Module Screens */}
           <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="StarMap" component={StarMapScreen} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />
@@ -208,7 +209,6 @@ function NavigatorContent(): JSX.Element {
           {/* Earth Module */}
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
           <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
-          <Stack.Screen name="StarMap" component={StarMapScreen} />
           <Stack.Screen
             name="BarometricPressure"
             component={BarometricPressureScreen}
