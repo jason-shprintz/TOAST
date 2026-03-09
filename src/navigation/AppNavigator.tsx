@@ -5,6 +5,7 @@ import BootSplash from 'react-native-bootsplash';
 import AppShell from '../components/AppShell';
 import CommunicationsModule from '../modules/Communications/CommunicationsModule';
 import CoreModule from '../modules/Core/CoreModule';
+import EarthModule from '../modules/Earth/EarthModule';
 import NavigationModule from '../modules/Navigation/NavigationModule';
 import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
@@ -130,8 +131,10 @@ function NavigatorContent(): JSX.Element {
             component={CommunicationsModule}
           />
           <Stack.Screen name="PrepperModule" component={PrepperModule} />
+          <Stack.Screen name="EarthModule" component={EarthModule} />
           {/* Navigation Module Screens */}
           <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="StarMap" component={StarMapScreen} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />
@@ -203,9 +206,9 @@ function NavigatorContent(): JSX.Element {
             name="ChecklistEntry"
             component={ChecklistEntryScreen}
           />
+          {/* Earth Module */}
           <Stack.Screen name="SunTime" component={SunTimeScreen} />
           <Stack.Screen name="LunarCycles" component={LunarCyclesScreen} />
-          <Stack.Screen name="StarMap" component={StarMapScreen} />
           <Stack.Screen
             name="BarometricPressure"
             component={BarometricPressureScreen}
