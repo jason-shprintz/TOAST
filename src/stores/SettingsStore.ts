@@ -3,11 +3,13 @@ import { makeAutoObservable, runInAction } from 'mobx';
 export type FontSize = 'small' | 'medium' | 'large';
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type NoteSortOrder = 'newest-oldest' | 'oldest-newest' | 'a-z' | 'z-a';
+export type TemperatureUnit = 'F' | 'C';
 
 export interface Settings {
   fontSize: FontSize;
   themeMode: ThemeMode;
   noteSortOrder: NoteSortOrder;
+  temperatureUnit: TemperatureUnit;
 }
 
 /**
@@ -18,6 +20,7 @@ export class SettingsStore {
   fontSize: FontSize = 'small';
   themeMode: ThemeMode = 'system';
   noteSortOrder: NoteSortOrder = 'newest-oldest';
+  temperatureUnit: TemperatureUnit = 'F';
   lastBackupAt: number | null = null;
   private settingsDb: any | null = null;
 
@@ -54,6 +57,17 @@ export class SettingsStore {
   async setNoteSortOrder(order: NoteSortOrder) {
     runInAction(() => {
       this.noteSortOrder = order;
+    });
+    await this.persistSettings();
+  }
+
+  /**
+   * Sets the temperature unit setting.
+   * @param unit - The desired temperature unit ('F' for Fahrenheit or 'C' for Celsius)
+   */
+  async setTemperatureUnit(unit: TemperatureUnit) {
+    runInAction(() => {
+      this.temperatureUnit = unit;
     });
     await this.persistSettings();
   }
@@ -127,6 +141,13 @@ export class SettingsStore {
   }
 
   /**
+   * Validates if a value is a valid TemperatureUnit
+   */
+  private isValidTemperatureUnit(value: any): value is TemperatureUnit {
+    return ['F', 'C'].includes(value);
+  }
+
+  /**
    * Loads settings from the database.
    */
   async loadSettings(db: any): Promise<void> {
@@ -185,6 +206,23 @@ export class SettingsStore {
         }
       }
 
+      // Load temperature unit
+      const temperatureUnitRes = await this.settingsDb.executeSql(
+        "SELECT value FROM settings WHERE key = 'temperatureUnit'",
+      );
+      if (temperatureUnitRes[0].rows.length > 0) {
+        const value = temperatureUnitRes[0].rows.item(0).value;
+        if (this.isValidTemperatureUnit(value)) {
+          runInAction(() => {
+            this.temperatureUnit = value;
+          });
+        } else {
+          console.warn(
+            `Invalid temperatureUnit value in database: ${value}, using default 'F'`,
+          );
+        }
+      }
+
       // Load last backup timestamp
       const lastBackupRes = await this.settingsDb.executeSql(
         "SELECT value FROM settings WHERE key = 'lastBackupAt'",
@@ -220,6 +258,10 @@ export class SettingsStore {
       await this.settingsDb.executeSql(
         "INSERT OR REPLACE INTO settings (key, value) VALUES ('noteSortOrder', ?)",
         [this.noteSortOrder],
+      );
+      await this.settingsDb.executeSql(
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('temperatureUnit', ?)",
+        [this.temperatureUnit],
       );
       if (this.lastBackupAt !== null) {
         await this.settingsDb.executeSql(

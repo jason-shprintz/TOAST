@@ -2,7 +2,7 @@
  * @format
  */
 
-import { conversionCategories } from '../src/utils/unitConversions';
+import { conversionCategories, displayTemp } from '../src/utils/unitConversions';
 
 describe('Unit Conversions', () => {
   describe('Length / Distance', () => {
@@ -164,6 +164,31 @@ describe('Unit Conversions', () => {
           expect(backToOriginal).toBeCloseTo(testValue, 5);
         });
       });
+    });
+  });
+
+  describe('displayTemp', () => {
+    test('0°C displays as 32°F when unit is F', () => {
+      expect(displayTemp(0, 'F')).toBe('32°F');
+    });
+
+    test('100°C displays as 212°F when unit is F', () => {
+      expect(displayTemp(100, 'F')).toBe('212°F');
+    });
+
+    test('0°C displays as 0°C when unit is C', () => {
+      expect(displayTemp(0, 'C')).toBe('0°C');
+    });
+
+    test('37°C displays as 37°C when unit is C', () => {
+      expect(displayTemp(37, 'C')).toBe('37°C');
+    });
+
+    test('rounds fractional values', () => {
+      // 22.2°C → 71.96°F → rounds to 72°F
+      expect(displayTemp(22.2, 'F')).toBe('72°F');
+      // 22.5°C → rounds to 23°C
+      expect(displayTemp(22.5, 'C')).toBe('23°C');
     });
   });
 });
