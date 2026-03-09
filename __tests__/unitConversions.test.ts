@@ -2,7 +2,10 @@
  * @format
  */
 
-import { conversionCategories, displayTemp } from '../src/utils/unitConversions';
+import {
+  conversionCategories,
+  displayTemp,
+} from '../src/utils/unitConversions';
 
 describe('Unit Conversions', () => {
   describe('Length / Distance', () => {
