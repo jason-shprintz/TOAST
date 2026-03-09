@@ -1,6 +1,7 @@
 import {
   COMMUNICATION_TOOLS,
   CORE_TOOLS,
+  EARTH_TOOLS,
   MODULES,
   NAVIGATION_TOOLS,
   PREPPER_TOOLS,
@@ -216,6 +217,7 @@ function getStaticSearchableItems(): SearchableItem[] {
     ...NAVIGATION_TOOLS,
     ...REFERENCE_TOOLS,
     ...PREPPER_TOOLS,
+    ...EARTH_TOOLS,
   ].forEach((tool) => {
     items.push(toolToSearchableItem(tool, 'tool'));
   });
