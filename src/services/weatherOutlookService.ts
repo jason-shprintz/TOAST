@@ -20,16 +20,14 @@ import { SQLiteDatabase } from '../types/database-types';
 export interface MonthlyOutlookEntry {
   /** ISO date string for the first day of this forecast month, e.g. "2024-03" */
   month: string;
-  /** Ensemble-mean daily maximum temperature in °C */
-  tempMaxC: number;
-  /** Ensemble-mean daily minimum temperature in °C */
-  tempMinC: number;
+  /** Ensemble-mean average temperature in °C */
+  tempMeanC: number;
   /** Ensemble-mean total precipitation in mm */
   precipMm: number;
   /** Ensemble-mean total snowfall in cm */
   snowfallCm: number;
-  /** Ensemble-mean maximum wind speed in km/h */
-  windSpeedMaxKmh: number;
+  /** Ensemble-mean average wind speed in km/h */
+  windSpeedMeanKmh: number;
   /** Ensemble-mean total shortwave radiation in MJ/m² */
   shortwaveRadiationSum: number;
 }
@@ -54,17 +52,15 @@ export interface SeasonalOutlook {
 
 const SEASONAL_API_BASE = 'https://seasonal-api.open-meteo.com/v1/seasonal';
 const MONTHLY_VARIABLES = [
-  'temperature_2m_max',
-  'temperature_2m_min',
-  'precipitation_sum',
-  'snowfall_sum',
-  'wind_speed_10m_max',
-  'shortwave_radiation_sum',
+  'temperature_2m_mean',
+  'precipitation_mean',
+  'snowfall_mean',
+  'wind_speed_10m_mean',
+  'shortwave_radiation_mean',
 ];
-const ENSEMBLE_MEMBER_COUNT = 51;
 /** Cache is valid for 30 days in milliseconds. */
 export const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
-const TABLE_NAME = 'seasonal_outlook_cache';
+const TABLE_NAME = 'seasonal_outlook_cache_v2';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -77,8 +73,8 @@ export function roundCoord(value: number): number {
 
 /** Returns an "YYYY-MM" string for the given Date (defaults to now). */
 export function toYearMonth(date: Date = new Date()): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
   return `${y}-${m}`;
 }
 
@@ -91,22 +87,24 @@ export function shouldRefresh(cachedAt: string): boolean {
   return Date.now() - fetchedMs > CACHE_MAX_AGE_MS;
 }
 
-/**
- * Computes the arithmetic mean of an array of numbers.
- * Returns 0 for empty arrays.
- */
-function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
 // ---------------------------------------------------------------------------
 // API parsing
 // ---------------------------------------------------------------------------
 
+/** Reads a value at index t from a monthly variable array; returns 0 if absent or NaN. */
+function monthlyValue(
+  monthly: Record<string, unknown>,
+  key: string,
+  t: number,
+): number {
+  const arr = monthly[key] as number[] | undefined;
+  if (!arr || arr[t] == null || isNaN(arr[t])) return 0;
+  return arr[t];
+}
+
 /**
- * Given the raw Open-Meteo `monthly` object, compute ensemble-mean monthly
- * entries for each of the returned months.
+ * Given the raw Open-Meteo `monthly` object, build monthly outlook entries.
+ * The API returns ensemble-mean values directly as simple arrays.
  */
 export function parseMonthlyResponse(
   monthly: Record<string, unknown>,
@@ -115,36 +113,16 @@ export function parseMonthlyResponse(
   const entries: MonthlyOutlookEntry[] = [];
 
   for (let t = 0; t < times.length; t++) {
-    const memberValues = (
-      variable: string,
-      memberCount: number,
-    ): number[] => {
-      const vals: number[] = [];
-      for (let m = 1; m <= memberCount; m++) {
-        const key = `${variable}_member${String(m).padStart(2, '0')}`;
-        const arr = monthly[key] as number[] | undefined;
-        if (arr && arr[t] != null && !isNaN(arr[t])) {
-          vals.push(arr[t]);
-        }
-      }
-      return vals;
-    };
-
     entries.push({
       month: times[t].slice(0, 7), // "YYYY-MM"
-      tempMaxC: mean(memberValues('temperature_2m_max', ENSEMBLE_MEMBER_COUNT)),
-      tempMinC: mean(memberValues('temperature_2m_min', ENSEMBLE_MEMBER_COUNT)),
-      precipMm: mean(
-        memberValues('precipitation_sum', ENSEMBLE_MEMBER_COUNT),
-      ),
-      snowfallCm: mean(
-        memberValues('snowfall_sum', ENSEMBLE_MEMBER_COUNT),
-      ),
-      windSpeedMaxKmh: mean(
-        memberValues('wind_speed_10m_max', ENSEMBLE_MEMBER_COUNT),
-      ),
-      shortwaveRadiationSum: mean(
-        memberValues('shortwave_radiation_sum', ENSEMBLE_MEMBER_COUNT),
+      tempMeanC: monthlyValue(monthly, 'temperature_2m_mean', t),
+      precipMm: monthlyValue(monthly, 'precipitation_mean', t),
+      snowfallCm: monthlyValue(monthly, 'snowfall_mean', t),
+      windSpeedMeanKmh: monthlyValue(monthly, 'wind_speed_10m_mean', t),
+      shortwaveRadiationSum: monthlyValue(
+        monthly,
+        'shortwave_radiation_mean',
+        t,
       ),
     });
   }
@@ -168,7 +146,6 @@ export async function fetchSeasonalData(
     latitude: String(lat),
     longitude: String(lon),
     monthly: MONTHLY_VARIABLES.join(','),
-    models: 'seas5',
   });
 
   const url = `${SEASONAL_API_BASE}?${params.toString()}`;

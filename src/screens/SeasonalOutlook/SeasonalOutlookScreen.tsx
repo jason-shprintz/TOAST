@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import { useTheme } from '../../hooks/useTheme';
 import {
   useCoreStore,
@@ -139,20 +140,9 @@ function SeasonalOutlookScreen() {
       <SectionHeader>Seasonal Outlook</SectionHeader>
 
       {/* Disclaimer banner */}
-      <View
-        style={[styles.disclaimer, { backgroundColor: COLORS.BACKGROUND }]}
-      >
-        <Ionicons
-          name="information-circle-outline"
-          size={16}
-          color={COLORS.SECONDARY_ACCENT}
-        />
-        <Text
-          style={[styles.disclaimerText, { color: COLORS.SECONDARY_ACCENT }]}
-        >
-          Ensemble estimates · Not a precise forecast
-        </Text>
-      </View>
+      <SectionSubHeader>
+        Ensemble estimates · Not a precise forecast
+      </SectionSubHeader>
 
       {/* Stale data warning */}
       {weatherStore.isStale && weatherStore.outlook && (
@@ -253,7 +243,7 @@ function SeasonalOutlookScreen() {
                           { color: COLORS.PRIMARY_DARK },
                         ]}
                       >
-                        {formatMonthLabel(entry.month)}
+                        {`${formatMonthLabel(entry.month)} Avg`}
                       </Text>
                       <Ionicons
                         name={isExpanded ? 'chevron-up' : 'chevron-down'}
@@ -276,7 +266,7 @@ function SeasonalOutlookScreen() {
                             { color: COLORS.PRIMARY_DARK },
                           ]}
                         >
-                          {`${displayTemp(entry.tempMinC, tempUnit)} – ${displayTemp(entry.tempMaxC, tempUnit)}`}
+                          {displayTemp(entry.tempMeanC, tempUnit)}
                         </Text>
                       </View>
 
@@ -306,11 +296,15 @@ function SeasonalOutlookScreen() {
                             { backgroundColor: COLORS.SECONDARY_ACCENT },
                           ]}
                         >
-                          <Ionicons name="snow-outline" size={12} color="#fff" />
+                          <Ionicons
+                            name="snow-outline"
+                            size={12}
+                            color="#fff"
+                          />
                           <Text style={styles.flagText}>Snow</Text>
                         </View>
                       )}
-                      {entry.windSpeedMaxKmh > 50 && (
+                      {entry.windSpeedMeanKmh > 50 && (
                         <View
                           style={[
                             styles.flag,
@@ -332,7 +326,11 @@ function SeasonalOutlookScreen() {
                             { backgroundColor: COLORS.SECONDARY_ACCENT },
                           ]}
                         >
-                          <Ionicons name="water-outline" size={12} color="#fff" />
+                          <Ionicons
+                            name="water-outline"
+                            size={12}
+                            color="#fff"
+                          />
                           <Text style={styles.flagText}>Heavy Rain</Text>
                         </View>
                       )}
@@ -369,7 +367,7 @@ function SeasonalOutlookScreen() {
                               { color: COLORS.PRIMARY_DARK },
                             ]}
                           >
-                            Max Wind Speed
+                            Wind Speed
                           </Text>
                           <Text
                             style={[
@@ -377,7 +375,7 @@ function SeasonalOutlookScreen() {
                               { color: COLORS.PRIMARY_DARK },
                             ]}
                           >
-                            {renderWindLine(entry.windSpeedMaxKmh)}
+                            {renderWindLine(entry.windSpeedMeanKmh)}
                           </Text>
                         </View>
 
@@ -428,21 +426,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 8,
     paddingBottom: 24,
-  },
-  disclaimer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginHorizontal: 16,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    opacity: 0.85,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    fontWeight: '500',
   },
   staleWarning: {
     flexDirection: 'row',

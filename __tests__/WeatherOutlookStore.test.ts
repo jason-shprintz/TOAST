@@ -20,10 +20,7 @@ import { WeatherOutlookStore } from '../src/stores/WeatherOutlookStore';
 // Helpers
 // ---------------------------------------------------------------------------
 
-const makeDb = (
-  rows: { data: string }[] = [],
-  executeSqlImpl?: jest.Mock,
-) => ({
+const makeDb = (rows: { data: string }[] = [], executeSqlImpl?: jest.Mock) => ({
   executeSql:
     executeSqlImpl ??
     jest.fn().mockResolvedValue([
@@ -44,20 +41,18 @@ const sampleOutlook: SeasonalOutlook = {
   months: [
     {
       month: '2024-03',
-      tempMaxC: 18,
-      tempMinC: 8,
+      tempMeanC: 13,
       precipMm: 30,
       snowfallCm: 0,
-      windSpeedMaxKmh: 25,
+      windSpeedMeanKmh: 25,
       shortwaveRadiationSum: 400,
     },
     {
       month: '2024-04',
-      tempMaxC: 24,
-      tempMinC: 12,
+      tempMeanC: 18,
       precipMm: 55,
       snowfallCm: 0,
-      windSpeedMaxKmh: 35,
+      windSpeedMeanKmh: 35,
       shortwaveRadiationSum: 520,
     },
   ],
@@ -100,57 +95,45 @@ describe('shouldRefresh', () => {
   });
 
   test('returns false exactly at the 30-day threshold', () => {
-    const onThreshold = new Date(Date.now() - CACHE_MAX_AGE_MS + 5000).toISOString();
+    const onThreshold = new Date(
+      Date.now() - CACHE_MAX_AGE_MS + 5000,
+    ).toISOString();
     expect(shouldRefresh(onThreshold)).toBe(false);
   });
 });
 
 describe('parseMonthlyResponse', () => {
-  test('computes ensemble mean for one month across 3 members', () => {
+  test('reads ensemble-mean values directly for one month', () => {
     const monthly: Record<string, unknown> = {
       time: ['2024-03-01'],
-      temperature_2m_max_member01: [10],
-      temperature_2m_max_member02: [20],
-      temperature_2m_max_member03: [30],
-      temperature_2m_min_member01: [0],
-      temperature_2m_min_member02: [0],
-      temperature_2m_min_member03: [0],
-      precipitation_sum_member01: [5],
-      precipitation_sum_member02: [15],
-      precipitation_sum_member03: [10],
-      snowfall_sum_member01: [0],
-      snowfall_sum_member02: [0],
-      snowfall_sum_member03: [0],
-      wind_speed_10m_max_member01: [30],
-      wind_speed_10m_max_member02: [60],
-      wind_speed_10m_max_member03: [90],
-      shortwave_radiation_sum_member01: [100],
-      shortwave_radiation_sum_member02: [200],
-      shortwave_radiation_sum_member03: [300],
+      temperature_2m_mean: [20],
+      precipitation_mean: [10],
+      snowfall_mean: [0],
+      wind_speed_10m_mean: [60],
+      shortwave_radiation_mean: [200],
     };
 
     const entries = parseMonthlyResponse(monthly);
     expect(entries).toHaveLength(1);
     const entry = entries[0];
     expect(entry.month).toBe('2024-03');
-    // Members 1–3 only; members 4–51 are absent so they are ignored
-    expect(entry.tempMaxC).toBeCloseTo(20, 5); // (10+20+30)/3 = 20
-    expect(entry.precipMm).toBeCloseTo(10, 5); // (5+15+10)/3 = 10
-    expect(entry.windSpeedMaxKmh).toBeCloseTo(60, 5); // (30+60+90)/3 = 60
-    expect(entry.shortwaveRadiationSum).toBeCloseTo(200, 5);
+    expect(entry.tempMeanC).toBe(20);
+    expect(entry.precipMm).toBe(10);
+    expect(entry.windSpeedMeanKmh).toBe(60);
+    expect(entry.shortwaveRadiationSum).toBe(200);
   });
 
   test('handles empty time array', () => {
     expect(parseMonthlyResponse({ time: [] })).toEqual([]);
   });
 
-  test('handles missing member keys gracefully (returns 0)', () => {
+  test('handles missing variable keys gracefully (returns 0)', () => {
     const monthly: Record<string, unknown> = {
       time: ['2024-03-01'],
     };
     const entries = parseMonthlyResponse(monthly);
     expect(entries).toHaveLength(1);
-    expect(entries[0].tempMaxC).toBe(0);
+    expect(entries[0].tempMeanC).toBe(0);
   });
 
   test('slices YYYY-MM from the time string', () => {
@@ -174,9 +157,7 @@ describe('fetchSeasonalData', () => {
       statusText: 'Service Unavailable',
     });
 
-    await expect(fetchSeasonalData(36.17, -115.14)).rejects.toThrow(
-      /503/,
-    );
+    await expect(fetchSeasonalData(36.17, -115.14)).rejects.toThrow(/503/);
   });
 
   test('throws when response contains no monthly data', async () => {
@@ -196,12 +177,11 @@ describe('fetchSeasonalData', () => {
       json: async () => ({
         monthly: {
           time: ['2024-03-01'],
-          temperature_2m_max_member01: [20],
-          temperature_2m_min_member01: [10],
-          precipitation_sum_member01: [50],
-          snowfall_sum_member01: [0],
-          wind_speed_10m_max_member01: [40],
-          shortwave_radiation_sum_member01: [300],
+          temperature_2m_mean: [20],
+          precipitation_mean: [50],
+          snowfall_mean: [0],
+          wind_speed_10m_mean: [40],
+          shortwave_radiation_mean: [300],
         },
       }),
     });
@@ -250,7 +230,11 @@ describe('SQLite cache helpers', () => {
     await saveOutlookToCache(db as any, sampleOutlook);
     expect(db.executeSql).toHaveBeenCalledWith(
       expect.stringContaining('INSERT OR REPLACE'),
-      expect.arrayContaining([expect.any(String), expect.any(String), expect.any(String)]),
+      expect.arrayContaining([
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+      ]),
     );
   });
 });
@@ -298,9 +282,7 @@ describe('WeatherOutlookStore', () => {
   test('loadOutlook fetches from network when cache is stale', async () => {
     const staleOutlook: SeasonalOutlook = {
       ...sampleOutlook,
-      fetchedAt: new Date(
-        Date.now() - CACHE_MAX_AGE_MS - 1000,
-      ).toISOString(),
+      fetchedAt: new Date(Date.now() - CACHE_MAX_AGE_MS - 1000).toISOString(),
     };
 
     const db = makeDb([{ data: JSON.stringify(staleOutlook) }]);
@@ -312,12 +294,11 @@ describe('WeatherOutlookStore', () => {
       json: async () => ({
         monthly: {
           time: ['2024-03-01'],
-          temperature_2m_max_member01: [22],
-          temperature_2m_min_member01: [12],
-          precipitation_sum_member01: [40],
-          snowfall_sum_member01: [0],
-          wind_speed_10m_max_member01: [30],
-          shortwave_radiation_sum_member01: [300],
+          temperature_2m_mean: [22],
+          precipitation_mean: [40],
+          snowfall_mean: [0],
+          wind_speed_10m_mean: [30],
+          shortwave_radiation_mean: [300],
         },
       }),
     });
@@ -333,9 +314,7 @@ describe('WeatherOutlookStore', () => {
   test('loadOutlook degrades gracefully (shows stale cache) when offline', async () => {
     const staleOutlook: SeasonalOutlook = {
       ...sampleOutlook,
-      fetchedAt: new Date(
-        Date.now() - CACHE_MAX_AGE_MS - 1000,
-      ).toISOString(),
+      fetchedAt: new Date(Date.now() - CACHE_MAX_AGE_MS - 1000).toISOString(),
     };
 
     const db = makeDb([{ data: JSON.stringify(staleOutlook) }]);
@@ -398,8 +377,7 @@ describe('WeatherOutlookStore', () => {
         months: [
           {
             ...sampleOutlook.months[0],
-            tempMaxC: 35,
-            tempMinC: 25,
+            tempMeanC: 30,
             precipMm: 20,
           },
         ],
@@ -414,8 +392,7 @@ describe('WeatherOutlookStore', () => {
         months: [
           {
             ...sampleOutlook.months[0],
-            tempMaxC: 2,
-            tempMinC: -5,
+            tempMeanC: -2,
             precipMm: 20,
           },
         ],
@@ -430,8 +407,7 @@ describe('WeatherOutlookStore', () => {
         months: [
           {
             ...sampleOutlook.months[0],
-            tempMaxC: 15,
-            tempMinC: 5,
+            tempMeanC: 10,
             precipMm: 200,
           },
         ],

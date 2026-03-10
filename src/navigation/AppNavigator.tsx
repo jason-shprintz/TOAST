@@ -74,13 +74,13 @@ import ScenarioBookmarksScreen from '../screens/ScenarioCards/ScenarioBookmarksS
 import ScenarioCardsScreen from '../screens/ScenarioCards/ScenarioCardsScreen';
 import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScreen';
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
+import SeasonalOutlookScreen from '../screens/SeasonalOutlook/SeasonalOutlookScreen';
 import GroundToAirSignalsScreen from '../screens/SignalMirror/GroundToAirSignalsScreen';
 import StarMapScreen from '../screens/StarMap/StarMapScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
 import UnitConversionScreen from '../screens/UnitConversion/UnitConversionScreen';
 import VoiceLogScreen from '../screens/VoiceLog/VoiceLogScreen';
-import SeasonalOutlookScreen from '../screens/SeasonalOutlook/SeasonalOutlookScreen';
 import {
   NavigationHistoryProvider,
   useNavigationHistory,

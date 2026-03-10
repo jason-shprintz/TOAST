@@ -1,5 +1,4 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { SQLiteDatabase } from '../types/database-types';
 import {
   fetchSeasonalData,
   getCachedOutlook,
@@ -8,13 +7,7 @@ import {
   SeasonalOutlook,
   shouldRefresh,
 } from '../services/weatherOutlookService';
-
-let SQLite: any;
-try {
-  SQLite = require('react-native-sqlite-storage');
-} catch {
-  SQLite = null as any;
-}
+import { SQLiteDatabase } from '../types/database-types';
 
 /**
  * MobX store for the seasonal weather outlook feature.
@@ -48,11 +41,11 @@ export class WeatherOutlookStore {
   }
 
   // ---------------------------------------------------------------------------
-  // Initialisation
+  // Initialization
   // ---------------------------------------------------------------------------
 
   /**
-   * Initialises the SQLite cache table.
+   * Initialize the SQLite cache table.
    * Should be called once on app start after the database is ready.
    *
    * @param db - The shared SQLite database connection
@@ -141,9 +134,8 @@ export class WeatherOutlookStore {
     }
     const first = this.outlook.months[0];
     const precip = first.precipMm;
-    const precipDesc =
-      precip > 100 ? 'wet' : precip > 40 ? 'average' : 'dry';
-    const tempAvgC = (first.tempMaxC + first.tempMinC) / 2;
+    const precipDesc = precip > 100 ? 'wet' : precip > 40 ? 'average' : 'dry';
+    const tempAvgC = first.tempMeanC;
     const tempDesc = tempAvgC > 20 ? 'warm' : tempAvgC > 10 ? 'mild' : 'cold';
     return `This month: ${tempDesc} & ${precipDesc}`;
   }
