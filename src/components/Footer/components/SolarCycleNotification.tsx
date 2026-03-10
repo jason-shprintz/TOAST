@@ -68,7 +68,7 @@ const SolarCycleNotification = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [weatherOutlook]);
+  }, [weatherOutlook.outlook]);
 
   const nextNotification = solarNotifications.getNextNotification();
 

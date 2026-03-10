@@ -41,7 +41,7 @@ function cmToInches(cm: number): number {
 function formatMonthLabel(ym: string): string {
   const [year, month] = ym.split('-');
   const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
 }
 
 // Location polling parameters
@@ -243,7 +243,7 @@ function SeasonalOutlookScreen() {
                           { color: COLORS.PRIMARY_DARK },
                         ]}
                       >
-                        {`${formatMonthLabel(entry.month)} Avg`}
+                        {`${formatMonthLabel(entry.month)}`}
                       </Text>
                       <Ionicons
                         name={isExpanded ? 'chevron-up' : 'chevron-down'}
@@ -266,7 +266,7 @@ function SeasonalOutlookScreen() {
                             { color: COLORS.PRIMARY_DARK },
                           ]}
                         >
-                          {displayTemp(entry.tempMeanC, tempUnit)}
+                          {`${displayTemp(entry.tempMinC, tempUnit)} – ${displayTemp(entry.tempMaxC, tempUnit)}`}
                         </Text>
                       </View>
 
@@ -304,7 +304,7 @@ function SeasonalOutlookScreen() {
                           <Text style={styles.flagText}>Snow</Text>
                         </View>
                       )}
-                      {entry.windSpeedMeanKmh > 50 && (
+                      {entry.windSpeedMaxKmh > 50 && (
                         <View
                           style={[
                             styles.flag,
@@ -375,7 +375,7 @@ function SeasonalOutlookScreen() {
                               { color: COLORS.PRIMARY_DARK },
                             ]}
                           >
-                            {renderWindLine(entry.windSpeedMeanKmh)}
+                            {renderWindLine(entry.windSpeedMaxKmh)}
                           </Text>
                         </View>
 
