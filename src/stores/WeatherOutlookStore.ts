@@ -135,7 +135,7 @@ export class WeatherOutlookStore {
     const first = this.outlook.months[0];
     const precip = first.precipMm;
     const precipDesc = precip > 100 ? 'wet' : precip > 40 ? 'average' : 'dry';
-    const tempAvgC = (first.tempMaxC + first.tempMinC) / 2;
+    const tempAvgC = first.tempMeanC;
     const tempDesc = tempAvgC > 20 ? 'warm' : tempAvgC > 10 ? 'mild' : 'cold';
     return `This month: ${tempDesc} & ${precipDesc}`;
   }

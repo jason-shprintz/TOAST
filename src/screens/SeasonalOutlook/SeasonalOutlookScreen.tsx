@@ -41,7 +41,10 @@ function cmToInches(cm: number): number {
 function formatMonthLabel(ym: string): string {
   const [year, month] = ym.split('-');
   const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 // Location polling parameters
@@ -243,7 +246,7 @@ function SeasonalOutlookScreen() {
                           { color: COLORS.PRIMARY_DARK },
                         ]}
                       >
-                        {`${formatMonthLabel(entry.month)}`}
+                        {`${formatMonthLabel(entry.month)} Avg`}
                       </Text>
                       <Ionicons
                         name={isExpanded ? 'chevron-up' : 'chevron-down'}
@@ -258,7 +261,7 @@ function SeasonalOutlookScreen() {
                         <Ionicons
                           name="thermometer-outline"
                           size={16}
-                          color={COLORS.ACCENT}
+                          color={COLORS.SECONDARY_ACCENT}
                         />
                         <Text
                           style={[
@@ -266,7 +269,7 @@ function SeasonalOutlookScreen() {
                             { color: COLORS.PRIMARY_DARK },
                           ]}
                         >
-                          {`${displayTemp(entry.tempMinC, tempUnit)} – ${displayTemp(entry.tempMaxC, tempUnit)}`}
+                          {displayTemp(entry.tempMeanC, tempUnit)}
                         </Text>
                       </View>
 
@@ -274,7 +277,7 @@ function SeasonalOutlookScreen() {
                         <Ionicons
                           name="rainy-outline"
                           size={16}
-                          color={COLORS.ACCENT}
+                          color={COLORS.SECONDARY_ACCENT}
                         />
                         <Text
                           style={[
@@ -304,7 +307,7 @@ function SeasonalOutlookScreen() {
                           <Text style={styles.flagText}>Snow</Text>
                         </View>
                       )}
-                      {entry.windSpeedMaxKmh > 50 && (
+                      {entry.windSpeedMeanKmh > 50 && (
                         <View
                           style={[
                             styles.flag,
@@ -375,7 +378,7 @@ function SeasonalOutlookScreen() {
                               { color: COLORS.PRIMARY_DARK },
                             ]}
                           >
-                            {renderWindLine(entry.windSpeedMaxKmh)}
+                            {renderWindLine(entry.windSpeedMeanKmh)}
                           </Text>
                         </View>
 

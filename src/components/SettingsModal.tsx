@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -52,6 +52,38 @@ function formatBackupDate(timestamp: number): string {
   return new Date(timestamp).toLocaleString();
 }
 
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    primaryText: { color: COLORS.PRIMARY_DARK },
+    modalContainerThemed: {
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.TOAST_BROWN,
+    },
+    headerThemed: {
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+      borderBottomColor: COLORS.TOAST_BROWN,
+    },
+    buttonDefault: {
+      borderColor: COLORS.TOAST_BROWN,
+      backgroundColor: COLORS.BACKGROUND,
+    },
+    buttonSelected: {
+      backgroundColor: COLORS.TOAST_BROWN,
+      borderColor: COLORS.PRIMARY_DARK,
+    },
+    temperatureButtonDefault: {
+      flex: 1,
+      borderColor: COLORS.TOAST_BROWN,
+      backgroundColor: COLORS.BACKGROUND,
+    },
+    restorePanelThemed: {
+      borderColor: COLORS.TOAST_BROWN,
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+    },
+    fileItemSelected: { backgroundColor: COLORS.TOAST_BROWN },
+  });
+}
+
 export const SettingsModal = observer(
   ({ visible, onClose }: SettingsModalProps) => {
     const settingsStore = useSettingsStore();
@@ -59,6 +91,7 @@ export const SettingsModal = observer(
     const inventoryStore = useInventoryStore();
     const pantryStore = usePantryStore();
     const COLORS = useTheme();
+    const t = useMemo(() => makeStyles(COLORS), [COLORS]);
 
     // Backup UI state
     const [isExporting, setIsExporting] = useState(false);
@@ -268,27 +301,9 @@ export const SettingsModal = observer(
             accessibilityRole="button"
             accessibilityHint="Tap to dismiss the settings"
           />
-          <View
-            style={[
-              styles.modalContainer,
-              {
-                backgroundColor: COLORS.PRIMARY_LIGHT,
-                borderColor: COLORS.TOAST_BROWN,
-              },
-            ]}
-          >
-            <View
-              style={[
-                styles.header,
-                {
-                  backgroundColor: COLORS.SECONDARY_ACCENT,
-                  borderBottomColor: COLORS.TOAST_BROWN,
-                },
-              ]}
-            >
-              <RNText
-                style={[styles.headerText, { color: COLORS.PRIMARY_DARK }]}
-              >
+          <View style={[styles.modalContainer, t.modalContainerThemed]}>
+            <View style={[styles.header, t.headerThemed]}>
+              <RNText style={[styles.headerText, t.primaryText]}>
                 Settings
               </RNText>
               <TouchableOpacity
@@ -308,9 +323,7 @@ export const SettingsModal = observer(
             <ScrollView style={styles.content}>
               {/* Font Size Section */}
               <View style={styles.section}>
-                <RNText
-                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
-                >
+                <RNText style={[styles.sectionTitle, t.primaryText]}>
                   Font Size
                 </RNText>
                 <View style={styles.optionsContainer}>
@@ -319,14 +332,9 @@ export const SettingsModal = observer(
                       key={option.value}
                       style={[
                         styles.optionButton,
-                        {
-                          borderColor: COLORS.TOAST_BROWN,
-                          backgroundColor: COLORS.BACKGROUND,
-                        },
-                        settingsStore.fontSize === option.value && {
-                          backgroundColor: COLORS.TOAST_BROWN,
-                          borderColor: COLORS.PRIMARY_DARK,
-                        },
+                        t.buttonDefault,
+                        settingsStore.fontSize === option.value &&
+                          t.buttonSelected,
                       ]}
                       onPress={() => settingsStore.setFontSize(option.value)}
                       accessibilityLabel={`Set font size to ${option.label}`}
@@ -335,7 +343,7 @@ export const SettingsModal = observer(
                       <RNText
                         style={[
                           styles.optionText,
-                          { color: COLORS.PRIMARY_DARK },
+                          t.primaryText,
                           settingsStore.fontSize === option.value &&
                             styles.optionTextSelected,
                         ]}
@@ -349,9 +357,7 @@ export const SettingsModal = observer(
 
               {/* Theme Mode Section */}
               <View style={styles.section}>
-                <RNText
-                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
-                >
+                <RNText style={[styles.sectionTitle, t.primaryText]}>
                   Theme
                 </RNText>
                 <View style={styles.optionsContainer}>
@@ -360,14 +366,9 @@ export const SettingsModal = observer(
                       key={option.value}
                       style={[
                         styles.optionButton,
-                        {
-                          borderColor: COLORS.TOAST_BROWN,
-                          backgroundColor: COLORS.BACKGROUND,
-                        },
-                        settingsStore.themeMode === option.value && {
-                          backgroundColor: COLORS.TOAST_BROWN,
-                          borderColor: COLORS.PRIMARY_DARK,
-                        },
+                        t.buttonDefault,
+                        settingsStore.themeMode === option.value &&
+                          t.buttonSelected,
                       ]}
                       onPress={() => settingsStore.setThemeMode(option.value)}
                       accessibilityLabel={`Set theme to ${option.label}`}
@@ -376,7 +377,7 @@ export const SettingsModal = observer(
                       <RNText
                         style={[
                           styles.optionText,
-                          { color: COLORS.PRIMARY_DARK },
+                          t.primaryText,
                           settingsStore.themeMode === option.value &&
                             styles.optionTextSelected,
                         ]}
@@ -390,28 +391,20 @@ export const SettingsModal = observer(
 
               {/* Temperature Unit Section */}
               <View style={styles.section}>
-                <RNText
-                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
-                >
+                <RNText style={[styles.sectionTitle, t.primaryText]}>
                   Temperature Unit
                 </RNText>
                 <View
-                  style={[styles.optionsContainer, { flexDirection: 'row' }]}
+                  style={[styles.optionsContainer, styles.optionsContainerRow]}
                 >
                   {temperatureUnitOptions.map((option) => (
                     <TouchableOpacity
                       key={option.value}
                       style={[
                         styles.optionButton,
-                        {
-                          flex: 1,
-                          borderColor: COLORS.TOAST_BROWN,
-                          backgroundColor: COLORS.BACKGROUND,
-                        },
-                        settingsStore.temperatureUnit === option.value && {
-                          backgroundColor: COLORS.TOAST_BROWN,
-                          borderColor: COLORS.PRIMARY_DARK,
-                        },
+                        t.temperatureButtonDefault,
+                        settingsStore.temperatureUnit === option.value &&
+                          t.buttonSelected,
                       ]}
                       onPress={() =>
                         settingsStore.setTemperatureUnit(option.value)
@@ -422,7 +415,7 @@ export const SettingsModal = observer(
                       <RNText
                         style={[
                           styles.optionText,
-                          { color: COLORS.PRIMARY_DARK },
+                          t.primaryText,
                           settingsStore.temperatureUnit === option.value &&
                             styles.optionTextSelected,
                         ]}
@@ -436,16 +429,12 @@ export const SettingsModal = observer(
 
               {/* Data & Backup Section */}
               <View style={styles.section}>
-                <RNText
-                  style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}
-                >
+                <RNText style={[styles.sectionTitle, t.primaryText]}>
                   Data &amp; Backup
                 </RNText>
 
                 {/* Last backup timestamp */}
-                <RNText
-                  style={[styles.backupStatus, { color: COLORS.PRIMARY_DARK }]}
-                >
+                <RNText style={[styles.backupStatus, t.primaryText]}>
                   {settingsStore.lastBackupAt
                     ? `Last backed up: ${formatBackupDate(settingsStore.lastBackupAt)}`
                     : 'No backup yet'}
@@ -453,13 +442,7 @@ export const SettingsModal = observer(
 
                 {/* Export Now button */}
                 <TouchableOpacity
-                  style={[
-                    styles.actionButton,
-                    {
-                      borderColor: COLORS.TOAST_BROWN,
-                      backgroundColor: COLORS.BACKGROUND,
-                    },
-                  ]}
+                  style={[styles.actionButton, t.buttonDefault]}
                   onPress={handleExport}
                   disabled={isExporting}
                   accessibilityLabel="Export backup now"
@@ -477,12 +460,7 @@ export const SettingsModal = observer(
                         size={20}
                         color={COLORS.PRIMARY_DARK}
                       />
-                      <RNText
-                        style={[
-                          styles.actionButtonText,
-                          { color: COLORS.PRIMARY_DARK },
-                        ]}
-                      >
+                      <RNText style={[styles.actionButtonText, t.primaryText]}>
                         Export Now
                       </RNText>
                     </View>
@@ -491,13 +469,7 @@ export const SettingsModal = observer(
 
                 {/* Restore from Backup button */}
                 <TouchableOpacity
-                  style={[
-                    styles.actionButton,
-                    {
-                      borderColor: COLORS.TOAST_BROWN,
-                      backgroundColor: COLORS.BACKGROUND,
-                    },
-                  ]}
+                  style={[styles.actionButton, t.buttonDefault]}
                   onPress={handleOpenRestorePanel}
                   accessibilityLabel="Restore from backup"
                   accessibilityRole="button"
@@ -508,12 +480,7 @@ export const SettingsModal = observer(
                       size={20}
                       color={COLORS.PRIMARY_DARK}
                     />
-                    <RNText
-                      style={[
-                        styles.actionButtonText,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
+                    <RNText style={[styles.actionButtonText, t.primaryText]}>
                       Restore from Backup
                     </RNText>
                   </View>
@@ -521,22 +488,9 @@ export const SettingsModal = observer(
 
                 {/* Restore panel — file list */}
                 {showFileList && (
-                  <View
-                    style={[
-                      styles.restorePanel,
-                      {
-                        borderColor: COLORS.TOAST_BROWN,
-                        backgroundColor: COLORS.SECONDARY_ACCENT,
-                      },
-                    ]}
-                  >
+                  <View style={[styles.restorePanel, t.restorePanelThemed]}>
                     <View style={styles.restorePanelHeader}>
-                      <RNText
-                        style={[
-                          styles.restorePanelTitle,
-                          { color: COLORS.PRIMARY_DARK },
-                        ]}
-                      >
+                      <RNText style={[styles.restorePanelTitle, t.primaryText]}>
                         Select a Backup File
                       </RNText>
                       <TouchableOpacity
@@ -558,12 +512,7 @@ export const SettingsModal = observer(
                     </View>
 
                     {backupFiles.length === 0 ? (
-                      <RNText
-                        style={[
-                          styles.noFilesText,
-                          { color: COLORS.PRIMARY_DARK },
-                        ]}
-                      >
+                      <RNText style={[styles.noFilesText, t.primaryText]}>
                         No backup files found. Export a backup first, then save
                         it to your Documents folder to restore.
                       </RNText>
@@ -573,24 +522,15 @@ export const SettingsModal = observer(
                           key={file.path}
                           style={[
                             styles.fileItem,
-                            {
-                              borderColor: COLORS.TOAST_BROWN,
-                              backgroundColor:
-                                selectedFilePath === file.path
-                                  ? COLORS.TOAST_BROWN
-                                  : COLORS.BACKGROUND,
-                            },
+                            t.buttonDefault,
+                            selectedFilePath === file.path &&
+                              t.fileItemSelected,
                           ]}
                           onPress={() => handleSelectFile(file.path)}
                           accessibilityLabel={`Select backup file ${file.name}`}
                           accessibilityRole="button"
                         >
-                          <RNText
-                            style={[
-                              styles.fileName,
-                              { color: COLORS.PRIMARY_DARK },
-                            ]}
-                          >
+                          <RNText style={[styles.fileName, t.primaryText]}>
                             {file.name}
                           </RNText>
                         </TouchableOpacity>
@@ -600,20 +540,10 @@ export const SettingsModal = observer(
                     {/* Backup preview and restore options */}
                     {backupPreview && (
                       <View style={styles.previewContainer}>
-                        <RNText
-                          style={[
-                            styles.previewTitle,
-                            { color: COLORS.PRIMARY_DARK },
-                          ]}
-                        >
+                        <RNText style={[styles.previewTitle, t.primaryText]}>
                           Backup from {backupPreview.backupDate}
                         </RNText>
-                        <RNText
-                          style={[
-                            styles.previewText,
-                            { color: COLORS.PRIMARY_DARK },
-                          ]}
-                        >
+                        <RNText style={[styles.previewText, t.primaryText]}>
                           {backupPreview.pantryItemCount} pantry items,{' '}
                           {backupPreview.inventoryItemCount} inventory items,{' '}
                           {backupPreview.noteCount} notes,{' '}
@@ -624,10 +554,7 @@ export const SettingsModal = observer(
                           <TouchableOpacity
                             style={[
                               styles.restoreButton,
-                              {
-                                borderColor: COLORS.TOAST_BROWN,
-                                backgroundColor: COLORS.BACKGROUND,
-                              },
+                              t.buttonDefault,
                               isRestoring && styles.restoreButtonDisabled,
                             ]}
                             onPress={() => confirmRestore('replace')}
@@ -644,7 +571,7 @@ export const SettingsModal = observer(
                               <RNText
                                 style={[
                                   styles.restoreButtonText,
-                                  { color: COLORS.PRIMARY_DARK },
+                                  t.primaryText,
                                 ]}
                               >
                                 Replace
@@ -654,10 +581,7 @@ export const SettingsModal = observer(
                           <TouchableOpacity
                             style={[
                               styles.restoreButton,
-                              {
-                                borderColor: COLORS.TOAST_BROWN,
-                                backgroundColor: COLORS.BACKGROUND,
-                              },
+                              t.buttonDefault,
                               isRestoring && styles.restoreButtonDisabled,
                             ]}
                             onPress={() => confirmRestore('merge')}
@@ -674,7 +598,7 @@ export const SettingsModal = observer(
                               <RNText
                                 style={[
                                   styles.restoreButtonText,
-                                  { color: COLORS.PRIMARY_DARK },
+                                  t.primaryText,
                                 ]}
                               >
                                 Merge
@@ -738,6 +662,9 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     gap: 12,
+  },
+  optionsContainerRow: {
+    flexDirection: 'row',
   },
   optionButton: {
     paddingVertical: 12,

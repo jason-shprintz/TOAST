@@ -20,16 +20,14 @@ import { SQLiteDatabase } from '../types/database-types';
 export interface MonthlyOutlookEntry {
   /** ISO date string for the first day of this forecast month, e.g. "2024-03" */
   month: string;
-  /** Ensemble-mean daily maximum temperature in °C */
-  tempMaxC: number;
-  /** Ensemble-mean daily minimum temperature in °C */
-  tempMinC: number;
+  /** Ensemble-mean monthly temperature in °C */
+  tempMeanC: number;
   /** Ensemble-mean total precipitation in mm */
   precipMm: number;
   /** Ensemble-mean total snowfall in cm */
   snowfallCm: number;
-  /** Ensemble-mean maximum wind speed in km/h */
-  windSpeedMaxKmh: number;
+  /** Ensemble-mean wind speed in km/h */
+  windSpeedMeanKmh: number;
   /** Ensemble-mean total shortwave radiation in MJ/m² */
   shortwaveRadiationSum: number;
 }
@@ -54,11 +52,10 @@ export interface SeasonalOutlook {
 
 const SEASONAL_API_BASE = 'https://seasonal-api.open-meteo.com/v1/seasonal';
 const MONTHLY_VARIABLES = [
-  'temperature_2m_max',
-  'temperature_2m_min',
+  'temperature_2m_mean',
   'precipitation_sum',
   'snowfall_sum',
-  'wind_speed_10m_max',
+  'wind_speed_10m_mean',
   'shortwave_radiation_sum',
 ];
 const ENSEMBLE_MEMBER_COUNT = 51;
@@ -136,12 +133,15 @@ export function parseMonthlyResponse(
   for (let t = 0; t < times.length; t++) {
     entries.push({
       month: times[t].slice(0, 7), // "YYYY-MM"
-      tempMaxC: mean(memberValues('temperature_2m_max', t, ENSEMBLE_MEMBER_COUNT)),
-      tempMinC: mean(memberValues('temperature_2m_min', t, ENSEMBLE_MEMBER_COUNT)),
-      precipMm: mean(memberValues('precipitation_sum', t, ENSEMBLE_MEMBER_COUNT)),
+      tempMeanC: mean(
+        memberValues('temperature_2m_mean', t, ENSEMBLE_MEMBER_COUNT),
+      ),
+      precipMm: mean(
+        memberValues('precipitation_sum', t, ENSEMBLE_MEMBER_COUNT),
+      ),
       snowfallCm: mean(memberValues('snowfall_sum', t, ENSEMBLE_MEMBER_COUNT)),
-      windSpeedMaxKmh: mean(
-        memberValues('wind_speed_10m_max', t, ENSEMBLE_MEMBER_COUNT),
+      windSpeedMeanKmh: mean(
+        memberValues('wind_speed_10m_mean', t, ENSEMBLE_MEMBER_COUNT),
       ),
       shortwaveRadiationSum: mean(
         memberValues('shortwave_radiation_sum', t, ENSEMBLE_MEMBER_COUNT),
