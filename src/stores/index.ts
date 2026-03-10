@@ -18,6 +18,7 @@ export {
   type Repeater,
   type RepeaterCache,
 } from './RepeaterBookStore';
+export { WeatherOutlookStore } from './WeatherOutlookStore';
 export {
   StoreProvider,
   useStores,
@@ -31,4 +32,5 @@ export {
   useSignalsStore,
   useSolarCycleNotificationStore,
   useRepeaterBookStore,
+  useWeatherOutlookStore,
 } from './StoreContext';
