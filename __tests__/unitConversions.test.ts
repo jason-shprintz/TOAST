@@ -4,6 +4,9 @@
 
 import {
   conversionCategories,
+  displayPrecipitation,
+  displayPressure,
+  displaySpeed,
   displayTemp,
 } from '../src/utils/unitConversions';
 
@@ -192,6 +195,58 @@ describe('Unit Conversions', () => {
       expect(displayTemp(22.2, 'imperial')).toBe('72°F');
       // 22.5°C → rounds to 23°C
       expect(displayTemp(22.5, 'metric')).toBe('23°C');
+    });
+  });
+
+  describe('displayPressure', () => {
+    test('1013.25 hPa displays as inHg when system is imperial', () => {
+      expect(displayPressure(1013.25, 'imperial')).toBe('29.92 inHg');
+    });
+
+    test('1013 hPa displays as hPa when system is metric', () => {
+      expect(displayPressure(1013, 'metric')).toBe('1013 hPa');
+    });
+
+    test('rounds to nearest integer in metric', () => {
+      expect(displayPressure(1013.7, 'metric')).toBe('1014 hPa');
+    });
+
+    test('formats to 2 decimal places in imperial', () => {
+      expect(displayPressure(1000, 'imperial')).toBe('29.53 inHg');
+    });
+  });
+
+  describe('displaySpeed', () => {
+    test('100 km/h displays as mph when system is imperial', () => {
+      expect(displaySpeed(100, 'imperial')).toBe('62 mph');
+    });
+
+    test('100 km/h displays as km/h when system is metric', () => {
+      expect(displaySpeed(100, 'metric')).toBe('100 km/h');
+    });
+
+    test('rounds fractional values', () => {
+      // 50 km/h → 31.068 mph → rounds to 31
+      expect(displaySpeed(50, 'imperial')).toBe('31 mph');
+      expect(displaySpeed(50.5, 'metric')).toBe('51 km/h');
+    });
+  });
+
+  describe('displayPrecipitation', () => {
+    test('10 mm displays as inches when system is imperial', () => {
+      expect(displayPrecipitation(10, 'imperial')).toBe('0.39 in');
+    });
+
+    test('10 mm displays as mm when system is metric', () => {
+      expect(displayPrecipitation(10, 'metric')).toBe('10 mm');
+    });
+
+    test('rounds to nearest integer in metric', () => {
+      expect(displayPrecipitation(1.4, 'metric')).toBe('1 mm');
+    });
+
+    test('formats to 2 decimal places in imperial', () => {
+      expect(displayPrecipitation(0, 'imperial')).toBe('0.00 in');
     });
   });
 });
