@@ -1,0 +1,16 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Trucker's Hitch -->
+  <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Trucker's Hitch</text>
+  <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 3: Pass end up through slip loop (2:1 mechanical advantage)</text>
+  <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
+  <rect x="60" y="55" width="180" height="22" rx="5" fill="#C4A882" stroke="#8B5E3C" stroke-width="2"/>
+  <rect x="60" y="210" width="180" height="22" rx="5" fill="#C4A882" stroke="#8B5E3C" stroke-width="2"/>
+  <path d="M 100 77 L 100 150" fill="none" stroke="#8B4513" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 100 150 Q 118 140, 128 153 Q 138 165, 118 170 Q 100 173, 100 162" fill="none" stroke="#8B4513" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="118" cy="154" r="5" fill="#D2691E"/>
+  <path d="M 118 154 L 160 154 Q 178 154, 178 175 Q 178 210, 158 210" fill="none" stroke="#D2691E" stroke-width="9" stroke-linecap="round"/>
+  <path d="M 158 210 L 158 175 Q 158 162, 142 156 Q 130 154, 128 153" fill="none" stroke="#D2691E" stroke-width="8" stroke-linecap="round" stroke-dasharray="4,2"/>
+  <path d="M 128 153 L 125 140" fill="none" stroke="#D2691E" stroke-width="8" stroke-linecap="round"/>
+  <text x="150" y="248" fill="#D2691E" font-family="Arial,sans-serif" font-size="11" text-anchor="middle">Through loop — pull down for 2:1 power</text>
+</svg>
