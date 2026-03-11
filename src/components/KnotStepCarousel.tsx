@@ -1,10 +1,10 @@
 import React, { JSX, useRef, useState } from 'react';
 import {
   FlatList,
+  FlatListProps,
   StyleSheet,
   useWindowDimensions,
   View,
-  ViewToken,
 } from 'react-native';
 import referenceImages from '../assets/referenceImages';
 import { COLORS } from '../theme';
@@ -37,18 +37,18 @@ export default function KnotStepCarousel({
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList<string>>(null);
 
+  const onViewableItemsChanged = useRef<
+    NonNullable<FlatListProps<string>['onViewableItemsChanged']>
+  >(({ viewableItems }) => {
+    if (viewableItems.length > 0 && viewableItems[0].index != null) {
+      setActiveIndex(viewableItems[0].index);
+    }
+  }).current;
+
   // Filter to only keys that have a matching SVG component
   const resolvedKeys = images.filter((key) => !!referenceImages[key]);
 
   if (resolvedKeys.length === 0) return null;
-
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        setActiveIndex(viewableItems[0].index);
-      }
-    },
-  ).current;
 
   const renderItem = ({ item }: { item: string }) => {
     const SvgComponent = referenceImages[item];

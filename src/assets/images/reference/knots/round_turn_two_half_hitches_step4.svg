@@ -1,7 +1,7 @@
 <svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
-  <!-- Round Turn & Two Half Hitches -->
+  <!-- Round Turn &amp; Two Half Hitches -->
   <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
-  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Round Turn & Two Half Hitches</text>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Round Turn &amp; Two Half Hitches</text>
   <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 4: Pull tight — secure hitch complete</text>
   <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
   <rect x="130" y="55" width="40" height="185" rx="5" fill="#C4A882" stroke="#8B5E3C" stroke-width="2"/>

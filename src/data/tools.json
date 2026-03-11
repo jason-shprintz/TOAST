@@ -4,16 +4,8 @@
     "version": "1.1.0",
     "last_updated": "2025-12-18",
     "disclaimer": "This information is general guidance on outdoor tools and knots and is not a substitute for professional training or supervision. Always use appropriate caution and judgment when working with sharp tools, heavy tools, ropes under tension, and improvised bushcraft tools.",
-    "categories": [
-      "Tools (Home)",
-      "Tools (Wilderness)",
-      "Knots"
-    ],
-    "difficulty_levels": [
-      "basic",
-      "intermediate",
-      "advanced"
-    ]
+    "categories": ["Tools (Home)", "Tools (Wilderness)", "Knots"],
+    "difficulty_levels": ["basic", "intermediate", "advanced"]
   },
   "entries": [
     {
@@ -22,13 +14,7 @@
       "title": "Fixed-Blade Knife (Basics)",
       "summary": "Use and maintain a fixed-blade knife safely for cutting tasks, carving, and basic camp chores.",
       "difficulty": "basic",
-      "tags": [
-        "knife",
-        "cutting",
-        "carving",
-        "sharpening",
-        "safety"
-      ],
+      "tags": ["knife", "cutting", "carving", "sharpening", "safety"],
       "steps": [
         "Grip the knife handle firmly with your dominant hand, keeping your index finger away from the blade edge.",
         "When cutting, position your body so the blade moves away from you, not toward your legs, torso, or other people.",
@@ -63,13 +49,7 @@
       "title": "Multitool (Pliers, Blades, and Drivers)",
       "summary": "Use a multitool for small repairs, cutting, and gear adjustments.",
       "difficulty": "basic",
-      "tags": [
-        "multitool",
-        "pliers",
-        "screwdriver",
-        "knife",
-        "repair"
-      ],
+      "tags": ["multitool", "pliers", "screwdriver", "knife", "repair"],
       "steps": [
         "Familiarize yourself with the multitool layout: locate pliers, blades, screwdrivers, file, and any saw or scissors.",
         "Open only the tool you need and lock it in place if a locking mechanism is available.",
@@ -101,13 +81,7 @@
       "title": "Folding Saw for Firewood and Shelter",
       "summary": "Safely use a folding saw to cut branches and small logs for firewood and shelter building.",
       "difficulty": "basic",
-      "tags": [
-        "saw",
-        "wood",
-        "firewood",
-        "shelter",
-        "cutting"
-      ],
+      "tags": ["saw", "wood", "firewood", "shelter", "cutting"],
       "steps": [
         "Open the saw fully and lock the blade in place before use.",
         "Choose wood that is dry and sound; avoid cutting dead standing trees that may fall unpredictably.",
@@ -139,13 +113,7 @@
       "title": "Hatchet or Small Axe",
       "summary": "Use a hatchet or small axe for splitting and chopping wood while minimizing risk.",
       "difficulty": "intermediate",
-      "tags": [
-        "axe",
-        "hatchet",
-        "chopping",
-        "splitting",
-        "wood"
-      ],
+      "tags": ["axe", "hatchet", "chopping", "splitting", "wood"],
       "steps": [
         "Inspect the hatchet: ensure the head is firmly attached to the handle and the edge is free of large chips.",
         "Choose a stable chopping surface such as a chopping block or large log; avoid bare ground and rocks.",
@@ -179,13 +147,7 @@
       "title": "Ferro Rod Firestarter",
       "summary": "Use a ferrocerium rod and striker to produce sparks and start a fire.",
       "difficulty": "intermediate",
-      "tags": [
-        "fire",
-        "ferro rod",
-        "firestarter",
-        "sparks",
-        "tinder"
-      ],
+      "tags": ["fire", "ferro rod", "firestarter", "sparks", "tinder"],
       "steps": [
         "Prepare tinder first: use very dry, fine material such as scraped bark, dry grass, cotton, or feathered wood shavings.",
         "Form the tinder into a loose nest or small pile that can catch sparks and allow air flow.",
@@ -217,13 +179,7 @@
       "title": "Basic Repair Kit (Cordage, Tape, and Needles)",
       "summary": "Use a small repair kit to fix gear, clothing, and shelters in the field.",
       "difficulty": "basic",
-      "tags": [
-        "repair",
-        "cordage",
-        "duct tape",
-        "needle",
-        "thread"
-      ],
+      "tags": ["repair", "cordage", "duct tape", "needle", "thread"],
       "steps": [
         "Assemble a simple repair kit: strong thread, needles, safety pins, patches, duct tape, spare cord, and a small knife or scissors.",
         "For torn fabric, align the edges and secure them with pins or temporary stitches before sewing permanently.",
@@ -254,13 +210,7 @@
       "title": "Primitive Mallet (Wooden Hammer)",
       "summary": "Carve a simple wooden mallet for pounding stakes, splitting kindling, and general camp use.",
       "difficulty": "intermediate",
-      "tags": [
-        "bushcraft",
-        "mallet",
-        "hammer",
-        "wood",
-        "tools"
-      ],
+      "tags": ["bushcraft", "mallet", "hammer", "wood", "tools"],
       "steps": [
         "Select a green (fresh) hardwood branch about forearm-thick with a solid, knot-free section for the head.",
         "Cut a length roughly from your elbow to fingertips; this gives enough mass for a sturdy mallet.",
@@ -293,13 +243,7 @@
       "title": "Wooden Stakes and Pegs",
       "summary": "Carve stakes and pegs from natural wood for shelters, traps, or gear tie-downs.",
       "difficulty": "basic",
-      "tags": [
-        "bushcraft",
-        "stakes",
-        "pegs",
-        "shelter",
-        "tie-down"
-      ],
+      "tags": ["bushcraft", "stakes", "pegs", "shelter", "tie-down"],
       "steps": [
         "Choose straight, green sticks about finger-thick to thumb-thick and 15–25 cm (6–10 inches) long.",
         "Cut the sticks to length with a saw or knife, ensuring at least one end is square and smooth.",
@@ -330,13 +274,7 @@
       "title": "Pot Hanger and Cooking Tripod",
       "summary": "Build a wooden tripod and pot hanger for cooking over a fire using found branches.",
       "difficulty": "intermediate",
-      "tags": [
-        "bushcraft",
-        "tripod",
-        "cooking",
-        "fire",
-        "hanger"
-      ],
+      "tags": ["bushcraft", "tripod", "cooking", "fire", "hanger"],
       "steps": [
         "Cut three sturdy poles of similar length (about your height) from green wood for the tripod legs.",
         "Lay the three poles side by side and tie them together about 20–30 cm (8–12 inches) from one end using a clove hitch followed by several tight wraps and fraps, forming a lashing.",
@@ -368,13 +306,7 @@
       "title": "Toggles and Spreaders",
       "summary": "Carve small wooden toggles and spreader sticks to secure tarps, clothing, and gear using cordage loops.",
       "difficulty": "basic",
-      "tags": [
-        "bushcraft",
-        "toggle",
-        "spreader",
-        "gear",
-        "tarps"
-      ],
+      "tags": ["bushcraft", "toggle", "spreader", "gear", "tarps"],
       "steps": [
         "Select small straight sticks about the thickness of your little finger and 5–10 cm (2–4 inches) long.",
         "Trim off side branches and bark as needed to create smooth toggles that will not cut fabric.",
@@ -405,13 +337,7 @@
       "title": "Natural Cordage (Plant Fibers and Bark)",
       "summary": "Twist plant fibers and bark into serviceable cordage for lashing and light tie-downs.",
       "difficulty": "advanced",
-      "tags": [
-        "bushcraft",
-        "cordage",
-        "plant fibers",
-        "rope",
-        "lashing"
-      ],
+      "tags": ["bushcraft", "cordage", "plant fibers", "rope", "lashing"],
       "steps": [
         "Identify plants with long, fibrous bark or leaves such as inner tree bark, tall grasses, or fibrous leaves (species will vary by region).",
         "Strip thin, flexible fibers by peeling inner bark or splitting leaves into narrow strips.",
@@ -444,13 +370,7 @@
       "title": "Improvised Snow or Brush Sandals",
       "summary": "Create simple sandals from branches and cordage to increase footprint and reduce sinking in snow, mud, or loose sand.",
       "difficulty": "advanced",
-      "tags": [
-        "bushcraft",
-        "snowshoes",
-        "sandals",
-        "mobility",
-        "survival"
-      ],
+      "tags": ["bushcraft", "snowshoes", "sandals", "mobility", "survival"],
       "steps": [
         "Gather flexible branches or green saplings about pencil to finger thickness and as long as your foot or slightly longer.",
         "Lay several branches side by side to form a flat platform wider than your boot or foot.",
@@ -482,12 +402,7 @@
       "title": "Overhand and Stopper Knots",
       "summary": "Tie a simple overhand knot to create a stopper in a rope or cord.",
       "difficulty": "basic",
-      "tags": [
-        "knot",
-        "overhand",
-        "stopper",
-        "rope"
-      ],
+      "tags": ["knot", "overhand", "stopper", "rope"],
       "steps": [
         "Hold the rope and form a small loop near the end by crossing the working end over the standing part.",
         "Pass the working end of the rope through the loop you just created.",
@@ -519,12 +434,7 @@
       "title": "Square (Reef) Knot",
       "summary": "Join two cords of similar size for non-critical uses such as bundling and bandages.",
       "difficulty": "basic",
-      "tags": [
-        "knot",
-        "square knot",
-        "reef knot",
-        "joining"
-      ],
+      "tags": ["knot", "square knot", "reef knot", "joining"],
       "steps": [
         "Hold one rope end in each hand.",
         "Cross the right end over the left end and tie a simple overhand: right over left, then under and pull snug.",
@@ -557,12 +467,7 @@
       "title": "Sheet Bend",
       "summary": "Join two ropes, especially of different diameters or stiffness.",
       "difficulty": "basic",
-      "tags": [
-        "knot",
-        "sheet bend",
-        "joining",
-        "rope"
-      ],
+      "tags": ["knot", "sheet bend", "joining", "rope"],
       "steps": [
         "Form a U-shaped bight in the thicker or less flexible rope and hold it in one hand.",
         "Pass the working end of the thinner rope up through the bight from below.",
@@ -595,13 +500,7 @@
       "title": "Bowline (Fixed Loop)",
       "summary": "Tie a fixed loop that will not slip, useful for securing lines to objects or around the body.",
       "difficulty": "intermediate",
-      "tags": [
-        "knot",
-        "bowline",
-        "loop",
-        "fixed",
-        "rope"
-      ],
+      "tags": ["knot", "bowline", "loop", "fixed", "rope"],
       "steps": [
         "Form a small loop in the standing part of the rope, with the standing part crossing over the top of the loop.",
         "Pass the working end up through this loop from below.",
@@ -634,13 +533,7 @@
       "title": "Round Turn and Two Half Hitches",
       "summary": "Secure a rope to a post, tree, or ring with a stable, easily adjustable knot.",
       "difficulty": "basic",
-      "tags": [
-        "knot",
-        "hitch",
-        "post",
-        "anchor",
-        "rope"
-      ],
+      "tags": ["knot", "hitch", "post", "anchor", "rope"],
       "steps": [
         "Pass the rope around the post or object twice, creating a full round turn plus another wrap if desired for friction.",
         "Cross the working end over the standing part and wrap it around the post, forming a half hitch, then tighten.",
@@ -673,12 +566,7 @@
       "title": "Clove Hitch",
       "summary": "Attach a rope quickly to a post or tree as a starting point for lashings or temporary anchors.",
       "difficulty": "basic",
-      "tags": [
-        "knot",
-        "clove hitch",
-        "hitch",
-        "lashing"
-      ],
+      "tags": ["knot", "clove hitch", "hitch", "lashing"],
       "steps": [
         "Wrap the rope once around the post, crossing the working end over the standing part.",
         "Continue around the post a second time, bringing the working end across the standing part again.",
@@ -710,13 +598,7 @@
       "title": "Taut-Line Hitch (Adjustable Guyline)",
       "summary": "Create an adjustable loop that can slide to tighten or loosen tent and tarp guylines.",
       "difficulty": "intermediate",
-      "tags": [
-        "knot",
-        "taut-line hitch",
-        "adjustable",
-        "guyline",
-        "tarp"
-      ],
+      "tags": ["knot", "taut-line hitch", "adjustable", "guyline", "tarp"],
       "steps": [
         "Wrap the rope around a stake or anchor and bring the working end back toward the standing part.",
         "Wrap the working end around the standing part inside the loop, making one full turn and pulling it snug.",
@@ -750,12 +632,7 @@
       "title": "Trucker’s Hitch",
       "summary": "Create a mechanical advantage system in the rope to tighten loads and tarps.",
       "difficulty": "advanced",
-      "tags": [
-        "knot",
-        "trucker's hitch",
-        "tension",
-        "tie-down"
-      ],
+      "tags": ["knot", "trucker's hitch", "tension", "tie-down"],
       "steps": [
         "Anchor one end of the rope to a fixed point using a secure knot such as a round turn and two half hitches.",
         "Along the standing part of the rope, about halfway to the load, form a small loop by twisting a bight of rope and pulling a section of rope through to create a fixed loop (slip or figure-eight loop).",
@@ -792,12 +669,7 @@
       "title": "Prusik Knot (Friction Hitch)",
       "summary": "Tie a friction hitch that grips a larger rope when loaded and slides when unloaded.",
       "difficulty": "advanced",
-      "tags": [
-        "knot",
-        "prusik",
-        "friction hitch",
-        "loop"
-      ],
+      "tags": ["knot", "prusik", "friction hitch", "loop"],
       "steps": [
         "Create a closed loop of cord by tying the ends together securely (commonly with a double fisherman’s knot).",
         "Place the loop behind the main rope so that both strands of the loop hang down evenly.",
