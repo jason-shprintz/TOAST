@@ -1,7 +1,7 @@
 export { RootStore } from './RootStore';
 export { CoreStore, type Note } from './CoreStore';
 export { InventoryStore, type InventoryItem } from './InventoryStore';
-export { PantryStore, type PantryItem } from './PantryStore';
+export { PantryStore, type PantryItem, type ExpirationStatus, type ExpirationAlert } from './PantryStore';
 export {
   EmergencyPlanStore,
   type EmergencyContact,

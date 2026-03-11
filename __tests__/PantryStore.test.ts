@@ -424,4 +424,189 @@ describe('PantryStore', () => {
       });
     });
   });
+
+  describe('Expiration Utilities', () => {
+    beforeEach(async () => {
+      await store.initDatabase();
+    });
+
+    describe('getExpirationDaysRemaining', () => {
+      it('should return null for items without expiration date', async () => {
+        const item = await store.createItem('No Expiry', 'Canned Goods', 1);
+        expect(store.getExpirationDaysRemaining(item)).toBeNull();
+      });
+
+      it('should return null when only month is set (no year)', async () => {
+        // Directly create a mock item with missing year
+        const fakeItem = {
+          id: 'fake',
+          name: 'Test',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: 6,
+          expirationYear: undefined,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        expect(store.getExpirationDaysRemaining(fakeItem as any)).toBeNull();
+      });
+
+      it('should return a positive number for a future expiration month', async () => {
+        const now = new Date();
+        // Use a month far in the future to guarantee positive days
+        const futureYear = now.getFullYear() + 2;
+        const item = await store.createItem(
+          'Future Item',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          6,
+          futureYear,
+        );
+        const days = store.getExpirationDaysRemaining(item);
+        expect(days).not.toBeNull();
+        expect(days!).toBeGreaterThan(0);
+      });
+
+      it('should return a negative-or-zero number for an expired item', () => {
+        // Bypass validation by crafting an item with a past expiration date
+        const pastItem = {
+          id: 'past',
+          name: 'Expired',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: 1,
+          expirationYear: 2000,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        const days = store.getExpirationDaysRemaining(pastItem as any);
+        expect(days).not.toBeNull();
+        expect(days!).toBeLessThanOrEqual(0);
+      });
+    });
+
+    describe('getExpirationStatus', () => {
+      it('should return "none" for items without expiration date', async () => {
+        const item = await store.createItem('No Expiry', 'Canned Goods', 1);
+        expect(store.getExpirationStatus(item)).toBe('none');
+      });
+
+      it('should return "green" for items expiring in more than 30 days', async () => {
+        const futureYear = new Date().getFullYear() + 2;
+        const item = await store.createItem(
+          'Green Item',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          6,
+          futureYear,
+        );
+        expect(store.getExpirationStatus(item)).toBe('green');
+      });
+
+      it('should return "red" for expired items', () => {
+        const expiredItem = {
+          id: 'exp',
+          name: 'Expired',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: 1,
+          expirationYear: 2000,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        expect(store.getExpirationStatus(expiredItem as any)).toBe('red');
+      });
+    });
+
+    describe('itemsSortedByExpiration', () => {
+      it('should exclude items without expiration dates', async () => {
+        await store.createItem('No Expiry', 'Canned Goods', 1);
+        const futureYear = new Date().getFullYear() + 1;
+        await store.createItem(
+          'Has Expiry',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          6,
+          futureYear,
+        );
+        const sorted = store.itemsSortedByExpiration;
+        expect(sorted.length).toBe(1);
+        expect(sorted[0].name).toBe('Has Expiry');
+      });
+
+      it('should sort items soonest-first', async () => {
+        const currentYear = new Date().getFullYear();
+        const futureYear = currentYear + 5;
+        await store.createItem(
+          'Far Future',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          12,
+          futureYear,
+        );
+        await store.createItem(
+          'Near Future',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          6,
+          currentYear + 1,
+        );
+        const sorted = store.itemsSortedByExpiration;
+        expect(sorted[0].name).toBe('Near Future');
+        expect(sorted[1].name).toBe('Far Future');
+      });
+    });
+
+    describe('getExpirationAlerts', () => {
+      it('should return empty array when no items have expiration dates', async () => {
+        await store.createItem('No Expiry', 'Canned Goods', 1);
+        expect(store.getExpirationAlerts()).toHaveLength(0);
+      });
+
+      it('should classify expired items as "expired"', () => {
+        const expiredItem = {
+          id: 'exp',
+          name: 'Expired',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: 1,
+          expirationYear: 2000,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        // Manually push into store.items for this test
+        store.items.push(expiredItem as any);
+        const alerts = store.getExpirationAlerts();
+        const expiredAlerts = alerts.filter((a) => a.alertType === 'expired');
+        expect(expiredAlerts.length).toBeGreaterThan(0);
+        expect(expiredAlerts[0].item.name).toBe('Expired');
+      });
+
+      it('should not produce alerts for items expiring more than 30 days away', async () => {
+        const futureYear = new Date().getFullYear() + 3;
+        await store.createItem(
+          'Safe Item',
+          'Canned Goods',
+          1,
+          undefined,
+          undefined,
+          6,
+          futureYear,
+        );
+        const alerts = store.getExpirationAlerts();
+        const safeAlerts = alerts.filter((a) => a.item.name === 'Safe Item');
+        expect(safeAlerts).toHaveLength(0);
+      });
+    });
+  });
 });

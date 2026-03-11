@@ -1,6 +1,15 @@
 import { makeAutoObservable, runInAction, computed } from 'mobx';
 import { SQLiteDatabase } from '../types/database-types';
 
+/** Expiration status based on days remaining until end of the expiration month. */
+export type ExpirationStatus = 'green' | 'yellow' | 'red' | 'none';
+
+/** An item paired with its pre-computed alert tier for footer notifications. */
+export interface ExpirationAlert {
+  item: PantryItem;
+  alertType: '30day' | '3day' | 'expired';
+}
+
 let SQLite: any;
 try {
   SQLite = require('react-native-sqlite-storage');
@@ -38,6 +47,7 @@ export class PantryStore {
       this,
       {
         itemsByCategory: computed,
+        itemsSortedByExpiration: computed,
       },
       { autoBind: true },
     );
@@ -80,6 +90,88 @@ export class PantryStore {
     return [...this.items].sort((a, b) =>
       a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
     );
+  }
+
+  /**
+   * Returns the number of days remaining until the end of the item's expiration
+   * month (last day at 23:59:59). Returns null if no expiration date is set.
+   *
+   * @param item - The pantry item to check.
+   */
+  getExpirationDaysRemaining(item: PantryItem): number | null {
+    if (!item.expirationMonth || !item.expirationYear) {
+      return null;
+    }
+    // Day 0 of the following month = last day of the expiration month.
+    const expirationDate = new Date(item.expirationYear, item.expirationMonth, 0);
+    expirationDate.setHours(23, 59, 59, 999);
+    const now = new Date();
+    return Math.ceil(
+      (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+    );
+  }
+
+  /**
+   * Returns a color-coded expiration status for a pantry item:
+   * - `'red'`    — expires within 3 days or already expired
+   * - `'yellow'` — expires within 30 days
+   * - `'green'`  — expires in more than 30 days
+   * - `'none'`   — no expiration date set
+   *
+   * @param item - The pantry item to evaluate.
+   */
+  getExpirationStatus(item: PantryItem): ExpirationStatus {
+    const days = this.getExpirationDaysRemaining(item);
+    if (days === null) {
+      return 'none';
+    }
+    if (days <= 3) {
+      return 'red';
+    }
+    if (days <= 30) {
+      return 'yellow';
+    }
+    return 'green';
+  }
+
+  /**
+   * All items that have an expiration date, sorted soonest-first.
+   * Items without an expiration date are excluded.
+   */
+  get itemsSortedByExpiration(): PantryItem[] {
+    return [...this.items]
+      .filter((item) => item.expirationMonth && item.expirationYear)
+      .sort((a, b) => {
+        const daysA = this.getExpirationDaysRemaining(a) ?? Infinity;
+        const daysB = this.getExpirationDaysRemaining(b) ?? Infinity;
+        return daysA - daysB;
+      });
+  }
+
+  /**
+   * Returns items that trigger a notification alert:
+   * - `'expired'` — expired (days remaining ≤ 0)
+   * - `'3day'`    — expiring within 3 days (but not yet expired)
+   * - `'30day'`   — expiring within 30 days (but more than 3 days remain)
+   *
+   * Items without an expiration date are ignored.
+   */
+  getExpirationAlerts(): ExpirationAlert[] {
+    const alerts: ExpirationAlert[] = [];
+    for (const item of this.items) {
+      const days = this.getExpirationDaysRemaining(item);
+      if (days === null) {
+        continue;
+      }
+      if (days <= 0) {
+        alerts.push({ item, alertType: 'expired' });
+      } else if (days <= 3) {
+        alerts.push({ item, alertType: '3day' });
+      } else if (days <= 30) {
+        alerts.push({ item, alertType: '30day' });
+      }
+    }
+    return alerts;
   }
 
   /**

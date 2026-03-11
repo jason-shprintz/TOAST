@@ -6,6 +6,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { SolarEventType } from '../../../stores/SolarCycleNotificationStore';
 import {
   useCoreStore,
+  usePantryStore,
   useSolarCycleNotificationStore,
   useWeatherOutlookStore,
 } from '../../../stores/StoreContext';
@@ -30,11 +31,15 @@ const SolarCycleNotification = () => {
   const core = useCoreStore();
   const solarNotifications = useSolarCycleNotificationStore();
   const weatherOutlook = useWeatherOutlookStore();
+  const pantry = usePantryStore();
   const COLORS = useTheme();
 
   /**
    * Rotation index cycles through available notification types once all
-   * solar events are complete:  0 = lunar,  1 = weather (when available).
+   * solar events are complete:
+   *   0 = lunar
+   *   1 = weather (when available)
+   *   2+ = pantry expiration alerts (one per alerting item, when available)
    */
   const [rotationIndex, setRotationIndex] = useState(0);
 
@@ -60,7 +65,10 @@ const SolarCycleNotification = () => {
   // Rotate through post-solar notification types every 8 seconds
   useEffect(() => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
-    const maxIndex = weatherSummary ? 1 : 0;
+    const pantryAlerts = pantry.getExpirationAlerts();
+    // slots: 0 = lunar, 1 = weather (if available), 2..N = pantry alerts
+    const maxIndex =
+      (weatherSummary ? 1 : 0) + pantryAlerts.length;
     if (maxIndex === 0) return; // Nothing to rotate through
 
     const interval = setInterval(() => {
@@ -68,15 +76,17 @@ const SolarCycleNotification = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [weatherOutlook.outlook, weatherOutlook]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weatherOutlook.outlook, weatherOutlook, pantry.items]);
 
   const nextNotification = solarNotifications.getNextNotification();
 
-  // Check if all solar events are complete — show rotation of lunar / weather
+  // Check if all solar events are complete — show rotation of lunar / weather / pantry
   if (!nextNotification && solarNotifications.allSolarEventsComplete()) {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
+    const pantryAlerts = pantry.getExpirationAlerts();
 
-    // rotationIndex 1 = weather summary (only if available)
+    // Slot 1 = weather summary (only if available)
     if (rotationIndex === 1 && weatherSummary) {
       return (
         <View style={styles.notificationContent}>
@@ -96,7 +106,39 @@ const SolarCycleNotification = () => {
       );
     }
 
-    // rotationIndex 0 = lunar cycle (default)
+    // Slots 2..N = pantry expiration alerts (offset by weather slot when present)
+    const pantryOffset = weatherSummary ? 2 : 1;
+    const pantryAlertIndex = rotationIndex - pantryOffset;
+    if (pantryAlertIndex >= 0 && pantryAlertIndex < pantryAlerts.length) {
+      const alert = pantryAlerts[pantryAlertIndex];
+      const alertMessages: Record<string, string> = {
+        expired: `Must use today: ${alert.item.name} has expired`,
+        '3day': `Action needed: ${alert.item.name} expires in 3 days`,
+        '30day': `Heads up: ${alert.item.name} expires in 30 days`,
+      };
+      return (
+        <View style={styles.notificationContent}>
+          <Ionicons
+            name="nutrition-outline"
+            size={20}
+            color={
+              alert.alertType === 'expired' || alert.alertType === '3day'
+                ? '#d32f2f'
+                : '#f9a825'
+            }
+            style={styles.notificationIcon}
+          />
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            numberOfLines={2}
+          >
+            {alertMessages[alert.alertType]}
+          </Text>
+        </View>
+      );
+    }
+
+    // Slot 0 = lunar cycle (default)
     const lunarCycle = solarNotifications.getCurrentLunarCycle();
 
     return (
@@ -118,6 +160,39 @@ const SolarCycleNotification = () => {
   }
 
   if (!nextNotification) {
+    // No upcoming solar events — still show pantry alerts when present
+    const pantryAlerts = pantry.getExpirationAlerts();
+    if (pantryAlerts.length > 0) {
+      const alertIndex =
+        rotationIndex < pantryAlerts.length ? rotationIndex : 0;
+      const alert = pantryAlerts[alertIndex];
+      const alertMessages: Record<string, string> = {
+        expired: `Must use today: ${alert.item.name} has expired`,
+        '3day': `Action needed: ${alert.item.name} expires in 3 days`,
+        '30day': `Heads up: ${alert.item.name} expires in 30 days`,
+      };
+      return (
+        <View style={styles.notificationContent}>
+          <Ionicons
+            name="nutrition-outline"
+            size={20}
+            color={
+              alert.alertType === 'expired' || alert.alertType === '3day'
+                ? '#d32f2f'
+                : '#f9a825'
+            }
+            style={styles.notificationIcon}
+          />
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            numberOfLines={2}
+          >
+            {alertMessages[alert.alertType]}
+          </Text>
+        </View>
+      );
+    }
+
     return (
       <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>
         NO NOTIFICATIONS
