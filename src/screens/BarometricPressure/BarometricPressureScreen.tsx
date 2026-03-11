@@ -18,6 +18,7 @@ import { FOOTER_HEIGHT } from '../../theme';
 import {
   getPressureTrend,
   getTrendInterpretation,
+  hpaToInhg,
   PressureTrend,
 } from '../../utils/barometricPressure';
 import { displayPressure } from '../../utils/unitConversions';
@@ -64,12 +65,14 @@ function BarometricPressureScreen() {
     pressure !== null
       ? displayPressure(pressure, settingsStore.measurementSystem)
       : null;
-  const pressureValueStr = pressureDisplay
-    ? pressureDisplay.substring(0, pressureDisplay.lastIndexOf(' '))
-    : '';
-  const pressureUnitStr = pressureDisplay
-    ? pressureDisplay.substring(pressureDisplay.lastIndexOf(' ') + 1)
-    : '';
+  const isImperial = settingsStore.measurementSystem === 'imperial';
+  const pressureValueStr =
+    pressure !== null
+      ? isImperial
+        ? hpaToInhg(pressure).toFixed(2)
+        : Math.round(pressure).toString()
+      : '';
+  const pressureUnitStr = pressure !== null ? (isImperial ? 'inHg' : 'hPa') : '';
 
   const renderWindowButton = (hours: WindowHours) => {
     const isActive = hours === windowHours;
