@@ -83,12 +83,7 @@ export default function CardTopic({
           containerStyle,
         ]}
       >
-        <View
-          style={[
-            styles.card,
-            { borderColor: COLORS.SECONDARY_ACCENT },
-          ]}
-        >
+        <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
           <LinearGradient
             colors={COLORS.TOAST_BROWN_GRADIENT}
             start={{ x: 0, y: 0 }}
@@ -123,6 +118,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: CARD_BORDER_RADIUS,
     marginBottom: 12,
+    backgroundColor: '#fff',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
