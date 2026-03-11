@@ -49,8 +49,10 @@ export default function SectionHeader({
   const header = (
     <Text
       {...rest}
+      numberOfLines={enableSearch ? (rest.numberOfLines ?? 1) : rest.numberOfLines}
       style={[
         styles.header,
+        enableSearch && styles.headerWithSearch,
         {
           color: LIGHT_COLORS.PRIMARY_DARK,
           backgroundColor: COLORS.SECONDARY_ACCENT,
@@ -75,21 +77,7 @@ export default function SectionHeader({
           accessibilityHint="Double tap to open search screen"
         >
           <View style={styles.headerRow}>
-            <Text
-              {...rest}
-              style={[
-                styles.header,
-                {
-                  color: LIGHT_COLORS.PRIMARY_DARK,
-                  backgroundColor: COLORS.SECONDARY_ACCENT,
-                  borderColor: COLORS.TOAST_BROWN,
-                },
-                style,
-              ]}
-              numberOfLines={1}
-            >
-              {title ?? children}
-            </Text>
+            {header}
             <Ionicons
               name="search-outline"
               size={16}
@@ -135,5 +123,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 12,
     opacity: 0.6,
+  },
+  headerWithSearch: {
+    paddingRight: 40,
   },
 });
