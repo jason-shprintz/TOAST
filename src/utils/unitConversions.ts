@@ -3,7 +3,7 @@
  * Provides two-way conversions for various unit categories.
  */
 
-import type { TemperatureUnit } from '../stores/SettingsStore';
+import type { MeasurementSystem } from '../stores/SettingsStore';
 
 export type ConversionCategory = {
   id: string;
@@ -506,13 +506,45 @@ export const conversionCategories: ConversionCategory[] = [
 /**
  * Converts a Celsius temperature value to a display string in the preferred unit.
  * @param celsius - Temperature in Celsius
- * @param unit - 'F' for Fahrenheit or 'C' for Celsius
+ * @param system - 'imperial' for Fahrenheit or 'metric' for Celsius
  * @returns Formatted temperature string, e.g. "72°F" or "22°C"
  */
-export function displayTemp(celsius: number, unit: TemperatureUnit): string {
-  if (unit === 'F') {
-    const f = celsius * (9 / 5) + 32;
-    return `${Math.round(f)}°F`;
+export function displayTemp(celsius: number, system: MeasurementSystem): string {
+  if (system === 'imperial') {
+    return `${Math.round(celsius * (9 / 5) + 32)}°F`;
   }
   return `${Math.round(celsius)}°C`;
+}
+
+/**
+ * Converts a pressure value in hPa to a display string in the preferred unit.
+ * @param hPa - Pressure in hectopascals
+ * @param system - 'imperial' for inHg or 'metric' for hPa
+ * @returns Formatted pressure string, e.g. "29.92 inHg" or "1013 hPa"
+ */
+export function displayPressure(hPa: number, system: MeasurementSystem): string {
+  if (system === 'imperial') return `${(hPa * 0.02953).toFixed(2)} inHg`;
+  return `${Math.round(hPa)} hPa`;
+}
+
+/**
+ * Converts a speed value in km/h to a display string in the preferred unit.
+ * @param kmh - Speed in kilometers per hour
+ * @param system - 'imperial' for mph or 'metric' for km/h
+ * @returns Formatted speed string, e.g. "62 mph" or "100 km/h"
+ */
+export function displaySpeed(kmh: number, system: MeasurementSystem): string {
+  if (system === 'imperial') return `${Math.round(kmh * 0.62137)} mph`;
+  return `${Math.round(kmh)} km/h`;
+}
+
+/**
+ * Converts a precipitation value in mm to a display string in the preferred unit.
+ * @param mm - Precipitation in millimeters
+ * @param system - 'imperial' for inches or 'metric' for mm
+ * @returns Formatted precipitation string, e.g. "0.39 in" or "10 mm"
+ */
+export function displayPrecipitation(mm: number, system: MeasurementSystem): string {
+  if (system === 'imperial') return `${(mm * 0.03937).toFixed(2)} in`;
+  return `${Math.round(mm)} mm`;
 }

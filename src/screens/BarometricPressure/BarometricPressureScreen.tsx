@@ -13,13 +13,14 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useBarometricPressure } from '../../hooks/useBarometricPressure';
 import { useTheme } from '../../hooks/useTheme';
+import { useSettingsStore } from '../../stores';
 import { FOOTER_HEIGHT } from '../../theme';
 import {
   getPressureTrend,
   getTrendInterpretation,
-  hpaToInhg,
   PressureTrend,
 } from '../../utils/barometricPressure';
+import { displayPressure } from '../../utils/unitConversions';
 
 /** Available history window options in hours */
 const WINDOW_OPTIONS = [1, 3, 6, 12, 24] as const;
@@ -45,6 +46,7 @@ const TREND_ARROW: Record<PressureTrend, string> = {
  */
 function BarometricPressureScreen() {
   const COLORS = useTheme();
+  const settingsStore = useSettingsStore();
   const { pressure, available, loading, history, error } =
     useBarometricPressure();
   const [windowHours, setWindowHours] = useState<WindowHours>(3);
@@ -57,6 +59,17 @@ function BarometricPressureScreen() {
 
   const trend = getPressureTrend(windowReadings);
   const interpretation = getTrendInterpretation(trend);
+
+  const pressureDisplay =
+    pressure !== null
+      ? displayPressure(pressure, settingsStore.measurementSystem)
+      : null;
+  const pressureValueStr = pressureDisplay
+    ? pressureDisplay.substring(0, pressureDisplay.lastIndexOf(' '))
+    : '';
+  const pressureUnitStr = pressureDisplay
+    ? pressureDisplay.substring(pressureDisplay.lastIndexOf(' ') + 1)
+    : '';
 
   const renderWindowButton = (hours: WindowHours) => {
     const isActive = hours === windowHours;
@@ -129,7 +142,7 @@ function BarometricPressureScreen() {
                   <View
                     style={styles.readingBlock}
                     accessible={true}
-                    accessibilityLabel={`Current pressure: ${pressure.toFixed(1)} hectopascals`}
+                    accessibilityLabel={`Current pressure: ${pressureDisplay}`}
                   >
                     <Text
                       style={[
@@ -137,7 +150,7 @@ function BarometricPressureScreen() {
                         { color: COLORS.PRIMARY_DARK },
                       ]}
                     >
-                      {pressure.toFixed(1)}
+                      {pressureValueStr}
                     </Text>
                     <Text
                       style={[
@@ -145,30 +158,7 @@ function BarometricPressureScreen() {
                         { color: COLORS.PRIMARY_DARK },
                       ]}
                     >
-                      hPa
-                    </Text>
-                  </View>
-                  <View style={styles.readingDivider} />
-                  <View
-                    style={styles.readingBlock}
-                    accessible={true}
-                    accessibilityLabel={`${hpaToInhg(pressure).toFixed(2)} inches of mercury`}
-                  >
-                    <Text
-                      style={[
-                        styles.readingValue,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      {hpaToInhg(pressure).toFixed(2)}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.readingUnit,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      inHg
+                      {pressureUnitStr}
                     </Text>
                   </View>
                 </View>

@@ -3,13 +3,13 @@ import { makeAutoObservable, runInAction } from 'mobx';
 export type FontSize = 'small' | 'medium' | 'large';
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type NoteSortOrder = 'newest-oldest' | 'oldest-newest' | 'a-z' | 'z-a';
-export type TemperatureUnit = 'F' | 'C';
+export type MeasurementSystem = 'imperial' | 'metric';
 
 export interface Settings {
   fontSize: FontSize;
   themeMode: ThemeMode;
   noteSortOrder: NoteSortOrder;
-  temperatureUnit: TemperatureUnit;
+  measurementSystem: MeasurementSystem;
 }
 
 /**
@@ -20,7 +20,7 @@ export class SettingsStore {
   fontSize: FontSize = 'small';
   themeMode: ThemeMode = 'system';
   noteSortOrder: NoteSortOrder = 'newest-oldest';
-  temperatureUnit: TemperatureUnit = 'F';
+  measurementSystem: MeasurementSystem = 'imperial';
   lastBackupAt: number | null = null;
   private settingsDb: any | null = null;
 
@@ -62,12 +62,12 @@ export class SettingsStore {
   }
 
   /**
-   * Sets the temperature unit setting.
-   * @param unit - The desired temperature unit ('F' for Fahrenheit or 'C' for Celsius)
+   * Sets the measurement system setting.
+   * @param system - The desired measurement system ('imperial' or 'metric')
    */
-  async setTemperatureUnit(unit: TemperatureUnit) {
+  async setMeasurementSystem(system: MeasurementSystem) {
     runInAction(() => {
-      this.temperatureUnit = unit;
+      this.measurementSystem = system;
     });
     await this.persistSettings();
   }
@@ -141,10 +141,10 @@ export class SettingsStore {
   }
 
   /**
-   * Validates if a value is a valid TemperatureUnit
+   * Validates if a value is a valid MeasurementSystem
    */
-  private isValidTemperatureUnit(value: any): value is TemperatureUnit {
-    return ['F', 'C'].includes(value);
+  private isValidMeasurementSystem(value: any): value is MeasurementSystem {
+    return ['imperial', 'metric'].includes(value);
   }
 
   /**
@@ -206,19 +206,19 @@ export class SettingsStore {
         }
       }
 
-      // Load temperature unit
-      const temperatureUnitRes = await this.settingsDb.executeSql(
-        "SELECT value FROM settings WHERE key = 'temperatureUnit'",
+      // Load measurement system
+      const measurementSystemRes = await this.settingsDb.executeSql(
+        "SELECT value FROM settings WHERE key = 'measurementSystem'",
       );
-      if (temperatureUnitRes[0].rows.length > 0) {
-        const value = temperatureUnitRes[0].rows.item(0).value;
-        if (this.isValidTemperatureUnit(value)) {
+      if (measurementSystemRes[0].rows.length > 0) {
+        const value = measurementSystemRes[0].rows.item(0).value;
+        if (this.isValidMeasurementSystem(value)) {
           runInAction(() => {
-            this.temperatureUnit = value;
+            this.measurementSystem = value;
           });
         } else {
           console.warn(
-            `Invalid temperatureUnit value in database: ${value}, using default 'F'`,
+            `Invalid measurementSystem value in database: ${value}, using default 'imperial'`,
           );
         }
       }
@@ -260,8 +260,8 @@ export class SettingsStore {
         [this.noteSortOrder],
       );
       await this.settingsDb.executeSql(
-        "INSERT OR REPLACE INTO settings (key, value) VALUES ('temperatureUnit', ?)",
-        [this.temperatureUnit],
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('measurementSystem', ?)",
+        [this.measurementSystem],
       );
       if (this.lastBackupAt !== null) {
         await this.settingsDb.executeSql(

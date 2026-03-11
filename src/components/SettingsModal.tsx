@@ -24,7 +24,7 @@ import {
   clearBookmarks,
   getBookmarks,
 } from '../stores/BookmarksStore';
-import { FontSize, TemperatureUnit, ThemeMode } from '../stores/SettingsStore';
+import { FontSize, MeasurementSystem, ThemeMode } from '../stores/SettingsStore';
 import {
   BackupData,
   BackupPreview,
@@ -122,10 +122,10 @@ export const SettingsModal = observer(
       { value: 'system', label: 'System' },
     ];
 
-    const temperatureUnitOptions: { value: TemperatureUnit; label: string }[] =
+    const measurementSystemOptions: { value: MeasurementSystem; label: string }[] =
       [
-        { value: 'F', label: '°F' },
-        { value: 'C', label: '°C' },
+        { value: 'imperial', label: 'Imperial (°F, ft, mph)' },
+        { value: 'metric', label: 'Metric (°C, m, km/h)' },
       ];
 
     const handleExport = useCallback(async () => {
@@ -146,7 +146,7 @@ export const SettingsModal = observer(
             fontSize: settingsStore.fontSize,
             themeMode: settingsStore.themeMode,
             noteSortOrder: settingsStore.noteSortOrder,
-            temperatureUnit: settingsStore.temperatureUnit,
+            measurementSystem: settingsStore.measurementSystem,
           },
         );
         await exportBackup(backupData);
@@ -243,9 +243,9 @@ export const SettingsModal = observer(
                 data.settings.noteSortOrder as any,
               );
             }
-            if (data.settings.temperatureUnit) {
-              await settingsStore.setTemperatureUnit(
-                data.settings.temperatureUnit as any,
+            if (data.settings.measurementSystem) {
+              await settingsStore.setMeasurementSystem(
+                data.settings.measurementSystem as any,
               );
             }
           }
@@ -389,34 +389,34 @@ export const SettingsModal = observer(
                 </View>
               </View>
 
-              {/* Temperature Unit Section */}
+              {/* Measurement System Section */}
               <View style={styles.section}>
                 <RNText style={[styles.sectionTitle, t.primaryText]}>
-                  Temperature Unit
+                  Measurement System
                 </RNText>
                 <View
                   style={[styles.optionsContainer, styles.optionsContainerRow]}
                 >
-                  {temperatureUnitOptions.map((option) => (
+                  {measurementSystemOptions.map((option) => (
                     <TouchableOpacity
                       key={option.value}
                       style={[
                         styles.optionButton,
                         t.temperatureButtonDefault,
-                        settingsStore.temperatureUnit === option.value &&
+                        settingsStore.measurementSystem === option.value &&
                           t.buttonSelected,
                       ]}
                       onPress={() =>
-                        settingsStore.setTemperatureUnit(option.value)
+                        settingsStore.setMeasurementSystem(option.value)
                       }
-                      accessibilityLabel={`Set temperature unit to ${option.label}`}
+                      accessibilityLabel={`Set measurement system to ${option.label}`}
                       accessibilityRole="button"
                     >
                       <RNText
                         style={[
                           styles.optionText,
                           t.primaryText,
-                          settingsStore.temperatureUnit === option.value &&
+                          settingsStore.measurementSystem === option.value &&
                             styles.optionTextSelected,
                         ]}
                       >

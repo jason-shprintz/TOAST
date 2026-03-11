@@ -171,27 +171,27 @@ describe('Unit Conversions', () => {
   });
 
   describe('displayTemp', () => {
-    test('0°C displays as 32°F when unit is F', () => {
-      expect(displayTemp(0, 'F')).toBe('32°F');
+    test('0°C displays as 32°F when system is imperial', () => {
+      expect(displayTemp(0, 'imperial')).toBe('32°F');
     });
 
-    test('100°C displays as 212°F when unit is F', () => {
-      expect(displayTemp(100, 'F')).toBe('212°F');
+    test('100°C displays as 212°F when system is imperial', () => {
+      expect(displayTemp(100, 'imperial')).toBe('212°F');
     });
 
-    test('0°C displays as 0°C when unit is C', () => {
-      expect(displayTemp(0, 'C')).toBe('0°C');
+    test('0°C displays as 0°C when system is metric', () => {
+      expect(displayTemp(0, 'metric')).toBe('0°C');
     });
 
-    test('37°C displays as 37°C when unit is C', () => {
-      expect(displayTemp(37, 'C')).toBe('37°C');
+    test('37°C displays as 37°C when system is metric', () => {
+      expect(displayTemp(37, 'metric')).toBe('37°C');
     });
 
     test('rounds fractional values', () => {
       // 22.2°C → 71.96°F → rounds to 72°F
-      expect(displayTemp(22.2, 'F')).toBe('72°F');
+      expect(displayTemp(22.2, 'imperial')).toBe('72°F');
       // 22.5°C → rounds to 23°C
-      expect(displayTemp(22.5, 'C')).toBe('23°C');
+      expect(displayTemp(22.5, 'metric')).toBe('23°C');
     });
   });
 });
