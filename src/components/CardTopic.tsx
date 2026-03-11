@@ -76,37 +76,35 @@ export default function CardTopic({
 
   return (
     <TouchableWithoutFeedback onPress={bounce}>
-      <Animated.View
-        style={[
-          styles.shadow,
-          { transform: [{ scale }], opacity },
-          containerStyle,
-        ]}
-      >
-        <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
-          <LinearGradient
-            colors={COLORS.TOAST_BROWN_GRADIENT}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.background}
-          />
-          <IconComponent
-            name={icon}
-            size={40}
-            color={LIGHT_COLORS.PRIMARY_DARK}
-            style={styles.icon}
-          />
-          <Text
-            style={[
-              styles.title,
-              { color: LIGHT_COLORS.PRIMARY_DARK },
-              titleStyle,
-            ]}
-          >
-            {title}
-          </Text>
-        </View>
-      </Animated.View>
+      <View style={[styles.shadow, containerStyle]}>
+        <Animated.View
+          style={[styles.animatedWrapper, { transform: [{ scale }], opacity }]}
+        >
+          <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <LinearGradient
+              colors={COLORS.TOAST_BROWN_GRADIENT}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.background}
+            />
+            <IconComponent
+              name={icon}
+              size={40}
+              color={LIGHT_COLORS.PRIMARY_DARK}
+              style={styles.icon}
+            />
+            <Text
+              style={[
+                styles.title,
+                { color: LIGHT_COLORS.PRIMARY_DARK },
+                titleStyle,
+              ]}
+            >
+              {title}
+            </Text>
+          </View>
+        </Animated.View>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
@@ -118,12 +116,15 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: CARD_BORDER_RADIUS,
     marginBottom: 12,
-    backgroundColor: '#fff',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.18,
     shadowRadius: 4,
+  },
+  animatedWrapper: {
+    width: '100%',
+    borderRadius: CARD_BORDER_RADIUS,
   },
   card: {
     width: '100%',
