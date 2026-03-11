@@ -167,6 +167,10 @@ const SolarCycleNotification = () => {
       expired: `Must use today: ${alert.item.name} has expired`,
       '30day': `Heads up: ${alert.item.name} expires in 30 days`,
     };
+    const highlightColor =
+      alert.alertType === 'expired'
+        ? 'rgba(211,47,47,0.22)'
+        : 'rgba(249,168,37,0.28)';
     return (
       <View style={styles.notificationContent}>
         <Ionicons
@@ -175,12 +179,14 @@ const SolarCycleNotification = () => {
           color={alert.alertType === 'expired' ? '#d32f2f' : '#f9a825'}
           style={styles.notificationIcon}
         />
-        <Text
-          style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
-          numberOfLines={2}
-        >
-          {alertMessages[alert.alertType]}
-        </Text>
+        <View style={[styles.alertHighlight, { backgroundColor: highlightColor }]}>
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            numberOfLines={2}
+          >
+            {alertMessages[alert.alertType]}
+          </Text>
+        </View>
       </View>
     );
   }
@@ -209,5 +215,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     flexShrink: 1,
+  },
+  alertHighlight: {
+    flexShrink: 1,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
 });
