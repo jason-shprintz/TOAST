@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Animated,
+  View,
   ViewStyle,
   TextStyle,
 } from 'react-native';
@@ -41,75 +42,100 @@ export default function CardTopic({
   IconComponent = Ionicons,
 }: CardTopicProps) {
   const scale = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
   const COLORS = useTheme();
 
   const bounce = () => {
     Animated.sequence([
-      Animated.timing(scale, {
-        toValue: 0.94,
-        duration: 90,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scale, {
-        toValue: 1,
-        duration: 90,
-        useNativeDriver: true,
-      }),
+      Animated.parallel([
+        Animated.timing(scale, {
+          toValue: 0.94,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.85,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start(() => onPress && onPress());
   };
 
   return (
     <TouchableWithoutFeedback onPress={bounce}>
-      <Animated.View
-        style={[
-          styles.card,
-          {
-            borderColor: COLORS.SECONDARY_ACCENT,
-            boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT,
-          },
-          { transform: [{ scale }] },
-          containerStyle,
-        ]}
-      >
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.background}
-        />
-        <IconComponent
-          name={icon}
-          size={40}
-          color={LIGHT_COLORS.PRIMARY_DARK}
-          style={styles.icon}
-        />
-        <Text
-          style={[
-            styles.title,
-            { color: LIGHT_COLORS.PRIMARY_DARK },
-            titleStyle,
-          ]}
+      <View style={[styles.shadow, containerStyle]}>
+        <Animated.View
+          style={[styles.animatedWrapper, { transform: [{ scale }], opacity }]}
         >
-          {title}
-        </Text>
-      </Animated.View>
+          <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <LinearGradient
+              colors={COLORS.TOAST_BROWN_GRADIENT}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.background}
+            />
+            <IconComponent
+              name={icon}
+              size={40}
+              color={LIGHT_COLORS.PRIMARY_DARK}
+              style={styles.icon}
+            />
+            <Text
+              style={[
+                styles.title,
+                { color: LIGHT_COLORS.PRIMARY_DARK },
+                titleStyle,
+              ]}
+            >
+              {title}
+            </Text>
+          </View>
+        </Animated.View>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
 
+const CARD_BORDER_RADIUS = 14;
+
 const styles = StyleSheet.create({
+  shadow: {
+    width: '100%',
+    borderRadius: CARD_BORDER_RADIUS,
+    marginBottom: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+  },
+  animatedWrapper: {
+    width: '100%',
+    borderRadius: CARD_BORDER_RADIUS,
+  },
   card: {
     width: '100%',
     minHeight: 65,
-    borderRadius: 14,
+    borderRadius: CARD_BORDER_RADIUS,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginBottom: 12,
-    elevation: 2,
     overflow: 'hidden',
-    borderWidth: 2,
+    borderWidth: 1,
   },
   background: {
     ...StyleSheet.absoluteFill,
