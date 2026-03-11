@@ -20,7 +20,11 @@ import {
   useWeatherOutlookStore,
 } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
-import { displayPrecipitation, displaySpeed, displayTemp } from '../../utils/unitConversions';
+import {
+  displayPrecipitation,
+  displaySpeed,
+  displayTemp,
+} from '../../utils/unitConversions';
 
 /** Converts cm to inches. */
 function cmToInches(cm: number): number {

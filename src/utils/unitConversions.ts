@@ -3,8 +3,8 @@
  * Provides two-way conversions for various unit categories.
  */
 
-import type { MeasurementSystem } from '../stores/SettingsStore';
 import { hpaToInhg } from './barometricPressure';
+import type { MeasurementSystem } from '../stores/SettingsStore';
 
 export type ConversionCategory = {
   id: string;
