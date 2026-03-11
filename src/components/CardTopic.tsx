@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Animated,
+  View,
   ViewStyle,
   TextStyle,
 } from 'react-native';
@@ -77,55 +78,65 @@ export default function CardTopic({
     <TouchableWithoutFeedback onPress={bounce}>
       <Animated.View
         style={[
-          styles.card,
-          {
-            borderColor: COLORS.SECONDARY_ACCENT,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 3 },
-            shadowOpacity: 0.18,
-            shadowRadius: 4,
-          },
+          styles.shadow,
           { transform: [{ scale }], opacity },
           containerStyle,
         ]}
       >
-        <LinearGradient
-          colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.background}
-        />
-        <IconComponent
-          name={icon}
-          size={40}
-          color={LIGHT_COLORS.PRIMARY_DARK}
-          style={styles.icon}
-        />
-        <Text
+        <View
           style={[
-            styles.title,
-            { color: LIGHT_COLORS.PRIMARY_DARK },
-            titleStyle,
+            styles.card,
+            { borderColor: COLORS.SECONDARY_ACCENT },
           ]}
         >
-          {title}
-        </Text>
+          <LinearGradient
+            colors={COLORS.TOAST_BROWN_GRADIENT}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.background}
+          />
+          <IconComponent
+            name={icon}
+            size={40}
+            color={LIGHT_COLORS.PRIMARY_DARK}
+            style={styles.icon}
+          />
+          <Text
+            style={[
+              styles.title,
+              { color: LIGHT_COLORS.PRIMARY_DARK },
+              titleStyle,
+            ]}
+          >
+            {title}
+          </Text>
+        </View>
       </Animated.View>
     </TouchableWithoutFeedback>
   );
 }
 
+const CARD_BORDER_RADIUS = 14;
+
 const styles = StyleSheet.create({
+  shadow: {
+    width: '100%',
+    borderRadius: CARD_BORDER_RADIUS,
+    marginBottom: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+  },
   card: {
     width: '100%',
     minHeight: 65,
-    borderRadius: 14,
+    borderRadius: CARD_BORDER_RADIUS,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginBottom: 12,
-    elevation: 4,
     overflow: 'hidden',
     borderWidth: 1,
   },
