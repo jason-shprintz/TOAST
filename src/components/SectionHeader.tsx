@@ -86,7 +86,7 @@ export default function SectionHeader({
 const styles = StyleSheet.create({
   header: {
     fontSize: 20,
-    fontWeight: '800',
+    fontFamily: 'Bitter-Bold',
     borderWidth: 2,
     borderRadius: 8,
     paddingVertical: 8,

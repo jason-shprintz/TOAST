@@ -12,6 +12,8 @@
 		166107751750241844042215 /* sos_dot.wav in Resources */ = {isa = PBXBuildFile; fileRef = 277094793541951660255410 /* sos_dot.wav */; };
 		25D2856FDF67CCA012839549 /* dog_whistle.wav in Resources */ = {isa = PBXBuildFile; fileRef = 92814D2CACF231B03395868E /* dog_whistle.wav */; };
 		3EC99D404F4F4FBF9D0FB0EF /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E8D28AB9190422A8B6C99EC /* BootSplash.storyboard */; };
+		3EE57A57B01E4AC8AE861136 /* Bitter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8753FCF0D162450396BAAAF7 /* Bitter-Bold.ttf */; };
+		4DD3641F9FA44FF3BA922482 /* Bitter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0AC152FA7C284B8C8E3328E1 /* Bitter-Regular.ttf */; };
 		559699633168642720008767 /* sos_dash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 286498949515769630633473 /* sos_dash.wav */; };
 		63E5E6A34BE1E9F2A7DE56E3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
@@ -20,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0AC152FA7C284B8C8E3328E1 /* Bitter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Bitter-Regular.ttf"; path = "TOAST/Fonts/Bitter-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* TOAST.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOAST.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TOAST/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TOAST/Info.plist; sourceTree = "<group>"; };
@@ -33,6 +36,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-TOAST.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TOAST.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TOAST/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TOAST/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8753FCF0D162450396BAAAF7 /* Bitter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Bitter-Bold.ttf"; path = "TOAST/Fonts/Bitter-Bold.ttf"; sourceTree = "<group>"; };
 		92814D2CACF231B03395868E /* dog_whistle.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; name = dog_whistle.wav; path = TOAST/dog_whistle.wav; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -62,6 +66,8 @@
 				277094793541951660255410 /* sos_dot.wav */,
 				286498949515769630633473 /* sos_dash.wav */,
 				92814D2CACF231B03395868E /* dog_whistle.wav */,
+				0AC152FA7C284B8C8E3328E1 /* Bitter-Regular.ttf */,
+				8753FCF0D162450396BAAAF7 /* Bitter-Bold.ttf */,
 			);
 			name = TOAST;
 			sourceTree = "<group>";
@@ -181,6 +187,8 @@
 				166107751750241844042215 /* sos_dot.wav in Resources */,
 				559699633168642720008767 /* sos_dash.wav in Resources */,
 				25D2856FDF67CCA012839549 /* dog_whistle.wav in Resources */,
+				4DD3641F9FA44FF3BA922482 /* Bitter-Regular.ttf in Resources */,
+				3EE57A57B01E4AC8AE861136 /* Bitter-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
