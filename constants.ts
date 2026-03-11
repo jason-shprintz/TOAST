@@ -9,7 +9,12 @@ export const FlashlightModes: FlashlightModeType = {
 };
 
 export const MODULES: ToolType[] = [
-  { name: 'Core', screen: 'CoreModule', icon: 'apps-outline', id: 'home_core' },
+  {
+    name: 'Core',
+    screen: 'CoreModule',
+    icon: 'pulse-outline',
+    id: 'home_core',
+  },
   {
     name: 'Navigation',
     screen: 'NavigationModule',
@@ -25,7 +30,7 @@ export const MODULES: ToolType[] = [
   {
     name: 'Comms',
     screen: 'CommunicationsModule',
-    icon: 'call-outline',
+    icon: 'chatbubbles-outline',
     id: 'home_communications',
   },
   {
@@ -130,7 +135,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   {
     name: 'Digital Whistle',
     screen: 'DigitalWhistle',
-    icon: 'musical-notes-outline',
+    icon: 'megaphone-outline',
     id: 'comm_digital_whistle',
   },
   {
@@ -142,7 +147,7 @@ export const COMMUNICATION_TOOLS: ToolType[] = [
   {
     name: 'Ground-to-Air Signals',
     screen: 'GroundToAirSignals',
-    icon: 'triangle-outline',
+    icon: 'navigate-outline',
     id: 'comm_ground_to_air',
   },
 ];
@@ -205,7 +210,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   {
     name: 'Pantry',
     screen: 'Pantry',
-    icon: 'restaurant-outline',
+    icon: 'nutrition-outline',
     id: 'prepper_pantry',
   },
   {
@@ -223,7 +228,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   {
     name: 'Barter Estimator',
     screen: 'ComingSoon',
-    icon: 'swap-horizontal-outline',
+    icon: 'cash-outline',
     id: 'prepper_barter_estimator',
   },
   {
