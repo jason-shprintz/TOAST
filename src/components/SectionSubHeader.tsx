@@ -32,7 +32,7 @@ export default function SectionSubHeader({
 const styles = StyleSheet.create({
   header: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'Bitter-Bold',
     color: COLORS.PRIMARY_DARK,
     backgroundColor: COLORS.SECONDARY_ACCENT,
     borderWidth: 2,

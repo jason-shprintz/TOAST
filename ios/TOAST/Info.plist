@@ -62,6 +62,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
+		<string>Bitter-Regular.ttf</string>
+		<string>Bitter-Bold.ttf</string>
 	</array>
 </dict>
 </plist>
