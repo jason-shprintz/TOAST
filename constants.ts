@@ -9,7 +9,12 @@ export const FlashlightModes: FlashlightModeType = {
 };
 
 export const MODULES: ToolType[] = [
-  { name: 'Core', screen: 'CoreModule', icon: 'pulse-outline', id: 'home_core' },
+  {
+    name: 'Core',
+    screen: 'CoreModule',
+    icon: 'pulse-outline',
+    id: 'home_core',
+  },
   {
     name: 'Navigation',
     screen: 'NavigationModule',
