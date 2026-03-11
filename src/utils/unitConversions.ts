@@ -4,6 +4,7 @@
  */
 
 import type { MeasurementSystem } from '../stores/SettingsStore';
+import { hpaToInhg } from './barometricPressure';
 
 export type ConversionCategory = {
   id: string;
@@ -529,7 +530,7 @@ export function displayPressure(
   hPa: number,
   system: MeasurementSystem,
 ): string {
-  if (system === 'imperial') return `${(hPa * 0.02953).toFixed(2)} inHg`;
+  if (system === 'imperial') return `${hpaToInhg(hPa).toFixed(2)} inHg`;
   return `${Math.round(hPa)} hPa`;
 }
 
