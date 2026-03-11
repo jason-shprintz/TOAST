@@ -509,7 +509,10 @@ export const conversionCategories: ConversionCategory[] = [
  * @param system - 'imperial' for Fahrenheit or 'metric' for Celsius
  * @returns Formatted temperature string, e.g. "72°F" or "22°C"
  */
-export function displayTemp(celsius: number, system: MeasurementSystem): string {
+export function displayTemp(
+  celsius: number,
+  system: MeasurementSystem,
+): string {
   if (system === 'imperial') {
     return `${Math.round(celsius * (9 / 5) + 32)}°F`;
   }
@@ -522,7 +525,10 @@ export function displayTemp(celsius: number, system: MeasurementSystem): string 
  * @param system - 'imperial' for inHg or 'metric' for hPa
  * @returns Formatted pressure string, e.g. "29.92 inHg" or "1013 hPa"
  */
-export function displayPressure(hPa: number, system: MeasurementSystem): string {
+export function displayPressure(
+  hPa: number,
+  system: MeasurementSystem,
+): string {
   if (system === 'imperial') return `${(hPa * 0.02953).toFixed(2)} inHg`;
   return `${Math.round(hPa)} hPa`;
 }
@@ -544,7 +550,10 @@ export function displaySpeed(kmh: number, system: MeasurementSystem): string {
  * @param system - 'imperial' for inches or 'metric' for mm
  * @returns Formatted precipitation string, e.g. "0.39 in" or "10 mm"
  */
-export function displayPrecipitation(mm: number, system: MeasurementSystem): string {
+export function displayPrecipitation(
+  mm: number,
+  system: MeasurementSystem,
+): string {
   if (system === 'imperial') return `${(mm * 0.03937).toFixed(2)} in`;
   return `${Math.round(mm)} mm`;
 }

@@ -24,7 +24,11 @@ import {
   clearBookmarks,
   getBookmarks,
 } from '../stores/BookmarksStore';
-import { FontSize, MeasurementSystem, ThemeMode } from '../stores/SettingsStore';
+import {
+  FontSize,
+  MeasurementSystem,
+  ThemeMode,
+} from '../stores/SettingsStore';
 import {
   BackupData,
   BackupPreview,
@@ -122,11 +126,13 @@ export const SettingsModal = observer(
       { value: 'system', label: 'System' },
     ];
 
-    const measurementSystemOptions: { value: MeasurementSystem; label: string }[] =
-      [
-        { value: 'imperial', label: 'Imperial (°F, ft, mph)' },
-        { value: 'metric', label: 'Metric (°C, m, km/h)' },
-      ];
+    const measurementSystemOptions: {
+      value: MeasurementSystem;
+      label: string;
+    }[] = [
+      { value: 'imperial', label: 'Imperial (°F, ft, mph)' },
+      { value: 'metric', label: 'Metric (°C, m, km/h)' },
+    ];
 
     const handleExport = useCallback(async () => {
       setIsExporting(true);
