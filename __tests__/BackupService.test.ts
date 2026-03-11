@@ -79,7 +79,7 @@ const SAMPLE_BACKUP: BackupData = {
       fontSize: 'medium',
       themeMode: 'dark',
       noteSortOrder: 'newest-oldest',
-      temperatureUnit: 'C',
+      measurementSystem: 'metric',
     },
   },
 };
@@ -228,7 +228,7 @@ describe('BackupService', () => {
       expect(backup.data.pantryItems).toHaveLength(1);
       expect(backup.data.bookmarks).toHaveLength(1);
       expect(backup.data.settings.fontSize).toBe('medium');
-      expect(backup.data.settings.temperatureUnit).toBe('C');
+      expect(backup.data.settings.measurementSystem).toBe('metric');
     });
   });
 });

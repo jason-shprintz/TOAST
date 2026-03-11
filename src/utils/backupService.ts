@@ -19,7 +19,7 @@ export interface BackupSettings {
   fontSize: string;
   themeMode: string;
   noteSortOrder: string;
-  temperatureUnit?: string;
+  measurementSystem?: string;
 }
 
 /**

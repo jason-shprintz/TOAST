@@ -68,7 +68,7 @@ describe('SettingsStore', () => {
       expect(settingsStore.fontSize).toBe('small');
       expect(settingsStore.themeMode).toBe('system');
       expect(settingsStore.noteSortOrder).toBe('newest-oldest');
-      expect(settingsStore.temperatureUnit).toBe('F');
+      expect(settingsStore.measurementSystem).toBe('imperial');
     });
 
     it('should make the store observable', () => {
@@ -76,7 +76,7 @@ describe('SettingsStore', () => {
       expect(typeof settingsStore.setFontSize).toBe('function');
       expect(typeof settingsStore.setThemeMode).toBe('function');
       expect(typeof settingsStore.setNoteSortOrder).toBe('function');
-      expect(typeof settingsStore.setTemperatureUnit).toBe('function');
+      expect(typeof settingsStore.setMeasurementSystem).toBe('function');
     });
   });
 
@@ -202,26 +202,26 @@ describe('SettingsStore', () => {
     });
   });
 
-  describe('setTemperatureUnit', () => {
+  describe('setMeasurementSystem', () => {
     beforeEach(async () => {
       await settingsStore.initSettingsDb(mockDb);
     });
 
-    it('should update temperatureUnit to F', async () => {
-      await settingsStore.setTemperatureUnit('F');
-      expect(settingsStore.temperatureUnit).toBe('F');
+    it('should update measurementSystem to imperial', async () => {
+      await settingsStore.setMeasurementSystem('imperial');
+      expect(settingsStore.measurementSystem).toBe('imperial');
     });
 
-    it('should update temperatureUnit to C', async () => {
-      await settingsStore.setTemperatureUnit('C');
-      expect(settingsStore.temperatureUnit).toBe('C');
+    it('should update measurementSystem to metric', async () => {
+      await settingsStore.setMeasurementSystem('metric');
+      expect(settingsStore.measurementSystem).toBe('metric');
     });
 
-    it('should persist temperatureUnit to database', async () => {
-      await settingsStore.setTemperatureUnit('C');
+    it('should persist measurementSystem to database', async () => {
+      await settingsStore.setMeasurementSystem('metric');
       expect(mockDb.executeSql).toHaveBeenCalledWith(
-        "INSERT OR REPLACE INTO settings (key, value) VALUES ('temperatureUnit', ?)",
-        ['C'],
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('measurementSystem', ?)",
+        ['metric'],
       );
     });
   });
@@ -298,16 +298,16 @@ describe('SettingsStore', () => {
       expect(newStore.noteSortOrder).toBe('a-z');
     });
 
-    it('should load temperatureUnit from database', async () => {
-      // Set and persist temperatureUnit with first store
-      await settingsStore.setTemperatureUnit('C');
+    it('should load measurementSystem from database', async () => {
+      // Set and persist measurementSystem with first store
+      await settingsStore.setMeasurementSystem('metric');
 
       // Create new store with same database to simulate reload
       const newStore = new SettingsStore();
       await newStore.initSettingsDb(mockDb);
       await newStore.loadSettings(mockDb);
 
-      expect(newStore.temperatureUnit).toBe('C');
+      expect(newStore.measurementSystem).toBe('metric');
     });
 
     it('should use default values if database is empty', async () => {
@@ -319,7 +319,7 @@ describe('SettingsStore', () => {
       expect(newStore.fontSize).toBe('small');
       expect(newStore.themeMode).toBe('system');
       expect(newStore.noteSortOrder).toBe('newest-oldest');
-      expect(newStore.temperatureUnit).toBe('F');
+      expect(newStore.measurementSystem).toBe('imperial');
     });
 
     it('should handle load errors gracefully', async () => {
@@ -367,8 +367,8 @@ describe('SettingsStore', () => {
         ['newest-oldest'],
       );
       expect(mockDb.executeSql).toHaveBeenCalledWith(
-        "INSERT OR REPLACE INTO settings (key, value) VALUES ('temperatureUnit', ?)",
-        ['F'],
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('measurementSystem', ?)",
+        ['imperial'],
       );
     });
 
@@ -483,7 +483,7 @@ describe('SettingsStore', () => {
       await settingsStore.setFontSize('large');
       await settingsStore.setThemeMode('dark');
       await settingsStore.setNoteSortOrder('a-z');
-      await settingsStore.setTemperatureUnit('C');
+      await settingsStore.setMeasurementSystem('metric');
 
       // Simulate app restart by creating new store with same database
       const newStore = new SettingsStore();
@@ -494,7 +494,7 @@ describe('SettingsStore', () => {
       expect(newStore.fontSize).toBe('large');
       expect(newStore.themeMode).toBe('dark');
       expect(newStore.noteSortOrder).toBe('a-z');
-      expect(newStore.temperatureUnit).toBe('C');
+      expect(newStore.measurementSystem).toBe('metric');
       expect(newStore.fontScale).toBe(1.4);
     });
   });

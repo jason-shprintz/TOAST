@@ -20,17 +20,11 @@ import {
   useWeatherOutlookStore,
 } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
-import { displayTemp } from '../../utils/unitConversions';
-
-/** Converts km/h to mph. */
-function kmhToMph(kmh: number): number {
-  return kmh / 1.60934;
-}
-
-/** Converts mm to inches. */
-function mmToInches(mm: number): number {
-  return mm / 25.4;
-}
+import {
+  displayPrecipitation,
+  displaySpeed,
+  displayTemp,
+} from '../../utils/unitConversions';
 
 /** Converts cm to inches. */
 function cmToInches(cm: number): number {
@@ -72,7 +66,7 @@ function SeasonalOutlookScreen() {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
 
-  const tempUnit = settings.temperatureUnit;
+  const measurementSystem = settings.measurementSystem;
 
   useEffect(() => {
     let isMounted = true;
@@ -125,15 +119,18 @@ function SeasonalOutlookScreen() {
   // ---------- helpers ----------
 
   const renderPrecipLine = (precipMm: number) => {
-    return `${mmToInches(precipMm).toFixed(2)} in`;
+    return displayPrecipitation(precipMm, measurementSystem);
   };
 
   const renderWindLine = (kmh: number) => {
-    return `${Math.round(kmhToMph(kmh))} mph`;
+    return displaySpeed(kmh, measurementSystem);
   };
 
   const renderSnowLine = (cm: number) => {
-    return `${cmToInches(cm).toFixed(1)} in`;
+    if (measurementSystem === 'imperial') {
+      return `${cmToInches(cm).toFixed(1)} in`;
+    }
+    return `${Math.round(cm)} cm`;
   };
 
   // ---------- render ----------
@@ -269,7 +266,7 @@ function SeasonalOutlookScreen() {
                             { color: COLORS.PRIMARY_DARK },
                           ]}
                         >
-                          {displayTemp(entry.tempMeanC, tempUnit)}
+                          {displayTemp(entry.tempMeanC, measurementSystem)}
                         </Text>
                       </View>
 
