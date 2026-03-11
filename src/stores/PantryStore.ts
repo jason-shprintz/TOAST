@@ -7,7 +7,7 @@ export type ExpirationStatus = 'green' | 'yellow' | 'red' | 'none';
 /** An item paired with its pre-computed alert tier for footer notifications. */
 export interface ExpirationAlert {
   item: PantryItem;
-  alertType: '30day' | '3day' | 'expired';
+  alertType: '30day' | 'expired';
 }
 
 let SQLite: any;
@@ -112,10 +112,13 @@ export class PantryStore {
   }
 
   /**
-   * Returns a color-coded expiration status for a pantry item:
-   * - `'red'`    — expires within 3 days or already expired
-   * - `'yellow'` — expires within 30 days
-   * - `'green'`  — expires in more than 30 days
+   * Returns a color-coded expiration status for a pantry item.
+   *
+   * Since expiration dates only have month and year resolution (no specific day),
+   * the status thresholds align with whole-month granularity:
+   * - `'red'`    — the expiration month has already passed (item is expired)
+   * - `'yellow'` — expiring within the next 30 days (this month or early next month)
+   * - `'green'`  — more than 30 days remaining
    * - `'none'`   — no expiration date set
    *
    * @param item - The pantry item to evaluate.
@@ -125,7 +128,7 @@ export class PantryStore {
     if (days === null) {
       return 'none';
     }
-    if (days <= 3) {
+    if (days <= 0) {
       return 'red';
     }
     if (days <= 30) {
@@ -149,10 +152,11 @@ export class PantryStore {
   }
 
   /**
-   * Returns items that trigger a notification alert:
-   * - `'expired'` — expired (days remaining ≤ 0)
-   * - `'3day'`    — expiring within 3 days (but not yet expired)
-   * - `'30day'`   — expiring within 30 days (but more than 3 days remain)
+   * Returns items that trigger a notification alert.
+   *
+   * Since expiration dates only store month and year, the tiers are:
+   * - `'expired'` — the expiration month has passed (days remaining ≤ 0)
+   * - `'30day'`   — expiring within the next 30 days (but not yet expired)
    *
    * Items without an expiration date are ignored.
    */
@@ -165,9 +169,7 @@ export class PantryStore {
       }
       if (days <= 0) {
         alerts.push({ item, alertType: 'expired' });
-      } else if (days <= 3) {
-        alerts.push({ item, alertType: '3day' });
-      } else if (days <= 30) {
+      } else if (days > 0 && days <= 30) {
         alerts.push({ item, alertType: '30day' });
       }
     }

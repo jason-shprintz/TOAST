@@ -507,7 +507,25 @@ describe('PantryStore', () => {
         expect(store.getExpirationStatus(item)).toBe('green');
       });
 
-      it('should return "red" for expired items', () => {
+      it('should return "yellow" for items expiring within 30 days but not expired', () => {
+        // Craft an item whose expiration month is the current or next month
+        const now = new Date();
+        // Use a date exactly 15 days from now by computing year+month for that date
+        const fifteenDaysLater = new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000);
+        const yellowItem = {
+          id: 'yellow',
+          name: 'Yellow Item',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: fifteenDaysLater.getMonth() + 1,
+          expirationYear: fifteenDaysLater.getFullYear(),
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        expect(store.getExpirationStatus(yellowItem as any)).toBe('yellow');
+      });
+
+      it('should return "red" for expired items (past the expiration month)', () => {
         const expiredItem = {
           id: 'exp',
           name: 'Expired',
@@ -592,6 +610,27 @@ describe('PantryStore', () => {
         expect(expiredAlerts[0].item.name).toBe('Expired');
       });
 
+      it('should classify items expiring within 30 days as "30day"', () => {
+        // Use a date within 30 days but not yet expired (1-28 days away)
+        const now = new Date();
+        const tenDaysLater = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+        const soonItem = {
+          id: 'soon',
+          name: 'Soon Item',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: tenDaysLater.getMonth() + 1,
+          expirationYear: tenDaysLater.getFullYear(),
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        store.items.push(soonItem as any);
+        const alerts = store.getExpirationAlerts();
+        const soonAlerts = alerts.filter((a) => a.item.name === 'Soon Item');
+        expect(soonAlerts).toHaveLength(1);
+        expect(soonAlerts[0].alertType).toBe('30day');
+      });
+
       it('should not produce alerts for items expiring more than 30 days away', async () => {
         const futureYear = new Date().getFullYear() + 3;
         await store.createItem(
@@ -606,6 +645,23 @@ describe('PantryStore', () => {
         const alerts = store.getExpirationAlerts();
         const safeAlerts = alerts.filter((a) => a.item.name === 'Safe Item');
         expect(safeAlerts).toHaveLength(0);
+      });
+
+      it('should not have a "3day" alert tier', () => {
+        // Verify the alert type is never '3day' regardless of proximity
+        const expiredItem = {
+          id: 'three-day-test',
+          name: 'Three Day Item',
+          category: 'Canned Goods',
+          quantity: 1,
+          expirationMonth: 1,
+          expirationYear: 2000,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        store.items.push(expiredItem as any);
+        const alerts = store.getExpirationAlerts();
+        expect(alerts.every((a) => a.alertType !== '3day' as any)).toBe(true);
       });
     });
   });
