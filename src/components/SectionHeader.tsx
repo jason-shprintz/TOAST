@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { StyleSheet, TextProps, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
 import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
@@ -48,8 +49,10 @@ export default function SectionHeader({
   const header = (
     <Text
       {...rest}
+      numberOfLines={enableSearch ? (rest.numberOfLines ?? 1) : rest.numberOfLines}
       style={[
         styles.header,
+        enableSearch && styles.headerWithSearch,
         {
           color: LIGHT_COLORS.PRIMARY_DARK,
           backgroundColor: COLORS.SECONDARY_ACCENT,
@@ -73,7 +76,16 @@ export default function SectionHeader({
           accessibilityLabel="Search"
           accessibilityHint="Double tap to open search screen"
         >
-          {header}
+          <View style={styles.headerRow}>
+            {header}
+            <Ionicons
+              name="search-outline"
+              size={16}
+              color={LIGHT_COLORS.PRIMARY_DARK}
+              style={styles.searchIcon}
+              accessible={false}
+            />
+          </View>
         </TouchableOpacity>
       ) : (
         header
@@ -99,5 +111,20 @@ const styles = StyleSheet.create({
   searchBar: {
     width: '80%',
     alignSelf: 'center',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'relative',
+  },
+  searchIcon: {
+    position: 'absolute',
+    right: 12,
+    opacity: 0.6,
+  },
+  headerWithSearch: {
+    paddingRight: 40,
   },
 });
