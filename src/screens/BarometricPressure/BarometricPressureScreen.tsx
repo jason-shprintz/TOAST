@@ -72,7 +72,8 @@ function BarometricPressureScreen() {
         ? hpaToInhg(pressure).toFixed(2)
         : Math.round(pressure).toString()
       : '';
-  const pressureUnitStr = pressure !== null ? (isImperial ? 'inHg' : 'hPa') : '';
+  const pressureUnitStr =
+    pressure !== null ? (isImperial ? 'inHg' : 'hPa') : '';
 
   const renderWindowButton = (hours: WindowHours) => {
     const isActive = hours === windowHours;
