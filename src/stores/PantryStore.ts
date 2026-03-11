@@ -103,7 +103,11 @@ export class PantryStore {
       return null;
     }
     // Day 0 of the following month = last day of the expiration month.
-    const expirationDate = new Date(item.expirationYear, item.expirationMonth, 0);
+    const expirationDate = new Date(
+      item.expirationYear,
+      item.expirationMonth,
+      0,
+    );
     expirationDate.setHours(23, 59, 59, 999);
     const now = new Date();
     return Math.ceil(

@@ -69,165 +69,140 @@ function formatDaysRemaining(days: number | null): string {
  *
  * @returns {React.JSX.Element} The rendered expiration tracker screen.
  */
-export default observer(function PantryExpirationTrackerScreen(): React.JSX.Element {
-  const navigation = useNavigation<any>();
-  const pantry = usePantryStore();
-  const COLORS = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+export default observer(
+  function PantryExpirationTrackerScreen(): React.JSX.Element {
+    const navigation = useNavigation<any>();
+    const pantry = usePantryStore();
+    const COLORS = useTheme();
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(
+      null,
+    );
 
-  const sortedItems = pantry.itemsSortedByExpiration;
+    const sortedItems = pantry.itemsSortedByExpiration;
 
-  const filteredItems =
-    selectedCategory === null
-      ? sortedItems
-      : sortedItems.filter((item) => item.category === selectedCategory);
+    const filteredItems =
+      selectedCategory === null
+        ? sortedItems
+        : sortedItems.filter((item) => item.category === selectedCategory);
 
-  const handleItemPress = useCallback(
-    (item: any) => {
-      navigation.navigate('EditPantryItem', { item });
-    },
-    [navigation],
-  );
+    const handleItemPress = useCallback(
+      (item: any) => {
+        navigation.navigate('EditPantryItem', { item });
+      },
+      [navigation],
+    );
 
-  const handleMarkUsed = useCallback(
-    (item: any) => {
-      if (item.quantity > 1) {
-        Alert.alert(
-          'Mark as Used',
-          `Reduce "${item.name}" by 1?\n\nCurrent quantity: ${item.quantity}${item.unit ? ` ${item.unit}` : ''}`,
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Use 1',
-              onPress: async () => {
-                try {
-                  await pantry.updateItem(item.id, {
-                    quantity: item.quantity - 1,
-                  });
-                } catch (error: any) {
-                  Alert.alert('Error', error.message || 'Failed to update item');
-                }
-              },
-            },
-          ],
-        );
-      } else {
-        Alert.alert(
-          'Mark as Used',
-          `Remove "${item.name}" from your pantry? (Last unit)`,
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Remove',
-              style: 'destructive',
-              onPress: async () => {
-                try {
-                  await pantry.deleteItem(item.id);
-                } catch (error: any) {
-                  Alert.alert('Error', error.message || 'Failed to delete item');
-                }
-              },
-            },
-          ],
-        );
-      }
-    },
-    [pantry],
-  );
-
-  /** Border color based on expiration status. */
-  const statusBorderColor = (
-    status: 'green' | 'yellow' | 'red' | 'none',
-  ): string => {
-    switch (status) {
-      case 'red':
-        return '#d32f2f';
-      case 'yellow':
-        return '#f9a825';
-      case 'green':
-        return '#388e3c';
-      default:
-        return COLORS.SECONDARY_ACCENT;
-    }
-  };
-
-  /** Faint background tint based on expiration status. */
-  const statusBackgroundColor = (
-    status: 'green' | 'yellow' | 'red' | 'none',
-  ): string => {
-    switch (status) {
-      case 'red':
-        return 'rgba(211,47,47,0.08)';
-      case 'yellow':
-        return 'rgba(249,168,37,0.08)';
-      case 'green':
-        return 'rgba(56,142,60,0.08)';
-      default:
-        return COLORS.PRIMARY_LIGHT;
-    }
-  };
-
-  return (
-    <ScreenBody>
-      <SectionHeader>Expiration Tracker</SectionHeader>
-
-      {/* Category filter chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filterRow}
-        contentContainerStyle={styles.filterContent}
-      >
-        <TouchableOpacity
-          style={[
-            styles.filterChip,
-            {
-              backgroundColor:
-                selectedCategory === null ? COLORS.ACCENT : COLORS.PRIMARY_LIGHT,
-              borderColor:
-                selectedCategory === null
-                  ? COLORS.ACCENT
-                  : COLORS.SECONDARY_ACCENT,
-            },
-          ]}
-          onPress={() => setSelectedCategory(null)}
-          accessibilityLabel="Show all categories"
-          accessibilityRole="button"
-        >
-          <Text
-            style={[
-              styles.filterChipText,
+    const handleMarkUsed = useCallback(
+      (item: any) => {
+        if (item.quantity > 1) {
+          Alert.alert(
+            'Mark as Used',
+            `Reduce "${item.name}" by 1?\n\nCurrent quantity: ${item.quantity}${item.unit ? ` ${item.unit}` : ''}`,
+            [
+              { text: 'Cancel', style: 'cancel' },
               {
-                color:
-                  selectedCategory === null
-                    ? COLORS.PRIMARY_LIGHT
-                    : COLORS.PRIMARY_DARK,
+                text: 'Use 1',
+                onPress: async () => {
+                  try {
+                    await pantry.updateItem(item.id, {
+                      quantity: item.quantity - 1,
+                    });
+                  } catch (error: any) {
+                    Alert.alert(
+                      'Error',
+                      error.message || 'Failed to update item',
+                    );
+                  }
+                },
               },
-            ]}
-          >
-            All
-          </Text>
-        </TouchableOpacity>
-        {pantry.categories.map((cat) => (
+            ],
+          );
+        } else {
+          Alert.alert(
+            'Mark as Used',
+            `Remove "${item.name}" from your pantry? (Last unit)`,
+            [
+              { text: 'Cancel', style: 'cancel' },
+              {
+                text: 'Remove',
+                style: 'destructive',
+                onPress: async () => {
+                  try {
+                    await pantry.deleteItem(item.id);
+                  } catch (error: any) {
+                    Alert.alert(
+                      'Error',
+                      error.message || 'Failed to delete item',
+                    );
+                  }
+                },
+              },
+            ],
+          );
+        }
+      },
+      [pantry],
+    );
+
+    /** Border color based on expiration status. */
+    const statusBorderColor = (
+      status: 'green' | 'yellow' | 'red' | 'none',
+    ): string => {
+      switch (status) {
+        case 'red':
+          return '#d32f2f';
+        case 'yellow':
+          return '#f9a825';
+        case 'green':
+          return '#388e3c';
+        default:
+          return COLORS.SECONDARY_ACCENT;
+      }
+    };
+
+    /** Faint background tint based on expiration status. */
+    const statusBackgroundColor = (
+      status: 'green' | 'yellow' | 'red' | 'none',
+    ): string => {
+      switch (status) {
+        case 'red':
+          return 'rgba(211,47,47,0.08)';
+        case 'yellow':
+          return 'rgba(249,168,37,0.08)';
+        case 'green':
+          return 'rgba(56,142,60,0.08)';
+        default:
+          return COLORS.PRIMARY_LIGHT;
+      }
+    };
+
+    return (
+      <ScreenBody>
+        <SectionHeader>Expiration Tracker</SectionHeader>
+
+        {/* Category filter chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterRow}
+          contentContainerStyle={styles.filterContent}
+        >
           <TouchableOpacity
-            key={cat}
             style={[
               styles.filterChip,
               {
                 backgroundColor:
-                  selectedCategory === cat
+                  selectedCategory === null
                     ? COLORS.ACCENT
                     : COLORS.PRIMARY_LIGHT,
                 borderColor:
-                  selectedCategory === cat
+                  selectedCategory === null
                     ? COLORS.ACCENT
                     : COLORS.SECONDARY_ACCENT,
               },
             ]}
-            onPress={() =>
-              setSelectedCategory(selectedCategory === cat ? null : cat)
-            }
-            accessibilityLabel={`Filter by ${cat}`}
+            onPress={() => setSelectedCategory(null)}
+            accessibilityLabel="Show all categories"
             accessibilityRole="button"
           >
             <Text
@@ -235,116 +210,165 @@ export default observer(function PantryExpirationTrackerScreen(): React.JSX.Elem
                 styles.filterChipText,
                 {
                   color:
-                    selectedCategory === cat
+                    selectedCategory === null
                       ? COLORS.PRIMARY_LIGHT
                       : COLORS.PRIMARY_DARK,
                 },
               ]}
             >
-              {cat}
+              All
             </Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      <HorizontalRule />
-
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {filteredItems.length === 0 && (
-            <Text
-              style={[styles.emptyText, { color: COLORS.PRIMARY_DARK }]}
+          {pantry.categories.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor:
+                    selectedCategory === cat
+                      ? COLORS.ACCENT
+                      : COLORS.PRIMARY_LIGHT,
+                  borderColor:
+                    selectedCategory === cat
+                      ? COLORS.ACCENT
+                      : COLORS.SECONDARY_ACCENT,
+                },
+              ]}
+              onPress={() =>
+                setSelectedCategory(selectedCategory === cat ? null : cat)
+              }
+              accessibilityLabel={`Filter by ${cat}`}
+              accessibilityRole="button"
             >
-              {sortedItems.length === 0
-                ? 'No items with expiration dates. Add expiration dates to your pantry items to track them here.'
-                : 'No items in this category have expiration dates.'}
-            </Text>
-          )}
-
-          {filteredItems.map((item) => {
-            const days = pantry.getExpirationDaysRemaining(item);
-            const status = pantry.getExpirationStatus(item);
-            const borderColor = statusBorderColor(status);
-            const bgColor = statusBackgroundColor(status);
-
-            return (
-              <TouchableOpacity
-                key={item.id}
+              <Text
                 style={[
-                  styles.itemCard,
+                  styles.filterChipText,
                   {
-                    backgroundColor: bgColor,
-                    borderColor,
+                    color:
+                      selectedCategory === cat
+                        ? COLORS.PRIMARY_LIGHT
+                        : COLORS.PRIMARY_DARK,
                   },
                 ]}
-                onPress={() => handleItemPress(item)}
-                accessibilityLabel={`Edit ${item.name}`}
-                accessibilityRole="button"
               >
-                <View style={styles.itemRow}>
-                  {/* Status indicator dot */}
-                  <View
-                    style={[styles.statusDot, { backgroundColor: borderColor }]}
-                  />
-
-                  <View style={styles.itemInfo}>
-                    <Text
-                      style={[styles.itemName, { color: COLORS.PRIMARY_DARK }]}
-                    >
-                      {item.name}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.itemCategory,
-                        { color: COLORS.PRIMARY_DARK },
-                      ]}
-                    >
-                      {item.category}
-                      {' · '}
-                      {item.quantity}
-                      {item.unit ? ` ${item.unit}` : ''}
-                    </Text>
-                    <Text style={[styles.expirationText, { color: borderColor }]}>
-                      {formatExpiration(item.expirationMonth, item.expirationYear)}
-                    </Text>
-                    {days !== null && (
-                      <Text
-                        style={[styles.daysText, { color: COLORS.PRIMARY_DARK }]}
-                      >
-                        {formatDaysRemaining(days)}
-                      </Text>
-                    )}
-                  </View>
-
-                  {/* Used/Rotated quick action */}
-                  <TouchableOpacity
-                    style={[
-                      styles.usedButton,
-                      { borderColor: COLORS.SECONDARY_ACCENT },
-                    ]}
-                    onPress={() => handleMarkUsed(item)}
-                    accessibilityLabel={`Mark ${item.name} as used`}
-                    accessibilityRole="button"
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  >
-                    <Ionicons
-                      name="checkmark-circle-outline"
-                      size={28}
-                      color={COLORS.PRIMARY_DARK}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
-      </View>
-    </ScreenBody>
-  );
-});
+
+        <HorizontalRule />
+
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {filteredItems.length === 0 && (
+              <Text style={[styles.emptyText, { color: COLORS.PRIMARY_DARK }]}>
+                {sortedItems.length === 0
+                  ? 'No items with expiration dates. Add expiration dates to your pantry items to track them here.'
+                  : 'No items in this category have expiration dates.'}
+              </Text>
+            )}
+
+            {filteredItems.map((item) => {
+              const days = pantry.getExpirationDaysRemaining(item);
+              const status = pantry.getExpirationStatus(item);
+              const borderColor = statusBorderColor(status);
+              const bgColor = statusBackgroundColor(status);
+
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={[
+                    styles.itemCard,
+                    {
+                      backgroundColor: bgColor,
+                      borderColor,
+                    },
+                  ]}
+                  onPress={() => handleItemPress(item)}
+                  accessibilityLabel={`Edit ${item.name}`}
+                  accessibilityRole="button"
+                >
+                  <View style={styles.itemRow}>
+                    {/* Status indicator dot */}
+                    <View
+                      style={[
+                        styles.statusDot,
+                        { backgroundColor: borderColor },
+                      ]}
+                    />
+
+                    <View style={styles.itemInfo}>
+                      <Text
+                        style={[
+                          styles.itemName,
+                          { color: COLORS.PRIMARY_DARK },
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.itemCategory,
+                          { color: COLORS.PRIMARY_DARK },
+                        ]}
+                      >
+                        {item.category}
+                        {' · '}
+                        {item.quantity}
+                        {item.unit ? ` ${item.unit}` : ''}
+                      </Text>
+                      <Text
+                        style={[styles.expirationText, { color: borderColor }]}
+                      >
+                        {formatExpiration(
+                          item.expirationMonth,
+                          item.expirationYear,
+                        )}
+                      </Text>
+                      {days !== null && (
+                        <Text
+                          style={[
+                            styles.daysText,
+                            { color: COLORS.PRIMARY_DARK },
+                          ]}
+                        >
+                          {formatDaysRemaining(days)}
+                        </Text>
+                      )}
+                    </View>
+
+                    {/* Used/Rotated quick action */}
+                    <TouchableOpacity
+                      style={[
+                        styles.usedButton,
+                        { borderColor: COLORS.SECONDARY_ACCENT },
+                      ]}
+                      onPress={() => handleMarkUsed(item)}
+                      accessibilityLabel={`Mark ${item.name} as used`}
+                      accessibilityRole="button"
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={28}
+                        color={COLORS.PRIMARY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </ScreenBody>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   filterRow: {

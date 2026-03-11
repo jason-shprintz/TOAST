@@ -49,7 +49,9 @@ export default function SectionHeader({
   const header = (
     <Text
       {...rest}
-      numberOfLines={enableSearch ? (rest.numberOfLines ?? 1) : rest.numberOfLines}
+      numberOfLines={
+        enableSearch ? (rest.numberOfLines ?? 1) : rest.numberOfLines
+      }
       style={[
         styles.header,
         enableSearch && styles.headerWithSearch,

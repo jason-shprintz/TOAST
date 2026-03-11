@@ -54,11 +54,7 @@ export default observer(function PantryScreen() {
           accessibilityLabel="Expiration Tracker"
           accessibilityRole="button"
         >
-          <Ionicons
-            name="time-outline"
-            size={30}
-            color={COLORS.PRIMARY_DARK}
-          />
+          <Ionicons name="time-outline" size={30} color={COLORS.PRIMARY_DARK} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.pantryButton}

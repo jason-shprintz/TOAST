@@ -67,8 +67,7 @@ const SolarCycleNotification = () => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
     const pantryAlerts = pantry.getExpirationAlerts();
     // slots: 0 = lunar, 1 = weather (if available), 2..N = pantry alerts
-    const maxIndex =
-      (weatherSummary ? 1 : 0) + pantryAlerts.length;
+    const maxIndex = (weatherSummary ? 1 : 0) + pantryAlerts.length;
     if (maxIndex === 0) return; // Nothing to rotate through
 
     const interval = setInterval(() => {
