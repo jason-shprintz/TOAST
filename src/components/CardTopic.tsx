@@ -41,20 +41,35 @@ export default function CardTopic({
   IconComponent = Ionicons,
 }: CardTopicProps) {
   const scale = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
   const COLORS = useTheme();
 
   const bounce = () => {
     Animated.sequence([
-      Animated.timing(scale, {
-        toValue: 0.94,
-        duration: 90,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scale, {
-        toValue: 1,
-        duration: 90,
-        useNativeDriver: true,
-      }),
+      Animated.parallel([
+        Animated.timing(scale, {
+          toValue: 0.94,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.85,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 90,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start(() => onPress && onPress());
   };
 
@@ -65,16 +80,19 @@ export default function CardTopic({
           styles.card,
           {
             borderColor: COLORS.SECONDARY_ACCENT,
-            boxShadow: '0 0 5px ' + COLORS.SECONDARY_ACCENT,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.18,
+            shadowRadius: 4,
           },
-          { transform: [{ scale }] },
+          { transform: [{ scale }], opacity },
           containerStyle,
         ]}
       >
         <LinearGradient
           colors={COLORS.TOAST_BROWN_GRADIENT}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
           style={styles.background}
         />
         <IconComponent
@@ -107,9 +125,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 4,
     overflow: 'hidden',
-    borderWidth: 2,
+    borderWidth: 1,
   },
   background: {
     ...StyleSheet.absoluteFill,
