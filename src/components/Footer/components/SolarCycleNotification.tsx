@@ -179,7 +179,9 @@ const SolarCycleNotification = () => {
           color={alert.alertType === 'expired' ? '#d32f2f' : '#f9a825'}
           style={styles.notificationIcon}
         />
-        <View style={[styles.alertHighlight, { backgroundColor: highlightColor }]}>
+        <View
+          style={[styles.alertHighlight, { backgroundColor: highlightColor }]}
+        >
           <Text
             style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
             numberOfLines={2}
