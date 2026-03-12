@@ -31,7 +31,7 @@ const FORMAT_LABELS: Record<InputFormat, string> = {
 const FORMAT_PLACEHOLDERS: Record<InputFormat, string> = {
   DD: 'e.g. 36.1716, -115.1391',
   DMS: "e.g. 36° 10' 17.76\" N, 115° 8' 20.76\" W",
-  MGRS: 'e.g. 11S MA 36712 25518',
+  MGRS: 'e.g. 11S PA 67363 04586',
 };
 
 interface ConversionResults {
@@ -40,28 +40,38 @@ interface ConversionResults {
   mgrs: string;
 }
 
+function formatDD(lat: number, lng: number): string {
+  return (
+    `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ` +
+    `${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? 'E' : 'W'}`
+  );
+}
+
 function convertFromDD(ddStr: string): ConversionResults {
   const { lat, lng } = parseDdString(ddStr);
-  const dmsResult = ddToDms(lat, lng);
-  const mgrsResult = ddToMgrs(lat, lng);
-  const ddFormatted = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? 'E' : 'W'}`;
-  return { dd: ddFormatted, dms: dmsResult.formatted, mgrs: mgrsResult };
+  return {
+    dd: formatDD(lat, lng),
+    dms: ddToDms(lat, lng).formatted,
+    mgrs: ddToMgrs(lat, lng),
+  };
 }
 
 function convertFromDMS(dmsStr: string): ConversionResults {
   const { lat, lng } = dmsToDd(dmsStr);
-  const dmsResult = ddToDms(lat, lng);
-  const mgrsResult = ddToMgrs(lat, lng);
-  const ddFormatted = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? 'E' : 'W'}`;
-  return { dd: ddFormatted, dms: dmsResult.formatted, mgrs: mgrsResult };
+  return {
+    dd: formatDD(lat, lng),
+    dms: ddToDms(lat, lng).formatted,
+    mgrs: ddToMgrs(lat, lng),
+  };
 }
 
 function convertFromMGRS(mgrsStr: string): ConversionResults {
   const { lat, lng } = mgrsToDD(mgrsStr);
-  const dmsResult = ddToDms(lat, lng);
-  const mgrsResult = ddToMgrs(lat, lng);
-  const ddFormatted = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? 'E' : 'W'}`;
-  return { dd: ddFormatted, dms: dmsResult.formatted, mgrs: mgrsResult };
+  return {
+    dd: formatDD(lat, lng),
+    dms: ddToDms(lat, lng).formatted,
+    mgrs: ddToMgrs(lat, lng),
+  };
 }
 
 /**

@@ -53,8 +53,9 @@ function getMgrsZoneLetter(lat: number): string {
 const a = 6378137.0; // semi-major axis (m)
 const f = 1 / 298.257223563; // flattening
 const b = a * (1 - f); // semi-minor axis
-const e2 = 2 * f - f * f; // eccentricity squared
+const e2 = 2 * f - f * f; // first eccentricity squared
 const e = Math.sqrt(e2);
+const ePrimeSquared = e2 / (1 - e2); // second eccentricity squared
 const k0 = 0.9996; // UTM scale factor
 
 // ---------------------------------------------------------------------------
@@ -88,11 +89,10 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
 
   const N = a / Math.sqrt(1 - e2 * Math.sin(latRad) ** 2);
   const T = Math.tan(latRad) ** 2;
-  const C = (e2 / (1 - e2)) * Math.cos(latRad) ** 2;
+  const C = ePrimeSquared * Math.cos(latRad) ** 2;
   const A = Math.cos(latRad) * (lngRad - lngOriginRad);
 
   // Meridional arc
-  const e2p = e2 / (1 - e2); // second eccentricity squared
   const n = (a - b) / (a + b);
   const M =
     a *
@@ -110,7 +110,7 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
       N *
       (A +
         ((1 - T + C) * A ** 3) / 6 +
-        ((5 - 18 * T + T ** 2 + 72 * C - 58 * e2p) * A ** 5) / 120) +
+        ((5 - 18 * T + T ** 2 + 72 * C - 58 * ePrimeSquared) * A ** 5) / 120) +
     500000;
 
   let northing =
@@ -120,7 +120,7 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
         Math.tan(latRad) *
         (A ** 2 / 2 +
           ((5 - T + 9 * C + 4 * C ** 2) * A ** 4) / 24 +
-          ((61 - 58 * T + T ** 2 + 600 * C - 330 * e2p) * A ** 6) / 720));
+          ((61 - 58 * T + T ** 2 + 600 * C - 330 * ePrimeSquared) * A ** 6) / 720));
 
   if (lat < 0) northing += 10000000; // Southern hemisphere offset
 
@@ -170,7 +170,7 @@ function utmToDD(
 
   const N1 = a / Math.sqrt(1 - e2 * Math.sin(phi1) ** 2);
   const T1 = Math.tan(phi1) ** 2;
-  const C1 = (e2 / (1 - e2)) * Math.cos(phi1) ** 2;
+  const C1 = ePrimeSquared * Math.cos(phi1) ** 2;
   const R1 =
     (a * (1 - e2)) / (1 - e2 * Math.sin(phi1) ** 2) ** 1.5;
   const D = x / (N1 * k0);
@@ -179,14 +179,14 @@ function utmToDD(
     phi1 -
     ((N1 * Math.tan(phi1)) / R1) *
       (D ** 2 / 2 -
-        ((5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * (e2 / (1 - e2))) *
+        ((5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * ePrimeSquared) *
           D ** 4) /
           24 +
         ((61 +
           90 * T1 +
           298 * C1 +
           45 * T1 ** 2 -
-          252 * (e2 / (1 - e2)) -
+          252 * ePrimeSquared -
           3 * C1 ** 2) *
           D ** 6) /
           720);
@@ -195,7 +195,7 @@ function utmToDD(
     lngOriginRad +
     (D -
       ((1 + 2 * T1 + C1) * D ** 3) / 6 +
-      ((5 - 2 * C1 + 28 * T1 - 3 * C1 ** 2 + 8 * (e2 / (1 - e2)) + 24 * T1 ** 2) *
+      ((5 - 2 * C1 + 28 * T1 - 3 * C1 ** 2 + 8 * ePrimeSquared + 24 * T1 ** 2) *
         D ** 5) /
         120) /
       Math.cos(phi1);
@@ -207,8 +207,15 @@ function utmToDD(
 }
 
 // ---------------------------------------------------------------------------
-// MGRS 100km square ID letters
+// MGRS grid constants
 // ---------------------------------------------------------------------------
+
+/** Size of one MGRS 100km grid square in meters */
+const MGRS_SQUARE_SIZE = 100000;
+/** Size of one MGRS northing cycle (20 rows × 100km) in meters */
+const MGRS_CYCLE_SIZE = 2000000;
+/** Threshold used to detect a cycle boundary mismatch (~1 band height) */
+const MGRS_CYCLE_THRESHOLD = 1000000;
 
 // Column sets (repeat every 3 zones)
 const COL_SETS = ['ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ'];
@@ -223,8 +230,8 @@ function getMgrsSquareId(
   const colSet = COL_SETS[(zoneNumber - 1) % 3];
   const rowSet = ROW_SETS[(zoneNumber - 1) % 2];
 
-  const colIdx = Math.floor(easting / 100000) - 1;
-  const rowIdx = Math.floor((northing % 2000000) / 100000);
+  const colIdx = Math.floor(easting / MGRS_SQUARE_SIZE) - 1;
+  const rowIdx = Math.floor((northing % MGRS_CYCLE_SIZE) / MGRS_SQUARE_SIZE);
 
   const col = colSet[colIdx % colSet.length];
   const row = rowSet[rowIdx % rowSet.length];
@@ -253,10 +260,10 @@ export function ddToMgrs(lat: number, lng: number): string {
   const utm = ddToUtm(lat, lng);
   const squareId = getMgrsSquareId(utm.easting, utm.northing, utm.zoneNumber);
 
-  const eLocal = Math.round(utm.easting % 100000)
+  const eLocal = Math.round(utm.easting % MGRS_SQUARE_SIZE)
     .toString()
     .padStart(5, '0');
-  const nLocal = Math.round(utm.northing % 100000)
+  const nLocal = Math.round(utm.northing % MGRS_SQUARE_SIZE)
     .toString()
     .padStart(5, '0');
 
@@ -311,7 +318,7 @@ export function mgrsToDD(mgrsString: string): DDCoord {
     throw new Error(`Invalid MGRS 100km square identifier: "${squareId}"`);
   }
 
-  const easting = (colIdx + 1) * 100000 + eLocal;
+  const easting = (colIdx + 1) * MGRS_SQUARE_SIZE + eLocal;
 
   // Determine which 2000km "cycle" gives a northing ≥ 0
   const zoneLetterIdx = MGRS_ZONE_LETTERS.indexOf(zoneLetter);
@@ -325,11 +332,11 @@ export function mgrsToDD(mgrsString: string): DDCoord {
   const northingApprox = utmApprox.northing;
 
   // Find the correct 2000km cycle
-  const cycle = Math.floor(northingApprox / 2000000);
-  let northing = cycle * 2000000 + rowIdx * 100000 + nLocal;
+  const cycle = Math.floor(northingApprox / MGRS_CYCLE_SIZE);
+  let northing = cycle * MGRS_CYCLE_SIZE + rowIdx * MGRS_SQUARE_SIZE + nLocal;
 
   // If result is more than one band (≈800km) below approx, move up one cycle
-  if (northingApprox - northing > 1000000) northing += 2000000;
+  if (northingApprox - northing > MGRS_CYCLE_THRESHOLD) northing += MGRS_CYCLE_SIZE;
 
   const southern = zoneLetter < 'N';
   const dd = utmToDD(easting, northing, zoneNumber, southern);
