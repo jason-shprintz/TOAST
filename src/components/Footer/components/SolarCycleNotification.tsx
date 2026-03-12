@@ -165,7 +165,7 @@ const SolarCycleNotification = () => {
     const alert = pantryAlerts[pantryAlertIndex];
     const alertMessages: Record<string, string> = {
       expired: `Must use today: ${alert.item.name} has expired`,
-      '30day': `Heads up: ${alert.item.name} expires in 30 days`,
+      '30day': `Heads up: ${alert.item.name} expires within the month`,
     };
     const highlightColor =
       alert.alertType === 'expired'
