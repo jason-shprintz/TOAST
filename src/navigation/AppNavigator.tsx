@@ -56,6 +56,7 @@ import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategori
 import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
 import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
 import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
+import PantryExpirationTrackerScreen from '../screens/Pantry/PantryExpirationTrackerScreen';
 import PantryScreen from '../screens/Pantry/PantryScreen';
 import RadioFrequenciesScreen from '../screens/RadioFrequencies/RadioFrequenciesScreen';
 import RadioFrequencyDetailScreen from '../screens/RadioFrequencies/RadioFrequencyDetailScreen';
@@ -263,6 +264,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="PantryAllItems"
             component={PantryAllItemsScreen}
+          />
+          <Stack.Screen
+            name="PantryExpirationTracker"
+            component={PantryExpirationTrackerScreen}
           />
           <Stack.Screen
             name="ManagePantryCategories"

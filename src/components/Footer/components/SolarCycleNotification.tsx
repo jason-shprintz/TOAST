@@ -6,6 +6,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { SolarEventType } from '../../../stores/SolarCycleNotificationStore';
 import {
   useCoreStore,
+  usePantryStore,
   useSolarCycleNotificationStore,
   useWeatherOutlookStore,
 } from '../../../stores/StoreContext';
@@ -16,11 +17,12 @@ import { Text } from '../../ScaledText';
  * sunrise or sunset notification with time remaining.
  *
  * @remarks
+ * - Rotates through all available notification types every 8 seconds:
+ *   slot 0 — solar event (if upcoming) or lunar phase (when solar is complete)
+ *   slot 1 — weather outlook summary (when available)
+ *   slot 2+ — pantry expiration alerts (one per alerting item, when present)
  * - Shows an icon indicating sunrise (sun) or sunset (moon)
  * - Displays a dynamic message with time remaining until the event
- * - Falls back to lunar cycle when all solar events are complete
- * - After solar and lunar info, rotates to weather outlook summary when available
- * - Falls back to "NO NOTIFICATIONS" when no upcoming events or data
  * - Automatically updates notifications when device location changes
  * - Refreshes display every minute to update time remaining
  *
@@ -30,11 +32,15 @@ const SolarCycleNotification = () => {
   const core = useCoreStore();
   const solarNotifications = useSolarCycleNotificationStore();
   const weatherOutlook = useWeatherOutlookStore();
+  const pantry = usePantryStore();
   const COLORS = useTheme();
+  const pantryExpirationAlertsCount = pantry.getExpirationAlerts().length;
 
   /**
-   * Rotation index cycles through available notification types once all
-   * solar events are complete:  0 = lunar,  1 = weather (when available).
+   * Rotation index cycles through all available notification types:
+   *   0 = solar event (if upcoming) or lunar phase
+   *   1 = weather outlook (when available)
+   *   2+ = pantry expiration alerts (one per alerting item)
    */
   const [rotationIndex, setRotationIndex] = useState(0);
 
@@ -50,38 +56,60 @@ const SolarCycleNotification = () => {
   // Refresh notification display every minute to update time remaining
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update the observable currentTime in the store to trigger re-renders
       solarNotifications.updateCurrentTime();
-    }, 60000); // Update every minute
-
+    }, 60000);
     return () => clearInterval(interval);
   }, [solarNotifications]);
 
-  // Rotate through post-solar notification types every 8 seconds
+  // Rotate through all notification slots every 8 seconds.
+  // Weather and pantry alerts rotate alongside solar/lunar, not only after them.
+  // Depend on getExpirationAlerts().length (not pantry.items) so the effect
+  // re-runs when items are pushed/removed without the array reference changing.
+  // Also reset rotationIndex when totalSlots shrinks to avoid invalid slot state.
   useEffect(() => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
-    const maxIndex = weatherSummary ? 1 : 0;
-    if (maxIndex === 0) return; // Nothing to rotate through
+    const pantryAlerts = pantry.getExpirationAlerts();
+    // slot 0 = solar/lunar (always present), then weather, then pantry alerts
+    const totalSlots = 1 + (weatherSummary ? 1 : 0) + pantryAlerts.length;
+    if (totalSlots <= 1) {
+      // Nothing extra to rotate through; reset index in case pool just shrank to 1.
+      setRotationIndex(0);
+      return;
+    }
+
+    // Clamp index when the pool shrank but still has multiple slots.
+    setRotationIndex((prev) => (prev >= totalSlots ? 0 : prev));
 
     const interval = setInterval(() => {
-      setRotationIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+      setRotationIndex((prev) => (prev >= totalSlots - 1 ? 0 : prev + 1));
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [weatherOutlook.outlook, weatherOutlook]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount]);
 
   const nextNotification = solarNotifications.getNextNotification();
+  const weatherSummary = weatherOutlook.getCurrentMonthSummary();
+  const pantryAlerts = pantry.getExpirationAlerts();
 
-  // Check if all solar events are complete — show rotation of lunar / weather
-  if (!nextNotification && solarNotifications.allSolarEventsComplete()) {
-    const weatherSummary = weatherOutlook.getCurrentMonthSummary();
+  // Determine slot boundaries
+  const weatherSlot = 1;
+  const pantryStartSlot = weatherSummary ? 2 : 1;
 
-    // rotationIndex 1 = weather summary (only if available)
-    if (rotationIndex === 1 && weatherSummary) {
+  // ── Slot 0: Solar event (if active) or Lunar phase ──────────────────────────
+  if (rotationIndex === 0) {
+    if (nextNotification) {
+      // Map event types to icon names
+      const iconMap: Record<SolarEventType, string> = {
+        sunrise: 'sunny-outline',
+        sunset: 'moon-outline',
+        dawn: 'partly-sunny-outline',
+        dusk: 'moon',
+      };
       return (
         <View style={styles.notificationContent}>
           <Ionicons
-            name="partly-sunny-outline"
+            name={iconMap[nextNotification.eventType] || 'sunny-outline'}
             size={20}
             color={COLORS.ACCENT}
             style={styles.notificationIcon}
@@ -90,19 +118,42 @@ const SolarCycleNotification = () => {
             style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
             numberOfLines={2}
           >
-            {weatherSummary}
+            {solarNotifications.getNotificationMessage(nextNotification)}
           </Text>
         </View>
       );
     }
 
-    // rotationIndex 0 = lunar cycle (default)
-    const lunarCycle = solarNotifications.getCurrentLunarCycle();
+    if (solarNotifications.allSolarEventsComplete()) {
+      // Lunar phase after all solar events are done
+      const lunarCycle = solarNotifications.getCurrentLunarCycle();
+      return (
+        <View style={styles.notificationContent}>
+          <Ionicons
+            name="moon"
+            size={20}
+            color={COLORS.ACCENT}
+            style={styles.notificationIcon}
+          />
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            numberOfLines={2}
+          >
+            {`${lunarCycle.phaseName} (${lunarCycle.illumination}%)`}
+          </Text>
+        </View>
+      );
+    }
 
+    // No solar or lunar — fall through to show NO NOTIFICATIONS below
+  }
+
+  // ── Slot 1: Weather summary (when available) ─────────────────────────────────
+  if (rotationIndex === weatherSlot && weatherSummary) {
     return (
       <View style={styles.notificationContent}>
         <Ionicons
-          name="moon"
+          name="partly-sunny-outline"
           size={20}
           color={COLORS.ACCENT}
           style={styles.notificationIcon}
@@ -111,43 +162,50 @@ const SolarCycleNotification = () => {
           style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
           numberOfLines={2}
         >
-          {`${lunarCycle.phaseName} (${lunarCycle.illumination}%)`}
+          {weatherSummary}
         </Text>
       </View>
     );
   }
 
-  if (!nextNotification) {
+  // ── Slots 2+: Pantry expiration alerts ───────────────────────────────────────
+  const pantryAlertIndex = rotationIndex - pantryStartSlot;
+  if (pantryAlertIndex >= 0 && pantryAlertIndex < pantryAlerts.length) {
+    const alert = pantryAlerts[pantryAlertIndex];
+    const alertMessages: Record<string, string> = {
+      expired: `Must use today: ${alert.item.name} has expired`,
+      '30day': `Heads up: ${alert.item.name} expires within the month`,
+    };
+    const highlightColor =
+      alert.alertType === 'expired'
+        ? 'rgba(211,47,47,0.22)'
+        : 'rgba(249,168,37,0.28)';
     return (
-      <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>
-        NO NOTIFICATIONS
-      </Text>
+      <View style={styles.notificationContent}>
+        <Ionicons
+          name="nutrition-outline"
+          size={20}
+          color={alert.alertType === 'expired' ? '#d32f2f' : '#f9a825'}
+          style={styles.notificationIcon}
+        />
+        <View
+          style={[styles.alertHighlight, { backgroundColor: highlightColor }]}
+        >
+          <Text
+            style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+            numberOfLines={2}
+          >
+            {alertMessages[alert.alertType]}
+          </Text>
+        </View>
+      </View>
     );
   }
 
-  // Map event types to icon names
-  const iconMap: Record<SolarEventType, string> = {
-    sunrise: 'sunny-outline',
-    sunset: 'moon-outline',
-    dawn: 'partly-sunny-outline',
-    dusk: 'moon',
-  };
-
   return (
-    <View style={styles.notificationContent}>
-      <Ionicons
-        name={iconMap[nextNotification.eventType] || 'sunny-outline'}
-        size={20}
-        color={COLORS.ACCENT}
-        style={styles.notificationIcon}
-      />
-      <Text
-        style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
-        numberOfLines={2}
-      >
-        {solarNotifications.getNotificationMessage(nextNotification)}
-      </Text>
-    </View>
+    <Text style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}>
+      NO NOTIFICATIONS
+    </Text>
   );
 };
 
@@ -168,5 +226,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     flexShrink: 1,
+  },
+  alertHighlight: {
+    flexShrink: 1,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
 });
