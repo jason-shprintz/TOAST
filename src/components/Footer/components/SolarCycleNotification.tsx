@@ -62,14 +62,22 @@ const SolarCycleNotification = () => {
 
   // Rotate through all notification slots every 8 seconds.
   // Weather and pantry alerts rotate alongside solar/lunar, not only after them.
+  // Depend on getExpirationAlerts().length (not pantry.items) so the effect
+  // re-runs when items are pushed/removed without the array reference changing.
+  // Also reset rotationIndex when totalSlots shrinks to avoid invalid slot state.
   useEffect(() => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
     const pantryAlerts = pantry.getExpirationAlerts();
     // slot 0 = solar/lunar (always present), then weather, then pantry alerts
     const totalSlots = 1 + (weatherSummary ? 1 : 0) + pantryAlerts.length;
     if (totalSlots <= 1) {
-      return; // Nothing extra to rotate through
+      // Nothing extra to rotate through; reset index in case pool just shrank to 1.
+      setRotationIndex(0);
+      return;
     }
+
+    // Clamp index when the pool shrank but still has multiple slots.
+    setRotationIndex((prev) => (prev >= totalSlots ? 0 : prev));
 
     const interval = setInterval(() => {
       setRotationIndex((prev) => (prev >= totalSlots - 1 ? 0 : prev + 1));
@@ -77,7 +85,7 @@ const SolarCycleNotification = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherOutlook.outlook, weatherOutlook, pantry.items]);
+  }, [weatherOutlook.outlook, weatherOutlook, pantry.getExpirationAlerts().length]);
 
   const nextNotification = solarNotifications.getNextNotification();
   const weatherSummary = weatherOutlook.getCurrentMonthSummary();

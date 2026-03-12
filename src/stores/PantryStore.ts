@@ -47,7 +47,7 @@ export class PantryStore {
       this,
       {
         itemsByCategory: computed,
-        itemsSortedByExpiration: computed,
+        itemsSortedByExpiration: false,
       },
       { autoBind: true },
     );
@@ -110,9 +110,11 @@ export class PantryStore {
     );
     expirationDate.setHours(23, 59, 59, 999);
     const now = new Date();
-    return Math.ceil(
-      (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
-    );
+    const diffDays =
+      (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+    // Use floor for non-negative diffs so the final day of the expiration month
+    // reports 0 days remaining; use ceil for negative diffs (already expired).
+    return diffDays >= 0 ? Math.floor(diffDays) : Math.ceil(diffDays);
   }
 
   /**
@@ -144,8 +146,16 @@ export class PantryStore {
   /**
    * All items that have an expiration date, sorted soonest-first.
    * Items without an expiration date are excluded.
+   *
+   * Implemented as a plain method rather than a MobX computed because it
+   * depends on `new Date()` which is not observable; a computed would
+   * become stale while the app stays open without any item changes.
+   *
+   * @remarks
+   * Each call performs date calculations and array operations; avoid calling
+   * this in tight loops or performance-critical hot paths.
    */
-  get itemsSortedByExpiration(): PantryItem[] {
+  itemsSortedByExpiration(): PantryItem[] {
     return [...this.items]
       .filter((item) => item.expirationMonth && item.expirationYear)
       .sort((a, b) => {
