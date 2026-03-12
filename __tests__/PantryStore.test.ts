@@ -508,23 +508,21 @@ describe('PantryStore', () => {
       });
 
       it('should return "yellow" for items expiring within 30 days but not expired', () => {
-        // Craft an item whose expiration month is the current or next month
-        const now = new Date();
-        // Use a date exactly 15 days from now by computing year+month for that date
-        const fifteenDaysLater = new Date(
-          now.getTime() + 15 * 24 * 60 * 60 * 1000,
-        );
+        // Freeze time so the test is deterministic regardless of the real date.
+        // Jan 15, 2024: end of January (Jan 31) is 16 days away — within 30 days but not expired.
+        jest.useFakeTimers({ now: new Date(2024, 0, 15).getTime() });
         const yellowItem = {
           id: 'yellow',
           name: 'Yellow Item',
           category: 'Canned Goods',
           quantity: 1,
-          expirationMonth: fifteenDaysLater.getMonth() + 1,
-          expirationYear: fifteenDaysLater.getFullYear(),
+          expirationMonth: 1,
+          expirationYear: 2024,
           createdAt: Date.now(),
           updatedAt: Date.now(),
         };
         expect(store.getExpirationStatus(yellowItem as any)).toBe('yellow');
+        jest.useRealTimers();
       });
 
       it('should return "red" for expired items (past the expiration month)', () => {
@@ -555,7 +553,7 @@ describe('PantryStore', () => {
           6,
           futureYear,
         );
-        const sorted = store.itemsSortedByExpiration;
+        const sorted = store.itemsSortedByExpiration();
         expect(sorted.length).toBe(1);
         expect(sorted[0].name).toBe('Has Expiry');
       });
@@ -581,7 +579,7 @@ describe('PantryStore', () => {
           6,
           currentYear + 1,
         );
-        const sorted = store.itemsSortedByExpiration;
+        const sorted = store.itemsSortedByExpiration();
         expect(sorted[0].name).toBe('Near Future');
         expect(sorted[1].name).toBe('Far Future');
       });
@@ -613,16 +611,16 @@ describe('PantryStore', () => {
       });
 
       it('should classify items expiring within 30 days as "30day"', () => {
-        // Use a date within 30 days but not yet expired (1-28 days away)
-        const now = new Date();
-        const tenDaysLater = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+        // Freeze time so the test is deterministic.
+        // Jan 15, 2024: end of January (Jan 31) is 16 days away — within 30 days but not expired.
+        jest.useFakeTimers({ now: new Date(2024, 0, 15).getTime() });
         const soonItem = {
           id: 'soon',
           name: 'Soon Item',
           category: 'Canned Goods',
           quantity: 1,
-          expirationMonth: tenDaysLater.getMonth() + 1,
-          expirationYear: tenDaysLater.getFullYear(),
+          expirationMonth: 1,
+          expirationYear: 2024,
           createdAt: Date.now(),
           updatedAt: Date.now(),
         };
@@ -631,6 +629,7 @@ describe('PantryStore', () => {
         const soonAlerts = alerts.filter((a) => a.item.name === 'Soon Item');
         expect(soonAlerts).toHaveLength(1);
         expect(soonAlerts[0].alertType).toBe('30day');
+        jest.useRealTimers();
       });
 
       it('should not produce alerts for items expiring more than 30 days away', async () => {

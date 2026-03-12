@@ -15,6 +15,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { usePantryStore } from '../../stores';
+import { ExpirationStatus } from '../../stores/PantryStore';
 import { FOOTER_HEIGHT } from '../../theme';
 
 const MONTH_NAMES = [
@@ -62,7 +63,7 @@ function formatDaysRemaining(days: number | null): string {
  * Items are color-coded:
  * - Green  — 30+ days remaining
  * - Yellow — within 30 days
- * - Red    — within 3 days or already expired
+ * - Red    — expired (expiration month has passed; days <= 0)
  *
  * Provides category filtering and a quick "Mark as Used" action that
  * decrements an item's quantity by one (removing the item when it reaches zero).
@@ -78,7 +79,7 @@ export default observer(
       null,
     );
 
-    const sortedItems = pantry.itemsSortedByExpiration;
+    const sortedItems = pantry.itemsSortedByExpiration();
 
     const filteredItems =
       selectedCategory === null
@@ -145,9 +146,7 @@ export default observer(
     );
 
     /** Border color based on expiration status. */
-    const statusBorderColor = (
-      status: 'green' | 'yellow' | 'red' | 'none',
-    ): string => {
+    const statusBorderColor = (status: ExpirationStatus): string => {
       switch (status) {
         case 'red':
           return '#d32f2f';
@@ -161,9 +160,7 @@ export default observer(
     };
 
     /** Faint background tint based on expiration status. */
-    const statusBackgroundColor = (
-      status: 'green' | 'yellow' | 'red' | 'none',
-    ): string => {
+    const statusBackgroundColor = (status: ExpirationStatus): string => {
       switch (status) {
         case 'red':
           return 'rgba(211,47,47,0.08)';
@@ -457,6 +454,7 @@ const styles = StyleSheet.create({
   usedButton: {
     padding: 4,
     borderRadius: 6,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
