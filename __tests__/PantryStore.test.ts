@@ -511,7 +511,9 @@ describe('PantryStore', () => {
         // Craft an item whose expiration month is the current or next month
         const now = new Date();
         // Use a date exactly 15 days from now by computing year+month for that date
-        const fifteenDaysLater = new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000);
+        const fifteenDaysLater = new Date(
+          now.getTime() + 15 * 24 * 60 * 60 * 1000,
+        );
         const yellowItem = {
           id: 'yellow',
           name: 'Yellow Item',
@@ -661,7 +663,7 @@ describe('PantryStore', () => {
         };
         store.items.push(expiredItem as any);
         const alerts = store.getExpirationAlerts();
-        expect(alerts.every((a) => a.alertType !== '3day' as any)).toBe(true);
+        expect(alerts.every((a) => a.alertType !== ('3day' as any))).toBe(true);
       });
     });
   });
