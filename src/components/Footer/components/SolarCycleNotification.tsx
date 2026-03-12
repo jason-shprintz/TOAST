@@ -34,6 +34,7 @@ const SolarCycleNotification = () => {
   const weatherOutlook = useWeatherOutlookStore();
   const pantry = usePantryStore();
   const COLORS = useTheme();
+  const pantryExpirationAlertsCount = pantry.getExpirationAlerts().length;
 
   /**
    * Rotation index cycles through all available notification types:
@@ -85,7 +86,7 @@ const SolarCycleNotification = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherOutlook.outlook, weatherOutlook, pantry.getExpirationAlerts().length]);
+  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount]);
 
   const nextNotification = solarNotifications.getNextNotification();
   const weatherSummary = weatherOutlook.getCurrentMonthSummary();
