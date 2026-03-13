@@ -787,6 +787,48 @@ const SYNTHETIC_TOOL_ENTRIES: ReferenceEntryType[] = [
     related_screen: 'GridReference',
     related_screen_label: 'Open Grid Reference Converter',
   },
+  // --- Navigation — Waypoints ---
+  {
+    id: 'synthetic_waypoints',
+    category: 'Navigation',
+    title: 'Waypoint Tracker',
+    summary:
+      'Save, manage, and navigate to GPS waypoints. Add waypoints from your current location or by entering coordinates manually. Live bearing and distance update in real time as you move.',
+    difficulty: 'basic',
+    tags: [
+      'waypoint',
+      'navigate',
+      'gps',
+      'bearing',
+      'distance',
+      'destination',
+      'coordinates',
+      'latitude',
+      'longitude',
+      'track',
+      'route',
+      'field',
+    ],
+    steps: [
+      'Tap the ⚑ Waypoints button (bottom-left of the map) to open the waypoint sheet',
+      'Tap + to add a waypoint from your current GPS location or by entering coordinates',
+      'Tap Navigate on any waypoint to start live bearing and distance tracking',
+      'The active strip at the bottom shows real-time bearing and distance to the waypoint',
+      'Tap ✕ on the active strip to stop navigating to that waypoint',
+      'Tap Delete to remove a waypoint from the list permanently',
+    ],
+    do_not: [],
+    watch_for: [
+      'GPS must be enabled and location permission granted for "current location" waypoints',
+      'Bearing is magnetic north based on device compass; verify against map in the field',
+    ],
+    notes: [
+      'Waypoints are stored in SQLite and persist across app restarts',
+      'Distance uses the haversine formula; bearing uses atan2 over a spherical Earth model',
+    ],
+    related_screen: 'MapScreen',
+    related_screen_label: 'Open Map & Waypoints',
+  },
   // --- Prepper module ---
   {
     id: 'synthetic_emergency_planner',

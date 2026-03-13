@@ -18,6 +18,7 @@ type Props = {
   locationReady: boolean;
   mapRef: React.RefObject<MapView | null>;
   onLocateMe: () => void;
+  onWaypointsPress: () => void;
 };
 
 export default function MapPanel({
@@ -25,6 +26,7 @@ export default function MapPanel({
   locationReady,
   mapRef,
   onLocateMe,
+  onWaypointsPress,
 }: Props) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
@@ -57,15 +59,26 @@ export default function MapPanel({
             initialRegion={{ latitude: 0, longitude: 0, ...DELTA }}
           />
           {permissionStatus === 'granted' && (
-            <TouchableOpacity
-              style={styles.locateMeButton}
-              onPress={onLocateMe}
-              activeOpacity={0.8}
-              accessibilityLabel="Center map on my location"
-              accessibilityRole="button"
-            >
-              <Text style={styles.locateMeText}>⌖</Text>
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={styles.waypointsButton}
+                onPress={onWaypointsPress}
+                activeOpacity={0.8}
+                accessibilityLabel="Open waypoints"
+                accessibilityRole="button"
+              >
+                <Text style={styles.waypointsText}>⚑</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.locateMeButton}
+                onPress={onLocateMe}
+                activeOpacity={0.8}
+                accessibilityLabel="Center map on my location"
+                accessibilityRole="button"
+              >
+                <Text style={styles.locateMeText}>⌖</Text>
+              </TouchableOpacity>
+            </>
           )}
         </>
       )}
@@ -76,12 +89,8 @@ export default function MapPanel({
 function makeStyles(colors: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
     mapContainer: {
-      width: '90%',
+      width: '100%',
       flex: 1,
-      marginTop: 5,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.SECONDARY_ACCENT,
       overflow: 'hidden',
     },
     map: {
@@ -126,6 +135,27 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
     locateMeText: {
       fontSize: 24,
       lineHeight: 28,
+      color: colors.PRIMARY_LIGHT,
+    },
+    waypointsButton: {
+      position: 'absolute',
+      bottom: 24,
+      left: 16,
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    waypointsText: {
+      fontSize: 22,
+      lineHeight: 26,
       color: colors.PRIMARY_LIGHT,
     },
   });
