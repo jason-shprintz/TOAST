@@ -203,6 +203,8 @@ export default function MapScreen() {
   // Holds the AbortController for the in-flight Nominatim request
   const geocodeAbortRef = useRef<AbortController | null>(null);
   const [waypointSheetOpen, setWaypointSheetOpen] = useState(false);
+  // Measured height of the map container — used to keep the sheet within map bounds.
+  const [mapContainerHeight, setMapContainerHeight] = useState(0);
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -351,6 +353,24 @@ export default function MapScreen() {
     waypointStore.clearActiveWaypoint();
   }, [waypointStore]);
 
+  const handleLongPressMap = useCallback(
+    async (coordinate: { latitude: number; longitude: number }) => {
+      // Find the next unused "Waypoint N" number (handles gaps from deletions)
+      const existing = new Set(waypointStore.waypoints.map((w) => w.name));
+      let n = waypointStore.waypoints.length + 1;
+      while (existing.has(`Waypoint ${n}`)) {
+        n++;
+      }
+      await waypointStore.addWaypoint(
+        `Waypoint ${n}`,
+        coordinate.latitude,
+        coordinate.longitude,
+      );
+      setWaypointSheetOpen(true);
+    },
+    [waypointStore],
+  );
+
   // Ring rotates opposite to heading so the needle appears fixed pointing up
   const ringSpin = needleRotation.interpolate({
     inputRange: [0, 360],
@@ -367,7 +387,10 @@ export default function MapScreen() {
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
         {/* Map — outer view owns sizing/sheet; inner view clips map tiles to rounded corners */}
-        <View style={styles.mapWrapper}>
+        <View
+          style={styles.mapWrapper}
+          onLayout={(e) => setMapContainerHeight(e.nativeEvent.layout.height)}
+        >
           <View style={styles.mapInner}>
             <MapPanel
               permissionStatus={permissionStatus}
@@ -375,9 +398,10 @@ export default function MapScreen() {
               mapRef={mapRef}
               onLocateMe={handleLocateMe}
               onWaypointsPress={() => setWaypointSheetOpen(true)}
+              onLongPressMap={handleLongPressMap}
             />
           </View>
-          {/* Waypoint bottom sheet — positioned absolutely over the map */}
+          {/* Waypoint bottom sheet — positioned absolutely within the map area */}
           <WaypointBottomSheet
             waypoints={waypointStore.waypoints}
             activeWaypointId={waypointStore.activeWaypointId}
@@ -390,6 +414,7 @@ export default function MapScreen() {
             onAddFromLocation={handleAddWaypointFromLocation}
             onAddManual={handleAddWaypointManual}
             onDismissActive={handleDismissActiveWaypoint}
+            containerHeight={mapContainerHeight}
           />
         </View>
 
@@ -420,6 +445,7 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       width: '90%',
       flex: 1,
       marginTop: 5,
+      overflow: 'hidden',
     },
     mapInner: {
       flex: 1,
