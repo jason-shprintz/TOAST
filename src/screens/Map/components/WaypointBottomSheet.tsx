@@ -26,8 +26,8 @@ import { Waypoint } from '../../../stores/WaypointStore';
 
 // ---------- geometry helpers ------------------------------------------------
 
-/** Haversine distance in metres between two lat/lng points. */
-export function haversineMetres(
+/** Haversine distance in meters between two lat/lng points. */
+export function haversineMeters(
   lat1: number,
   lng1: number,
   lat2: number,
@@ -61,18 +61,19 @@ export function bearingDegrees(
 }
 
 /** Formats metres as "X.X km" or "X m". */
-function formatDistance(metres: number): string {
-  if (metres >= 1000) {
-    return `${(metres / 1000).toFixed(1)} km`;
+function formatDistance(meters: number): string {
+  if (meters >= 1000) {
+    return `${(meters / 1000).toFixed(1)} km`;
   }
-  return `${Math.round(metres)} m`;
+  return `${Math.round(meters)} m`;
 }
+
+const CARDINALS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
 /** Formats a bearing as "NNE 47°". */
 function formatBearing(deg: number): string {
-  const cardinals = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
   const idx = Math.round(deg / 22.5) % 16;
-  return `${cardinals[idx]} ${Math.round(deg)}°`;
+  return `${CARDINALS[idx]} ${Math.round(deg)}°`;
 }
 
 // ---------- constants -------------------------------------------------------
@@ -134,7 +135,7 @@ function WaypointRow({
 
   const distanceLabel = currentCoords
     ? formatDistance(
-        haversineMetres(
+        haversineMeters(
           currentCoords.latitude,
           currentCoords.longitude,
           waypoint.latitude,
@@ -587,7 +588,7 @@ export default function WaypointBottomSheet({
   const activeDistanceLabel =
     activeWaypoint && currentCoords
       ? formatDistance(
-          haversineMetres(
+          haversineMeters(
             currentCoords.latitude,
             currentCoords.longitude,
             activeWaypoint.latitude,
