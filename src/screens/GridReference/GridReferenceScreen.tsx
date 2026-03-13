@@ -30,7 +30,7 @@ const FORMAT_LABELS: Record<InputFormat, string> = {
 
 const FORMAT_PLACEHOLDERS: Record<InputFormat, string> = {
   DD: 'e.g. 36.1716, -115.1391',
-  DMS: "e.g. 36° 10' 17.76\" N, 115° 8' 20.76\" W",
+  DMS: 'e.g. 36° 10\' 17.76" N, 115° 8\' 20.76" W',
   MGRS: 'e.g. 11S PA 67363 04586',
 };
 
@@ -211,7 +211,8 @@ export default function GridReferenceScreen() {
               Converted Output
             </Text>
             {outputFormats.map((fmt) => {
-              const value = results[fmt.toLowerCase() as keyof ConversionResults];
+              const value =
+                results[fmt.toLowerCase() as keyof ConversionResults];
               const isCopied = copiedKey === fmt;
               return (
                 <View
@@ -223,12 +224,18 @@ export default function GridReferenceScreen() {
                 >
                   <View style={styles.outputLabelContainer}>
                     <Text
-                      style={[styles.outputLabel, { color: COLORS.PRIMARY_DARK }]}
+                      style={[
+                        styles.outputLabel,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
                     >
                       {FORMAT_LABELS[fmt]}
                     </Text>
                     <Text
-                      style={[styles.outputValue, { color: COLORS.PRIMARY_DARK }]}
+                      style={[
+                        styles.outputValue,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
                       selectable
                     >
                       {value}

@@ -52,9 +52,7 @@ function getMgrsZoneLetter(lat: number): string {
 
 const a = 6378137.0; // semi-major axis (m)
 const f = 1 / 298.257223563; // flattening
-const b = a * (1 - f); // semi-minor axis
 const e2 = 2 * f - f * f; // first eccentricity squared
-const e = Math.sqrt(e2);
 const ePrimeSquared = e2 / (1 - e2); // second eccentricity squared
 const k0 = 0.9996; // UTM scale factor
 
@@ -93,16 +91,12 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
   const A = Math.cos(latRad) * (lngRad - lngOriginRad);
 
   // Meridional arc
-  const n = (a - b) / (a + b);
   const M =
     a *
     ((1 - e2 / 4 - (3 * e2 ** 2) / 64 - (5 * e2 ** 3) / 256) * latRad -
-      ((3 * e2) / 8 +
-        (3 * e2 ** 2) / 32 +
-        (45 * e2 ** 3) / 1024) *
+      ((3 * e2) / 8 + (3 * e2 ** 2) / 32 + (45 * e2 ** 3) / 1024) *
         Math.sin(2 * latRad) +
-      ((15 * e2 ** 2) / 256 + (45 * e2 ** 3) / 1024) *
-        Math.sin(4 * latRad) -
+      ((15 * e2 ** 2) / 256 + (45 * e2 ** 3) / 1024) * Math.sin(4 * latRad) -
       ((35 * e2 ** 3) / 3072) * Math.sin(6 * latRad));
 
   const easting =
@@ -120,7 +114,8 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
         Math.tan(latRad) *
         (A ** 2 / 2 +
           ((5 - T + 9 * C + 4 * C ** 2) * A ** 4) / 24 +
-          ((61 - 58 * T + T ** 2 + 600 * C - 330 * ePrimeSquared) * A ** 6) / 720));
+          ((61 - 58 * T + T ** 2 + 600 * C - 330 * ePrimeSquared) * A ** 6) /
+            720));
 
   if (lat < 0) northing += 10000000; // Southern hemisphere offset
 
@@ -150,16 +145,9 @@ function utmToDD(
   const lngOriginRad = (lngOrigin * Math.PI) / 180;
 
   const M = y / k0;
-  const mu =
-    M /
-    (a *
-      (1 -
-        e2 / 4 -
-        (3 * e2 ** 2) / 64 -
-        (5 * e2 ** 3) / 256));
+  const mu = M / (a * (1 - e2 / 4 - (3 * e2 ** 2) / 64 - (5 * e2 ** 3) / 256));
 
-  const e1 =
-    (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+  const e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
 
   const phi1 =
     mu +
@@ -171,16 +159,14 @@ function utmToDD(
   const N1 = a / Math.sqrt(1 - e2 * Math.sin(phi1) ** 2);
   const T1 = Math.tan(phi1) ** 2;
   const C1 = ePrimeSquared * Math.cos(phi1) ** 2;
-  const R1 =
-    (a * (1 - e2)) / (1 - e2 * Math.sin(phi1) ** 2) ** 1.5;
+  const R1 = (a * (1 - e2)) / (1 - e2 * Math.sin(phi1) ** 2) ** 1.5;
   const D = x / (N1 * k0);
 
   const lat =
     phi1 -
     ((N1 * Math.tan(phi1)) / R1) *
       (D ** 2 / 2 -
-        ((5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * ePrimeSquared) *
-          D ** 4) /
+        ((5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * ePrimeSquared) * D ** 4) /
           24 +
         ((61 +
           90 * T1 +
@@ -336,7 +322,8 @@ export function mgrsToDD(mgrsString: string): DDCoord {
   let northing = cycle * MGRS_CYCLE_SIZE + rowIdx * MGRS_SQUARE_SIZE + nLocal;
 
   // If result is more than one band (≈800km) below approx, move up one cycle
-  if (northingApprox - northing > MGRS_CYCLE_THRESHOLD) northing += MGRS_CYCLE_SIZE;
+  if (northingApprox - northing > MGRS_CYCLE_THRESHOLD)
+    northing += MGRS_CYCLE_SIZE;
 
   const southern = zoneLetter < 'N';
   const dd = utmToDD(easting, northing, zoneNumber, southern);

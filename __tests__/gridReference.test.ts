@@ -60,7 +60,7 @@ describe('gridReference utilities', () => {
 
   describe('dmsToDd', () => {
     test('parses Las Vegas DMS back to original coordinate', () => {
-      const dmsStr = "36° 10' 17.76\" N, 115° 8' 20.76\" W";
+      const dmsStr = '36° 10\' 17.76" N, 115° 8\' 20.76" W';
       const { lat, lng } = dmsToDd(dmsStr);
       expect(lat).toBeCloseTo(LV_LAT, 3);
       expect(lng).toBeCloseTo(LV_LNG, 3);
@@ -74,7 +74,7 @@ describe('gridReference utilities', () => {
     });
 
     test('accepts "deg" instead of degree symbol', () => {
-      const { lat, lng } = dmsToDd("36deg 10 17.76 N 115 8 20.76 W");
+      const { lat, lng } = dmsToDd('36deg 10 17.76 N 115 8 20.76 W');
       expect(lat).toBeCloseTo(LV_LAT, 2);
       expect(lng).toBeCloseTo(LV_LNG, 2);
     });
@@ -157,9 +157,7 @@ describe('gridReference utilities', () => {
     });
 
     test('parses with degree symbol and N/W directions', () => {
-      const { lat, lng } = parseDdString(
-        '36.1716° N, 115.1391° W',
-      );
+      const { lat, lng } = parseDdString('36.1716° N, 115.1391° W');
       expect(lat).toBeCloseTo(LV_LAT, 4);
       expect(lng).toBeCloseTo(LV_LNG, 4);
     });
