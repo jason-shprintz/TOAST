@@ -73,6 +73,8 @@ function ddToUtm(lat: number, lng: number): UTMCoord {
 
   // UTM zone number
   let zoneNumber = Math.floor((lng + 180) / 6) + 1;
+  // Clamp antimeridian edge case: valid UTM zones are 1–60
+  if (zoneNumber > 60) zoneNumber = 60;
 
   // Special zones for Norway / Svalbard
   if (lat >= 56 && lat < 64 && lng >= 3 && lng < 12) zoneNumber = 32;
