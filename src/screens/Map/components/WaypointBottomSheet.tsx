@@ -660,18 +660,30 @@ export default function WaypointBottomSheet({
           {/* --- Sheet header --- */}
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Waypoints</Text>
-            <TouchableOpacity
-              onPress={() => setShowAddForm((v) => !v)}
-              style={styles.addButton}
-              accessibilityLabel={
-                showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'
-              }
-              accessibilityRole="button"
-            >
-              <Text style={styles.addButtonText}>
-                {showAddForm ? '✕' : '+'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity
+                onPress={() => setShowAddForm((v) => !v)}
+                style={[styles.headerBtn, showAddForm && styles.headerBtnActive]}
+                accessibilityLabel={
+                  showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'
+                }
+                accessibilityRole="button"
+              >
+                <Text style={styles.headerBtnText}>
+                  {showAddForm ? '✕ Cancel' : '+ Add'}
+                </Text>
+              </TouchableOpacity>
+              {!showAddForm && (
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={styles.headerCloseBtn}
+                  accessibilityLabel="Close waypoints sheet"
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.headerCloseBtnText}>✕</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
 
           {/* --- Add form or waypoint list --- */}
@@ -752,19 +764,38 @@ function makeSheetStyles(colors: ReturnType<typeof useTheme>) {
       fontWeight: '700',
       color: colors.PRIMARY_DARK,
     },
-    addButton: {
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    headerBtn: {
+      paddingHorizontal: 12,
+      paddingVertical: 7,
+      borderRadius: 8,
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    headerBtnActive: {
+      backgroundColor: colors.ERROR,
+    },
+    headerBtnText: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.PRIMARY_LIGHT,
+    },
+    headerCloseBtn: {
       width: 32,
       height: 32,
       borderRadius: 16,
-      backgroundColor: colors.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderColor: colors.SECONDARY_ACCENT,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    addButtonText: {
-      fontSize: 20,
-      lineHeight: 24,
-      color: colors.PRIMARY_LIGHT,
-      fontWeight: '600',
+    headerCloseBtnText: {
+      fontSize: 15,
+      color: colors.PRIMARY_DARK,
+      lineHeight: 18,
     },
     list: {
       flex: 1,
