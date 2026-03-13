@@ -8,7 +8,13 @@
  *   active  — collapsed to STRIP_HEIGHT showing live bearing/distance strip
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   Dimensions,
@@ -68,7 +74,24 @@ function formatDistance(meters: number): string {
   return `${Math.round(meters)} m`;
 }
 
-const CARDINALS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+const CARDINALS = [
+  'N',
+  'NNE',
+  'NE',
+  'ENE',
+  'E',
+  'ESE',
+  'SE',
+  'SSE',
+  'S',
+  'SSW',
+  'SW',
+  'WSW',
+  'W',
+  'WNW',
+  'NW',
+  'NNW',
+];
 
 /** Formats a bearing as "NNE 47°". */
 function formatBearing(deg: number): string {
@@ -477,7 +500,6 @@ export default function WaypointBottomSheet({
   waypoints,
   activeWaypointId,
   currentCoords,
-  currentHeading,
   isOpen,
   onClose,
   onNavigate,
@@ -495,8 +517,7 @@ export default function WaypointBottomSheet({
   // translateY: 0 = fully visible at bottom, positive = hidden below screen
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
 
-  const targetHeight =
-    sheetState === 'active' ? STRIP_HEIGHT : SHEET_HEIGHT;
+  const targetHeight = sheetState === 'active' ? STRIP_HEIGHT : SHEET_HEIGHT;
 
   // Animate sheet open/closed
   const animateTo = useCallback(
@@ -642,10 +663,14 @@ export default function WaypointBottomSheet({
             <TouchableOpacity
               onPress={() => setShowAddForm((v) => !v)}
               style={styles.addButton}
-              accessibilityLabel={showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'}
+              accessibilityLabel={
+                showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'
+              }
               accessibilityRole="button"
             >
-              <Text style={styles.addButtonText}>{showAddForm ? '✕' : '+'}</Text>
+              <Text style={styles.addButtonText}>
+                {showAddForm ? '✕' : '+'}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -658,10 +683,7 @@ export default function WaypointBottomSheet({
               onCancel={() => setShowAddForm(false)}
             />
           ) : (
-            <ScrollView
-              style={styles.list}
-              keyboardShouldPersistTaps="handled"
-            >
+            <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
               {waypoints.length === 0 ? (
                 <View style={styles.emptyState}>
                   <Text style={styles.emptyStateText}>

@@ -121,7 +121,13 @@ export class WaypointStore {
     if (this.waypointDb) {
       await this.waypointDb.executeSql(
         'INSERT INTO waypoints (id, name, latitude, longitude, createdAt) VALUES (?, ?, ?, ?, ?)',
-        [waypoint.id, waypoint.name, waypoint.latitude, waypoint.longitude, waypoint.createdAt],
+        [
+          waypoint.id,
+          waypoint.name,
+          waypoint.latitude,
+          waypoint.longitude,
+          waypoint.createdAt,
+        ],
       );
     }
     runInAction(() => {
