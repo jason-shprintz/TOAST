@@ -663,7 +663,10 @@ export default function WaypointBottomSheet({
             <View style={styles.headerActions}>
               <TouchableOpacity
                 onPress={() => setShowAddForm((v) => !v)}
-                style={[styles.headerBtn, showAddForm && styles.headerBtnActive]}
+                style={[
+                  styles.headerBtn,
+                  showAddForm && styles.headerBtnActive,
+                ]}
                 accessibilityLabel={
                   showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'
                 }
