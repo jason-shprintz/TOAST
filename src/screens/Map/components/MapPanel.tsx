@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { useTheme } from '../../../hooks/useTheme';
+import { Waypoint } from '../../../stores/WaypointStore';
 
 export type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
 
@@ -24,6 +25,10 @@ type Props = {
     latitude: number;
     longitude: number;
   }) => void;
+  /** All saved waypoints to render as markers. */
+  waypoints?: Waypoint[];
+  /** ID of the currently active (navigating) waypoint — rendered with a distinct colour. */
+  activeWaypointId?: string | null;
 };
 
 export default function MapPanel({
@@ -33,6 +38,8 @@ export default function MapPanel({
   onLocateMe,
   onWaypointsPress,
   onLongPressMap,
+  waypoints = [],
+  activeWaypointId = null,
 }: Props) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
@@ -64,7 +71,17 @@ export default function MapPanel({
             onMapReady={permissionStatus === 'granted' ? onLocateMe : undefined}
             onLongPress={(e) => onLongPressMap?.(e.nativeEvent.coordinate)}
             initialRegion={{ latitude: 0, longitude: 0, ...DELTA }}
-          />
+          >
+            {waypoints.map((wp) => (
+              <Marker
+                key={wp.id}
+                coordinate={{ latitude: wp.latitude, longitude: wp.longitude }}
+                title={wp.name}
+                pinColor={wp.id === activeWaypointId ? '#FF3B30' : '#007AFF'}
+                accessibilityLabel={`Waypoint: ${wp.name}`}
+              />
+            ))}
+          </MapView>
           {permissionStatus === 'granted' && (
             <>
               <TouchableOpacity

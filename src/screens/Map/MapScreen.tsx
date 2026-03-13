@@ -22,6 +22,7 @@ import {
 import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
+import { observer } from 'mobx-react-lite';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
@@ -181,7 +182,10 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
  * Google Maps on Android) with a live GPS blue-dot and a
  * CLLocationManager-driven compass below the map.
  */
-export default function MapScreen() {
+
+/** Duration in ms for map region animation. */
+const MAP_ANIMATE_DURATION_MS = 400;
+export default observer(function MapScreen() {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const { setDisableGestureNavigation } = useGestureNavigation();
@@ -338,6 +342,18 @@ export default function MapScreen() {
     (id: string) => {
       waypointStore.setActiveWaypoint(id);
       setWaypointSheetOpen(false);
+      // Pan the map to centre on the selected waypoint
+      const waypoint = waypointStore.waypoints.find((w) => w.id === id);
+      if (waypoint && mapRef.current) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: waypoint.latitude,
+            longitude: waypoint.longitude,
+            ...DELTA,
+          },
+          MAP_ANIMATE_DURATION_MS,
+        );
+      }
     },
     [waypointStore],
   );
@@ -399,6 +415,8 @@ export default function MapScreen() {
               onLocateMe={handleLocateMe}
               onWaypointsPress={() => setWaypointSheetOpen(true)}
               onLongPressMap={handleLongPressMap}
+              waypoints={waypointStore.waypoints}
+              activeWaypointId={waypointStore.activeWaypointId}
             />
           </View>
           {/* Waypoint bottom sheet — positioned absolutely within the map area */}
@@ -430,7 +448,7 @@ export default function MapScreen() {
       </View>
     </ScreenBody>
   );
-}
+});
 
 function makeStyles(colors: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
