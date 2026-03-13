@@ -138,6 +138,11 @@ export interface WaypointBottomSheetProps {
   onAddManual: (name: string, latitude: number, longitude: number) => void;
   /** Called when user dismisses the active strip. */
   onDismissActive: () => void;
+  /**
+   * Height of the parent map container (from onLayout).
+   * Sheet height is capped to 85% of this so it never overflows the map area.
+   */
+  containerHeight?: number;
 }
 
 // ---------- sub-components --------------------------------------------------
@@ -507,17 +512,29 @@ export default function WaypointBottomSheet({
   onAddFromLocation,
   onAddManual,
   onDismissActive,
+  containerHeight,
 }: WaypointBottomSheetProps) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeSheetStyles(COLORS), [COLORS]);
 
+  // Cap sheet height to 85% of the map container so it never overflows the map area.
+  // Falls back to the window-based constant when containerHeight is not yet measured.
+  const sheetHeight =
+    containerHeight && containerHeight > 0
+      ? Math.min(SHEET_HEIGHT, Math.round(containerHeight * 0.85))
+      : SHEET_HEIGHT;
+
+  // Mutable ref so the PanResponder closure (created once) can read the latest value.
+  const sheetHeightRef = useRef(sheetHeight);
+  sheetHeightRef.current = sheetHeight;
+
   const [sheetState, setSheetState] = useState<SheetState>('closed');
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // translateY: 0 = fully visible at bottom, positive = hidden below screen
+  // translateY: 0 = fully visible at bottom, positive = hidden below the container
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
 
-  const targetHeight = sheetState === 'active' ? STRIP_HEIGHT : SHEET_HEIGHT;
+  const targetHeight = sheetState === 'active' ? STRIP_HEIGHT : sheetHeight;
 
   // Animate sheet open/closed
   const animateTo = useCallback(
@@ -540,11 +557,11 @@ export default function WaypointBottomSheet({
     } else if (activeWaypointId) {
       setSheetState('active');
       setShowAddForm(false);
-      animateTo(SHEET_HEIGHT - STRIP_HEIGHT);
+      animateTo(sheetHeightRef.current - STRIP_HEIGHT);
     } else {
       setSheetState('closed');
       setShowAddForm(false);
-      animateTo(SHEET_HEIGHT);
+      animateTo(sheetHeightRef.current);
     }
   }, [isOpen, activeWaypointId, animateTo]);
 
@@ -562,7 +579,7 @@ export default function WaypointBottomSheet({
         if (gestureState.dy > 80 || gestureState.vy > 0.5) {
           // User dragged down enough — close
           Animated.spring(translateY, {
-            toValue: SHEET_HEIGHT,
+            toValue: sheetHeightRef.current,
             useNativeDriver: true,
             speed: 18,
             bounciness: 0,

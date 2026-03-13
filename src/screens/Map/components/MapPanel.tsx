@@ -19,6 +19,11 @@ type Props = {
   mapRef: React.RefObject<MapView | null>;
   onLocateMe: () => void;
   onWaypointsPress: () => void;
+  /** Called when the user long-presses a point on the map. */
+  onLongPressMap?: (coordinate: {
+    latitude: number;
+    longitude: number;
+  }) => void;
 };
 
 export default function MapPanel({
@@ -27,6 +32,7 @@ export default function MapPanel({
   mapRef,
   onLocateMe,
   onWaypointsPress,
+  onLongPressMap,
 }: Props) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
@@ -56,6 +62,9 @@ export default function MapPanel({
             showsCompass
             showsScale
             onMapReady={permissionStatus === 'granted' ? onLocateMe : undefined}
+            onLongPress={(e) =>
+              onLongPressMap?.(e.nativeEvent.coordinate)
+            }
             initialRegion={{ latitude: 0, longitude: 0, ...DELTA }}
           />
           {permissionStatus === 'granted' && (
