@@ -366,15 +366,17 @@ export default function MapScreen() {
     <ScreenBody>
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
-        {/* Map */}
+        {/* Map — outer view owns sizing/sheet; inner view clips map tiles to rounded corners */}
         <View style={styles.mapWrapper}>
-          <MapPanel
-            permissionStatus={permissionStatus}
-            locationReady={locationReady}
-            mapRef={mapRef}
-            onLocateMe={handleLocateMe}
-            onWaypointsPress={() => setWaypointSheetOpen(true)}
-          />
+          <View style={styles.mapInner}>
+            <MapPanel
+              permissionStatus={permissionStatus}
+              locationReady={locationReady}
+              mapRef={mapRef}
+              onLocateMe={handleLocateMe}
+              onWaypointsPress={() => setWaypointSheetOpen(true)}
+            />
+          </View>
           {/* Waypoint bottom sheet — positioned absolutely over the map */}
           <WaypointBottomSheet
             waypoints={waypointStore.waypoints}
@@ -418,6 +420,9 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       width: '90%',
       flex: 1,
       marginTop: 5,
+    },
+    mapInner: {
+      flex: 1,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: colors.SECONDARY_ACCENT,
