@@ -248,10 +248,10 @@ export function ddToMgrs(lat: number, lng: number): string {
   const utm = ddToUtm(lat, lng);
   const squareId = getMgrsSquareId(utm.easting, utm.northing, utm.zoneNumber);
 
-  const eLocal = Math.round(utm.easting % MGRS_SQUARE_SIZE)
+  const eLocal = Math.floor(utm.easting % MGRS_SQUARE_SIZE)
     .toString()
     .padStart(5, '0');
-  const nLocal = Math.round(utm.northing % MGRS_SQUARE_SIZE)
+  const nLocal = Math.floor(utm.northing % MGRS_SQUARE_SIZE)
     .toString()
     .padStart(5, '0');
 
