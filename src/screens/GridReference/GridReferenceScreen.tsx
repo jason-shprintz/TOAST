@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -90,6 +90,16 @@ export default function GridReferenceScreen() {
   const [results, setResults] = useState<ConversionResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear any pending copy-indicator timeout when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current !== null) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleConvert = (text: string, format: InputFormat) => {
     setInputText(text);
@@ -120,7 +130,13 @@ export default function GridReferenceScreen() {
   const handleCopy = (key: string, value: string) => {
     Clipboard.setString(value);
     setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 1500);
+    if (copyTimeoutRef.current !== null) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopiedKey(null);
+      copyTimeoutRef.current = null;
+    }, 1500);
   };
 
   const outputFormats: InputFormat[] = ['DD', 'DMS', 'MGRS'];

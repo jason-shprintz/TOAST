@@ -746,6 +746,47 @@ const SYNTHETIC_TOOL_ENTRIES: ReferenceEntryType[] = [
     related_screen: 'StarMap',
     related_screen_label: 'Open Star Map',
   },
+  {
+    id: 'synthetic_grid_reference',
+    category: 'Navigation',
+    title: 'Grid Reference Converter',
+    summary:
+      'Offline coordinate format converter. Convert between Decimal Degrees (DD), Degrees Minutes Seconds (DMS), and MGRS (Military Grid Reference System). Pure math — no network required.',
+    difficulty: 'basic',
+    tags: [
+      'grid',
+      'reference',
+      'coordinate',
+      'mgrs',
+      'utm',
+      'decimal degrees',
+      'dms',
+      'degrees minutes seconds',
+      'latitude',
+      'longitude',
+      'convert',
+      'navigation',
+      'military',
+      'wgs84',
+    ],
+    steps: [
+      'Select your input coordinate format: Decimal Degrees, Deg Min Sec, or MGRS',
+      'Type or paste a coordinate into the input field',
+      'All three formats are displayed instantly as output',
+      'Use the Copy button on any output row to copy the result',
+      'Example: 36.1716, -115.1391 (Las Vegas in Decimal Degrees)',
+    ],
+    do_not: [],
+    watch_for: [
+      'MGRS is only valid between 80°S and 84°N — polar regions use UPS instead',
+    ],
+    notes: [
+      'Conversion is done entirely on-device — no network call is ever made',
+      'MGRS uses UTM as an intermediate step (WGS84 ellipsoid)',
+    ],
+    related_screen: 'GridReference',
+    related_screen_label: 'Open Grid Reference Converter',
+  },
   // --- Prepper module ---
   {
     id: 'synthetic_emergency_planner',

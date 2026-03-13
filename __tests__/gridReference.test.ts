@@ -131,10 +131,10 @@ describe('gridReference utilities', () => {
       expect(lng).toBeCloseTo(LV_LNG, 1);
     });
 
-    test('round-trip DD → MGRS → DD is within ~1m precision', () => {
+    test('round-trip DD → MGRS → DD is within ~0.01° precision', () => {
       const mgrs = ddToMgrs(LV_LAT, LV_LNG);
       const { lat, lng } = mgrsToDD(mgrs);
-      // MGRS at 1m precision should be accurate to ~0.00001 degrees
+      // toBeCloseTo(_, 2) allows ±0.005° — matches Math.floor truncation of 1m MGRS precision
       expect(lat).toBeCloseTo(LV_LAT, 2);
       expect(lng).toBeCloseTo(LV_LNG, 2);
     });
@@ -142,6 +142,16 @@ describe('gridReference utilities', () => {
     test('throws on invalid MGRS input', () => {
       expect(() => mgrsToDD('not valid')).toThrow();
       expect(() => mgrsToDD('99Z XX 12345 67890')).toThrow();
+    });
+
+    test('throws on out-of-range zone number', () => {
+      // Zone 0 and 61 are not valid UTM zones
+      expect(() => mgrsToDD('0S PA 12345 67890')).toThrow(
+        /zone number/i,
+      );
+      expect(() => mgrsToDD('61S PA 12345 67890')).toThrow(
+        /zone number/i,
+      );
     });
   });
 
@@ -159,6 +169,18 @@ describe('gridReference utilities', () => {
     test('parses with degree symbol and N/W directions', () => {
       const { lat, lng } = parseDdString('36.1716° N, 115.1391° W');
       expect(lat).toBeCloseTo(LV_LAT, 4);
+      expect(lng).toBeCloseTo(LV_LNG, 4);
+    });
+
+    test('N/E direction forces positive value even when numeric sign is negative', () => {
+      const { lat, lng } = parseDdString('-36.1716 N, -115.1391 E');
+      expect(lat).toBeCloseTo(LV_LAT, 4);
+      expect(lng).toBeCloseTo(Math.abs(LV_LNG), 4);
+    });
+
+    test('S/W direction forces negative value even when numeric sign is positive', () => {
+      const { lat, lng } = parseDdString('36.1716 S, 115.1391 W');
+      expect(lat).toBeCloseTo(-LV_LAT, 4);
       expect(lng).toBeCloseTo(LV_LNG, 4);
     });
 

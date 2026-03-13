@@ -278,6 +278,11 @@ export function mgrsToDD(mgrsString: string): DDCoord {
   }
 
   const zoneNumber = parseInt(match[1], 10);
+  if (zoneNumber < 1 || zoneNumber > 60) {
+    throw new Error(
+      `Invalid MGRS zone number: ${zoneNumber}. Must be between 1 and 60.`,
+    );
+  }
   const zoneLetter = match[2];
   const squareId = match[3]; // 2 letters
   const digits = match[4];
@@ -472,9 +477,11 @@ export function parseDdString(ddString: string): DDCoord {
   let lat = parseFloat(numTokens[0]);
   let lng = parseFloat(numTokens[1]);
 
-  // Direction letters override the sign
-  if (dirTokens.includes('S') && lat > 0) lat = -lat;
-  if (dirTokens.includes('W') && lng > 0) lng = -lng;
+  // Direction letters authoritatively determine the sign
+  if (dirTokens.includes('N')) lat = Math.abs(lat);
+  if (dirTokens.includes('S')) lat = -Math.abs(lat);
+  if (dirTokens.includes('E')) lng = Math.abs(lng);
+  if (dirTokens.includes('W')) lng = -Math.abs(lng);
 
   if (isNaN(lat) || isNaN(lng)) {
     throw new Error(`Invalid DD string: "${ddString}"`);
