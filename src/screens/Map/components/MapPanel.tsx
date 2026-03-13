@@ -62,9 +62,7 @@ export default function MapPanel({
             showsCompass
             showsScale
             onMapReady={permissionStatus === 'granted' ? onLocateMe : undefined}
-            onLongPress={(e) =>
-              onLongPressMap?.(e.nativeEvent.coordinate)
-            }
+            onLongPress={(e) => onLongPressMap?.(e.nativeEvent.coordinate)}
             initialRegion={{ latitude: 0, longitude: 0, ...DELTA }}
           />
           {permissionStatus === 'granted' && (
