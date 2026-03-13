@@ -165,6 +165,12 @@ export const NAVIGATION_TOOLS: ToolType[] = [
     icon: 'star-outline',
     id: 'nav_star_map',
   },
+  {
+    name: 'Grid Reference Converter',
+    screen: 'GridReference',
+    icon: 'grid-outline',
+    id: 'nav_grid_reference',
+  },
 ];
 
 export const REFERENCE_TOOLS: ToolType[] = [

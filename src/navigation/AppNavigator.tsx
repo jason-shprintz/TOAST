@@ -27,6 +27,7 @@ import NewRallyPointScreen from '../screens/EmergencyPlan/NewRallyPointScreen';
 import RallyPointsScreen from '../screens/EmergencyPlan/RallyPointsScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
+import GridReferenceScreen from '../screens/GridReference/GridReferenceScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import EditInventoryItemScreen from '../screens/Inventory/EditInventoryItemScreen';
 import InventoryAllItemsScreen from '../screens/Inventory/InventoryAllItemsScreen';
@@ -137,6 +138,7 @@ function NavigatorContent(): JSX.Element {
           {/* Navigation Module Screens */}
           <Stack.Screen name="MapScreen" component={MapScreen} />
           <Stack.Screen name="StarMap" component={StarMapScreen} />
+          <Stack.Screen name="GridReference" component={GridReferenceScreen} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />

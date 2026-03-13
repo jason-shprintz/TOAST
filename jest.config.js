@@ -6,6 +6,8 @@ module.exports = {
   moduleNameMapper: {
     '@react-native-async-storage/async-storage':
       '<rootDir>/__mocks__/@react-native-async-storage/async-storage.ts',
+    '@react-native-clipboard/clipboard':
+      '<rootDir>/__mocks__/@react-native-clipboard/clipboard.ts',
     'react-native-fs': '<rootDir>/__mocks__/react-native-fs.ts',
     'react-native-maps': '<rootDir>/__mocks__/react-native-maps.tsx',
   },
