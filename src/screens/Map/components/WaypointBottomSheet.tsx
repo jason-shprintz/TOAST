@@ -16,6 +16,7 @@ import React, {
   useState,
 } from 'react';
 import {
+  Alert,
   Animated,
   Dimensions,
   Keyboard,
@@ -28,7 +29,9 @@ import {
   View,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
+import { useSettingsStore } from '../../../stores/StoreContext';
 import { Waypoint } from '../../../stores/WaypointStore';
+import type { MeasurementSystem } from '../../../stores/SettingsStore';
 
 // ---------- geometry helpers ------------------------------------------------
 
@@ -66,8 +69,18 @@ export function bearingDegrees(
   return (toDeg(Math.atan2(y, x)) + 360) % 360;
 }
 
-/** Formats metres as "X.X km" or "X m". */
-function formatDistance(meters: number): string {
+/** Formats metres as "X.X km" / "X m" (metric) or "X.X mi" / "X ft" (imperial). */
+function formatDistance(
+  meters: number,
+  system: MeasurementSystem = 'metric',
+): string {
+  if (system === 'imperial') {
+    const feet = meters * 3.28084;
+    if (feet >= 5280) {
+      return `${(feet / 5280).toFixed(1)} mi`;
+    }
+    return `${Math.round(feet)} ft`;
+  }
   if (meters >= 1000) {
     return `${(meters / 1000).toFixed(1)} km`;
   }
@@ -150,11 +163,13 @@ export interface WaypointBottomSheetProps {
 function WaypointRow({
   waypoint,
   currentCoords,
+  measurementSystem,
   onNavigate,
   onDelete,
 }: {
   waypoint: Waypoint;
   currentCoords: Coords | null;
+  measurementSystem: MeasurementSystem;
   onNavigate: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
@@ -169,6 +184,7 @@ function WaypointRow({
           waypoint.latitude,
           waypoint.longitude,
         ),
+        measurementSystem,
       )
     : '—';
 
@@ -182,6 +198,21 @@ function WaypointRow({
         ),
       )
     : '—';
+
+  const confirmDelete = () => {
+    Alert.alert(
+      'Delete Waypoint',
+      `Are you sure you want to delete "${waypoint.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => onDelete(waypoint.id),
+        },
+      ],
+    );
+  };
 
   return (
     <View style={styles.row}>
@@ -203,7 +234,7 @@ function WaypointRow({
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.actionBtn, styles.deleteBtn]}
-        onPress={() => onDelete(waypoint.id)}
+        onPress={confirmDelete}
         accessibilityLabel={`Delete ${waypoint.name}`}
         accessibilityRole="button"
       >
@@ -483,12 +514,10 @@ function makeFormStyles(colors: ReturnType<typeof useTheme>) {
       fontSize: 14,
     },
     cancelBtn: {
-      backgroundColor: 'transparent',
-      borderWidth: 1,
-      borderColor: colors.SECONDARY_ACCENT,
+      backgroundColor: colors.ERROR,
     },
     cancelBtnText: {
-      color: colors.SECONDARY_ACCENT,
+      color: colors.PRIMARY_LIGHT,
       fontWeight: '700',
       fontSize: 14,
     },
@@ -516,6 +545,8 @@ export default function WaypointBottomSheet({
 }: WaypointBottomSheetProps) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeSheetStyles(COLORS), [COLORS]);
+  const settingsStore = useSettingsStore();
+  const measurementSystem = settingsStore.measurementSystem;
 
   // Cap sheet height to 85% of the map container so it never overflows the map area.
   // Falls back to the window-based constant when containerHeight is not yet measured.
@@ -632,6 +663,7 @@ export default function WaypointBottomSheet({
             activeWaypoint.latitude,
             activeWaypoint.longitude,
           ),
+          measurementSystem,
         )
       : '—';
 
@@ -678,21 +710,16 @@ export default function WaypointBottomSheet({
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Waypoints</Text>
             <View style={styles.headerActions}>
-              <TouchableOpacity
-                onPress={() => setShowAddForm((v) => !v)}
-                style={[
-                  styles.headerBtn,
-                  showAddForm && styles.headerBtnActive,
-                ]}
-                accessibilityLabel={
-                  showAddForm ? 'Cancel adding waypoint' : 'Add waypoint'
-                }
-                accessibilityRole="button"
-              >
-                <Text style={styles.headerBtnText}>
-                  {showAddForm ? '✕ Cancel' : '+ Add'}
-                </Text>
-              </TouchableOpacity>
+              {!showAddForm && (
+                <TouchableOpacity
+                  onPress={() => setShowAddForm(true)}
+                  style={styles.headerBtn}
+                  accessibilityLabel="Add waypoint"
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.headerBtnText}>+ Add</Text>
+                </TouchableOpacity>
+              )}
               {!showAddForm && (
                 <TouchableOpacity
                   onPress={onClose}
@@ -708,12 +735,18 @@ export default function WaypointBottomSheet({
 
           {/* --- Add form or waypoint list --- */}
           {showAddForm ? (
-            <AddWaypointForm
-              hasLocation={currentCoords !== null}
-              onAddFromLocation={handleAddFromLocation}
-              onAddManual={handleAddManual}
-              onCancel={() => setShowAddForm(false)}
-            />
+            <ScrollView
+              style={styles.list}
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.formScrollContent}
+            >
+              <AddWaypointForm
+                hasLocation={currentCoords !== null}
+                onAddFromLocation={handleAddFromLocation}
+                onAddManual={handleAddManual}
+                onCancel={() => setShowAddForm(false)}
+              />
+            </ScrollView>
           ) : (
             <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
               {waypoints.length === 0 ? (
@@ -728,6 +761,7 @@ export default function WaypointBottomSheet({
                     key={wp.id}
                     waypoint={wp}
                     currentCoords={currentCoords}
+                    measurementSystem={measurementSystem}
                     onNavigate={onNavigate}
                     onDelete={onDelete}
                   />
@@ -795,9 +829,6 @@ function makeSheetStyles(colors: ReturnType<typeof useTheme>) {
       borderRadius: 8,
       backgroundColor: colors.SECONDARY_ACCENT,
     },
-    headerBtnActive: {
-      backgroundColor: colors.ERROR,
-    },
     headerBtnText: {
       fontSize: 13,
       fontWeight: '700',
@@ -819,6 +850,9 @@ function makeSheetStyles(colors: ReturnType<typeof useTheme>) {
     },
     list: {
       flex: 1,
+    },
+    formScrollContent: {
+      flexGrow: 1,
     },
     emptyState: {
       paddingHorizontal: 24,
