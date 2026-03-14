@@ -16,5 +16,19 @@ MapView.displayName = 'MapView';
 
 export default MapView;
 
+export const Marker = ({
+  testID,
+  children,
+  ...props
+}: {
+  testID?: string;
+  children?: React.ReactNode;
+  [key: string]: unknown;
+}) => (
+  <View testID={testID ?? 'map-marker'} {...(props as object)}>
+    {children}
+  </View>
+);
+
 export const PROVIDER_DEFAULT = null;
 export const PROVIDER_GOOGLE = 'google';

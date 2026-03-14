@@ -146,12 +146,8 @@ describe('gridReference utilities', () => {
 
     test('throws on out-of-range zone number', () => {
       // Zone 0 and 61 are not valid UTM zones
-      expect(() => mgrsToDD('0S PA 12345 67890')).toThrow(
-        /zone number/i,
-      );
-      expect(() => mgrsToDD('61S PA 12345 67890')).toThrow(
-        /zone number/i,
-      );
+      expect(() => mgrsToDD('0S PA 12345 67890')).toThrow(/zone number/i);
+      expect(() => mgrsToDD('61S PA 12345 67890')).toThrow(/zone number/i);
     });
   });
 
