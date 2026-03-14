@@ -5,6 +5,7 @@
  * @format
  */
 
+import { observer } from 'mobx-react-lite';
 import React, {
   useCallback,
   useEffect,
@@ -22,7 +23,6 @@ import {
 import CompassHeading from 'react-native-compass-heading';
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
-import { observer } from 'mobx-react-lite';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
