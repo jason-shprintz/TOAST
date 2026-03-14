@@ -820,7 +820,7 @@ const SYNTHETIC_TOOL_ENTRIES: ReferenceEntryType[] = [
     do_not: [],
     watch_for: [
       'GPS must be enabled and location permission granted for "current location" waypoints',
-      'Bearing is magnetic north based on device compass; verify against map in the field',
+      'Bearing shown is true bearing (great-circle, relative to true north); no magnetic declination is applied',
     ],
     notes: [
       'Waypoints are stored in SQLite and persist across app restarts',

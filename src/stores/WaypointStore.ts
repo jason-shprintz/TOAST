@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 import { SQLiteDatabase } from '../types/database-types';
 
 /**
@@ -26,14 +27,6 @@ export class WaypointStore {
   }
 
   /**
-   * Generates a unique ID using timestamp and random string.
-   * Avoids need for crypto.getRandomValues() which isn't always available.
-   */
-  private generateId(): string {
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  }
-
-  /**
    * The currently active waypoint, or null if none is selected.
    */
   get activeWaypoint(): Waypoint | null {
@@ -57,8 +50,12 @@ export class WaypointStore {
    */
   async initDatabase(db: SQLiteDatabase): Promise<void> {
     this.waypointDb = db;
-    await this.createTable();
-    await this.loadWaypoints();
+    try {
+      await this.createTable();
+      await this.loadWaypoints();
+    } catch (e) {
+      console.warn('WaypointStore: failed to init database', e);
+    }
   }
 
   private async createTable(): Promise<void> {
@@ -112,7 +109,7 @@ export class WaypointStore {
       throw new Error('Waypoint name cannot be empty');
     }
     const waypoint: Waypoint = {
-      id: this.generateId(),
+      id: uuidv4(),
       name: trimmed,
       latitude,
       longitude,

@@ -424,7 +424,6 @@ export default observer(function MapScreen() {
             waypoints={waypointStore.waypoints}
             activeWaypointId={waypointStore.activeWaypointId}
             currentCoords={coords}
-            currentHeading={heading}
             isOpen={waypointSheetOpen}
             onClose={() => setWaypointSheetOpen(false)}
             onNavigate={handleNavigateWaypoint}

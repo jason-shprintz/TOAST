@@ -135,8 +135,6 @@ export interface WaypointBottomSheetProps {
   activeWaypointId: string | null;
   /** Current GPS coords of the device (used for live distance/bearing). */
   currentCoords: Coords | null;
-  /** Current device heading in degrees (0–360). */
-  currentHeading: number;
   /** Whether the sheet is open (controlled externally via the FAB). */
   isOpen: boolean;
   /** Called when the user closes the sheet via swipe/dismiss. */
@@ -565,7 +563,7 @@ export default function WaypointBottomSheet({
   // translateY: 0 = fully visible at bottom, positive = hidden below the container
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
 
-  const targetHeight = sheetState === 'active' ? STRIP_HEIGHT : sheetHeight;
+  const targetHeight = sheetHeight;
 
   // Animate sheet open/closed
   const animateTo = useCallback(
