@@ -27,7 +27,7 @@ function formatDuration(seconds: number): string {
   return `${s}s`;
 }
 
-/** Formats an ISO date string as a short localised date. */
+/** Formats an ISO date string as a short localized date. */
 function formatDate(iso: string): string {
   try {
     return new Date(iso).toLocaleDateString(undefined, {

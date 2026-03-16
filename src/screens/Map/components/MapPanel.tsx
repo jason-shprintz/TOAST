@@ -27,7 +27,10 @@ type Props = {
   mapRef: React.RefObject<MapView | null>;
   onLocateMe: () => void;
   onWaypointsPress: () => void;
-  onLongPressMap?: (coordinate: { latitude: number; longitude: number }) => void;
+  onLongPressMap?: (coordinate: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   waypoints?: Waypoint[];
   activeWaypointId?: string | null;
   recordingState?: RecordingState;
@@ -181,7 +184,8 @@ export default function MapPanel({
           {recordingState === 'recording' && (
             <View style={styles.hud}>
               <Text style={styles.hudText}>
-                ⏱ {formatElapsed(recordingElapsed)}{'   '}📍 {formatDistanceShort(recordingDistance)}
+                ⏱ {formatElapsed(recordingElapsed)}
+                {'   '}📍 {formatDistanceShort(recordingDistance)}
               </Text>
             </View>
           )}

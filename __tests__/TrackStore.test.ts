@@ -38,7 +38,12 @@ describe('TrackStore', () => {
 
   describe('Saving tracks', () => {
     it('should save a track and add it to the list', async () => {
-      const track = await store.saveTrack('Morning Run', 120, 500, samplePoints);
+      const track = await store.saveTrack(
+        'Morning Run',
+        120,
+        500,
+        samplePoints,
+      );
       expect(track.name).toBe('Morning Run');
       expect(track.durationSeconds).toBe(120);
       expect(track.distanceMeters).toBe(500);
@@ -50,7 +55,12 @@ describe('TrackStore', () => {
     });
 
     it('should trim whitespace from track name', async () => {
-      const track = await store.saveTrack('  Trail Run  ', 60, 200, samplePoints);
+      const track = await store.saveTrack(
+        '  Trail Run  ',
+        60,
+        200,
+        samplePoints,
+      );
       expect(track.name).toBe('Trail Run');
     });
 
@@ -94,17 +104,13 @@ describe('TrackStore', () => {
     });
 
     it('should not throw when deleting a non-existent ID', async () => {
-      await expect(
-        store.deleteTrack('nonexistent-id'),
-      ).resolves.not.toThrow();
+      await expect(store.deleteTrack('nonexistent-id')).resolves.not.toThrow();
     });
   });
 
   describe('Database initialisation without SQLite', () => {
     it('should initialise without error when no db is provided', async () => {
-      await expect(
-        store.initDatabase(null as any),
-      ).resolves.not.toThrow();
+      await expect(store.initDatabase(null as any)).resolves.not.toThrow();
     });
 
     it('should operate in in-memory mode after failed db init', async () => {

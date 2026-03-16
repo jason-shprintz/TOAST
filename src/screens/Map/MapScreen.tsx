@@ -28,7 +28,7 @@ import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
 import { useTrackStore, useWaypointStore } from '../../stores/StoreContext';
-import { TrackPoint } from '../../stores/TrackStore';
+import { Track, TrackPoint } from '../../stores/TrackStore';
 import { FOOTER_HEIGHT } from '../../theme';
 import CompassDataPanel from './components/CompassDataPanel';
 import CompassRing from './components/CompassRing';
@@ -39,7 +39,6 @@ import MapPanel, {
 } from './components/MapPanel';
 import WaypointBottomSheet from './components/WaypointBottomSheet';
 import { haversineMeters } from './components/WaypointBottomSheet/waypointGeometry';
-import { Track } from '../../stores/TrackStore';
 
 // US state name → 2-letter abbreviation
 const US_STATE_ABBR: Record<string, string> = {
@@ -336,7 +335,10 @@ export default observer(function MapScreen() {
           // Batch polyline updates to avoid excessive re-renders
           if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
             setRecordingPolylineCoords(
-              pts.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
+              pts.map((p) => ({
+                latitude: p.latitude,
+                longitude: p.longitude,
+              })),
             );
             setRecordingDistance(computeTrackDistance(pts));
           }
@@ -513,24 +515,21 @@ export default observer(function MapScreen() {
     recordedPointsRef.current = [];
   }, []);
 
-  const handleViewTrack = useCallback(
-    (track: Track) => {
-      setViewedTrack(track);
-      setWaypointSheetOpen(false);
-      // Pan map to first point of track
-      if (track.points.length > 0 && mapRef.current) {
-        mapRef.current.animateToRegion(
-          {
-            latitude: track.points[0].latitude,
-            longitude: track.points[0].longitude,
-            ...DELTA,
-          },
-          MAP_ANIMATE_DURATION_MS,
-        );
-      }
-    },
-    [],
-  );
+  const handleViewTrack = useCallback((track: Track) => {
+    setViewedTrack(track);
+    setWaypointSheetOpen(false);
+    // Pan map to first point of track
+    if (track.points.length > 0 && mapRef.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: track.points[0].latitude,
+          longitude: track.points[0].longitude,
+          ...DELTA,
+        },
+        MAP_ANIMATE_DURATION_MS,
+      );
+    }
+  }, []);
 
   const handleDeleteTrack = useCallback(
     async (id: string) => {
@@ -603,8 +602,6 @@ export default observer(function MapScreen() {
             onAddFromLocation={handleAddWaypointFromLocation}
             onAddManual={handleAddWaypointManual}
             containerHeight={mapContainerHeight}
-            activeWaypointId={null}
-            onDismissActive={() => {}}
             onViewTrack={handleViewTrack}
             onDeleteTrack={handleDeleteTrack}
           />
