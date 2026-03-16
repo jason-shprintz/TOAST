@@ -27,15 +27,19 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
-import { useWaypointStore } from '../../stores/StoreContext';
+import { useTrackStore, useWaypointStore } from '../../stores/StoreContext';
+import { TrackPoint } from '../../stores/TrackStore';
 import { FOOTER_HEIGHT } from '../../theme';
 import CompassDataPanel from './components/CompassDataPanel';
 import CompassRing from './components/CompassRing';
 import MapPanel, {
   DELTA,
   LocationPermissionStatus,
+  RecordingState,
 } from './components/MapPanel';
 import WaypointBottomSheet from './components/WaypointBottomSheet';
+import { haversineMeters } from './components/WaypointBottomSheet/waypointGeometry';
+import { Track } from '../../stores/TrackStore';
 
 // US state name → 2-letter abbreviation
 const US_STATE_ABBR: Record<string, string> = {
@@ -177,6 +181,20 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
   }
 }
 
+/** Computes total haversine distance (metres) across an array of TrackPoints. */
+function computeTrackDistance(points: TrackPoint[]): number {
+  let total = 0;
+  for (let i = 1; i < points.length; i++) {
+    total += haversineMeters(
+      points[i - 1].latitude,
+      points[i - 1].longitude,
+      points[i].latitude,
+      points[i].longitude,
+    );
+  }
+  return total;
+}
+
 /**
  * MapScreen renders the platform's native map (MapKit on iOS,
  * Google Maps on Android) with a live GPS blue-dot and a
@@ -185,12 +203,14 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
 
 /** Duration in ms for map region animation. */
 const MAP_ANIMATE_DURATION_MS = 400;
+
 export default observer(function MapScreen() {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const { setDisableGestureNavigation } = useGestureNavigation();
   const mapRef = useRef<MapView>(null);
   const waypointStore = useWaypointStore();
+  const trackStore = useTrackStore();
   const [permissionStatus, setPermissionStatus] =
     useState<LocationPermissionStatus>('undetermined');
   const [locationReady, setLocationReady] = useState(false);
@@ -209,6 +229,22 @@ export default observer(function MapScreen() {
   const [waypointSheetOpen, setWaypointSheetOpen] = useState(false);
   // Measured height of the map container — used to keep the sheet within map bounds.
   const [mapContainerHeight, setMapContainerHeight] = useState(0);
+
+  // ── Recording state ────────────────────────────────────────────────────────
+  /** Mutable ref so GPS callback closure always reads the latest value. */
+  const recordingStateRef = useRef<RecordingState>('idle');
+  const [recordingState, setRecordingState] = useState<RecordingState>('idle');
+  const recordedPointsRef = useRef<TrackPoint[]>([]);
+  const [recordingPolylineCoords, setRecordingPolylineCoords] = useState<
+    { latitude: number; longitude: number }[]
+  >([]);
+  const recordingStartTimeRef = useRef<number | null>(null);
+  const [recordingElapsed, setRecordingElapsed] = useState(0);
+  const [recordingDistance, setRecordingDistance] = useState(0);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** The currently viewed saved track overlay (read-only polyline). */
+  const [viewedTrack, setViewedTrack] = useState<Track | null>(null);
+  // ──────────────────────────────────────────────────────────────────────────
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -251,7 +287,7 @@ export default observer(function MapScreen() {
     return () => CompassHeading.stop();
   }, [needleRotation]);
 
-  // Watch GPS position for live coordinates and elevation
+  // Watch GPS position for live coordinates, elevation, geocoding, and recording
   useEffect(() => {
     if (permissionStatus !== 'granted') {
       return;
@@ -284,6 +320,25 @@ export default observer(function MapScreen() {
             geocodeAbortRef.current.signal,
           );
         }
+
+        // Append point to recording if active
+        if (recordingStateRef.current === 'recording') {
+          const point: TrackPoint = {
+            latitude,
+            longitude,
+            altitude: altitude ?? null,
+            timestamp: Date.now(),
+          };
+          recordedPointsRef.current.push(point);
+          const pts = recordedPointsRef.current;
+          // Batch polyline updates to avoid excessive re-renders
+          if (pts.length % 3 === 0 || pts.length === 1) {
+            setRecordingPolylineCoords(
+              pts.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
+            );
+            setRecordingDistance(computeTrackDistance(pts));
+          }
+        }
       },
       (err) => {
         console.warn('MapScreen watchPosition error:', err.message);
@@ -300,6 +355,15 @@ export default observer(function MapScreen() {
       geocodeAbortRef.current = null;
     };
   }, [permissionStatus]);
+
+  // Clean up recording timer on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleLocateMe = () => {
     if (!mapRef.current || permissionStatus === 'denied') {
@@ -383,6 +447,101 @@ export default observer(function MapScreen() {
     [waypointStore],
   );
 
+  // ── Recording handlers ────────────────────────────────────────────────────
+
+  const handleRecordPress = useCallback(() => {
+    if (recordingStateRef.current === 'idle') {
+      // Start recording
+      recordedPointsRef.current = [];
+      recordingStartTimeRef.current = Date.now();
+      recordingStateRef.current = 'recording';
+      setRecordingState('recording');
+      setRecordingElapsed(0);
+      setRecordingDistance(0);
+      setRecordingPolylineCoords([]);
+      recordingTimerRef.current = setInterval(() => {
+        if (recordingStartTimeRef.current !== null) {
+          setRecordingElapsed(
+            Math.floor((Date.now() - recordingStartTimeRef.current) / 1000),
+          );
+        }
+      }, 1000);
+    } else if (recordingStateRef.current === 'recording') {
+      // Stop recording — transition to 'stopped' to show Save/Discard UI
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+      recordingStateRef.current = 'stopped';
+      setRecordingState('stopped');
+      // Final polyline update
+      const pts = recordedPointsRef.current;
+      setRecordingPolylineCoords(
+        pts.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
+      );
+      setRecordingDistance(computeTrackDistance(pts));
+    }
+  }, []);
+
+  const handleSaveTrack = useCallback(
+    async (name: string) => {
+      const pts = recordedPointsRef.current;
+      const elapsed = recordingElapsed;
+      const dist = computeTrackDistance(pts);
+      const savedTrack = await trackStore.saveTrack(name, elapsed, dist, pts);
+      // Reset recording state
+      recordingStateRef.current = 'idle';
+      setRecordingState('idle');
+      setRecordingPolylineCoords([]);
+      setRecordingElapsed(0);
+      setRecordingDistance(0);
+      recordedPointsRef.current = [];
+      // Show the newly saved track on the map
+      setViewedTrack(savedTrack);
+    },
+    [trackStore, recordingElapsed],
+  );
+
+  const handleDiscardTrack = useCallback(() => {
+    recordingStateRef.current = 'idle';
+    setRecordingState('idle');
+    setRecordingPolylineCoords([]);
+    setRecordingElapsed(0);
+    setRecordingDistance(0);
+    recordedPointsRef.current = [];
+  }, []);
+
+  const handleViewTrack = useCallback(
+    (track: Track) => {
+      setViewedTrack(track);
+      setWaypointSheetOpen(false);
+      // Pan map to first point of track
+      if (track.points.length > 0 && mapRef.current) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: track.points[0].latitude,
+            longitude: track.points[0].longitude,
+            ...DELTA,
+          },
+          MAP_ANIMATE_DURATION_MS,
+        );
+      }
+    },
+    [],
+  );
+
+  const handleDeleteTrack = useCallback(
+    async (id: string) => {
+      await trackStore.deleteTrack(id);
+      if (viewedTrack?.id === id) {
+        setViewedTrack(null);
+      }
+    },
+    [trackStore, viewedTrack],
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+
   // Ring rotates opposite to heading so the needle appears fixed pointing up
   const ringSpin = needleRotation.interpolate({
     inputRange: [0, 360],
@@ -393,6 +552,13 @@ export default observer(function MapScreen() {
     inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   });
+
+  const viewedTrackCoords = viewedTrack
+    ? viewedTrack.points.map((p) => ({
+        latitude: p.latitude,
+        longitude: p.longitude,
+      }))
+    : [];
 
   return (
     <ScreenBody>
@@ -413,11 +579,20 @@ export default observer(function MapScreen() {
               onLongPressMap={handleLongPressMap}
               waypoints={waypointStore.waypoints}
               activeWaypointId={waypointStore.activeWaypointId}
+              recordingState={recordingState}
+              onRecordPress={handleRecordPress}
+              recordingPolylineCoords={recordingPolylineCoords}
+              viewedTrackCoords={viewedTrackCoords}
+              recordingElapsed={recordingElapsed}
+              recordingDistance={recordingDistance}
+              onSaveTrack={handleSaveTrack}
+              onDiscardTrack={handleDiscardTrack}
             />
           </View>
           {/* Waypoint bottom sheet — positioned absolutely within the map area */}
           <WaypointBottomSheet
             waypoints={waypointStore.waypoints}
+            tracks={trackStore.tracks}
             currentCoords={coords}
             isOpen={waypointSheetOpen}
             onClose={() => setWaypointSheetOpen(false)}
@@ -430,6 +605,8 @@ export default observer(function MapScreen() {
             onDismissActive={function (): void {
               throw new Error('Function not implemented.');
             }}
+            onViewTrack={handleViewTrack}
+            onDeleteTrack={handleDeleteTrack}
           />
         </View>
 

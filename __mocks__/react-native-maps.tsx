@@ -30,5 +30,13 @@ export const Marker = ({
   </View>
 );
 
+export const Polyline = ({
+  testID,
+  ...props
+}: {
+  testID?: string;
+  [key: string]: unknown;
+}) => <View testID={testID ?? 'map-polyline'} {...(props as object)} />;
+
 export const PROVIDER_DEFAULT = null;
 export const PROVIDER_GOOGLE = 'google';
