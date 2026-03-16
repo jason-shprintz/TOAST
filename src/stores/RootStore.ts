@@ -10,6 +10,7 @@ import { RepeaterBookStore } from './RepeaterBookStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
 import { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
+import { WaypointStore } from './WaypointStore';
 import { WeatherOutlookStore } from './WeatherOutlookStore';
 
 export class RootStore {
@@ -25,6 +26,7 @@ export class RootStore {
   barometerStore: BarometerStore;
   repeaterBookStore: RepeaterBookStore;
   weatherOutlookStore: WeatherOutlookStore;
+  waypointStore: WaypointStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -40,6 +42,7 @@ export class RootStore {
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
+    this.waypointStore = new WaypointStore();
     this.initializeSettings();
   }
 
@@ -60,6 +63,8 @@ export class RootStore {
       await this.solarCycleNotificationStore.loadSettings();
       // Initialize weather outlook cache table
       await this.weatherOutlookStore.initDatabase(this.coreStore.notesDb);
+      // Initialize waypoint store with same database
+      await this.waypointStore.initDatabase(this.coreStore.notesDb);
     }
     // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
@@ -84,6 +89,7 @@ export class RootStore {
     this.barometerStore.stop();
     this.repeaterBookStore.dispose();
     this.weatherOutlookStore.dispose();
+    this.waypointStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -96,6 +102,7 @@ export class RootStore {
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
+    this.waypointStore = new WaypointStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB

@@ -5,7 +5,14 @@
  * @format
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   PermissionsAndroid,
@@ -20,6 +27,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
+import { useWaypointStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 import CompassDataPanel from './components/CompassDataPanel';
 import CompassRing from './components/CompassRing';
@@ -27,6 +35,7 @@ import MapPanel, {
   DELTA,
   LocationPermissionStatus,
 } from './components/MapPanel';
+import WaypointBottomSheet from './components/WaypointBottomSheet';
 
 // US state name → 2-letter abbreviation
 const US_STATE_ABBR: Record<string, string> = {
@@ -173,11 +182,15 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
  * Google Maps on Android) with a live GPS blue-dot and a
  * CLLocationManager-driven compass below the map.
  */
-export default function MapScreen() {
+
+/** Duration in ms for map region animation. */
+const MAP_ANIMATE_DURATION_MS = 400;
+export default observer(function MapScreen() {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const { setDisableGestureNavigation } = useGestureNavigation();
   const mapRef = useRef<MapView>(null);
+  const waypointStore = useWaypointStore();
   const [permissionStatus, setPermissionStatus] =
     useState<LocationPermissionStatus>('undetermined');
   const [locationReady, setLocationReady] = useState(false);
@@ -193,6 +206,9 @@ export default function MapScreen() {
   const watchIdRef = useRef<number | null>(null);
   // Holds the AbortController for the in-flight Nominatim request
   const geocodeAbortRef = useRef<AbortController | null>(null);
+  const [waypointSheetOpen, setWaypointSheetOpen] = useState(false);
+  // Measured height of the map container — used to keep the sheet within map bounds.
+  const [mapContainerHeight, setMapContainerHeight] = useState(0);
 
   // Disable swipe-back while map is active (conflicts with map panning)
   useEffect(() => {
@@ -305,6 +321,68 @@ export default function MapScreen() {
     );
   };
 
+  const handleAddWaypointFromLocation = useCallback(
+    async (name: string) => {
+      if (!coords) {
+        return;
+      }
+      await waypointStore.addWaypoint(name, coords.latitude, coords.longitude);
+    },
+    [coords, waypointStore],
+  );
+
+  const handleAddWaypointManual = useCallback(
+    async (name: string, latitude: number, longitude: number) => {
+      await waypointStore.addWaypoint(name, latitude, longitude);
+    },
+    [waypointStore],
+  );
+
+  const handleNavigateWaypoint = useCallback(
+    (id: string) => {
+      waypointStore.setActiveWaypoint(id);
+      setWaypointSheetOpen(false);
+      // Pan the map to centre on the selected waypoint
+      const waypoint = waypointStore.waypoints.find((w) => w.id === id);
+      if (waypoint && mapRef.current) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: waypoint.latitude,
+            longitude: waypoint.longitude,
+            ...DELTA,
+          },
+          MAP_ANIMATE_DURATION_MS,
+        );
+      }
+    },
+    [waypointStore],
+  );
+
+  const handleDeleteWaypoint = useCallback(
+    async (id: string) => {
+      await waypointStore.deleteWaypoint(id);
+    },
+    [waypointStore],
+  );
+
+  const handleLongPressMap = useCallback(
+    async (coordinate: { latitude: number; longitude: number }) => {
+      // Find the next unused "Waypoint N" number (handles gaps from deletions)
+      const existing = new Set(waypointStore.waypoints.map((w) => w.name));
+      let n = waypointStore.waypoints.length + 1;
+      while (existing.has(`Waypoint ${n}`)) {
+        n++;
+      }
+      await waypointStore.addWaypoint(
+        `Waypoint ${n}`,
+        coordinate.latitude,
+        coordinate.longitude,
+      );
+      setWaypointSheetOpen(true);
+    },
+    [waypointStore],
+  );
+
   // Ring rotates opposite to heading so the needle appears fixed pointing up
   const ringSpin = needleRotation.interpolate({
     inputRange: [0, 360],
@@ -320,13 +398,40 @@ export default function MapScreen() {
     <ScreenBody>
       <SectionHeader>Map</SectionHeader>
       <View style={styles.wrapper}>
-        {/* Map */}
-        <MapPanel
-          permissionStatus={permissionStatus}
-          locationReady={locationReady}
-          mapRef={mapRef}
-          onLocateMe={handleLocateMe}
-        />
+        {/* Map — outer view owns sizing/sheet; inner view clips map tiles to rounded corners */}
+        <View
+          style={styles.mapWrapper}
+          onLayout={(e) => setMapContainerHeight(e.nativeEvent.layout.height)}
+        >
+          <View style={styles.mapInner}>
+            <MapPanel
+              permissionStatus={permissionStatus}
+              locationReady={locationReady}
+              mapRef={mapRef}
+              onLocateMe={handleLocateMe}
+              onWaypointsPress={() => setWaypointSheetOpen(true)}
+              onLongPressMap={handleLongPressMap}
+              waypoints={waypointStore.waypoints}
+              activeWaypointId={waypointStore.activeWaypointId}
+            />
+          </View>
+          {/* Waypoint bottom sheet — positioned absolutely within the map area */}
+          <WaypointBottomSheet
+            waypoints={waypointStore.waypoints}
+            currentCoords={coords}
+            isOpen={waypointSheetOpen}
+            onClose={() => setWaypointSheetOpen(false)}
+            onNavigate={handleNavigateWaypoint}
+            onDelete={handleDeleteWaypoint}
+            onAddFromLocation={handleAddWaypointFromLocation}
+            onAddManual={handleAddWaypointManual}
+            containerHeight={mapContainerHeight}
+            activeWaypointId={null}
+            onDismissActive={function (): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
+        </View>
 
         {/* Compass */}
         <View style={styles.compassContainer}>
@@ -340,7 +445,7 @@ export default function MapScreen() {
       </View>
     </ScreenBody>
   );
-}
+});
 
 function makeStyles(colors: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
@@ -350,6 +455,19 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       alignItems: 'center',
       paddingBottom: FOOTER_HEIGHT,
       gap: 5,
+    },
+    mapWrapper: {
+      width: '90%',
+      flex: 1,
+      marginTop: 5,
+      overflow: 'hidden',
+    },
+    mapInner: {
+      flex: 1,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.SECONDARY_ACCENT,
+      overflow: 'hidden',
     },
     compassContainer: {
       width: '90%',

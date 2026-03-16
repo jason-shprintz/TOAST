@@ -65,3 +65,4 @@ export const useSolarCycleNotificationStore = () =>
 export const useBarometerStore = () => useStores().barometerStore;
 export const useRepeaterBookStore = () => useStores().repeaterBookStore;
 export const useWeatherOutlookStore = () => useStores().weatherOutlookStore;
+export const useWaypointStore = () => useStores().waypointStore;
