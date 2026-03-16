@@ -365,10 +365,6 @@ export default observer(function MapScreen() {
     [waypointStore],
   );
 
-  const handleDismissActiveWaypoint = useCallback(() => {
-    waypointStore.clearActiveWaypoint();
-  }, [waypointStore]);
-
   const handleLongPressMap = useCallback(
     async (coordinate: { latitude: number; longitude: number }) => {
       // Find the next unused "Waypoint N" number (handles gaps from deletions)
@@ -422,7 +418,6 @@ export default observer(function MapScreen() {
           {/* Waypoint bottom sheet — positioned absolutely within the map area */}
           <WaypointBottomSheet
             waypoints={waypointStore.waypoints}
-            activeWaypointId={waypointStore.activeWaypointId}
             currentCoords={coords}
             isOpen={waypointSheetOpen}
             onClose={() => setWaypointSheetOpen(false)}
@@ -430,8 +425,11 @@ export default observer(function MapScreen() {
             onDelete={handleDeleteWaypoint}
             onAddFromLocation={handleAddWaypointFromLocation}
             onAddManual={handleAddWaypointManual}
-            onDismissActive={handleDismissActiveWaypoint}
             containerHeight={mapContainerHeight}
+            activeWaypointId={null}
+            onDismissActive={function (): void {
+              throw new Error('Function not implemented.');
+            }}
           />
         </View>
 
