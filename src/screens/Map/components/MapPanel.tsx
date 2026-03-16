@@ -181,7 +181,7 @@ export default function MapPanel({
           {recordingState === 'recording' && (
             <View style={styles.hud}>
               <Text style={styles.hudText}>
-                {'\u23F1'} {formatElapsed(recordingElapsed)}{'   '}{'\uD83D\uDCCD'} {formatDistanceShort(recordingDistance)}
+                ⏱ {formatElapsed(recordingElapsed)}{'   '}📍 {formatDistanceShort(recordingDistance)}
               </Text>
             </View>
           )}
@@ -247,7 +247,7 @@ export default function MapPanel({
                     recordingState === 'recording' && { opacity: pulseAnim },
                   ]}
                 >
-                  {recordingState === 'recording' ? '\u23F9' : '\u23FA'}
+                  {recordingState === 'recording' ? '⏹' : '⏺'}
                 </Animated.Text>
               </TouchableOpacity>
 

@@ -127,6 +127,16 @@ export default function WaypointBottomSheet({
     }).start();
   }, [translateY]);
 
+  const handleTabWaypoints = useCallback(() => {
+    setActiveTab('waypoints');
+    setShowAddForm(false);
+  }, []);
+
+  const handleTabTracks = useCallback(() => {
+    setActiveTab('tracks');
+    setShowAddForm(false);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       setSheetState('open');
@@ -212,7 +222,7 @@ export default function WaypointBottomSheet({
         <View style={styles.tabs}>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'waypoints' && styles.tabActive]}
-            onPress={() => { setActiveTab('waypoints'); setShowAddForm(false); }}
+            onPress={handleTabWaypoints}
             accessibilityLabel="Waypoints tab"
             accessibilityRole="tab"
           >
@@ -227,7 +237,7 @@ export default function WaypointBottomSheet({
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'tracks' && styles.tabActive]}
-            onPress={() => { setActiveTab('tracks'); setShowAddForm(false); }}
+            onPress={handleTabTracks}
             accessibilityLabel="Tracks tab"
             accessibilityRole="tab"
           >

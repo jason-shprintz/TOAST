@@ -203,6 +203,8 @@ function computeTrackDistance(points: TrackPoint[]): number {
 
 /** Duration in ms for map region animation. */
 const MAP_ANIMATE_DURATION_MS = 400;
+/** Number of GPS points between polyline state updates during recording (performance optimisation). */
+const POLYLINE_UPDATE_INTERVAL = 3;
 
 export default observer(function MapScreen() {
   const COLORS = useTheme();
@@ -332,7 +334,7 @@ export default observer(function MapScreen() {
           recordedPointsRef.current.push(point);
           const pts = recordedPointsRef.current;
           // Batch polyline updates to avoid excessive re-renders
-          if (pts.length % 3 === 0 || pts.length === 1) {
+          if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
             setRecordingPolylineCoords(
               pts.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
             );
@@ -602,9 +604,7 @@ export default observer(function MapScreen() {
             onAddManual={handleAddWaypointManual}
             containerHeight={mapContainerHeight}
             activeWaypointId={null}
-            onDismissActive={function (): void {
-              throw new Error('Function not implemented.');
-            }}
+            onDismissActive={() => {}}
             onViewTrack={handleViewTrack}
             onDeleteTrack={handleDeleteTrack}
           />
