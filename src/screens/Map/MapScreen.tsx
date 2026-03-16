@@ -239,24 +239,30 @@ async function requestBackgroundLocationPermission(): Promise<void> {
   }
 }
 
-/** Starts the Android foreground service that keeps GPS alive in background. */
+/** Starts the Android foreground service that keeps GPS alive in background.
+ * Fire-and-forget — the native method is void and no response is needed. */
 function startAndroidForegroundService(): void {
   if (Platform.OS !== 'android') {
     return;
   }
   try {
+    // The native module method is void; we intentionally don't await anything.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     NativeModules.LocationForegroundService?.start?.();
   } catch {
     // Non-fatal — recording still works; may stop when backgrounded
   }
 }
 
-/** Stops the Android foreground service. */
+/** Stops the Android foreground service.
+ * Fire-and-forget — the native method is void and no response is needed. */
 function stopAndroidForegroundService(): void {
   if (Platform.OS !== 'android') {
     return;
   }
   try {
+    // The native module method is void; we intentionally don't await anything.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     NativeModules.LocationForegroundService?.stop?.();
   } catch {
     // Non-fatal

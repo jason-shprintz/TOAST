@@ -2,7 +2,6 @@ package com.toast
 
 import android.content.Intent
 import android.os.Build
-import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -17,8 +16,9 @@ class LocationForegroundServiceModule(reactContext: ReactApplicationContext) :
 
     override fun getName(): String = "LocationForegroundService"
 
+    /** Starts the foreground service. Fire-and-forget — no callback needed. */
     @ReactMethod
-    fun start(promise: Promise) {
+    fun start() {
         try {
             val context = reactApplicationContext
             val intent = Intent(context, LocationForegroundService::class.java)
@@ -27,20 +27,19 @@ class LocationForegroundServiceModule(reactContext: ReactApplicationContext) :
             } else {
                 context.startService(intent)
             }
-            promise.resolve(null)
-        } catch (e: Exception) {
-            promise.reject("ERROR", e.message, e)
+        } catch (_: Exception) {
+            // Non-fatal — recording still works; GPS may stop when backgrounded
         }
     }
 
+    /** Stops the foreground service. Fire-and-forget — no callback needed. */
     @ReactMethod
-    fun stop(promise: Promise) {
+    fun stop() {
         try {
             val context = reactApplicationContext
             context.stopService(Intent(context, LocationForegroundService::class.java))
-            promise.resolve(null)
-        } catch (e: Exception) {
-            promise.reject("ERROR", e.message, e)
+        } catch (_: Exception) {
+            // Non-fatal
         }
     }
 }
