@@ -14,7 +14,11 @@ import React, {
   useState,
 } from 'react';
 import {
+  Alert,
   Animated,
+  AppState,
+  AppStateStatus,
+  NativeModules,
   PermissionsAndroid,
   Platform,
   StyleSheet,
@@ -177,6 +181,85 @@ async function requestLocationPermission(): Promise<'granted' | 'denied'> {
     return result === PermissionsAndroid.RESULTS.GRANTED ? 'granted' : 'denied';
   } catch {
     return 'denied';
+  }
+}
+
+/**
+ * Upgrades iOS location authorization to 'always' so GPS callbacks continue
+ * when the screen is locked during trail recording.
+ * On Android 10+ (API 29+) requests ACCESS_BACKGROUND_LOCATION, directing
+ * the user to Settings on Android 11+ where runtime granting isn't allowed.
+ */
+async function requestBackgroundLocationPermission(): Promise<void> {
+  try {
+    if (Platform.OS === 'ios') {
+      const status = await Geolocation.requestAuthorization('always');
+      if (status !== 'granted') {
+        Alert.alert(
+          'Background Location',
+          'To keep recording while the screen is locked, allow "Always" location access in Settings → Privacy → Location Services → TOAST.',
+          [{ text: 'OK' }],
+        );
+      }
+      return;
+    }
+
+    // Android 10+ requires ACCESS_BACKGROUND_LOCATION separately
+    if (Platform.OS === 'android' && Number(Platform.Version) >= 29) {
+      const already = await PermissionsAndroid.check(
+        'android.permission.ACCESS_BACKGROUND_LOCATION' as any,
+      );
+      if (already) {
+        return;
+      }
+      // Android 11+ (API 30+) must be granted via Settings; runtime dialog not available
+      if (Number(Platform.Version) >= 30) {
+        Alert.alert(
+          'Background Location',
+          'To keep recording while the screen is locked, go to Settings → Apps → TOAST → Permissions → Location → Allow all the time.',
+          [{ text: 'OK' }],
+        );
+        return;
+      }
+      // Android 10 (API 29) can request at runtime
+      await PermissionsAndroid.request(
+        'android.permission.ACCESS_BACKGROUND_LOCATION' as any,
+        {
+          title: 'Background Location',
+          message:
+            'Allow TOAST to access location in the background so your GPS trail continues recording when the screen is locked.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'Allow',
+        },
+      );
+    }
+  } catch {
+    // Non-fatal — recording still works in foreground
+  }
+}
+
+/** Starts the Android foreground service that keeps GPS alive in background. */
+function startAndroidForegroundService(): void {
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  try {
+    NativeModules.LocationForegroundService?.start?.();
+  } catch {
+    // Non-fatal — recording still works; may stop when backgrounded
+  }
+}
+
+/** Stops the Android foreground service. */
+function stopAndroidForegroundService(): void {
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  try {
+    NativeModules.LocationForegroundService?.stop?.();
+  } catch {
+    // Non-fatal
   }
 }
 
@@ -360,13 +443,38 @@ export default observer(function MapScreen() {
     };
   }, [permissionStatus]);
 
-  // Clean up recording timer on unmount
+  // Clean up recording timer on unmount; stop foreground service if still running
   useEffect(() => {
     return () => {
       if (recordingTimerRef.current) {
         clearInterval(recordingTimerRef.current);
       }
+      // If the component unmounts while recording (e.g., user navigates away),
+      // stop the Android foreground service so it doesn't linger indefinitely.
+      stopAndroidForegroundService();
     };
+  }, []);
+
+  // AppState listener — corrects the elapsed timer when the app returns from
+  // background. While suspended, setInterval stops firing; when the app comes
+  // back to the foreground we immediately recompute from the wall-clock start
+  // time so the HUD always shows the accurate total elapsed duration.
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      (nextState: AppStateStatus) => {
+        if (
+          nextState === 'active' &&
+          recordingStateRef.current === 'recording' &&
+          recordingStartTimeRef.current !== null
+        ) {
+          setRecordingElapsed(
+            Math.floor((Date.now() - recordingStartTimeRef.current) / 1000),
+          );
+        }
+      },
+    );
+    return () => subscription.remove();
   }, []);
 
   const handleLocateMe = () => {
@@ -455,6 +563,12 @@ export default observer(function MapScreen() {
 
   const handleRecordPress = useCallback(() => {
     if (recordingStateRef.current === 'idle') {
+      // Request background location permission so GPS continues when screen locks.
+      // Non-blocking — recording starts immediately; the permission prompt is async.
+      requestBackgroundLocationPermission();
+      // On Android, start the foreground service before GPS sampling begins so
+      // the OS doesn't kill the process when the screen is locked.
+      startAndroidForegroundService();
       // Start recording
       recordedPointsRef.current = [];
       recordingStartTimeRef.current = Date.now();
@@ -476,6 +590,7 @@ export default observer(function MapScreen() {
         clearInterval(recordingTimerRef.current);
         recordingTimerRef.current = null;
       }
+      stopAndroidForegroundService();
       recordingStateRef.current = 'stopped';
       setRecordingState('stopped');
       // Final polyline update
@@ -493,6 +608,7 @@ export default observer(function MapScreen() {
       const elapsed = recordingElapsed;
       const dist = computeTrackDistance(pts);
       const savedTrack = await trackStore.saveTrack(name, elapsed, dist, pts);
+      stopAndroidForegroundService();
       // Reset recording state
       recordingStateRef.current = 'idle';
       setRecordingState('idle');
@@ -507,6 +623,7 @@ export default observer(function MapScreen() {
   );
 
   const handleDiscardTrack = useCallback(() => {
+    stopAndroidForegroundService();
     recordingStateRef.current = 'idle';
     setRecordingState('idle');
     setRecordingPolylineCoords([]);

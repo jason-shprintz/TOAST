@@ -6,6 +6,14 @@
     android:name="android.permission.READ_EXTERNAL_STORAGE"
     android:maxSdkVersion="32" />
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <!-- Location permissions for GPS map tracking -->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!-- Background location for trail recording while screen is locked (Android 10+) -->
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+  <!-- Foreground service required to keep GPS alive when app is backgrounded (Android 8+) -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
   <application
     android:name=".MainApplication"
@@ -30,5 +38,11 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <!-- Foreground service that keeps the GPS watcher alive during trail recording -->
+    <service
+      android:name=".LocationForegroundService"
+      android:enabled="true"
+      android:exported="false"
+      android:foregroundServiceType="location" />
   </application>
 </manifest>
