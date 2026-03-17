@@ -25,9 +25,7 @@ import {
   View,
 } from 'react-native';
 import CompassHeading from 'react-native-compass-heading';
-import Geolocation, {
-  GeoPosition,
-} from 'react-native-geolocation-service';
+import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -249,7 +247,7 @@ function startAndroidForegroundService(): void {
   }
   try {
     // The native module method is void; we intentionally don't await anything.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     NativeModules.LocationForegroundService?.start?.();
   } catch {
     // Non-fatal — recording still works; may stop when backgrounded
@@ -264,7 +262,7 @@ function stopAndroidForegroundService(): void {
   }
   try {
     // The native module method is void; we intentionally don't await anything.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     NativeModules.LocationForegroundService?.stop?.();
   } catch {
     // Non-fatal
@@ -397,53 +395,50 @@ export default observer(function MapScreen() {
   const lastGeocodedLatRef = useRef<number | null>(null);
   const lastGeocodedLngRef = useRef<number | null>(null);
 
-  const handleLocationUpdate = useCallback(
-    (position: GeoPosition) => {
-      const { latitude, longitude, altitude } = position.coords;
-      setCoords({ latitude, longitude, altitude });
-      // Only reverse-geocode when position has moved meaningfully
-      if (
-        lastGeocodedLatRef.current === null ||
-        lastGeocodedLngRef.current === null ||
-        Math.abs(latitude - lastGeocodedLatRef.current) > GEOCODE_THRESHOLD ||
-        Math.abs(longitude - lastGeocodedLngRef.current) > GEOCODE_THRESHOLD
-      ) {
-        lastGeocodedLatRef.current = latitude;
-        lastGeocodedLngRef.current = longitude;
-        geocodeAbortRef.current?.abort();
-        geocodeAbortRef.current = new AbortController();
-        fetchLocationName(
-          latitude,
-          longitude,
-          setLocationName,
-          geocodeAbortRef.current.signal,
-        );
-      }
+  const handleLocationUpdate = useCallback((position: GeoPosition) => {
+    const { latitude, longitude, altitude } = position.coords;
+    setCoords({ latitude, longitude, altitude });
+    // Only reverse-geocode when position has moved meaningfully
+    if (
+      lastGeocodedLatRef.current === null ||
+      lastGeocodedLngRef.current === null ||
+      Math.abs(latitude - lastGeocodedLatRef.current) > GEOCODE_THRESHOLD ||
+      Math.abs(longitude - lastGeocodedLngRef.current) > GEOCODE_THRESHOLD
+    ) {
+      lastGeocodedLatRef.current = latitude;
+      lastGeocodedLngRef.current = longitude;
+      geocodeAbortRef.current?.abort();
+      geocodeAbortRef.current = new AbortController();
+      fetchLocationName(
+        latitude,
+        longitude,
+        setLocationName,
+        geocodeAbortRef.current.signal,
+      );
+    }
 
-      // Append point to recording if active
-      if (recordingStateRef.current === 'recording') {
-        const point: TrackPoint = {
-          latitude,
-          longitude,
-          altitude: altitude ?? null,
-          timestamp: Date.now(),
-        };
-        recordedPointsRef.current.push(point);
-        const pts = recordedPointsRef.current;
-        // Batch polyline updates to avoid excessive re-renders
-        if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
-          setRecordingPolylineCoords(
-            pts.map((p) => ({
-              latitude: p.latitude,
-              longitude: p.longitude,
-            })),
-          );
-          setRecordingDistance(computeTrackDistance(pts));
-        }
+    // Append point to recording if active
+    if (recordingStateRef.current === 'recording') {
+      const point: TrackPoint = {
+        latitude,
+        longitude,
+        altitude: altitude ?? null,
+        timestamp: Date.now(),
+      };
+      recordedPointsRef.current.push(point);
+      const pts = recordedPointsRef.current;
+      // Batch polyline updates to avoid excessive re-renders
+      if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
+        setRecordingPolylineCoords(
+          pts.map((p) => ({
+            latitude: p.latitude,
+            longitude: p.longitude,
+          })),
+        );
+        setRecordingDistance(computeTrackDistance(pts));
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   useEffect(() => {
     if (permissionStatus !== 'granted') {
