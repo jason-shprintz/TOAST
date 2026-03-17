@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
 import { LIGHT_COLORS } from '../theme/colors';
+import { SPACING } from '../theme/constants';
 import { Text } from './ScaledText';
 
 export type CardTopicProps = {
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   shadow: {
     width: '100%',
     borderRadius: CARD_BORDER_RADIUS,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -132,8 +133,8 @@ const styles = StyleSheet.create({
     borderRadius: CARD_BORDER_RADIUS,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
     overflow: 'hidden',
     borderWidth: 1,
   },
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   icon: {
-    marginRight: 12,
+    marginRight: SPACING.md,
   },
   title: {
     fontSize: 18,
