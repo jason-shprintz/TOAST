@@ -25,7 +25,9 @@ import {
   View,
 } from 'react-native';
 import CompassHeading from 'react-native-compass-heading';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation, {
+  GeoPosition,
+} from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -293,6 +295,8 @@ function computeTrackDistance(points: TrackPoint[]): number {
 const MAP_ANIMATE_DURATION_MS = 400;
 /** Number of GPS points between polyline state updates during recording (performance optimisation). */
 const POLYLINE_UPDATE_INTERVAL = 3;
+/** Minimum coordinate delta (~100 m) before triggering a new reverse-geocode request. */
+const GEOCODE_THRESHOLD = 0.001;
 
 export default observer(function MapScreen() {
   const COLORS = useTheme();
@@ -334,6 +338,10 @@ export default observer(function MapScreen() {
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   /** The currently viewed saved track overlay (read-only polyline). */
   const [viewedTrack, setViewedTrack] = useState<Track | null>(null);
+  /** Mirrors permissionStatus state so AppState callback can read it without deps. */
+  const permissionStatusRef = useRef<LocationPermissionStatus>('undetermined');
+  /** True when the GPS watcher was cleared because the app backgrounded while not recording. */
+  const watchPausedForBgRef = useRef(false);
   // ──────────────────────────────────────────────────────────────────────────
 
   // Disable swipe-back while map is active (conflicts with map panning)
@@ -349,6 +357,11 @@ export default observer(function MapScreen() {
       setLocationReady(true);
     });
   }, []);
+
+  // Keep permissionStatusRef in sync so AppState callback can read it.
+  useEffect(() => {
+    permissionStatusRef.current = permissionStatus;
+  }, [permissionStatus]);
 
   // Subscribe to CLLocationManager heading (tilt-compensated, same as native compass)
   useEffect(() => {
@@ -377,62 +390,68 @@ export default observer(function MapScreen() {
     return () => CompassHeading.stop();
   }, [needleRotation]);
 
-  // Watch GPS position for live coordinates, elevation, geocoding, and recording
+  // Watch GPS position for live coordinates, elevation, geocoding, and recording.
+  // The position callback is extracted so the AppState handler can restart the
+  // watcher with the exact same callback after resuming from background.
+  // All deps are stable refs or stable state setters, so no dep array entries.
+  const lastGeocodedLatRef = useRef<number | null>(null);
+  const lastGeocodedLngRef = useRef<number | null>(null);
+
+  const handleLocationUpdate = useCallback(
+    (position: GeoPosition) => {
+      const { latitude, longitude, altitude } = position.coords;
+      setCoords({ latitude, longitude, altitude });
+      // Only reverse-geocode when position has moved meaningfully
+      if (
+        lastGeocodedLatRef.current === null ||
+        lastGeocodedLngRef.current === null ||
+        Math.abs(latitude - lastGeocodedLatRef.current) > GEOCODE_THRESHOLD ||
+        Math.abs(longitude - lastGeocodedLngRef.current) > GEOCODE_THRESHOLD
+      ) {
+        lastGeocodedLatRef.current = latitude;
+        lastGeocodedLngRef.current = longitude;
+        geocodeAbortRef.current?.abort();
+        geocodeAbortRef.current = new AbortController();
+        fetchLocationName(
+          latitude,
+          longitude,
+          setLocationName,
+          geocodeAbortRef.current.signal,
+        );
+      }
+
+      // Append point to recording if active
+      if (recordingStateRef.current === 'recording') {
+        const point: TrackPoint = {
+          latitude,
+          longitude,
+          altitude: altitude ?? null,
+          timestamp: Date.now(),
+        };
+        recordedPointsRef.current.push(point);
+        const pts = recordedPointsRef.current;
+        // Batch polyline updates to avoid excessive re-renders
+        if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
+          setRecordingPolylineCoords(
+            pts.map((p) => ({
+              latitude: p.latitude,
+              longitude: p.longitude,
+            })),
+          );
+          setRecordingDistance(computeTrackDistance(pts));
+        }
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     if (permissionStatus !== 'granted') {
       return;
     }
-    // Track last geocoded position to avoid excessive Nominatim requests
-    let lastGeocodedLat: number | null = null;
-    let lastGeocodedLng: number | null = null;
-    const GEOCODE_THRESHOLD = 0.001; // ~100 m in degrees
 
     watchIdRef.current = Geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude, altitude } = position.coords;
-        setCoords({ latitude, longitude, altitude });
-        // Only reverse-geocode when position has moved meaningfully
-        if (
-          lastGeocodedLat === null ||
-          lastGeocodedLng === null ||
-          Math.abs(latitude - lastGeocodedLat) > GEOCODE_THRESHOLD ||
-          Math.abs(longitude - lastGeocodedLng) > GEOCODE_THRESHOLD
-        ) {
-          lastGeocodedLat = latitude;
-          lastGeocodedLng = longitude;
-          // Abort any in-flight geocode request before starting a new one
-          geocodeAbortRef.current?.abort();
-          geocodeAbortRef.current = new AbortController();
-          fetchLocationName(
-            latitude,
-            longitude,
-            setLocationName,
-            geocodeAbortRef.current.signal,
-          );
-        }
-
-        // Append point to recording if active
-        if (recordingStateRef.current === 'recording') {
-          const point: TrackPoint = {
-            latitude,
-            longitude,
-            altitude: altitude ?? null,
-            timestamp: Date.now(),
-          };
-          recordedPointsRef.current.push(point);
-          const pts = recordedPointsRef.current;
-          // Batch polyline updates to avoid excessive re-renders
-          if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
-            setRecordingPolylineCoords(
-              pts.map((p) => ({
-                latitude: p.latitude,
-                longitude: p.longitude,
-              })),
-            );
-            setRecordingDistance(computeTrackDistance(pts));
-          }
-        }
-      },
+      handleLocationUpdate,
       (err) => {
         console.warn('MapScreen watchPosition error:', err.message);
       },
@@ -447,7 +466,7 @@ export default observer(function MapScreen() {
       geocodeAbortRef.current?.abort();
       geocodeAbortRef.current = null;
     };
-  }, [permissionStatus]);
+  }, [permissionStatus, handleLocationUpdate]);
 
   // Clean up recording timer on unmount; stop foreground service if still running
   useEffect(() => {
@@ -461,27 +480,56 @@ export default observer(function MapScreen() {
     };
   }, []);
 
-  // AppState listener — corrects the elapsed timer when the app returns from
-  // background. While suspended, setInterval stops firing; when the app comes
-  // back to the foreground we immediately recompute from the wall-clock start
-  // time so the HUD always shows the accurate total elapsed duration.
+  // AppState listener:
+  //   - On background/inactive + NOT recording: stop the GPS watcher so the app
+  //     does not persist in the background (consuming battery) unnecessarily.
+  //     The watcher continues running only when actively recording.
+  //   - On active (foreground return): restart the watcher if it was paused, and
+  //     resync the HUD elapsed timer from the wall-clock start time.
   useEffect(() => {
     const subscription = AppState.addEventListener(
       'change',
       (nextState: AppStateStatus) => {
-        if (
-          nextState === 'active' &&
-          recordingStateRef.current === 'recording' &&
-          recordingStartTimeRef.current !== null
-        ) {
-          setRecordingElapsed(
-            Math.floor((Date.now() - recordingStartTimeRef.current) / 1000),
-          );
+        if (nextState === 'background' || nextState === 'inactive') {
+          // Stop the watcher when not recording to prevent background persistence
+          if (
+            recordingStateRef.current !== 'recording' &&
+            watchIdRef.current !== null
+          ) {
+            Geolocation.clearWatch(watchIdRef.current);
+            watchIdRef.current = null;
+            watchPausedForBgRef.current = true;
+          }
+        } else if (nextState === 'active') {
+          // Resync elapsed timer after resuming from background while recording
+          if (
+            recordingStateRef.current === 'recording' &&
+            recordingStartTimeRef.current !== null
+          ) {
+            setRecordingElapsed(
+              Math.floor((Date.now() - recordingStartTimeRef.current) / 1000),
+            );
+          }
+          // Restart the watcher if it was paused during backgrounding
+          if (
+            watchPausedForBgRef.current &&
+            permissionStatusRef.current === 'granted' &&
+            watchIdRef.current === null
+          ) {
+            watchPausedForBgRef.current = false;
+            watchIdRef.current = Geolocation.watchPosition(
+              handleLocationUpdate,
+              (err) => {
+                console.warn('MapScreen watchPosition error:', err.message);
+              },
+              { enableHighAccuracy: true, distanceFilter: 5 },
+            );
+          }
         }
       },
     );
     return () => subscription.remove();
-  }, []);
+  }, [handleLocationUpdate]);
 
   const handleLocateMe = () => {
     if (!mapRef.current || permissionStatus === 'denied') {
