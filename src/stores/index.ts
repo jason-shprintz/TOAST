@@ -25,6 +25,7 @@ export {
 } from './RepeaterBookStore';
 export { WeatherOutlookStore } from './WeatherOutlookStore';
 export { WaypointStore, type Waypoint } from './WaypointStore';
+export { TrackStore, type Track, type TrackPoint } from './TrackStore';
 export {
   StoreProvider,
   useStores,
@@ -40,4 +41,5 @@ export {
   useRepeaterBookStore,
   useWeatherOutlookStore,
   useWaypointStore,
+  useTrackStore,
 } from './StoreContext';

@@ -23,8 +23,10 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../../hooks/useTheme';
 import { useSettingsStore } from '../../../../stores/StoreContext';
+import { Track } from '../../../../stores/TrackStore';
 import { Waypoint } from '../../../../stores/WaypointStore';
 import AddWaypointForm from './AddWaypointForm';
+import TrackRow from './TrackRow';
 import WaypointRow from './WaypointRow';
 
 // ---------- constants -------------------------------------------------------
@@ -36,6 +38,7 @@ const HANDLE_HEIGHT = 28;
 // ---------- types -----------------------------------------------------------
 
 type SheetState = 'closed' | 'open';
+type ActiveTab = 'waypoints' | 'tracks';
 
 interface Coords {
   latitude: number;
@@ -45,6 +48,8 @@ interface Coords {
 export interface WaypointBottomSheetProps {
   /** All saved waypoints. */
   waypoints: Waypoint[];
+  /** All saved tracks. */
+  tracks?: Track[];
   /** Current GPS coords of the device (used for live distance/bearing in rows). */
   currentCoords: Coords | null;
   /** Whether the sheet is open (controlled externally via the FAB). */
@@ -68,12 +73,17 @@ export interface WaypointBottomSheetProps {
   activeWaypointId?: string | null;
   /** @deprecated No longer used — kept to satisfy stale TS cache. */
   onDismissActive?: () => void;
+  /** Called when the user taps View on a saved track. */
+  onViewTrack?: (track: Track) => void;
+  /** Called when the user taps Delete on a saved track. */
+  onDeleteTrack?: (id: string) => void;
 }
 
 // ---------- component -------------------------------------------------------
 
 export default function WaypointBottomSheet({
   waypoints,
+  tracks = [],
   currentCoords,
   isOpen,
   onClose,
@@ -82,6 +92,8 @@ export default function WaypointBottomSheet({
   onAddFromLocation,
   onAddManual,
   containerHeight,
+  onViewTrack,
+  onDeleteTrack,
 }: WaypointBottomSheetProps) {
   const COLORS = useTheme();
   const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
@@ -101,6 +113,7 @@ export default function WaypointBottomSheet({
 
   const [sheetState, setSheetState] = useState<SheetState>('closed');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('waypoints');
 
   // translateY: 0 = fully visible, positive = hidden below the container
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
@@ -113,6 +126,16 @@ export default function WaypointBottomSheet({
       bounciness: 0,
     }).start();
   }, [translateY]);
+
+  const handleTabWaypoints = useCallback(() => {
+    setActiveTab('waypoints');
+    setShowAddForm(false);
+  }, []);
+
+  const handleTabTracks = useCallback(() => {
+    setActiveTab('tracks');
+    setShowAddForm(false);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -195,9 +218,44 @@ export default function WaypointBottomSheet({
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Waypoints</Text>
+        {/* Tabs */}
+        <View style={styles.tabs} accessibilityRole="tablist">
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'waypoints' && styles.tabActive]}
+            onPress={handleTabWaypoints}
+            accessibilityLabel="Waypoints tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'waypoints' }}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'waypoints' && styles.tabTextActive,
+              ]}
+            >
+              Waypoints
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'tracks' && styles.tabActive]}
+            onPress={handleTabTracks}
+            accessibilityLabel="Tracks tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'tracks' }}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'tracks' && styles.tabTextActive,
+              ]}
+            >
+              Tracks
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.headerActions}>
-          {!showAddForm && (
+          {activeTab === 'waypoints' && !showAddForm && (
             <TouchableOpacity
               onPress={() => setShowAddForm(true)}
               style={styles.headerBtn}
@@ -220,37 +278,59 @@ export default function WaypointBottomSheet({
         </View>
       </View>
 
-      {/* Add form or waypoint list */}
-      {showAddForm ? (
-        <ScrollView
-          style={styles.list}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.formScrollContent}
-        >
-          <AddWaypointForm
-            hasLocation={currentCoords !== null}
-            onAddFromLocation={handleAddFromLocation}
-            onAddManual={handleAddManual}
-            onCancel={() => setShowAddForm(false)}
-          />
-        </ScrollView>
+      {/* Tab content */}
+      {activeTab === 'waypoints' ? (
+        showAddForm ? (
+          <ScrollView
+            style={styles.list}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.formScrollContent}
+          >
+            <AddWaypointForm
+              hasLocation={currentCoords !== null}
+              onAddFromLocation={handleAddFromLocation}
+              onAddManual={handleAddManual}
+              onCancel={() => setShowAddForm(false)}
+            />
+          </ScrollView>
+        ) : (
+          <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
+            {waypoints.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>
+                  No waypoints saved. Add one to get started.
+                </Text>
+              </View>
+            ) : (
+              waypoints.map((wp) => (
+                <WaypointRow
+                  key={wp.id}
+                  waypoint={wp}
+                  currentCoords={currentCoords}
+                  measurementSystem={measurementSystem}
+                  onNavigate={onNavigate}
+                  onDelete={onDelete}
+                />
+              ))
+            )}
+          </ScrollView>
+        )
       ) : (
         <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-          {waypoints.length === 0 ? (
+          {tracks.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyStateText}>
-                No waypoints saved. Add one to get started.
+                No tracks saved. Record a trail to get started.
               </Text>
             </View>
           ) : (
-            waypoints.map((wp) => (
-              <WaypointRow
-                key={wp.id}
-                waypoint={wp}
-                currentCoords={currentCoords}
+            tracks.map((track) => (
+              <TrackRow
+                key={track.id}
+                track={track}
                 measurementSystem={measurementSystem}
-                onNavigate={onNavigate}
-                onDelete={onDelete}
+                onView={(t) => onViewTrack?.(t)}
+                onDelete={(id) => onDeleteTrack?.(id)}
               />
             ))
           )}
@@ -300,10 +380,25 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       paddingHorizontal: 16,
       paddingBottom: 8,
     },
-    headerTitle: {
-      fontSize: 16,
-      fontWeight: '700',
-      color: colors.PRIMARY_DARK,
+    tabs: {
+      flexDirection: 'row',
+      gap: 4,
+    },
+    tab: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 8,
+    },
+    tabActive: {
+      backgroundColor: colors.SECONDARY_ACCENT,
+    },
+    tabText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.SECONDARY_ACCENT,
+    },
+    tabTextActive: {
+      color: colors.PRIMARY_LIGHT,
     },
     headerActions: {
       flexDirection: 'row',

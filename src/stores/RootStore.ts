@@ -10,6 +10,7 @@ import { RepeaterBookStore } from './RepeaterBookStore';
 import { SettingsStore } from './SettingsStore';
 import { SignalsStore } from './SignalsStore';
 import { SolarCycleNotificationStore } from './SolarCycleNotificationStore';
+import { TrackStore } from './TrackStore';
 import { WaypointStore } from './WaypointStore';
 import { WeatherOutlookStore } from './WeatherOutlookStore';
 
@@ -27,6 +28,7 @@ export class RootStore {
   repeaterBookStore: RepeaterBookStore;
   weatherOutlookStore: WeatherOutlookStore;
   waypointStore: WaypointStore;
+  trackStore: TrackStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -43,6 +45,7 @@ export class RootStore {
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
     this.waypointStore = new WaypointStore();
+    this.trackStore = new TrackStore();
     this.initializeSettings();
   }
 
@@ -65,6 +68,8 @@ export class RootStore {
       await this.weatherOutlookStore.initDatabase(this.coreStore.notesDb);
       // Initialize waypoint store with same database
       await this.waypointStore.initDatabase(this.coreStore.notesDb);
+      // Initialize track store with same database
+      await this.trackStore.initDatabase(this.coreStore.notesDb);
     }
     // Initialize inventory and pantry databases
     await this.inventoryStore.initDatabase();
@@ -90,6 +95,7 @@ export class RootStore {
     this.repeaterBookStore.dispose();
     this.weatherOutlookStore.dispose();
     this.waypointStore.dispose();
+    this.trackStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -103,6 +109,7 @@ export class RootStore {
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
     this.waypointStore = new WaypointStore();
+    this.trackStore = new TrackStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB
