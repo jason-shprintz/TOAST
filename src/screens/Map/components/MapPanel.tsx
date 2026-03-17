@@ -234,7 +234,9 @@ export default function MapPanel({
                   recordingState === 'recording' && styles.recordButtonActive,
                   recordingState === 'stopped' && styles.recordButtonDisabled,
                 ]}
-                onPress={recordingState !== 'stopped' ? onRecordPress : undefined}
+                onPress={
+                  recordingState !== 'stopped' ? onRecordPress : undefined
+                }
                 activeOpacity={0.8}
                 disabled={recordingState === 'stopped'}
                 accessibilityLabel={

@@ -273,7 +273,6 @@ function stopAndroidForegroundService(): void {
   }
 }
 
-
 /**
  * MapScreen renders the platform's native map (MapKit on iOS,
  * Google Maps on Android) with a live GPS blue-dot and a
