@@ -273,19 +273,6 @@ function stopAndroidForegroundService(): void {
   }
 }
 
-/** Computes total haversine distance (metres) across an array of TrackPoints. */
-function computeTrackDistance(points: TrackPoint[]): number {
-  let total = 0;
-  for (let i = 1; i < points.length; i++) {
-    total += haversineMeters(
-      points[i - 1].latitude,
-      points[i - 1].longitude,
-      points[i].latitude,
-      points[i].longitude,
-    );
-  }
-  return total;
-}
 
 /**
  * MapScreen renders the platform's native map (MapKit on iOS,
@@ -332,6 +319,8 @@ export default observer(function MapScreen() {
   const recordingStateRef = useRef<RecordingState>('idle');
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const recordedPointsRef = useRef<TrackPoint[]>([]);
+  /** Incremental distance accumulator — avoids O(n²) recomputation on each GPS update. */
+  const recordingDistanceRef = useRef(0);
   const [recordingPolylineCoords, setRecordingPolylineCoords] = useState<
     { latitude: number; longitude: number }[]
   >([]);
@@ -432,6 +421,16 @@ export default observer(function MapScreen() {
       };
       recordedPointsRef.current.push(point);
       const pts = recordedPointsRef.current;
+      // Accumulate distance incrementally (O(1) per point) rather than recomputing the whole array.
+      if (pts.length > 1) {
+        const prev = pts[pts.length - 2];
+        recordingDistanceRef.current += haversineMeters(
+          prev.latitude,
+          prev.longitude,
+          point.latitude,
+          point.longitude,
+        );
+      }
       // Batch polyline updates to avoid excessive re-renders
       if (pts.length % POLYLINE_UPDATE_INTERVAL === 0 || pts.length === 1) {
         setRecordingPolylineCoords(
@@ -440,7 +439,7 @@ export default observer(function MapScreen() {
             longitude: p.longitude,
           })),
         );
-        setRecordingDistance(computeTrackDistance(pts));
+        setRecordingDistance(recordingDistanceRef.current);
       }
     }
   }, []);
@@ -625,6 +624,7 @@ export default observer(function MapScreen() {
       startAndroidForegroundService();
       // Start recording
       recordedPointsRef.current = [];
+      recordingDistanceRef.current = 0;
       recordingStartTimeRef.current = Date.now();
       recordingStateRef.current = 'recording';
       setRecordingState('recording');
@@ -652,7 +652,7 @@ export default observer(function MapScreen() {
       setRecordingPolylineCoords(
         pts.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
       );
-      setRecordingDistance(computeTrackDistance(pts));
+      setRecordingDistance(recordingDistanceRef.current);
     }
   }, []);
 
@@ -660,7 +660,7 @@ export default observer(function MapScreen() {
     async (name: string) => {
       const pts = recordedPointsRef.current;
       const elapsed = recordingElapsed;
-      const dist = computeTrackDistance(pts);
+      const dist = recordingDistanceRef.current;
       const savedTrack = await trackStore.saveTrack(name, elapsed, dist, pts);
       stopAndroidForegroundService();
       // Reset recording state
@@ -670,6 +670,7 @@ export default observer(function MapScreen() {
       setRecordingElapsed(0);
       setRecordingDistance(0);
       recordedPointsRef.current = [];
+      recordingDistanceRef.current = 0;
       // Show the newly saved track on the map
       setViewedTrack(savedTrack);
     },
@@ -684,6 +685,7 @@ export default observer(function MapScreen() {
     setRecordingElapsed(0);
     setRecordingDistance(0);
     recordedPointsRef.current = [];
+    recordingDistanceRef.current = 0;
   }, []);
 
   const handleViewTrack = useCallback((track: Track) => {

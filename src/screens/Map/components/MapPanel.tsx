@@ -232,9 +232,11 @@ export default function MapPanel({
                 style={[
                   styles.recordButton,
                   recordingState === 'recording' && styles.recordButtonActive,
+                  recordingState === 'stopped' && styles.recordButtonDisabled,
                 ]}
-                onPress={onRecordPress}
+                onPress={recordingState !== 'stopped' ? onRecordPress : undefined}
                 activeOpacity={0.8}
+                disabled={recordingState === 'stopped'}
                 accessibilityLabel={
                   recordingState === 'recording'
                     ? 'Stop recording'
@@ -395,6 +397,9 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
     },
     recordButtonActive: {
       backgroundColor: '#FF3B30',
+    },
+    recordButtonDisabled: {
+      opacity: 0.4,
     },
     recordText: {
       fontSize: 20,

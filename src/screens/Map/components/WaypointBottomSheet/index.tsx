@@ -219,12 +219,13 @@ export default function WaypointBottomSheet({
       {/* Header */}
       <View style={styles.header}>
         {/* Tabs */}
-        <View style={styles.tabs}>
+        <View style={styles.tabs} accessibilityRole="tablist">
           <TouchableOpacity
             style={[styles.tab, activeTab === 'waypoints' && styles.tabActive]}
             onPress={handleTabWaypoints}
             accessibilityLabel="Waypoints tab"
             accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'waypoints' }}
           >
             <Text
               style={[
@@ -240,6 +241,7 @@ export default function WaypointBottomSheet({
             onPress={handleTabTracks}
             accessibilityLabel="Tracks tab"
             accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'tracks' }}
           >
             <Text
               style={[
