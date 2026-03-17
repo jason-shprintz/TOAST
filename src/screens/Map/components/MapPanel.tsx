@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import { useTheme } from '../../../hooks/useTheme';
-import type { MeasurementSystem } from '../../../stores/SettingsStore';
 import { Waypoint } from '../../../stores/WaypointStore';
 import { formatDistance } from './WaypointBottomSheet/waypointGeometry';
+import type { MeasurementSystem } from '../../../stores/SettingsStore';
 
 export type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
 

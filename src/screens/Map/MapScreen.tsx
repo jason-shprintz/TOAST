@@ -31,7 +31,11 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useGestureNavigation } from '../../navigation/NavigationHistoryContext';
-import { useTrackStore, useWaypointStore, useSettingsStore } from '../../stores/StoreContext';
+import {
+  useTrackStore,
+  useWaypointStore,
+  useSettingsStore,
+} from '../../stores/StoreContext';
 import { Track, TrackPoint } from '../../stores/TrackStore';
 import { FOOTER_HEIGHT } from '../../theme';
 import CompassDataPanel from './components/CompassDataPanel';
