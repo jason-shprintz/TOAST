@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import { useTheme } from '../../../hooks/useTheme';
+import type { MeasurementSystem } from '../../../stores/SettingsStore';
 import { Waypoint } from '../../../stores/WaypointStore';
+import { formatDistance } from './WaypointBottomSheet/waypointGeometry';
 
 export type LocationPermissionStatus = 'undetermined' | 'granted' | 'denied';
 
@@ -39,6 +41,7 @@ type Props = {
   viewedTrackCoords?: LatLng[];
   recordingElapsed?: number;
   recordingDistance?: number;
+  measurementSystem?: MeasurementSystem;
   onSaveTrack?: (name: string) => void;
   onDiscardTrack?: () => void;
 };
@@ -52,13 +55,6 @@ function formatElapsed(seconds: number): string {
     return `${h}:${pad(m)}:${pad(s)}`;
   }
   return `${m}:${pad(s)}`;
-}
-
-function formatDistanceShort(meters: number): string {
-  if (meters >= 1000) {
-    return `${(meters / 1000).toFixed(2)} km`;
-  }
-  return `${Math.round(meters)} m`;
 }
 
 export default function MapPanel({
@@ -76,6 +72,7 @@ export default function MapPanel({
   viewedTrackCoords = [],
   recordingElapsed = 0,
   recordingDistance = 0,
+  measurementSystem = 'metric',
   onSaveTrack,
   onDiscardTrack,
 }: Props) {
@@ -185,7 +182,7 @@ export default function MapPanel({
             <View style={styles.hud}>
               <Text style={styles.hudText}>
                 ⏱ {formatElapsed(recordingElapsed)}
-                {'   '}📍 {formatDistanceShort(recordingDistance)}
+                {'   '}📍 {formatDistance(recordingDistance, measurementSystem)}
               </Text>
             </View>
           )}
