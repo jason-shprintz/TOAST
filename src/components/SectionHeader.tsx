@@ -4,8 +4,8 @@ import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
-import { LIGHT_COLORS } from '../theme/colors';
 import { SPACING } from '../theme';
+import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
 
