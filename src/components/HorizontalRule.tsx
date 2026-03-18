@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { COLORS } from '../theme';
+import { COLORS, SPACING } from '../theme';
 
 /**
  * Renders a simple horizontal divider for separating content sections.
@@ -15,9 +15,10 @@ export function HorizontalRule() {
 
 const styles = StyleSheet.create({
   horizontalLine: {
-    width: '100%',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    height: 2,
-    alignItems: 'center',
+    height: 1,
+    backgroundColor: COLORS.TOAST_BROWN,
+    opacity: 0.3,
+    marginHorizontal: SPACING.lg,
+    marginBottom: SPACING.sm,
   },
 });
