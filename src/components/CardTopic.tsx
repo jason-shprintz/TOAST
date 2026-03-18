@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
 import { LIGHT_COLORS } from '../theme/colors';
-import { SPACING } from '../theme/constants';
+import { SPACING } from '../theme';
 import { Text } from './ScaledText';
 
 export type CardTopicProps = {
