@@ -264,12 +264,12 @@ const styles = StyleSheet.create({
   },
   cardRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   eventIcon: {
     fontSize: 32,
     marginRight: 12,
-    lineHeight: 38,
+    textAlignVertical: 'center',
   },
   cardContent: {
     flex: 1,
