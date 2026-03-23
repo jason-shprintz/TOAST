@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'react-native',
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|uuid|react-native-sensors|react-native-maps)/)',
+    'node_modules/(?!(react-native|@react-native|uuid|react-native-sensors|react-native-maps|astronomia)/)',
   ],
   moduleNameMapper: {
     '@react-native-async-storage/async-storage':

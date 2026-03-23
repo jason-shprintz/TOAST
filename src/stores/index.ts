@@ -27,6 +27,11 @@ export { WeatherOutlookStore } from './WeatherOutlookStore';
 export { WaypointStore, type Waypoint } from './WaypointStore';
 export { TrackStore, type Track, type TrackPoint } from './TrackStore';
 export {
+  AstronomyEventStore,
+  type AstronomyEvent,
+  type AstronomyEventType,
+} from './AstronomyEventStore';
+export {
   StoreProvider,
   useStores,
   useCoreStore,
@@ -42,4 +47,5 @@ export {
   useWeatherOutlookStore,
   useWaypointStore,
   useTrackStore,
+  useAstronomyEventStore,
 } from './StoreContext';
