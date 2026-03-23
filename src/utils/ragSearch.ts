@@ -897,8 +897,7 @@ const SYNTHETIC_TOOL_ENTRIES: ReferenceEntryType[] = [
     ],
     steps: [
       'Open Sky Events from the Earth module',
-      'Browse upcoming events sorted chronologically',
-      'Tap any event to expand its details',
+      'Browse upcoming events sorted chronologically — full details are shown for each event',
       'Enable location for planet rise times — other events require no location',
     ],
     do_not: [],

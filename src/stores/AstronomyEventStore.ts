@@ -45,16 +45,16 @@ const SUPERMOON_PHASE_TOLERANCE = 0.07;
 
 // Eclipse type names mapped from the astronomia TYPE constants
 const SOLAR_ECLIPSE_LABELS: Record<number, string> = {
-  1: 'Partial Solar Eclipse',
-  2: 'Annular Solar Eclipse',
-  3: 'Annular-Total Solar Eclipse',
-  6: 'Total Solar Eclipse',
+  [eclipseModule.TYPE.Partial]: 'Partial Solar Eclipse',
+  [eclipseModule.TYPE.Annular]: 'Annular Solar Eclipse',
+  [eclipseModule.TYPE.AnnularTotal]: 'Annular-Total Solar Eclipse',
+  [eclipseModule.TYPE.Total]: 'Total Solar Eclipse',
 };
 
 const LUNAR_ECLIPSE_LABELS: Record<number, string> = {
-  4: 'Penumbral Lunar Eclipse',
-  5: 'Partial Lunar Eclipse',
-  6: 'Total Lunar Eclipse',
+  [eclipseModule.TYPE.Penumbral]: 'Penumbral Lunar Eclipse',
+  [eclipseModule.TYPE.Umbral]: 'Partial Umbral Lunar Eclipse',
+  [eclipseModule.TYPE.Total]: 'Total Lunar Eclipse',
 };
 
 const PLANET_DATA = [
@@ -76,13 +76,23 @@ function dateToDecimalYear(date: Date): number {
 
 /**
  * Formats a time given as seconds since midnight UTC as a local time string.
+ * The offset is applied from UTC midnight of `baseDate`'s calendar date,
+ * then rendered in the device's local timezone.
  */
 function formatRiseTime(
   secondsFromMidnightUtc: number,
   baseDate: Date,
 ): string {
-  const ms = baseDate.getTime() + secondsFromMidnightUtc * 1000;
-  const d = new Date(ms);
+  const utcMidnightMs = Date.UTC(
+    baseDate.getUTCFullYear(),
+    baseDate.getUTCMonth(),
+    baseDate.getUTCDate(),
+    0,
+    0,
+    0,
+    0,
+  );
+  const d = new Date(utcMidnightMs + secondsFromMidnightUtc * 1000);
   return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
@@ -104,7 +114,7 @@ export class AstronomyEventStore {
   private _earthPlanet: Planet | null = null;
 
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
+    makeAutoObservable(this, { _earthPlanet: false }, { autoBind: true });
     try {
       this._earthPlanet = new Planet(vsopEarth);
     } catch (e) {
@@ -332,7 +342,7 @@ export class AstronomyEventStore {
       // Solar eclipse
       try {
         const sol = eclipseModule.solar(y);
-        if (sol.type !== eclipseModule.TYPE.none && sol.jdeMax) {
+        if (sol.type !== eclipseModule.TYPE.None && sol.jdeMax) {
           const jdeKey = `solar-${Math.round(sol.jdeMax)}`;
           if (!seenJdes.has(jdeKey)) {
             seenJdes.add(jdeKey);
@@ -359,7 +369,7 @@ export class AstronomyEventStore {
       // Lunar eclipse
       try {
         const lun = eclipseModule.lunar(y);
-        if (lun.type !== eclipseModule.TYPE.none && lun.jdeMax) {
+        if (lun.type !== eclipseModule.TYPE.None && lun.jdeMax) {
           const jdeKey = `lunar-${Math.round(lun.jdeMax)}`;
           if (!seenJdes.has(jdeKey)) {
             seenJdes.add(jdeKey);
@@ -475,8 +485,14 @@ export class AstronomyEventStore {
             longitude,
           );
           if (riseTime !== null) {
-            // Check if rise is during dark hours (between 6 PM and 6 AM local)
-            const riseDate = new Date(targetDate.getTime() + riseTime * 1000);
+            // Check if rise is during dark hours (between 6 PM and 6 AM local).
+            // Use UTC midnight as the consistent base (matching formatRiseTime).
+            const utcMidnightMs = Date.UTC(
+              targetDate.getUTCFullYear(),
+              targetDate.getUTCMonth(),
+              targetDate.getUTCDate(),
+            );
+            const riseDate = new Date(utcMidnightMs + riseTime * 1000);
             const riseLocalHour =
               riseDate.getHours() + riseDate.getMinutes() / 60;
             if (riseLocalHour >= 18 || riseLocalHour < 6) {
@@ -486,7 +502,7 @@ export class AstronomyEventStore {
               events.push({
                 id: `planet-rise-${planet.name}-${targetDate.toISOString().slice(0, 10)}`,
                 type: 'planet_rise',
-                date: new Date(targetDate.getTime() + riseTime * 1000),
+                date: new Date(utcMidnightMs + riseTime * 1000),
                 label: `${planet.name} rises at ${timeStr}`,
                 detail: isTonight
                   ? `${planet.name} rises tonight at ${timeStr}`

@@ -55,6 +55,8 @@ const SolarCycleNotification = () => {
       const { latitude, longitude } = core.lastFix.coords;
       solarNotifications.updateNotifications(latitude, longitude);
       astronomyStore.computeEvents(latitude, longitude);
+    } else {
+      astronomyStore.computeEventsWithoutLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.lastFix]);
@@ -71,7 +73,10 @@ const SolarCycleNotification = () => {
   // Weather, astronomy, and pantry alerts rotate alongside solar/lunar.
   // Depend on getExpirationAlerts().length (not pantry.items) so the effect
   // re-runs when items are pushed/removed without the array reference changing.
+  // Also depend on nextAstroEvent's identity so totalSlots stays accurate when
+  // an event enters or leaves the 30-day window between recomputes.
   // Also reset rotationIndex when totalSlots shrinks to avoid invalid slot state.
+  const nextAstroEventId = astronomyStore.getNextAstronomyEvent()?.id ?? null;
   useEffect(() => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
     const pantryAlerts = pantry.getExpirationAlerts();
@@ -102,6 +107,7 @@ const SolarCycleNotification = () => {
     weatherOutlook,
     pantryExpirationAlertsCount,
     astronomyStore.events.length,
+    nextAstroEventId,
   ]);
 
   const nextNotification = solarNotifications.getNextNotification();
