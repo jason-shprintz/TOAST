@@ -17,6 +17,7 @@ import {
   useCoreStore,
 } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
+import { formatDaysUntil } from '../../utils/formatDaysUntil';
 
 const EVENT_TYPE_DETAILS: Record<
   AstronomyEventType,
@@ -55,23 +56,6 @@ const formatEventDate = (date: Date): string => {
     day: 'numeric',
     year: 'numeric',
   });
-};
-
-const formatDaysUntil = (date: Date): string => {
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffMs / (24 * 3600 * 1000));
-  if (diffDays === 0) {
-    return 'Today';
-  } else if (diffDays === 1) {
-    return 'Tomorrow';
-  } else if (diffDays < 30) {
-    return `In ${diffDays} days`;
-  } else if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
-    return `In ~${months} month${months !== 1 ? 's' : ''}`;
-  }
-  return formatEventDate(date);
 };
 
 interface EventCardProps {
@@ -191,7 +175,7 @@ function SkyEventsScreen() {
       astronomyStore.computeEvents(latitude, longitude);
     } else {
       // Compute without location (planet rise times will be skipped)
-      astronomyStore.computeEvents(0, 0);
+      astronomyStore.computeEventsWithoutLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.lastFix]);

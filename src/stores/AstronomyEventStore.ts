@@ -104,8 +104,8 @@ export class AstronomyEventStore {
     makeAutoObservable(this, {}, { autoBind: true });
     try {
       this._earthPlanet = new Planet(vsopEarth);
-    } catch {
-      // Earth planet init failed — planet rise won't be available
+    } catch (e) {
+      console.warn('AstronomyEventStore: failed to initialise Earth VSOP87 data; planet rise events will be unavailable.', e);
     }
   }
 
@@ -180,6 +180,40 @@ export class AstronomyEventStore {
       this._events = allEvents;
       this._lastComputeDate = new Date();
       this._lastComputeLocation = { lat: latitude, lon: longitude };
+    });
+  }
+
+  /**
+   * Computes astronomy events without a known observer location.
+   * Planet rise times are omitted since they require lat/lon.
+   * All other events (solstices, equinoxes, eclipses, supermoons) are included.
+   */
+  computeEventsWithoutLocation(): void {
+    const now = new Date();
+    // Use a sentinel location that won't match any real cached location
+    const SENTINEL_LAT = 1000;
+    const SENTINEL_LON = 1000;
+
+    if (
+      this._lastComputeLocation?.lat === SENTINEL_LAT &&
+      this._lastComputeLocation?.lon === SENTINEL_LON &&
+      this._lastComputeDate?.toDateString() === now.toDateString()
+    ) {
+      return; // already computed for no-location today
+    }
+
+    const allEvents = [
+      ...this._computeSolsticesEquinoxes(),
+      ...this._computeEclipses(),
+      ...this._computeSupermoons(),
+    ]
+      .filter((e) => e.date > now)
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    runInAction(() => {
+      this._events = allEvents;
+      this._lastComputeDate = new Date();
+      this._lastComputeLocation = { lat: SENTINEL_LAT, lon: SENTINEL_LON };
     });
   }
 
@@ -334,7 +368,7 @@ export class AstronomyEventStore {
                 type: 'lunar_eclipse',
                 date,
                 label,
-                detail: `Eclipse magnitude: ${lun.magnitude != null ? lun.magnitude.toFixed(2) : 'N/A'}`,
+                detail: `Eclipse magnitude: ${lun.magnitude?.toFixed(2) ?? 'N/A'}`,
                 icon: '🌕',
               });
             }

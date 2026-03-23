@@ -12,6 +12,7 @@ import {
   useWeatherOutlookStore,
 } from '../../../stores/StoreContext';
 import { Text } from '../../ScaledText';
+import { formatDaysUntil } from '../../../utils/formatDaysUntil';
 
 /**
  * SolarCycleNotification component displays the next upcoming
@@ -96,7 +97,7 @@ const SolarCycleNotification = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount, astronomyStore.events]);
+  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount, astronomyStore.events.length]);
 
   const nextNotification = solarNotifications.getNextNotification();
   const weatherSummary = weatherOutlook.getCurrentMonthSummary();
@@ -182,15 +183,7 @@ const SolarCycleNotification = () => {
 
   // ── Astronomy slot: Next sky event within 30 days ────────────────────────────
   if (rotationIndex === astroSlot && nextAstroEvent) {
-    const now = new Date();
-    const diffMs = nextAstroEvent.date.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffMs / (24 * 3600 * 1000));
-    const countdownText =
-      diffDays === 0
-        ? 'Today'
-        : diffDays === 1
-          ? 'Tomorrow'
-          : `in ${diffDays} days`;
+    const countdownText = formatDaysUntil(nextAstroEvent.date);
     return (
       <View style={styles.notificationContent}>
         <Text style={styles.astroIcon}>{nextAstroEvent.icon}</Text>
