@@ -92,10 +92,10 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             <View
               style={[
                 styles.typeBadge,
-                { backgroundColor: typeInfo.color + '33' },
+                { backgroundColor: typeInfo.color },
               ]}
             >
-              <Text style={[styles.typeBadgeText, { color: typeInfo.color }]}>
+              <Text style={styles.typeBadgeText}>
                 {typeInfo.description}
               </Text>
             </View>
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
+    color: '#FFFFFF',
   },
   eventDate: {
     fontSize: 13,
