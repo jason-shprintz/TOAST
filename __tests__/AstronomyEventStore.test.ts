@@ -154,13 +154,9 @@ describe('AstronomyEventStore', () => {
     });
 
     test('planet_rise events (if any) have correct structure', () => {
-      const planetEvents = store.events.filter(
-        (e) => e.type === 'planet_rise',
-      );
+      const planetEvents = store.events.filter((e) => e.type === 'planet_rise');
       planetEvents.forEach((event) => {
-        expect(event.label).toMatch(
-          /Venus|Mars|Jupiter|Saturn/,
-        );
+        expect(event.label).toMatch(/Venus|Mars|Jupiter|Saturn/);
         expect(event.icon).toMatch(/[♀♂♃♄]/);
         expect(event.date).toBeInstanceOf(Date);
       });

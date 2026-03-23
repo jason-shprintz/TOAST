@@ -1,16 +1,15 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
-import { AstronomyEvent, AstronomyEventType } from '../../stores/AstronomyEventStore';
+import {
+  AstronomyEvent,
+  AstronomyEventType,
+} from '../../stores/AstronomyEventStore';
 import {
   useAstronomyEventStore,
   useCoreStore,
@@ -87,9 +86,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <Text style={styles.eventIcon}>{event.icon}</Text>
         <View style={styles.cardContent}>
           <View style={styles.cardHeader}>
-            <Text
-              style={[styles.eventLabel, { color: COLORS.PRIMARY_DARK }]}
-            >
+            <Text style={[styles.eventLabel, { color: COLORS.PRIMARY_DARK }]}>
               {event.label}
             </Text>
             <View
@@ -98,16 +95,12 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
                 { backgroundColor: typeInfo.color + '33' },
               ]}
             >
-              <Text
-                style={[styles.typeBadgeText, { color: typeInfo.color }]}
-              >
+              <Text style={[styles.typeBadgeText, { color: typeInfo.color }]}>
                 {typeInfo.description}
               </Text>
             </View>
           </View>
-          <Text
-            style={[styles.eventDate, { color: COLORS.PRIMARY_DARK }]}
-          >
+          <Text style={[styles.eventDate, { color: COLORS.PRIMARY_DARK }]}>
             {formatEventDate(event.date)}
           </Text>
           <Text
@@ -122,9 +115,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             {daysUntil}
           </Text>
           <View style={styles.detailDivider} />
-          <Text
-            style={[styles.eventDetail, { color: COLORS.PRIMARY_DARK }]}
-          >
+          <Text style={[styles.eventDetail, { color: COLORS.PRIMARY_DARK }]}>
             {event.detail}
           </Text>
         </View>
@@ -184,7 +175,10 @@ function SkyEventsScreen() {
                 style={styles.cardBackground}
               />
               <Text
-                style={[styles.locationBannerText, { color: COLORS.PRIMARY_DARK }]}
+                style={[
+                  styles.locationBannerText,
+                  { color: COLORS.PRIMARY_DARK },
+                ]}
               >
                 📍 Enable location for planet rise times
               </Text>
@@ -201,17 +195,12 @@ function SkyEventsScreen() {
             </View>
           ) : (
             <>
-              <Text
-                style={[styles.subheader, { color: COLORS.PRIMARY_DARK }]}
-              >
+              <Text style={[styles.subheader, { color: COLORS.PRIMARY_DARK }]}>
                 {upcomingEvents.length} event
                 {upcomingEvents.length !== 1 ? 's' : ''} in the next 12 months
               </Text>
               {upcomingEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                />
+                <EventCard key={event.id} event={event} />
               ))}
             </>
           )}
@@ -337,4 +326,3 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 });
-

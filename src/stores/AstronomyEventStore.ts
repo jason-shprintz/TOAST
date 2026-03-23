@@ -1,19 +1,19 @@
-import { makeAutoObservable, runInAction } from 'mobx';
-import * as SunCalc from 'suncalc';
 import * as apsis from 'astronomia/apsis';
-import * as eclipseModule from 'astronomia/eclipse';
-import * as julian from 'astronomia/julian';
-import * as solsticeModule from 'astronomia/solstice';
-import { position as ellipticPosition } from 'astronomia/elliptic';
-import { approxTimes, Stdh0Stellar } from 'astronomia/rise';
-import { mean as siderealMean } from 'astronomia/sidereal';
-import { Coord as GlobeCoord } from 'astronomia/globe';
-import { Planet } from 'astronomia/planetposition';
 import vsopEarth from 'astronomia/data/vsop87Bearth';
 import vsopJupiter from 'astronomia/data/vsop87Bjupiter';
+import vsopMars from 'astronomia/data/vsop87Bmars';
 import vsopSaturn from 'astronomia/data/vsop87Bsaturn';
 import vsopVenus from 'astronomia/data/vsop87Bvenus';
-import vsopMars from 'astronomia/data/vsop87Bmars';
+import * as eclipseModule from 'astronomia/eclipse';
+import { position as ellipticPosition } from 'astronomia/elliptic';
+import { Coord as GlobeCoord } from 'astronomia/globe';
+import * as julian from 'astronomia/julian';
+import { Planet } from 'astronomia/planetposition';
+import { approxTimes, Stdh0Stellar } from 'astronomia/rise';
+import { mean as siderealMean } from 'astronomia/sidereal';
+import * as solsticeModule from 'astronomia/solstice';
+import { makeAutoObservable, runInAction } from 'mobx';
+import * as SunCalc from 'suncalc';
 
 export type AstronomyEventType =
   | 'solar_eclipse'
@@ -77,7 +77,10 @@ function dateToDecimalYear(date: Date): number {
 /**
  * Formats a time given as seconds since midnight UTC as a local time string.
  */
-function formatRiseTime(secondsFromMidnightUtc: number, baseDate: Date): string {
+function formatRiseTime(
+  secondsFromMidnightUtc: number,
+  baseDate: Date,
+): string {
   const ms = baseDate.getTime() + secondsFromMidnightUtc * 1000;
   const d = new Date(ms);
   return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -105,7 +108,10 @@ export class AstronomyEventStore {
     try {
       this._earthPlanet = new Planet(vsopEarth);
     } catch (e) {
-      console.warn('AstronomyEventStore: failed to initialise Earth VSOP87 data; planet rise events will be unavailable.', e);
+      console.warn(
+        'AstronomyEventStore: failed to initialize Earth VSOP87 data; planet rise events will be unavailable.',
+        e,
+      );
     }
   }
 
@@ -127,9 +133,8 @@ export class AstronomyEventStore {
     const now = new Date();
     const deadline = now.getTime() + withinDays * 24 * 3600 * 1000;
     return (
-      this._events.find(
-        (e) => e.date > now && e.date.getTime() <= deadline,
-      ) ?? null
+      this._events.find((e) => e.date > now && e.date.getTime() <= deadline) ??
+      null
     );
   }
 
@@ -222,9 +227,7 @@ export class AstronomyEventStore {
       return true;
     }
     // Recompute if the calendar date has changed
-    if (
-      this._lastComputeDate.toDateString() !== new Date().toDateString()
-    ) {
+    if (this._lastComputeDate.toDateString() !== new Date().toDateString()) {
       return true;
     }
     // Recompute if location changed significantly
@@ -260,7 +263,8 @@ export class AstronomyEventStore {
         type: 'equinox',
         label: 'Spring Equinox',
         icon: '🌸',
-        detail: 'Day and night are equal; spring begins in the Northern Hemisphere',
+        detail:
+          'Day and night are equal; spring begins in the Northern Hemisphere',
       },
       {
         fn: solsticeModule.june,
@@ -276,7 +280,8 @@ export class AstronomyEventStore {
         type: 'equinox',
         label: 'Autumn Equinox',
         icon: '🍂',
-        detail: 'Day and night are equal; autumn begins in the Northern Hemisphere',
+        detail:
+          'Day and night are equal; autumn begins in the Northern Hemisphere',
       },
       {
         fn: solsticeModule.december,
@@ -327,14 +332,13 @@ export class AstronomyEventStore {
       // Solar eclipse
       try {
         const sol = eclipseModule.solar(y);
-        if (sol.type !== eclipseModule.TYPE.None && sol.jdeMax) {
+        if (sol.type !== eclipseModule.TYPE.none && sol.jdeMax) {
           const jdeKey = `solar-${Math.round(sol.jdeMax)}`;
           if (!seenJdes.has(jdeKey)) {
             seenJdes.add(jdeKey);
             const date = julian.JDEToDate(sol.jdeMax);
             if (date > now) {
-              const label =
-                SOLAR_ECLIPSE_LABELS[sol.type] ?? 'Solar Eclipse';
+              const label = SOLAR_ECLIPSE_LABELS[sol.type] ?? 'Solar Eclipse';
               events.push({
                 id: jdeKey,
                 type: 'solar_eclipse',
@@ -355,14 +359,13 @@ export class AstronomyEventStore {
       // Lunar eclipse
       try {
         const lun = eclipseModule.lunar(y);
-        if (lun.type !== eclipseModule.TYPE.None && lun.jdeMax) {
+        if (lun.type !== eclipseModule.TYPE.none && lun.jdeMax) {
           const jdeKey = `lunar-${Math.round(lun.jdeMax)}`;
           if (!seenJdes.has(jdeKey)) {
             seenJdes.add(jdeKey);
             const date = julian.JDEToDate(lun.jdeMax);
             if (date > now) {
-              const label =
-                LUNAR_ECLIPSE_LABELS[lun.type] ?? 'Lunar Eclipse';
+              const label = LUNAR_ECLIPSE_LABELS[lun.type] ?? 'Lunar Eclipse';
               events.push({
                 id: jdeKey,
                 type: 'lunar_eclipse',
@@ -452,7 +455,11 @@ export class AstronomyEventStore {
 
       // Look forward up to PLANET_RISE_LOOKAHEAD_DAYS days to find the next
       // night when this planet rises before midnight local time
-      for (let dayOffset = 0; dayOffset < PLANET_RISE_LOOKAHEAD_DAYS; dayOffset++) {
+      for (
+        let dayOffset = 0;
+        dayOffset < PLANET_RISE_LOOKAHEAD_DAYS;
+        dayOffset++
+      ) {
         const targetDate = new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -469,9 +476,7 @@ export class AstronomyEventStore {
           );
           if (riseTime !== null) {
             // Check if rise is during dark hours (between 6 PM and 6 AM local)
-            const riseDate = new Date(
-              targetDate.getTime() + riseTime * 1000,
-            );
+            const riseDate = new Date(targetDate.getTime() + riseTime * 1000);
             const riseLocalHour =
               riseDate.getHours() + riseDate.getMinutes() / 60;
             if (riseLocalHour >= 18 || riseLocalHour < 6) {
@@ -514,11 +519,7 @@ export class AstronomyEventStore {
   ): number | null {
     try {
       const jde = julian.DateToJDE(date);
-      const { ra, dec } = ellipticPosition(
-        planet,
-        this._earthPlanet!,
-        jde,
-      );
+      const { ra, dec } = ellipticPosition(planet, this._earthPlanet!, jde);
 
       // Compute Greenwich Mean Sidereal Time at 0h UT
       const jd0 = julian.CalendarGregorianToJD(

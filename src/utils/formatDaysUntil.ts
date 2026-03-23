@@ -25,5 +25,9 @@ export function formatDaysUntil(date: Date): string {
     const months = Math.floor(diffDays / 30);
     return `In ~${months} month${months !== 1 ? 's' : ''}`;
   }
-  return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString([], {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }

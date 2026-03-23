@@ -11,8 +11,8 @@ import {
   useSolarCycleNotificationStore,
   useWeatherOutlookStore,
 } from '../../../stores/StoreContext';
-import { Text } from '../../ScaledText';
 import { formatDaysUntil } from '../../../utils/formatDaysUntil';
+import { Text } from '../../ScaledText';
 
 /**
  * SolarCycleNotification component displays the next upcoming
@@ -97,7 +97,12 @@ const SolarCycleNotification = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount, astronomyStore.events.length]);
+  }, [
+    weatherOutlook.outlook,
+    weatherOutlook,
+    pantryExpirationAlertsCount,
+    astronomyStore.events.length,
+  ]);
 
   const nextNotification = solarNotifications.getNextNotification();
   const weatherSummary = weatherOutlook.getCurrentMonthSummary();
