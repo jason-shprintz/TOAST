@@ -2,11 +2,14 @@ import React, { JSX, useRef, useState } from 'react';
 import {
   FlatList,
   FlatListProps,
+  Image,
+  ImageSourcePropType,
   StyleSheet,
   useWindowDimensions,
   View,
 } from 'react-native';
-import referenceImages from '../assets/referenceImages';
+import { SvgProps } from 'react-native-svg';
+import { getKnotImage, KnotImageSource } from '../assets/referenceImages';
 import { COLORS } from '../theme';
 
 interface KnotStepCarouselProps {
@@ -19,8 +22,10 @@ const CARD_PADDING = 28;
 const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
 
 /**
- * KnotStepCarousel renders a horizontally swipeable carousel of step-by-step
- * knot diagrams. Each page shows one SVG step illustration. Step indicator
+ * KnotStepCarousel renders a horizontally swipeable carousel of knot diagrams.
+ *
+ * Each page shows one image — either a high-quality static WebP sourced from
+ * Wikimedia Commons (preferred) or a fallback SVG component. Step indicator
  * dots below the carousel show the current position.
  *
  * If a step key has no corresponding image in the asset registry, that step
@@ -45,14 +50,30 @@ export default function KnotStepCarousel({
     }
   }).current;
 
-  // Filter to only keys that have a matching SVG component
-  const resolvedKeys = images.filter((key) => !!referenceImages[key]);
+  // Filter to only keys that have a matching image (WebP or SVG)
+  const resolvedKeys = images.filter((key) => !!getKnotImage(key));
 
   if (resolvedKeys.length === 0) return null;
 
   const renderItem = ({ item }: { item: string }) => {
-    const SvgComponent = referenceImages[item];
-    if (!SvgComponent) return null;
+    const source = getKnotImage(item);
+    if (!source) return null;
+
+    if (source.type === 'static') {
+      return (
+        <View style={[styles.slide, { width: itemWidth }]}>
+          <Image
+            source={source.value as ImageSourcePropType}
+            style={[styles.staticImage, { width: itemWidth - 24 }]}
+            resizeMode="contain"
+            accessibilityLabel={`Knot diagram for step ${item}`}
+          />
+        </View>
+      );
+    }
+
+    // SVG fallback
+    const SvgComponent = source.value as React.FC<SvgProps>;
     return (
       <View style={[styles.slide, { width: itemWidth }]}>
         <SvgComponent width="100%" height={200} />
@@ -80,7 +101,7 @@ export default function KnotStepCarousel({
           index,
         })}
         style={{ width: itemWidth }}
-        accessibilityLabel="Knot tying steps carousel"
+        accessibilityLabel="Knot diagram carousel"
       />
       {resolvedKeys.length > 1 && (
         <View style={styles.dotsRow} accessibilityLabel="Step indicators">
@@ -111,6 +132,9 @@ const styles = StyleSheet.create({
   slide: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  staticImage: {
+    height: 220,
   },
   dotsRow: {
     flexDirection: 'row',

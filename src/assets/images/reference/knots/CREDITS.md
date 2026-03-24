@@ -1,45 +1,38 @@
-# Knot Diagram Credits
+# Knot Image Credits
 
-Step-by-step knot diagrams created for the TOAST app.
+Knot reference images are sourced from Wikimedia Commons and converted to WebP
+for use in the TOAST app. SVG placeholder fallbacks are used until the WebP
+files are committed (see `scripts/download-knot-images.js`).
 
-## Diagrams
+## Images
 
-| File(s)                                                                           | Knot                          | Source                 | License      | Notes             |
-| --------------------------------------------------------------------------------- | ----------------------------- | ---------------------- | ------------ | ----------------- |
-| `overhand_stopper_step1.svg` – `overhand_stopper_step3.svg`                       | Overhand / Stopper Knot       | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `square_reef_step1.svg` – `square_reef_step4.svg`                                 | Square (Reef) Knot            | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `sheet_bend_step1.svg` – `sheet_bend_step4.svg`                                   | Sheet Bend                    | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `bowline_step1.svg` – `bowline_step4.svg`                                         | Bowline                       | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `round_turn_two_half_hitches_step1.svg` – `round_turn_two_half_hitches_step4.svg` | Round Turn & Two Half Hitches | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `clove_hitch_step1.svg` – `clove_hitch_step3.svg`                                 | Clove Hitch                   | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `taut_line_hitch_step1.svg` – `taut_line_hitch_step4.svg`                         | Taut-Line Hitch               | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `truckers_hitch_step1.svg` – `truckers_hitch_step4.svg`                           | Trucker's Hitch               | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
-| `prusik_step1.svg` – `prusik_step4.svg`                                           | Prusik Knot                   | Original illustrations | CC BY-SA 4.0 | Created for TOAST |
+| File | Knot | Wikimedia Source | License | Author |
+| ---- | ---- | ---------------- | ------- | ------ |
+| `bowline.webp` | Bowline | [Knot_bowline.jpg](https://commons.wikimedia.org/wiki/File:Knot_bowline.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `clove_hitch.webp` | Clove Hitch | [Clove_hitch.jpg](https://commons.wikimedia.org/wiki/File:Clove_hitch.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `sheet_bend.webp` | Sheet Bend | [Sheet_bend_-_WetCanvas.jpg](https://commons.wikimedia.org/wiki/File:Sheet_bend_-_WetCanvas.jpg) | CC BY-SA 3.0 | WetCanvas |
+| `square_reef.webp` | Square (Reef) Knot | [Granny_vs_reef.jpg](https://commons.wikimedia.org/wiki/File:Granny_vs_reef.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `overhand_stopper.webp` | Overhand / Stopper Knot | [Overhand_knot_retouched.jpg](https://commons.wikimedia.org/wiki/File:Overhand_knot_retouched.jpg) | Public Domain | — |
+| `round_turn_two_half_hitches.webp` | Round Turn & Two Half Hitches | [Round_turn_and_two_half-hitches_knot.jpg](https://commons.wikimedia.org/wiki/File:Round_turn_and_two_half-hitches_knot.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `taut_line_hitch.webp` | Taut-Line Hitch | [Tautline_hitch_knot.jpg](https://commons.wikimedia.org/wiki/File:Tautline_hitch_knot.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `truckers_hitch.webp` | Trucker's Hitch | [Truckers_Hitch_Knot.jpg](https://commons.wikimedia.org/wiki/File:Truckers_Hitch_Knot.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
+| `prusik.webp` | Prusik Knot | [Prusik_knot.jpg](https://commons.wikimedia.org/wiki/File:Prusik_knot.jpg) | CC BY-SA 3.0 | Cyrus Andiron |
 
-## License
+## Attribution
 
-All diagrams in this directory are licensed under the
-[Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
+Images licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/):
 
-Attribution: TOAST app contributors.
+> Knot diagrams by Cyrus Andiron and other Wikimedia Commons contributors,
+> licensed under CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/).
+> Source: https://commons.wikimedia.org/
 
-## Recommended Wikimedia Commons Sources
+This attribution is displayed in the app's Settings screen under "Attributions".
 
-For replacement or higher-fidelity diagrams, the following Wikimedia Commons
-searches provide step-by-step SVGs under compatible licenses:
+## Adding New Images
 
-| Knot                        | Search URL                                                                   |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| Bowline                     | https://commons.wikimedia.org/w/index.php?search=bowline+knot+steps          |
-| Clove Hitch                 | https://commons.wikimedia.org/w/index.php?search=clove+hitch+steps           |
-| Sheet Bend                  | https://commons.wikimedia.org/w/index.php?search=sheet+bend+knot+steps       |
-| Square/Reef Knot            | https://commons.wikimedia.org/w/index.php?search=square+knot+steps           |
-| Overhand/Stopper            | https://commons.wikimedia.org/w/index.php?search=overhand+knot+steps         |
-| Round Turn & 2 Half Hitches | https://commons.wikimedia.org/w/index.php?search=round+turn+two+half+hitches |
-| Taut-Line Hitch             | https://commons.wikimedia.org/w/index.php?search=taut+line+hitch+steps       |
-| Trucker's Hitch             | https://commons.wikimedia.org/w/index.php?search=truckers+hitch+knot         |
-| Prusik                      | https://commons.wikimedia.org/w/index.php?search=prusik+knot+steps           |
-
-When sourcing from Wikimedia Commons, verify the license on each file's description
-page. CC BY-SA and public domain both work; CC BY-SA requires attribution — add
-the author and Wikimedia URL to this file.
+If you replace or add a knot image:
+1. Download the source file from Wikimedia Commons
+2. Convert to WebP: `cwebp -q 85 input.jpg -o output.webp`
+3. Commit to `src/assets/images/reference/knots/`
+4. Add the `tryRequire()` entry in `src/assets/referenceImages.ts`
+5. Update this file with the file name, source URL, license, and author
