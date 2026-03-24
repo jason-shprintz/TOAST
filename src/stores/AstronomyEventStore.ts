@@ -114,7 +114,9 @@ export class AstronomyEventStore {
   private _earthPlanet: Planet | null = null;
 
   constructor() {
-    makeAutoObservable(this, { _earthPlanet: false }, { autoBind: true });
+    makeAutoObservable(this, { _earthPlanet: false } as never, {
+      autoBind: true,
+    });
     try {
       this._earthPlanet = new Planet(vsopEarth);
     } catch (e) {

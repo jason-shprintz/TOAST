@@ -26,12 +26,13 @@ declare module 'astronomia/apsis' {
 
 declare module 'astronomia/eclipse' {
   export const TYPE: {
-    none: number;
-    partial: number;
-    annular: number;
-    total: number;
-    hybrid: number;
-    penumbral: number;
+    None: number;
+    Partial: number;
+    Annular: number;
+    AnnularTotal: number;
+    Penumbral: number;
+    Umbral: number;
+    Total: number;
   };
   export interface SolarEclipseResult {
     type: number;
