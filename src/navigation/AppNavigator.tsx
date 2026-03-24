@@ -78,6 +78,7 @@ import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScr
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
 import SeasonalOutlookScreen from '../screens/SeasonalOutlook/SeasonalOutlookScreen';
 import GroundToAirSignalsScreen from '../screens/SignalMirror/GroundToAirSignalsScreen';
+import SkyEventsScreen from '../screens/SkyEvents/SkyEventsScreen';
 import StarMapScreen from '../screens/StarMap/StarMapScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
@@ -221,6 +222,7 @@ function NavigatorContent(): JSX.Element {
             name="SeasonalOutlook"
             component={SeasonalOutlookScreen}
           />
+          <Stack.Screen name="SkyEvents" component={SkyEventsScreen} />
           {/* Unit Conversion */}
           <Stack.Screen
             name="UnitConversion"

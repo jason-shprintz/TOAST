@@ -5,11 +5,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../../hooks/useTheme';
 import { SolarEventType } from '../../../stores/SolarCycleNotificationStore';
 import {
+  useAstronomyEventStore,
   useCoreStore,
   usePantryStore,
   useSolarCycleNotificationStore,
   useWeatherOutlookStore,
 } from '../../../stores/StoreContext';
+import { formatDaysUntil } from '../../../utils/formatDaysUntil';
 import { Text } from '../../ScaledText';
 
 /**
@@ -20,7 +22,8 @@ import { Text } from '../../ScaledText';
  * - Rotates through all available notification types every 8 seconds:
  *   slot 0 — solar event (if upcoming) or lunar phase (when solar is complete)
  *   slot 1 — weather outlook summary (when available)
- *   slot 2+ — pantry expiration alerts (one per alerting item, when present)
+ *   slot 2 — next astronomy event within 30 days (when available)
+ *   slot 3+ — pantry expiration alerts (one per alerting item, when present)
  * - Shows an icon indicating sunrise (sun) or sunset (moon)
  * - Displays a dynamic message with time remaining until the event
  * - Automatically updates notifications when device location changes
@@ -33,6 +36,7 @@ const SolarCycleNotification = () => {
   const solarNotifications = useSolarCycleNotificationStore();
   const weatherOutlook = useWeatherOutlookStore();
   const pantry = usePantryStore();
+  const astronomyStore = useAstronomyEventStore();
   const COLORS = useTheme();
   const pantryExpirationAlertsCount = pantry.getExpirationAlerts().length;
 
@@ -40,7 +44,8 @@ const SolarCycleNotification = () => {
    * Rotation index cycles through all available notification types:
    *   0 = solar event (if upcoming) or lunar phase
    *   1 = weather outlook (when available)
-   *   2+ = pantry expiration alerts (one per alerting item)
+   *   2 = next astronomy event within 30 days (when available)
+   *   3+ = pantry expiration alerts (one per alerting item)
    */
   const [rotationIndex, setRotationIndex] = useState(0);
 
@@ -49,6 +54,9 @@ const SolarCycleNotification = () => {
     if (core.lastFix) {
       const { latitude, longitude } = core.lastFix.coords;
       solarNotifications.updateNotifications(latitude, longitude);
+      astronomyStore.computeEvents(latitude, longitude);
+    } else {
+      astronomyStore.computeEventsWithoutLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.lastFix]);
@@ -62,15 +70,23 @@ const SolarCycleNotification = () => {
   }, [solarNotifications]);
 
   // Rotate through all notification slots every 8 seconds.
-  // Weather and pantry alerts rotate alongside solar/lunar, not only after them.
+  // Weather, astronomy, and pantry alerts rotate alongside solar/lunar.
   // Depend on getExpirationAlerts().length (not pantry.items) so the effect
   // re-runs when items are pushed/removed without the array reference changing.
+  // Also depend on nextAstroEvent's identity so totalSlots stays accurate when
+  // an event enters or leaves the 30-day window between recomputes.
   // Also reset rotationIndex when totalSlots shrinks to avoid invalid slot state.
+  const nextAstroEventId = astronomyStore.getNextAstronomyEvent()?.id ?? null;
   useEffect(() => {
     const weatherSummary = weatherOutlook.getCurrentMonthSummary();
     const pantryAlerts = pantry.getExpirationAlerts();
-    // slot 0 = solar/lunar (always present), then weather, then pantry alerts
-    const totalSlots = 1 + (weatherSummary ? 1 : 0) + pantryAlerts.length;
+    const nextAstroEvent = astronomyStore.getNextAstronomyEvent();
+    // slot 0 = solar/lunar (always present), then weather, then astronomy, then pantry alerts
+    const totalSlots =
+      1 +
+      (weatherSummary ? 1 : 0) +
+      (nextAstroEvent ? 1 : 0) +
+      pantryAlerts.length;
     if (totalSlots <= 1) {
       // Nothing extra to rotate through; reset index in case pool just shrank to 1.
       setRotationIndex(0);
@@ -86,15 +102,23 @@ const SolarCycleNotification = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weatherOutlook.outlook, weatherOutlook, pantryExpirationAlertsCount]);
+  }, [
+    weatherOutlook.outlook,
+    weatherOutlook,
+    pantryExpirationAlertsCount,
+    astronomyStore.events.length,
+    nextAstroEventId,
+  ]);
 
   const nextNotification = solarNotifications.getNextNotification();
   const weatherSummary = weatherOutlook.getCurrentMonthSummary();
   const pantryAlerts = pantry.getExpirationAlerts();
+  const nextAstroEvent = astronomyStore.getNextAstronomyEvent();
 
   // Determine slot boundaries
   const weatherSlot = 1;
-  const pantryStartSlot = weatherSummary ? 2 : 1;
+  const astroSlot = weatherSummary ? 2 : 1;
+  const pantryStartSlot = astroSlot + (nextAstroEvent ? 1 : 0);
 
   // ── Slot 0: Solar event (if active) or Lunar phase ──────────────────────────
   if (rotationIndex === 0) {
@@ -168,7 +192,23 @@ const SolarCycleNotification = () => {
     );
   }
 
-  // ── Slots 2+: Pantry expiration alerts ───────────────────────────────────────
+  // ── Astronomy slot: Next sky event within 30 days ────────────────────────────
+  if (rotationIndex === astroSlot && nextAstroEvent) {
+    const countdownText = formatDaysUntil(nextAstroEvent.date);
+    return (
+      <View style={styles.notificationContent}>
+        <Text style={styles.astroIcon}>{nextAstroEvent.icon}</Text>
+        <Text
+          style={[styles.notificationText, { color: COLORS.PRIMARY_DARK }]}
+          numberOfLines={2}
+        >
+          {`${nextAstroEvent.label} — ${countdownText}`}
+        </Text>
+      </View>
+    );
+  }
+
+  // ── Slots 3+: Pantry expiration alerts ───────────────────────────────────────
   const pantryAlertIndex = rotationIndex - pantryStartSlot;
   if (pantryAlertIndex >= 0 && pantryAlertIndex < pantryAlerts.length) {
     const alert = pantryAlerts[pantryAlertIndex];
@@ -220,6 +260,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   notificationIcon: {
+    flexShrink: 0,
+  },
+  astroIcon: {
+    fontSize: 18,
     flexShrink: 0,
   },
   notificationText: {

@@ -867,6 +867,52 @@ const SYNTHETIC_TOOL_ENTRIES: ReferenceEntryType[] = [
     related_screen: 'EmergencyPlan',
     related_screen_label: 'Open Emergency Planner',
   },
+  // --- Earth Module — Sky Events ---
+  {
+    id: 'synthetic_sky_events',
+    category: 'Earth',
+    title: 'Sky Events',
+    summary:
+      'Upcoming astronomical events for the next 12 months: solar and lunar eclipses, solstices, equinoxes, supermoons, and planet rise times for Venus, Mars, Jupiter, and Saturn. All calculations run fully offline.',
+    difficulty: 'basic',
+    tags: [
+      'astronomy',
+      'eclipse',
+      'solar eclipse',
+      'lunar eclipse',
+      'solstice',
+      'equinox',
+      'supermoon',
+      'planet',
+      'Jupiter',
+      'Saturn',
+      'Venus',
+      'Mars',
+      'rise',
+      'celestial',
+      'sky',
+      'night sky',
+      'moon',
+      'stargazing',
+    ],
+    steps: [
+      'Open Sky Events from the Earth module',
+      'Browse upcoming events sorted chronologically — full details are shown for each event',
+      'Enable location for planet rise times — other events require no location',
+    ],
+    do_not: [],
+    watch_for: [
+      'Eclipse visibility depends on your location — a total solar eclipse may only be total in certain regions',
+      'Supermoon brightness is subtle — differences from an average full moon are minor',
+    ],
+    notes: [
+      'All calculations are performed on-device with no network required',
+      'Uses the astronomia library (Jean Meeus Astronomical Algorithms)',
+      'The footer notification also shows the next sky event within 30 days',
+    ],
+    related_screen: 'SkyEvents',
+    related_screen_label: 'Open Sky Events',
+  },
 ];
 
 // All reference entries indexed once at module load time

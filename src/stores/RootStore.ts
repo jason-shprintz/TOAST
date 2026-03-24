@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { AstronomyEventStore } from './AstronomyEventStore';
 import { BarometerStore } from './BarometerStore';
 import { CoreStore } from './CoreStore';
 import { EmergencyPlanStore } from './EmergencyPlanStore';
@@ -29,6 +30,7 @@ export class RootStore {
   weatherOutlookStore: WeatherOutlookStore;
   waypointStore: WaypointStore;
   trackStore: TrackStore;
+  astronomyEventStore: AstronomyEventStore;
 
   constructor() {
     makeAutoObservable(this);
@@ -46,6 +48,7 @@ export class RootStore {
     this.weatherOutlookStore = new WeatherOutlookStore();
     this.waypointStore = new WaypointStore();
     this.trackStore = new TrackStore();
+    this.astronomyEventStore = new AstronomyEventStore();
     this.initializeSettings();
   }
 
@@ -96,6 +99,7 @@ export class RootStore {
     this.weatherOutlookStore.dispose();
     this.waypointStore.dispose();
     this.trackStore.dispose();
+    this.astronomyEventStore.dispose();
     this.coreStore = new CoreStore();
     this.inventoryStore = new InventoryStore();
     this.pantryStore = new PantryStore();
@@ -110,6 +114,7 @@ export class RootStore {
     this.weatherOutlookStore = new WeatherOutlookStore();
     this.waypointStore = new WaypointStore();
     this.trackStore = new TrackStore();
+    this.astronomyEventStore = new AstronomyEventStore();
     this.isOfflineMode = true;
     // initializeSettings is intentionally not awaited - settings have sensible
     // defaults and components will re-render when settings finish loading from DB
