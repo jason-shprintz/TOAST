@@ -1,8 +1,8 @@
 {
   "metadata": {
     "name": "Tools and Knots Reference",
-    "version": "1.1.0",
-    "last_updated": "2025-12-18",
+    "version": "1.2.0",
+    "last_updated": "2026-03-24",
     "disclaimer": "This information is general guidance on outdoor tools and knots and is not a substitute for professional training or supervision. Always use appropriate caution and judgment when working with sharp tools, heavy tools, ropes under tension, and improvised bushcraft tools.",
     "categories": ["Tools (Home)", "Tools (Wilderness)", "Knots"],
     "difficulty_levels": ["basic", "intermediate", "advanced"]
@@ -24,7 +24,7 @@
         "Keep the knife sharp; a dull blade requires more force and is more likely to slip. If you have a sharpener, make regular light passes instead of infrequent heavy sharpening.",
         "Clean the blade with a dry or slightly damp cloth after use and dry thoroughly to prevent rust.",
         "Store the knife in its sheath when not in use, and secure it so it cannot fall or be stepped on.",
-        "Designate a safe \"knife zone\" around you; ensure others, especially children, are outside your arm’s reach plus blade length when cutting."
+        "Designate a safe \"knife zone\" around you; ensure others, especially children, are outside your arm's reach plus blade length when cutting."
       ],
       "do_not": [
         "Do not cut toward your body or between your legs.",
@@ -422,11 +422,7 @@
         "The overhand knot is the foundation of many other knots; practice until you can tie it by feel.",
         "Use stopper knots near the ends of ropes used for tie-downs to prevent knots from pulling through under tension."
       ],
-      "images": [
-        "knots_overhand_stopper_step1",
-        "knots_overhand_stopper_step2",
-        "knots_overhand_stopper_step3"
-      ]
+      "images": ["knots_overhand_and_stopper"]
     },
     {
       "id": "knots_square_reef",
@@ -454,12 +450,7 @@
         "Remember the phrase \"right over left, left over right\" to avoid tying a granny knot.",
         "Use the square knot for bandages, bundles, and tying packages where loads are low and steady."
       ],
-      "images": [
-        "knots_square_reef_step1",
-        "knots_square_reef_step2",
-        "knots_square_reef_step3",
-        "knots_square_reef_step4"
-      ]
+      "images": ["knots_square_reef"]
     },
     {
       "id": "knots_sheet_bend",
@@ -487,12 +478,7 @@
         "For extra security, make a double sheet bend by wrapping the working end twice around the bight before tucking.",
         "Sheet bends are useful when extending ropes or tying to loops in tarps and nets."
       ],
-      "images": [
-        "knots_sheet_bend_step1",
-        "knots_sheet_bend_step2",
-        "knots_sheet_bend_step3",
-        "knots_sheet_bend_step4"
-      ]
+      "images": ["knots_sheet_bend"]
     },
     {
       "id": "knots_bowline_fixed_loop",
@@ -520,12 +506,7 @@
         "A simple backup is to tie an overhand stopper knot in the tail around the loop part.",
         "The bowline is easy to untie after loading, making it useful for temporary anchor points and around-the-waist loops in non-life-critical situations."
       ],
-      "images": [
-        "knots_bowline_step1",
-        "knots_bowline_step2",
-        "knots_bowline_step3",
-        "knots_bowline_step4"
-      ]
+      "images": ["knots_bowline_fixed_loop"]
     },
     {
       "id": "knots_round_turn_two_half_hitches",
@@ -553,12 +534,7 @@
         "This knot is useful for tying off boats, hanging items from trees, or tensioning light lines.",
         "The round turn provides extra friction and reduces strain on the hitches."
       ],
-      "images": [
-        "knots_round_turn_two_half_hitches_step1",
-        "knots_round_turn_two_half_hitches_step2",
-        "knots_round_turn_two_half_hitches_step3",
-        "knots_round_turn_two_half_hitches_step4"
-      ]
+      "images": ["knots_round_turn_two_half_hitches"]
     },
     {
       "id": "knots_clove_hitch",
@@ -586,11 +562,7 @@
         "Clove hitches are ideal as starting or finishing knots in lashings and for temporary tie-offs.",
         "Adding extra half hitches or a backup knot increases security for longer-term use."
       ],
-      "images": [
-        "knots_clove_hitch_step1",
-        "knots_clove_hitch_step2",
-        "knots_clove_hitch_step3"
-      ]
+      "images": ["knots_clove_hitch"]
     },
     {
       "id": "knots_taut_line_hitch",
@@ -619,17 +591,12 @@
         "This knot is very useful for adjusting tent and tarp tension without retying.",
         "If it slips, add an extra wrap on the standing part or switch to a different adjustable system."
       ],
-      "images": [
-        "knots_taut_line_hitch_step1",
-        "knots_taut_line_hitch_step2",
-        "knots_taut_line_hitch_step3",
-        "knots_taut_line_hitch_step4"
-      ]
+      "images": ["knots_taut_line_hitch"]
     },
     {
       "id": "knots_truckers_hitch",
       "category": "Knots",
-      "title": "Trucker’s Hitch",
+      "title": "Trucker's Hitch",
       "summary": "Create a mechanical advantage system in the rope to tighten loads and tarps.",
       "difficulty": "advanced",
       "tags": ["knot", "trucker's hitch", "tension", "tie-down"],
@@ -653,15 +620,10 @@
         "Signs of damage on the rope due to repeated high-tension use."
       ],
       "notes": [
-        "The trucker’s hitch is excellent for securing loads on vehicles, tightening tarps, and making ridgelines taut.",
+        "The trucker's hitch is excellent for securing loads on vehicles, tightening tarps, and making ridgelines taut.",
         "Practice the loop and finish hitches in low-stress situations before using this knot with critical loads."
       ],
-      "images": [
-        "knots_truckers_hitch_step1",
-        "knots_truckers_hitch_step2",
-        "knots_truckers_hitch_step3",
-        "knots_truckers_hitch_step4"
-      ]
+      "images": ["knots_truckers_hitch"]
     },
     {
       "id": "knots_prusik_friction_hitch",
@@ -671,7 +633,7 @@
       "difficulty": "advanced",
       "tags": ["knot", "prusik", "friction hitch", "loop"],
       "steps": [
-        "Create a closed loop of cord by tying the ends together securely (commonly with a double fisherman’s knot).",
+        "Create a closed loop of cord by tying the ends together securely (commonly with a double fisherman's knot).",
         "Place the loop behind the main rope so that both strands of the loop hang down evenly.",
         "Bring the lower part of the loop up and pass it through itself over the front of the main rope, making a wrap.",
         "Repeat this wrap two or three times, stacking the wraps neatly side by side on the main rope.",
@@ -693,12 +655,7 @@
         "The Prusik is useful for hauling systems, improvised backups, and attaching loops to ridgelines.",
         "Use smaller-diameter cord (often about two-thirds the diameter of the main rope) for better grip."
       ],
-      "images": [
-        "knots_prusik_step1",
-        "knots_prusik_step2",
-        "knots_prusik_step3",
-        "knots_prusik_step4"
-      ]
+      "images": ["knots_prusik_friction_hitch"]
     }
   ]
 }
