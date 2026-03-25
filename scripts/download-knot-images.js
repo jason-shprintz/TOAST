@@ -22,6 +22,7 @@
  *   2. Downloads the image and converts it to WebP at ≤800px wide.
  */
 
+const { Buffer } = require('buffer');
 const fs = require('fs');
 const https = require('https');
 const path = require('path');

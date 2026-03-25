@@ -15,6 +15,7 @@ import HatchetSmallAxe from './images/reference/tools_home/hatchet_small_axe.svg
 import NaturalCordage from './images/reference/tools_wilderness/natural_cordage.svg';
 import PotHangerTripod from './images/reference/tools_wilderness/pot_hanger_tripod.svg';
 import PrimitiveMallet from './images/reference/tools_wilderness/primitive_mallet.svg';
+// eslint-disable-next-line import/order
 import SnowBrushSandals from './images/reference/tools_wilderness/snow_brush_sandals.svg';
 
 /**
