@@ -11,14 +11,14 @@
  *   npm install sharp   (or: yarn add sharp)
  *   Node 18+  (uses built-in fetch)
  *
- * Output: src/assets/images/reference/knots/<name>.webp
+ * Output: src/assets/images/reference/knots/<n>.webp
  * After running, commit the generated .webp files.
  *
  * How it works:
  *   1. For each knot, calls the Wikipedia pageimages API to get the
  *      URL of the article's lead image (the same photo shown in the
- *      infobox). This avoids hardcoding Wikimedia filenames that can't
- *      be verified at code-write time.
+ *      infobox). The `redirects` param is included so that articles
+ *      like "Prusik knot" → "Prusik" are followed automatically.
  *   2. Downloads the image and converts it to WebP at ≤800px wide.
  */
 
@@ -33,8 +33,9 @@ const OUTPUT_DIR = path.resolve(
 
 /**
  * Knot definitions.
- * `article` is the exact English Wikipedia page title for each knot.
- * The script queries the pageimages API to resolve the actual image URL.
+ * `article` is the English Wikipedia page title (or a redirect to it).
+ * The `redirects` API param means we don't need to know the canonical
+ * title in advance — any redirect will be followed transparently.
  */
 const KNOTS = [
   {
@@ -78,24 +79,30 @@ const KNOTS = [
     article: "Trucker's hitch",
   },
   {
+    // Wikipedia article is "Prusik" (not "Prusik knot", which redirects).
+    // We pass redirects=1 in the API call so either title works, but
+    // using the canonical title directly is more reliable.
     key: 'prusik',
     outFile: 'prusik.webp',
-    article: 'Prusik knot',
+    article: 'Prusik',
   },
 ];
 
 const WIKI_API = 'https://en.wikipedia.org/w/api.php';
-const USER_AGENT = 'TOAST-knot-image-downloader/2.0 (https://github.com/jason-shprintz/TOAST)';
+const USER_AGENT =
+  'TOAST-knot-image-downloader/2.0 (https://github.com/jason-shprintz/TOAST)';
 
 /**
  * Ask the Wikipedia pageimages API for the original lead image URL of
- * a given article. Returns null if no image is found.
+ * a given article. Passes `redirects` so that any redirect title is
+ * followed automatically. Returns null if no image is found.
  */
 async function resolveImageUrl(article) {
   const params = new URLSearchParams({
     action: 'query',
     prop: 'pageimages',
     piprop: 'original',
+    redirects: '1',
     format: 'json',
     origin: '*',
     titles: article,
@@ -135,7 +142,6 @@ function fetchBuffer(url) {
 }
 
 async function main() {
-  // Require sharp for WebP conversion
   let sharp;
   try {
     sharp = require('sharp');
