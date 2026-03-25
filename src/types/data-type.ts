@@ -9,7 +9,8 @@ type ReferenceEntryType = {
   do_not: string[];
   watch_for: string[];
   notes: string[];
-  image?: string; // optional — maps to key in referenceImages.ts
+  image?: string; // optional — maps to single key in referenceImages.ts
+  images?: string[]; // optional — array of keys for multi-step carousel (knots)
   related_screen?: string; // optional — navigator screen name to link to
   related_screen_label?: string; // optional — label for the link button
 };

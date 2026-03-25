@@ -617,6 +617,19 @@ export const SettingsModal = observer(
                   </View>
                 )}
               </View>
+
+              {/* Attribution Section */}
+              <View style={styles.section}>
+                <RNText style={[styles.sectionTitle, t.primaryText]}>
+                  Attributions
+                </RNText>
+                <RNText style={[styles.attributionText, t.primaryText]}>
+                  Knot diagrams sourced from Wikimedia Commons contributors,
+                  licensed under CC BY-SA 3.0
+                  (https://creativecommons.org/licenses/by-sa/3.0/) except where
+                  noted as Public Domain.
+                </RNText>
+              </View>
             </ScrollView>
           </View>
         </View>
@@ -773,5 +786,10 @@ const styles = StyleSheet.create({
   },
   restoreButtonDisabled: {
     opacity: 0.5,
+  },
+  attributionText: {
+    fontSize: 13,
+    lineHeight: 19,
+    opacity: 0.85,
   },
 });

@@ -1,0 +1,11 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Prusik Knot -->
+  <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Prusik Knot</text>
+  <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 2: Wrap prusik loop around main rope twice</text>
+  <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
+  <path d="M 150 55 L 150 225" fill="none" stroke="#8B4513" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 85 115 Q 85 90, 150 85 Q 215 90, 215 115 Q 215 140, 150 145 Q 85 140, 85 115" fill="none" stroke="#2E6B8B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 85 115 Q 85 92, 150 87 Q 215 92, 215 112" fill="none" stroke="#2E6B8B" stroke-width="8" stroke-linecap="round" stroke-dasharray="4,2"/>
+  <text x="150" y="245" fill="#2E6B8B" font-family="Arial,sans-serif" font-size="11" text-anchor="middle">Wrap twice around main rope</text>
+</svg>

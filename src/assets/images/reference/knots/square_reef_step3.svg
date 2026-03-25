@@ -1,0 +1,10 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Square (Reef) Knot -->
+  <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Square (Reef) Knot</text>
+  <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 3: Left over right, second half hitch</text>
+  <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
+  <path d="M 210 75 Q 210 110, 150 130 Q 90 148, 90 160 Q 90 175, 150 178 Q 210 180, 210 195 L 210 220" fill="none" stroke="#2E6B8B" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 90 75 Q 90 110, 150 130 Q 210 148, 210 162 Q 210 177, 150 178 Q 90 178, 90 195 L 90 220" fill="none" stroke="#8B4513" stroke-width="10" stroke-linecap="round"/>
+  <text x="150" y="238" fill="#555" font-family="Arial,sans-serif" font-size="11" text-anchor="middle">Left over right</text>
+</svg>

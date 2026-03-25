@@ -4,6 +4,7 @@ import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import referenceImages from '../../../assets/referenceImages';
 import { HorizontalRule } from '../../../components/HorizontalRule';
+import KnotStepCarousel from '../../../components/KnotStepCarousel';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
@@ -95,10 +96,12 @@ export default function EntryScreen(): JSX.Element {
     );
   }
 
-  // Get the SVG component for this entry if it exists
-  const SvgComponent = resolvedEntry.id
-    ? referenceImages[resolvedEntry.id]
-    : null;
+  // Get the SVG component for this entry if it exists (single-image fallback)
+  const SvgComponent =
+    resolvedEntry.id &&
+    (!resolvedEntry.images || resolvedEntry.images.length === 0)
+      ? referenceImages[resolvedEntry.id]
+      : null;
 
   return (
     <ScreenBody>
@@ -118,12 +121,15 @@ export default function EntryScreen(): JSX.Element {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* Reference Image - Display if available */}
-          {SvgComponent && (
+          {/* Multi-step image carousel for knots */}
+          {resolvedEntry.images && resolvedEntry.images.length > 0 ? (
+            <KnotStepCarousel images={resolvedEntry.images} />
+          ) : SvgComponent ? (
+            /* Single reference image fallback */
             <View style={styles.imageCard}>
               <SvgComponent width="100%" height={200} />
             </View>
-          )}
+          ) : null}
           {/* Summary */}
           {!!resolvedEntry.summary && (
             <View style={styles.card}>

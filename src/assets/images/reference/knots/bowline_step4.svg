@@ -1,0 +1,12 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bowline -->
+  <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Bowline</text>
+  <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 4: Pull working end and standing part tight</text>
+  <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
+  <path d="M 150 220 L 150 165" fill="none" stroke="#8B4513" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 125 145 Q 100 120, 125 105 Q 150 95, 175 105 Q 200 120, 175 145 Q 162 155, 150 155 Q 138 155, 125 145" fill="none" stroke="#8B4513" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 150 95 Q 185 80, 200 100 Q 215 120, 200 138 Q 185 150, 168 150" fill="none" stroke="#D2691E" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 168 150 L 150 155" fill="none" stroke="#D2691E" stroke-width="8" stroke-linecap="round"/>
+  <text x="150" y="245" fill="#5C3A1E" font-family="Arial,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Fixed loop — pull tight</text>
+</svg>

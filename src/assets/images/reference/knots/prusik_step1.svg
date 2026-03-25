@@ -1,0 +1,14 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Prusik Knot -->
+  <rect width="300" height="260" fill="#FAF5EB" rx="8"/>
+  <text x="150" y="22" fill="#5C3A1E" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Prusik Knot</text>
+  <text x="150" y="40" fill="#8B5E3C" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Step 1: Fold short cord into a loop alongside main rope</text>
+  <line x1="20" y1="46" x2="280" y2="46" stroke="#C4A882" stroke-width="1"/>
+  <path d="M 150 55 L 150 225" fill="none" stroke="#8B4513" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 95 125 Q 95 90, 130 80 Q 165 80, 175 90" fill="none" stroke="#2E6B8B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 175 90 Q 185 100, 185 115 Q 185 130, 175 140" fill="none" stroke="#2E6B8B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 175 140 Q 165 150, 130 150 Q 95 150, 95 125" fill="none" stroke="#2E6B8B" stroke-width="8" stroke-linecap="round"/>
+  <text x="50" y="80" fill="#8B4513" font-family="Arial,sans-serif" font-size="11">Main rope</text>
+  <text x="188" y="112" fill="#2E6B8B" font-family="Arial,sans-serif" font-size="11">Prusik loop</text>
+  <text x="150" y="245" fill="#2E6B8B" font-family="Arial,sans-serif" font-size="11" text-anchor="middle">Small cord tied in a loop</text>
+</svg>
