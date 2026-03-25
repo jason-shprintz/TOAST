@@ -22,6 +22,7 @@
  *   2. Downloads the image and converts it to WebP at <=800px wide.
  */
 
+const { Buffer } = require('buffer');
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
@@ -38,14 +39,30 @@ const OUTPUT_DIR = path.resolve(
  * title in advance — any redirect will be followed transparently.
  */
 const KNOTS = [
-  { key: 'bowline',                      outFile: 'bowline.webp',                      article: 'Bowline' },
-  { key: 'clove_hitch',                  outFile: 'clove_hitch.webp',                  article: 'Clove hitch' },
-  { key: 'sheet_bend',                   outFile: 'sheet_bend.webp',                   article: 'Sheet bend' },
-  { key: 'square_reef',                  outFile: 'square_reef.webp',                  article: 'Reef knot' },
-  { key: 'overhand_stopper',             outFile: 'overhand_stopper.webp',             article: 'Overhand knot' },
-  { key: 'round_turn_two_half_hitches',  outFile: 'round_turn_two_half_hitches.webp',  article: 'Round turn and two half-hitches' },
-  { key: 'taut_line_hitch',              outFile: 'taut_line_hitch.webp',              article: 'Taut-line hitch' },
-  { key: 'truckers_hitch',               outFile: 'truckers_hitch.webp',               article: "Trucker's hitch" },
+  { key: 'bowline', outFile: 'bowline.webp', article: 'Bowline' },
+  { key: 'clove_hitch', outFile: 'clove_hitch.webp', article: 'Clove hitch' },
+  { key: 'sheet_bend', outFile: 'sheet_bend.webp', article: 'Sheet bend' },
+  { key: 'square_reef', outFile: 'square_reef.webp', article: 'Reef knot' },
+  {
+    key: 'overhand_stopper',
+    outFile: 'overhand_stopper.webp',
+    article: 'Overhand knot',
+  },
+  {
+    key: 'round_turn_two_half_hitches',
+    outFile: 'round_turn_two_half_hitches.webp',
+    article: 'Round turn and two half-hitches',
+  },
+  {
+    key: 'taut_line_hitch',
+    outFile: 'taut_line_hitch.webp',
+    article: 'Taut-line hitch',
+  },
+  {
+    key: 'truckers_hitch',
+    outFile: 'truckers_hitch.webp',
+    article: "Trucker's hitch",
+  },
   {
     // Wikipedia article is "Prusik" (not "Prusik knot", which redirects).
     // We pass redirects=1 in the API call so either title works, but

@@ -15,7 +15,6 @@ import HatchetSmallAxe from './images/reference/tools_home/hatchet_small_axe.svg
 import NaturalCordage from './images/reference/tools_wilderness/natural_cordage.svg';
 import PotHangerTripod from './images/reference/tools_wilderness/pot_hanger_tripod.svg';
 import PrimitiveMallet from './images/reference/tools_wilderness/primitive_mallet.svg';
-// eslint-disable-next-line import/order
 import SnowBrushSandals from './images/reference/tools_wilderness/snow_brush_sandals.svg';
 
 /**
@@ -42,23 +41,22 @@ export type KnotImageSource =
  *   3. Add a require() entry here
  */
 const wikiKnotImages: Record<string, number> = {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   knots_bowline_fixed_loop: require('./images/reference/knots/bowline.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_clove_hitch: require('./images/reference/knots/clove_hitch.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_sheet_bend: require('./images/reference/knots/sheet_bend.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_square_reef: require('./images/reference/knots/square_reef.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_overhand_and_stopper: require('./images/reference/knots/overhand_stopper.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_round_turn_two_half_hitches: require('./images/reference/knots/round_turn_two_half_hitches.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_taut_line_hitch: require('./images/reference/knots/taut_line_hitch.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_truckers_hitch: require('./images/reference/knots/truckers_hitch.webp'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+
   knots_prusik_friction_hitch: require('./images/reference/knots/prusik.webp'),
 };
 

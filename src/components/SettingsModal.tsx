@@ -626,8 +626,8 @@ export const SettingsModal = observer(
                 <RNText style={[styles.attributionText, t.primaryText]}>
                   Knot diagrams sourced from Wikimedia Commons contributors,
                   licensed under CC BY-SA 3.0
-                  (https://creativecommons.org/licenses/by-sa/3.0/) except
-                  where noted as Public Domain.
+                  (https://creativecommons.org/licenses/by-sa/3.0/) except where
+                  noted as Public Domain.
                 </RNText>
               </View>
             </ScrollView>
