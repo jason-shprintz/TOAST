@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { SvgProps } from 'react-native-svg';
-import { getKnotImage, KnotImageSource } from '../assets/referenceImages';
+import { getKnotImage } from '../assets/referenceImages';
 import { COLORS } from '../theme';
 
 interface KnotStepCarouselProps {

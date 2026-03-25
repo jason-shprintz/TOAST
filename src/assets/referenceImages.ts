@@ -1,6 +1,5 @@
 import React from 'react';
 import { SvgProps } from 'react-native-svg';
-
 // --- SVG imports (fallback / non-knot assets) ---
 import BowlineKnot from './images/reference/knots/bowline.svg';
 import CloveHitch from './images/reference/knots/clove_hitch.svg';
@@ -37,30 +36,45 @@ export type KnotImageSource =
  * Run scripts/download-knot-images.js to fetch and convert them.
  * Once committed, each require() resolves to a numeric asset ID at bundle time.
  *
- * We use a try/catch require pattern so the app degrades gracefully to SVG
- * fallbacks if the WebP files haven't been committed yet.
+ * Metro requires static string literals in require() — no dynamic paths.
+ * Missing files return null so the app degrades to SVG fallbacks.
  */
-function tryRequire(path: string): number | null {
+function tryStaticRequire(fn: () => number): number | null {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(path) as number;
+    return fn();
   } catch {
     return null;
   }
 }
 
 const wikiKnotImages: Record<string, number | null> = {
-  knots_bowline_fixed_loop: tryRequire('./images/reference/knots/bowline.webp'),
-  knots_clove_hitch: tryRequire('./images/reference/knots/clove_hitch.webp'),
-  knots_sheet_bend: tryRequire('./images/reference/knots/sheet_bend.webp'),
-  knots_square_reef: tryRequire('./images/reference/knots/square_reef.webp'),
-  knots_overhand_and_stopper: tryRequire('./images/reference/knots/overhand_stopper.webp'),
-  knots_round_turn_two_half_hitches: tryRequire(
-    './images/reference/knots/round_turn_two_half_hitches.webp'
+  knots_bowline_fixed_loop: tryStaticRequire(() =>
+    require('./images/reference/knots/bowline.webp'),
   ),
-  knots_taut_line_hitch: tryRequire('./images/reference/knots/taut_line_hitch.webp'),
-  knots_truckers_hitch: tryRequire('./images/reference/knots/truckers_hitch.webp'),
-  knots_prusik_friction_hitch: tryRequire('./images/reference/knots/prusik.webp'),
+  knots_clove_hitch: tryStaticRequire(() =>
+    require('./images/reference/knots/clove_hitch.webp'),
+  ),
+  knots_sheet_bend: tryStaticRequire(() =>
+    require('./images/reference/knots/sheet_bend.webp'),
+  ),
+  knots_square_reef: tryStaticRequire(() =>
+    require('./images/reference/knots/square_reef.webp'),
+  ),
+  knots_overhand_and_stopper: tryStaticRequire(() =>
+    require('./images/reference/knots/overhand_stopper.webp'),
+  ),
+  knots_round_turn_two_half_hitches: tryStaticRequire(() =>
+    require('./images/reference/knots/round_turn_two_half_hitches.webp'),
+  ),
+  knots_taut_line_hitch: tryStaticRequire(() =>
+    require('./images/reference/knots/taut_line_hitch.webp'),
+  ),
+  knots_truckers_hitch: tryStaticRequire(() =>
+    require('./images/reference/knots/truckers_hitch.webp'),
+  ),
+  knots_prusik_friction_hitch: tryStaticRequire(() =>
+    require('./images/reference/knots/prusik.webp'),
+  ),
 };
 
 /** SVG fallbacks for all knots (used when WebP is not yet available) */

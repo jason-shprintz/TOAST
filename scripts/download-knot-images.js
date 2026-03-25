@@ -15,13 +15,14 @@
  * After running, commit the generated .webp files.
  */
 
-const https = require('https');
+const { Buffer } = require('buffer');
 const fs = require('fs');
+const https = require('https');
 const path = require('path');
 
 const OUTPUT_DIR = path.resolve(
   __dirname,
-  '../src/assets/images/reference/knots'
+  '../src/assets/images/reference/knots',
 );
 
 /** Wikimedia Commons source images */
@@ -76,18 +77,22 @@ const KNOT_IMAGES = [
 function fetchBuffer(url) {
   return new Promise((resolve, reject) => {
     const get = (u) =>
-      https.get(u, { headers: { 'User-Agent': 'TOAST-knot-downloader/1.0' } }, (res) => {
-        if (res.statusCode === 301 || res.statusCode === 302) {
-          return get(res.headers.location);
-        }
-        if (res.statusCode !== 200) {
-          return reject(new Error(`HTTP ${res.statusCode} for ${u}`));
-        }
-        const chunks = [];
-        res.on('data', (c) => chunks.push(c));
-        res.on('end', () => resolve(Buffer.concat(chunks)));
-        res.on('error', reject);
-      });
+      https.get(
+        u,
+        { headers: { 'User-Agent': 'TOAST-knot-downloader/1.0' } },
+        (res) => {
+          if (res.statusCode === 301 || res.statusCode === 302) {
+            return get(res.headers.location);
+          }
+          if (res.statusCode !== 200) {
+            return reject(new Error(`HTTP ${res.statusCode} for ${u}`));
+          }
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => resolve(Buffer.concat(chunks)));
+          res.on('error', reject);
+        },
+      );
     get(url);
   });
 }
@@ -99,7 +104,7 @@ async function main() {
   } catch {
     console.error(
       'sharp is not installed. Run: npm install sharp\n' +
-      'Or convert manually: cwebp -q 85 input.jpg -o output.webp'
+        'Or convert manually: cwebp -q 85 input.jpg -o output.webp',
     );
     process.exit(1);
   }
