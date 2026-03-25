@@ -22,7 +22,7 @@ import SnowBrushSandals from './images/reference/tools_wilderness/snow_brush_san
  * Wikimedia Commons, loaded via require()) or a fallback SVG component.
  *
  * - 'static': use with React Native <Image source={source.value} />
- * - 'svg': use as <SvgComponent width="100%" height={200} />
+ * - 'svg':    use as <SvgComponent width="100%" height={200} />
  */
 export type KnotImageSource =
   | { type: 'static'; value: number }
@@ -31,29 +31,37 @@ export type KnotImageSource =
 /**
  * High-quality Wikimedia Commons knot images (WebP).
  *
- * These files live at src/assets/images/reference/knots/<name>.webp
- * Run `node scripts/download-knot-images.js` to fetch and convert them.
+ * Metro requires static string literals in require() calls — each entry
+ * must reference a file that exists on disk. All 9 WebP files have been
+ * committed to src/assets/images/reference/knots/.
  *
- * Metro requires static string literals in require() calls and will fail at
- * bundle time if a required file does not exist on disk. Only uncomment an
- * entry once the corresponding file has been downloaded and committed.
- * Missing entries fall back to the SVG defined in svgKnotImages below.
+ * To add a new knot image:
+ *   1. Run `node scripts/download-knot-images.js` (or add to KNOTS array)
+ *   2. Commit the generated .webp file
+ *   3. Add a require() entry here
  */
-const bowlineWebp: number = require('./images/reference/knots/bowline.webp');
-
-const wikiKnotImages: Record<string, number | null> = {
-  knots_bowline_fixed_loop: bowlineWebp,
-  knots_clove_hitch: null, // run download-knot-images.js
-  knots_sheet_bend: null, // run download-knot-images.js
-  knots_square_reef: null, // run download-knot-images.js
-  knots_overhand_and_stopper: null, // run download-knot-images.js
-  knots_round_turn_two_half_hitches: null, // run download-knot-images.js
-  knots_taut_line_hitch: null, // run download-knot-images.js
-  knots_truckers_hitch: null, // run download-knot-images.js
-  knots_prusik_friction_hitch: null, // run download-knot-images.js
+const wikiKnotImages: Record<string, number> = {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_bowline_fixed_loop: require('./images/reference/knots/bowline.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_clove_hitch: require('./images/reference/knots/clove_hitch.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_sheet_bend: require('./images/reference/knots/sheet_bend.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_square_reef: require('./images/reference/knots/square_reef.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_overhand_and_stopper: require('./images/reference/knots/overhand_stopper.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_round_turn_two_half_hitches: require('./images/reference/knots/round_turn_two_half_hitches.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_taut_line_hitch: require('./images/reference/knots/taut_line_hitch.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_truckers_hitch: require('./images/reference/knots/truckers_hitch.webp'),
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  knots_prusik_friction_hitch: require('./images/reference/knots/prusik.webp'),
 };
 
-/** SVG fallbacks for all knots (used when WebP is not yet available) */
+/** SVG fallbacks — used only if a WebP file is missing from the map above */
 const svgKnotImages: Record<string, React.FC<SvgProps>> = {
   knots_bowline_fixed_loop: BowlineKnot,
   knots_clove_hitch: CloveHitch,
@@ -68,10 +76,7 @@ const svgKnotImages: Record<string, React.FC<SvgProps>> = {
 
 /**
  * Resolve an image key to its best available source.
- *
  * Priority: Wikimedia WebP > SVG fallback > null
- *
- * Used by KnotStepCarousel and any component that needs to display a knot image.
  */
 export function getKnotImage(key: string): KnotImageSource | null {
   const staticSrc = wikiKnotImages[key];
@@ -86,28 +91,20 @@ export function getKnotImage(key: string): KnotImageSource | null {
 }
 
 /**
- * Legacy map of SVG components for non-knot reference images (tools, etc.).
+ * SVG components for non-knot reference images (tools, etc.).
  * Used by EntryScreen and other components that render a single SVG.
- *
- * Format by Content Type:
- * - Knots: use getKnotImage() above
- * - Tool techniques, step diagrams: SVG (resolution-independent, tiny file size)
- * - Weather conditions, injuries, photographic reference: WebP (~30% smaller than PNG/JPEG)
  */
 const referenceImages: Record<string, React.FC<SvgProps>> = {
-  // Tools - Wilderness (High Priority)
+  // Tools - Wilderness
   tools_wild_primitive_mallet: PrimitiveMallet,
   tools_wild_pot_hanger_and_tripod: PotHangerTripod,
   tools_wild_natural_cordage: NaturalCordage,
   tools_wild_snow_or_brush_sandals: SnowBrushSandals,
 
-  // Tools - Home (Medium Priority)
+  // Tools - Home
   tools_fixed_blade_knife_basics: FixedBladeKnife,
   tools_hatchet_small_axe: HatchetSmallAxe,
   tools_firestarter_ferro_rod: FirestarterFerroRod,
-
-  // Survival, Health, Weather, Emergency
-  // Add entries as images are created
 };
 
 export default referenceImages;
