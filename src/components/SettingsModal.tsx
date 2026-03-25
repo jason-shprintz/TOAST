@@ -617,6 +617,7 @@ export const SettingsModal = observer(
                   </View>
                 )}
               </View>
+
               {/* Attribution Section */}
               <View style={styles.section}>
                 <RNText style={[styles.sectionTitle, t.primaryText]}>
@@ -624,8 +625,9 @@ export const SettingsModal = observer(
                 </RNText>
                 <RNText style={[styles.attributionText, t.primaryText]}>
                   Knot diagrams sourced from Wikimedia Commons contributors,
-                  licensed under CC BY-SA (
-                  https://creativecommons.org/licenses/by-sa/4.0/).
+                  licensed under CC BY-SA 3.0
+                  (https://creativecommons.org/licenses/by-sa/3.0/) except
+                  where noted as Public Domain.
                 </RNText>
               </View>
             </ScrollView>

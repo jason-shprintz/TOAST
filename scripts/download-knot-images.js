@@ -18,11 +18,10 @@
  *   1. For each knot, calls the Wikipedia pageimages API to get the
  *      URL of the article's lead image (the same photo shown in the
  *      infobox). The `redirects` param is included so that articles
- *      like "Prusik knot" → "Prusik" are followed automatically.
- *   2. Downloads the image and converts it to WebP at ≤800px wide.
+ *      like "Prusik knot" -> "Prusik" are followed automatically.
+ *   2. Downloads the image and converts it to WebP at <=800px wide.
  */
 
-const { Buffer } = require('buffer');
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
@@ -39,46 +38,14 @@ const OUTPUT_DIR = path.resolve(
  * title in advance — any redirect will be followed transparently.
  */
 const KNOTS = [
-  {
-    key: 'bowline',
-    outFile: 'bowline.webp',
-    article: 'Bowline',
-  },
-  {
-    key: 'clove_hitch',
-    outFile: 'clove_hitch.webp',
-    article: 'Clove hitch',
-  },
-  {
-    key: 'sheet_bend',
-    outFile: 'sheet_bend.webp',
-    article: 'Sheet bend',
-  },
-  {
-    key: 'square_reef',
-    outFile: 'square_reef.webp',
-    article: 'Reef knot',
-  },
-  {
-    key: 'overhand_stopper',
-    outFile: 'overhand_stopper.webp',
-    article: 'Overhand knot',
-  },
-  {
-    key: 'round_turn_two_half_hitches',
-    outFile: 'round_turn_two_half_hitches.webp',
-    article: 'Round turn and two half-hitches',
-  },
-  {
-    key: 'taut_line_hitch',
-    outFile: 'taut_line_hitch.webp',
-    article: 'Taut-line hitch',
-  },
-  {
-    key: 'truckers_hitch',
-    outFile: 'truckers_hitch.webp',
-    article: "Trucker's hitch",
-  },
+  { key: 'bowline',                      outFile: 'bowline.webp',                      article: 'Bowline' },
+  { key: 'clove_hitch',                  outFile: 'clove_hitch.webp',                  article: 'Clove hitch' },
+  { key: 'sheet_bend',                   outFile: 'sheet_bend.webp',                   article: 'Sheet bend' },
+  { key: 'square_reef',                  outFile: 'square_reef.webp',                  article: 'Reef knot' },
+  { key: 'overhand_stopper',             outFile: 'overhand_stopper.webp',             article: 'Overhand knot' },
+  { key: 'round_turn_two_half_hitches',  outFile: 'round_turn_two_half_hitches.webp',  article: 'Round turn and two half-hitches' },
+  { key: 'taut_line_hitch',              outFile: 'taut_line_hitch.webp',              article: 'Taut-line hitch' },
+  { key: 'truckers_hitch',               outFile: 'truckers_hitch.webp',               article: "Trucker's hitch" },
   {
     // Wikipedia article is "Prusik" (not "Prusik knot", which redirects).
     // We pass redirects=1 in the API call so either title works, but
@@ -164,7 +131,6 @@ async function main() {
       continue;
     }
 
-    // Step 1: resolve the image URL from Wikipedia
     process.stdout.write(`  lookup ${key} (${article})...`);
     let imageUrl;
     try {
@@ -180,7 +146,6 @@ async function main() {
     }
     process.stdout.write(` found\n  fetch  ${imageUrl.split('/').pop()}...`);
 
-    // Step 2: download the image
     let buf;
     try {
       buf = await fetchBuffer(imageUrl);
@@ -189,14 +154,13 @@ async function main() {
       continue;
     }
 
-    // Step 3: convert to WebP at ≤800px wide
     try {
       await sharp(buf)
         .resize({ width: 800, withoutEnlargement: true })
         .webp({ quality: 85 })
         .toFile(dest);
       const kb = Math.round(fs.statSync(dest).size / 1024);
-      console.log(` done  →  ${outFile}  (${kb} KB)`);
+      console.log(` done  ->  ${outFile}  (${kb} KB)`);
     } catch (err) {
       console.log(` CONVERT FAILED: ${err.message}`);
     }
