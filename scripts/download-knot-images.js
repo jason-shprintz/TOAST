@@ -9,7 +9,7 @@
  *
  * Prerequisites:
  *   npm install sharp   (or: yarn add sharp)
- *   Node 18+  (uses built-in fetch)
+ *   Node 20+  (uses built-in fetch)
  *
  * Output: src/assets/images/reference/knots/<n>.webp
  * After running, commit the generated .webp files.
