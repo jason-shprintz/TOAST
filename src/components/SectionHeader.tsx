@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
+import { SPACING } from '../theme';
 import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
@@ -103,12 +104,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Bitter-Bold',
     borderWidth: 2,
     borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
     width: '100%',
     textAlign: 'center',
     alignSelf: 'center',
-    marginVertical: 12,
+    marginVertical: SPACING.md,
   },
   searchBar: {
     width: '80%',
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'absolute',
-    right: 12,
+    right: SPACING.md,
     opacity: 0.6,
   },
   headerWithSearch: {

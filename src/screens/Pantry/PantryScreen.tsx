@@ -50,6 +50,14 @@ export default observer(function PantryScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.pantryButton}
+          onPress={() => navigation.navigate('PantryExpirationTracker')}
+          accessibilityLabel="Expiration Tracker"
+          accessibilityRole="button"
+        >
+          <Ionicons name="time-outline" size={30} color={COLORS.PRIMARY_DARK} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.pantryButton}
           onPress={() => navigation.navigate('ManagePantryCategories')}
           accessibilityLabel="Manage Categories"
           accessibilityRole="button"

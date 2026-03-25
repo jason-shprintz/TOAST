@@ -111,6 +111,12 @@ export const EARTH_TOOLS: ToolType[] = [
     icon: 'calendar-outline',
     id: 'earth_seasonal_outlook',
   },
+  {
+    name: 'Sky Events',
+    screen: 'SkyEvents',
+    icon: 'telescope-outline',
+    id: 'earth_sky_events',
+  },
 ];
 
 export const COMMUNICATION_TOOLS: ToolType[] = [
@@ -164,6 +170,12 @@ export const NAVIGATION_TOOLS: ToolType[] = [
     screen: 'StarMap',
     icon: 'star-outline',
     id: 'nav_star_map',
+  },
+  {
+    name: 'Grid Reference Converter',
+    screen: 'GridReference',
+    icon: 'grid-outline',
+    id: 'nav_grid_reference',
   },
 ];
 

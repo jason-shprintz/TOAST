@@ -37,6 +37,12 @@
 	<string>We use the barometer sensor to read atmospheric pressure for weather and altitude awareness.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to show the last GPS fix on the Device Status screen.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TOAST needs background location access to continue recording your GPS trail when the screen is locked or the app is backgrounded.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to take photos for your notes and for the flashlight.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

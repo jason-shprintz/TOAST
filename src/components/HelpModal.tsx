@@ -124,7 +124,7 @@ export const HelpModal = ({ visible, onClose }: HelpModalProps) => {
       id: 'what',
       title: 'What is TOAST',
       content:
-        'TOAST (Tactical Operations And Survival Toolkit) is a comprehensive mobile application designed to assist users in various tactical and survival situations. It provides essential tools, references, and utilities in one convenient package.',
+        'TOAST (Trusted Outdoor And Survival Toolkit) is a comprehensive mobile application designed to assist users in various tactical and survival situations. It provides essential tools, references, and utilities in one convenient package.',
     },
     {
       id: 'how',

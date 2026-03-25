@@ -27,6 +27,7 @@ import NewRallyPointScreen from '../screens/EmergencyPlan/NewRallyPointScreen';
 import RallyPointsScreen from '../screens/EmergencyPlan/RallyPointsScreen';
 import FlashlightScreen from '../screens/Flashlight/FlashlightScreen';
 import NightvisionScreen from '../screens/Flashlight/NightvisionScreen';
+import GridReferenceScreen from '../screens/GridReference/GridReferenceScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import EditInventoryItemScreen from '../screens/Inventory/EditInventoryItemScreen';
 import InventoryAllItemsScreen from '../screens/Inventory/InventoryAllItemsScreen';
@@ -56,6 +57,7 @@ import ManagePantryCategoriesScreen from '../screens/Pantry/ManagePantryCategori
 import NewPantryItemScreen from '../screens/Pantry/NewPantryItemScreen';
 import PantryAllItemsScreen from '../screens/Pantry/PantryAllItemsScreen';
 import PantryCategoryScreen from '../screens/Pantry/PantryCategoryScreen';
+import PantryExpirationTrackerScreen from '../screens/Pantry/PantryExpirationTrackerScreen';
 import PantryScreen from '../screens/Pantry/PantryScreen';
 import RadioFrequenciesScreen from '../screens/RadioFrequencies/RadioFrequenciesScreen';
 import RadioFrequencyDetailScreen from '../screens/RadioFrequencies/RadioFrequencyDetailScreen';
@@ -76,6 +78,7 @@ import ScenarioCategoryScreen from '../screens/ScenarioCards/ScenarioCategoryScr
 import ScenarioDetailScreen from '../screens/ScenarioCards/ScenarioDetailScreen';
 import SeasonalOutlookScreen from '../screens/SeasonalOutlook/SeasonalOutlookScreen';
 import GroundToAirSignalsScreen from '../screens/SignalMirror/GroundToAirSignalsScreen';
+import SkyEventsScreen from '../screens/SkyEvents/SkyEventsScreen';
 import StarMapScreen from '../screens/StarMap/StarMapScreen';
 import SunTimeScreen from '../screens/SunTime/SunTimeScreen';
 import ConversionCategoryScreen from '../screens/UnitConversion/ConversionCategoryScreen';
@@ -136,6 +139,7 @@ function NavigatorContent(): JSX.Element {
           {/* Navigation Module Screens */}
           <Stack.Screen name="MapScreen" component={MapScreen} />
           <Stack.Screen name="StarMap" component={StarMapScreen} />
+          <Stack.Screen name="GridReference" component={GridReferenceScreen} />
           {/* Shared */}
           <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
           <Stack.Screen name="Search" component={SearchScreen} />
@@ -218,6 +222,7 @@ function NavigatorContent(): JSX.Element {
             name="SeasonalOutlook"
             component={SeasonalOutlookScreen}
           />
+          <Stack.Screen name="SkyEvents" component={SkyEventsScreen} />
           {/* Unit Conversion */}
           <Stack.Screen
             name="UnitConversion"
@@ -263,6 +268,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="PantryAllItems"
             component={PantryAllItemsScreen}
+          />
+          <Stack.Screen
+            name="PantryExpirationTracker"
+            component={PantryExpirationTrackerScreen}
           />
           <Stack.Screen
             name="ManagePantryCategories"
