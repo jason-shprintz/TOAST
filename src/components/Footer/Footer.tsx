@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import React, { useRef, useState, useCallback } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
-import { FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT, SPACING } from '../../theme';
 import ActiveItemButton from './components/ActiveItemButton';
 import DecibelMeterVisualization from './components/DecibelMeterVisualization';
 import SolarCycleNotification from './components/SolarCycleNotification';
@@ -28,6 +29,7 @@ import SOSTrigger from './components/SOSTrigger';
 const FooterImpl = () => {
   const core = useCoreStore();
   const COLORS = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const [isSOSPressing, setIsSOSPressing] = useState(false);
   const sosProgressAnimRef = useRef<Animated.Value | null>(null);
 
@@ -41,7 +43,7 @@ const FooterImpl = () => {
   }, []);
 
   return (
-    <View style={styles.footer}>
+    <View style={[styles.footer, { paddingBottom: bottom || SPACING.md }]}>
       {/* Left section: Notifications (0%-50%) with fuse timer */}
       <View style={styles.notificationContainer}>
         {/* Fuse timer background (left to right) */}
