@@ -4,11 +4,13 @@ import { StyleSheet, View, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
-import { FOOTER_HEIGHT, SPACING } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 import ActiveItemButton from './components/ActiveItemButton';
 import DecibelMeterVisualization from './components/DecibelMeterVisualization';
 import SolarCycleNotification from './components/SolarCycleNotification';
 import SOSTrigger from './components/SOSTrigger';
+
+const FOOTER_BASE_PADDING = 5;
 
 /**
  * Footer component that displays notifications, active item shortcuts, and SOS trigger.
@@ -43,7 +45,7 @@ const FooterImpl = () => {
   }, []);
 
   return (
-    <View style={[styles.footer, { paddingBottom: bottom || SPACING.md }]}>
+    <View style={[styles.footer, { paddingBottom: bottom + FOOTER_BASE_PADDING }]}>
       {/* Left section: Notifications (0%-50%) with fuse timer */}
       <View style={styles.notificationContainer}>
         {/* Fuse timer background (left to right) */}
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: FOOTER_HEIGHT,
     flexDirection: 'row',
-    padding: 5,
+    padding: FOOTER_BASE_PADDING,
   },
   notificationContainer: {
     width: '50%',
