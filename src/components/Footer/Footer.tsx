@@ -45,7 +45,9 @@ const FooterImpl = () => {
   }, []);
 
   return (
-    <View style={[styles.footer, { paddingBottom: bottom + FOOTER_BASE_PADDING }]}>
+    <View
+      style={[styles.footer, { paddingBottom: bottom + FOOTER_BASE_PADDING }]}
+    >
       {/* Left section: Notifications (0%-50%) with fuse timer */}
       <View style={styles.notificationContainer}>
         {/* Fuse timer background (left to right) */}
