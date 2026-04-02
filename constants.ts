@@ -215,7 +215,7 @@ export const REFERENCE_TOOLS: ToolType[] = [
 export const PREPPER_TOOLS: ToolType[] = [
   {
     name: 'Depletion Calculator',
-    screen: 'ComingSoon',
+    screen: 'DepletionCalculator',
     icon: 'calculator-outline',
     id: 'prepper_depletion_calculator',
   },
