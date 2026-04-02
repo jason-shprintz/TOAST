@@ -65,9 +65,7 @@ function CategoryRow({
       <View style={styles.rowMain}>
         <Text style={styles.rowName}>{item.name}</Text>
         <Text style={styles.rowMeta}>
-          {item.source === 'pantry'
-            ? 'Pantry'
-            : (item.category ?? 'Inventory')}{' '}
+          {item.source === 'pantry' ? 'Pantry' : (item.category ?? 'Inventory')}{' '}
           · {item.itemCount} item{item.itemCount !== 1 ? 's' : ''}, qty{' '}
           {Math.round(item.totalQuantity)}
         </Text>
@@ -110,7 +108,10 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
       <SectionHeader>Barter Estimator</SectionHeader>
 
       <View style={styles.scrollWrapper}>
-        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+        >
           <SectionSubHeader>
             Trade values are rough estimates for entertainment only. Real barter
             depends on local scarcity, relationships, and circumstances.
@@ -122,10 +123,11 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                 name="cube-outline"
                 size={36}
                 color={COLORS.TOAST_BROWN}
-                style={{ marginBottom: 8 }}
+                style={styles.emptyIcon}
               />
               <Text style={styles.emptyText}>
-                Add items to your Pantry and Inventory to see your barter profile.
+                Add items to your Pantry and Inventory to see your barter
+                profile.
               </Text>
             </View>
           ) : (
@@ -154,9 +156,7 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                       size={18}
                       color={COLORS.SUCCESS}
                     />
-                    <Text style={[styles.cardTitle, { color: COLORS.SUCCESS }]}>
-                      You can offer
-                    </Text>
+                    <Text style={styles.cardTitleSuccess}>You can offer</Text>
                   </View>
                   <Text style={styles.cardSubtitle}>
                     You have surplus in these categories — good trade chips.
@@ -181,9 +181,7 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                       size={18}
                       color={COLORS.ERROR}
                     />
-                    <Text style={[styles.cardTitle, { color: COLORS.ERROR }]}>
-                      You should seek
-                    </Text>
+                    <Text style={styles.cardTitleError}>You should seek</Text>
                   </View>
                   <Text style={styles.cardSubtitle}>
                     These categories are thin — prioritize acquiring them.
@@ -256,6 +254,7 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       borderWidth: 1,
       borderColor: COLORS.TOAST_BROWN + '40',
     },
+    emptyIcon: { marginBottom: 8 },
     emptyText: {
       fontSize: 14,
       color: COLORS.PRIMARY_DARK,
@@ -280,6 +279,16 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       fontSize: 16,
       fontWeight: '600',
       color: COLORS.PRIMARY_DARK,
+    },
+    cardTitleSuccess: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: COLORS.SUCCESS,
+    },
+    cardTitleError: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: COLORS.ERROR,
     },
     cardSubtitle: {
       fontSize: 13,

@@ -6,16 +6,16 @@ TOAST (Trusted Outdoor And Survival Toolkit) is a fully **offline-first** React 
 
 ## Stack
 
-| Concern | Library |
-| --- | --- |
-| Framework | React Native 0.84 / React 19 |
-| Language | TypeScript 5.8 strict |
-| State | MobX 6 + mobx-react-lite |
-| Navigation | @react-navigation/native-stack |
-| Validation | Zod 4 |
-| Persistence | react-native-sqlite-storage + AsyncStorage |
-| Icons | react-native-vector-icons (Ionicons, outline variants) |
-| Testing | Jest 29 (React Native preset) |
+| Concern     | Library                                                |
+| ----------- | ------------------------------------------------------ |
+| Framework   | React Native 0.84 / React 19                           |
+| Language    | TypeScript 5.8 strict                                  |
+| State       | MobX 6 + mobx-react-lite                               |
+| Navigation  | @react-navigation/native-stack                         |
+| Validation  | Zod 4                                                  |
+| Persistence | react-native-sqlite-storage + AsyncStorage             |
+| Icons       | react-native-vector-icons (Ionicons, outline variants) |
+| Testing     | Jest 29 (React Native preset)                          |
 
 ---
 

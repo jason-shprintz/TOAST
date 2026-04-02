@@ -94,7 +94,8 @@ export function computeBarter(
   }
   for (const { items: group, name: itemName, cat } of invGroups.values()) {
     const totalQty = group.reduce((sum, i) => sum + i.quantity, 0);
-    const weight = INVENTORY_BARTER_WEIGHT[cat] ?? DEFAULT_INVENTORY_BARTER_WEIGHT;
+    const weight =
+      INVENTORY_BARTER_WEIGHT[cat] ?? DEFAULT_INVENTORY_BARTER_WEIGHT;
     scores.push({
       name: itemName,
       category: cat,
