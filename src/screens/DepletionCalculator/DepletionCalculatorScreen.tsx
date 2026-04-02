@@ -11,8 +11,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore, usePantryStore } from '../../stores/StoreContext';
+import { FOOTER_HEIGHT } from '../../theme';
 import { calculate, readinessLabel } from './depletionCalculatorUtils';
 
 /**
@@ -61,170 +63,155 @@ export default observer(function DepletionCalculatorScreen(): JSX.Element {
     <ScreenBody>
       <SectionHeader>Depletion Calculator</SectionHeader>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Disclaimer */}
-        <View style={styles.disclaimerBox}>
-          <Ionicons
-            name="information-circle-outline"
-            size={16}
-            color={COLORS.TOAST_BROWN}
-          />
-          <Text style={styles.disclaimerText}>
+      <View style={styles.scrollWrapper}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Disclaimer */}
+          <SectionSubHeader>
             Estimates are rough and for entertainment only. Actual consumption
             depends on diet, activity level, and item types.
-          </Text>
-        </View>
+          </SectionSubHeader>
 
-        {/* People input */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Household Size</Text>
-          <Text style={styles.cardSubtitle}>
-            How many people are you planning for?
-          </Text>
-          <View style={styles.stepper}>
-            <TouchableOpacity
-              style={styles.stepBtn}
-              onPress={() => setPeopleInput(String(Math.max(1, people - 1)))}
-              accessibilityLabel="Decrease people count"
-            >
-              <Ionicons name="remove" size={22} color={COLORS.PRIMARY_DARK} />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.stepInput}
-              value={peopleInput}
-              onChangeText={setPeopleInput}
-              keyboardType="number-pad"
-              maxLength={3}
-              accessibilityLabel="Number of people"
-            />
-            <TouchableOpacity
-              style={styles.stepBtn}
-              onPress={() => setPeopleInput(String(people + 1))}
-              accessibilityLabel="Increase people count"
-            >
-              <Ionicons name="add" size={22} color={COLORS.PRIMARY_DARK} />
-            </TouchableOpacity>
+          {/* People input */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Household Size</Text>
+            <Text style={styles.cardSubtitle}>
+              How many people are you planning for?
+            </Text>
+            <View style={styles.stepper}>
+              <TouchableOpacity
+                style={styles.stepBtn}
+                onPress={() => setPeopleInput(String(Math.max(1, people - 1)))}
+                accessibilityLabel="Decrease people count"
+              >
+                <Ionicons name="remove" size={22} color={COLORS.PRIMARY_DARK} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.stepInput}
+                value={peopleInput}
+                onChangeText={setPeopleInput}
+                keyboardType="number-pad"
+                maxLength={3}
+                accessibilityLabel="Number of people"
+              />
+              <TouchableOpacity
+                style={styles.stepBtn}
+                onPress={() => setPeopleInput(String(people + 1))}
+                accessibilityLabel="Increase people count"
+              >
+                <Ionicons name="add" size={22} color={COLORS.PRIMARY_DARK} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* Stock summary */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Current Stock</Text>
-          <View style={styles.statRow}>
-            <Ionicons
-              name="nutrition-outline"
-              size={18}
-              color={COLORS.TOAST_BROWN}
-            />
-            <Text style={styles.statLabel}>
-              Pantry items: {pantryStore.items.length}
-            </Text>
+          {/* Stock summary */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Current Stock</Text>
+            <View style={styles.statRow}>
+              <Ionicons
+                name="nutrition-outline"
+                size={18}
+                color={COLORS.TOAST_BROWN}
+              />
+              <Text style={styles.statLabel}>
+                Pantry items: {pantryStore.items.length}
+              </Text>
+            </View>
+            <View style={styles.statRow}>
+              <Ionicons
+                name="cube-outline"
+                size={18}
+                color={COLORS.TOAST_BROWN}
+              />
+              <Text style={styles.statLabel}>
+                Inventory items: {inventoryStore.items.length}
+              </Text>
+            </View>
+            {!hasItems && (
+              <Text style={styles.emptyNote}>
+                Add items to your Pantry and Inventory to get an estimate.
+              </Text>
+            )}
           </View>
-          <View style={styles.statRow}>
-            <Ionicons
-              name="cube-outline"
-              size={18}
-              color={COLORS.TOAST_BROWN}
-            />
-            <Text style={styles.statLabel}>
-              Inventory items: {inventoryStore.items.length}
-            </Text>
-          </View>
-          {!hasItems && (
-            <Text style={styles.emptyNote}>
-              Add items to your Pantry and Inventory to get an estimate.
-            </Text>
+
+          {/* Calculate button */}
+          <TouchableOpacity
+            style={[styles.calcBtn, !hasItems && styles.calcBtnDisabled]}
+            onPress={handleCalculate}
+            disabled={!hasItems}
+            accessibilityLabel="Calculate depletion estimate"
+            accessibilityRole="button"
+          >
+            <Ionicons name="calculator-outline" size={20} color="#fff" />
+            <Text style={styles.calcBtnText}>Calculate</Text>
+          </TouchableOpacity>
+
+          {/* Results */}
+          {calculated !== null && (
+            <View style={styles.resultsCard}>
+              <Text style={styles.resultsTitle}>Estimate</Text>
+
+              {/* Readiness badge */}
+              {(() => {
+                const { label, icon } = readinessLabel(calculated.totalDays);
+                return (
+                  <View style={styles.badgeRow}>
+                    <Ionicons name={icon} size={20} color={COLORS.ACCENT} />
+                    <Text style={styles.badgeText}>{label}</Text>
+                  </View>
+                );
+              })()}
+
+              <View style={styles.divider} />
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultKey}>Food supply (pantry)</Text>
+                <Text style={styles.resultVal}>
+                  {formatDays(calculated.pantryDays)}
+                </Text>
+              </View>
+              <View style={styles.resultRow}>
+                <Text style={styles.resultKey}>Gear & supply bonus</Text>
+                <Text style={styles.resultVal}>
+                  +{formatDays(calculated.inventoryBonus)}
+                </Text>
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.resultRow}>
+                <Text style={[styles.resultKey, styles.totalKey]}>
+                  Total estimated runway
+                </Text>
+                <Text style={[styles.resultVal, styles.totalVal]}>
+                  {formatDays(calculated.totalDays)}
+                </Text>
+              </View>
+
+              <Text style={styles.forPeople}>
+                For {people} {people === 1 ? 'person' : 'people'}, based on{' '}
+                {calculated.itemCount} tracked items
+              </Text>
+            </View>
           )}
-        </View>
-
-        {/* Calculate button */}
-        <TouchableOpacity
-          style={[styles.calcBtn, !hasItems && styles.calcBtnDisabled]}
-          onPress={handleCalculate}
-          disabled={!hasItems}
-          accessibilityLabel="Calculate depletion estimate"
-          accessibilityRole="button"
-        >
-          <Ionicons name="calculator-outline" size={20} color="#fff" />
-          <Text style={styles.calcBtnText}>Calculate</Text>
-        </TouchableOpacity>
-
-        {/* Results */}
-        {calculated !== null && (
-          <View style={styles.resultsCard}>
-            <Text style={styles.resultsTitle}>Estimate</Text>
-
-            {/* Readiness badge */}
-            {(() => {
-              const { label, icon } = readinessLabel(calculated.totalDays);
-              return (
-                <View style={styles.badgeRow}>
-                  <Ionicons name={icon} size={20} color={COLORS.ACCENT} />
-                  <Text style={styles.badgeText}>{label}</Text>
-                </View>
-              );
-            })()}
-
-            <View style={styles.divider} />
-
-            <View style={styles.resultRow}>
-              <Text style={styles.resultKey}>Food supply (pantry)</Text>
-              <Text style={styles.resultVal}>
-                {formatDays(calculated.pantryDays)}
-              </Text>
-            </View>
-            <View style={styles.resultRow}>
-              <Text style={styles.resultKey}>Gear & supply bonus</Text>
-              <Text style={styles.resultVal}>
-                +{formatDays(calculated.inventoryBonus)}
-              </Text>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.resultRow}>
-              <Text style={[styles.resultKey, styles.totalKey]}>
-                Total estimated runway
-              </Text>
-              <Text style={[styles.resultVal, styles.totalVal]}>
-                {formatDays(calculated.totalDays)}
-              </Text>
-            </View>
-
-            <Text style={styles.forPeople}>
-              For {people} {people === 1 ? 'person' : 'people'}, based on{' '}
-              {calculated.itemCount} tracked items
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 });
 
 function makeStyles(COLORS: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
-    scroll: { flex: 1 },
-    content: { padding: 16, paddingBottom: 40, gap: 16 },
-    disclaimerBox: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      gap: 8,
-      backgroundColor: COLORS.BACKGROUND,
-      borderRadius: 10,
-      padding: 12,
-    },
-    disclaimerText: {
+    scrollWrapper: {
       flex: 1,
-      fontSize: 12,
-      color: COLORS.PRIMARY_DARK,
-      opacity: 0.75,
-      lineHeight: 18,
+      width: '100%',
+      paddingBottom: FOOTER_HEIGHT,
     },
+    scroll: { flex: 1 },
+    content: { padding: 16, paddingBottom: 24, gap: 16 },
     card: {
       backgroundColor: COLORS.PRIMARY_LIGHT,
       borderRadius: 12,
@@ -334,11 +321,14 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       fontSize: 14,
       color: COLORS.PRIMARY_DARK,
       opacity: 0.8,
+      flexShrink: 1,
     },
     resultVal: {
       fontSize: 14,
       fontWeight: '500',
       color: COLORS.PRIMARY_DARK,
+      flexShrink: 0,
+      marginLeft: 8,
     },
     totalKey: {
       fontWeight: '600',
