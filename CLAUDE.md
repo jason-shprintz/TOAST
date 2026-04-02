@@ -135,7 +135,7 @@ When adding a new tool:
 
 - Define styles with `StyleSheet.create()` at the bottom of each file
 - Don't share StyleSheet objects across files; co-locate styles with their component
-- At no point should the content ever bleed into the footer. The content on each screen should be wrapped in a `ScreenBody` component, which has a bottom padding equal to the footer height. This ensures that the content is always fully visible and doesn't get hidden behind the footer, regardless of the screen size or device.
+- At no point should the content ever bleed into the footer. Wrap screen content in `ScreenBody` for consistent layout, but do not assume it automatically applies footer-height bottom padding; add the required bottom spacing explicitly on screens that render above the footer.
 
 ---
 
