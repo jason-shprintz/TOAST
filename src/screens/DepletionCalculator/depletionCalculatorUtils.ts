@@ -63,9 +63,16 @@ export function calculate(
 }
 
 export function readinessLabel(days: number): { label: string; icon: string } {
-  if (days < 3) return { label: 'Critical — less than 72 hours', icon: 'warning-outline' };
-  if (days < 7) return { label: 'Low — under a week', icon: 'alert-circle-outline' };
-  if (days < 30) return { label: 'Moderate — a few weeks', icon: 'checkmark-circle-outline' };
-  if (days < 90) return { label: 'Good — over a month', icon: 'shield-checkmark-outline' };
+  if (days < 3)
+    return { label: 'Critical — less than 72 hours', icon: 'warning-outline' };
+  if (days < 7)
+    return { label: 'Low — under a week', icon: 'alert-circle-outline' };
+  if (days < 30)
+    return {
+      label: 'Moderate — a few weeks',
+      icon: 'checkmark-circle-outline',
+    };
+  if (days < 90)
+    return { label: 'Good — over a month', icon: 'shield-checkmark-outline' };
   return { label: 'Excellent — 3+ months', icon: 'star-outline' };
 }

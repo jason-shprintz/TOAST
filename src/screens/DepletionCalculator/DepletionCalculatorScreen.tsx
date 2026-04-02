@@ -8,8 +8,8 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ScreenBody from '../../components/ScreenBody';
 import { Text } from '../../components/ScaledText';
+import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore, usePantryStore } from '../../stores/StoreContext';
@@ -88,9 +88,7 @@ export default observer(function DepletionCalculatorScreen(): JSX.Element {
           <View style={styles.stepper}>
             <TouchableOpacity
               style={styles.stepBtn}
-              onPress={() =>
-                setPeopleInput(String(Math.max(1, people - 1)))
-              }
+              onPress={() => setPeopleInput(String(Math.max(1, people - 1)))}
               accessibilityLabel="Decrease people count"
             >
               <Ionicons name="remove" size={22} color={COLORS.PRIMARY_DARK} />
@@ -165,11 +163,7 @@ export default observer(function DepletionCalculatorScreen(): JSX.Element {
               const { label, icon } = readinessLabel(calculated.totalDays);
               return (
                 <View style={styles.badgeRow}>
-                  <Ionicons
-                    name={icon}
-                    size={20}
-                    color={COLORS.ACCENT}
-                  />
+                  <Ionicons name={icon} size={20} color={COLORS.ACCENT} />
                   <Text style={styles.badgeText}>{label}</Text>
                 </View>
               );

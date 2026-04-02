@@ -34,20 +34,12 @@ describe('DepletionCalculator utilities', () => {
       });
 
       test('Frozen: 2.0 days per unit', () => {
-        const result = calculate(
-          [{ category: 'Frozen', quantity: 3 }],
-          [],
-          1,
-        );
+        const result = calculate([{ category: 'Frozen', quantity: 3 }], [], 1);
         expect(result.pantryDays).toBeCloseTo(6.0);
       });
 
       test('Fresh: 0.5 days per unit', () => {
-        const result = calculate(
-          [{ category: 'Fresh', quantity: 6 }],
-          [],
-          1,
-        );
+        const result = calculate([{ category: 'Fresh', quantity: 6 }], [], 1);
         expect(result.pantryDays).toBeCloseTo(3.0);
       });
 
@@ -87,7 +79,9 @@ describe('DepletionCalculator utilities', () => {
           [{ category: 'Backpack', quantity: 10 }],
           1,
         );
-        expect(result.inventoryBonus).toBeCloseTo(10 * DEFAULT_INVENTORY_DAYS_PER_UNIT);
+        expect(result.inventoryBonus).toBeCloseTo(
+          10 * DEFAULT_INVENTORY_DAYS_PER_UNIT,
+        );
       });
     });
 
@@ -116,12 +110,17 @@ describe('DepletionCalculator utilities', () => {
           [{ category: 'Home Base', quantity: 4 }],
           1,
         );
-        expect(result.totalDays).toBeCloseTo(result.pantryDays + result.inventoryBonus);
+        expect(result.totalDays).toBeCloseTo(
+          result.pantryDays + result.inventoryBonus,
+        );
       });
 
       test('itemCount is sum of pantry and inventory items', () => {
         const result = calculate(
-          [{ category: 'Canned Goods', quantity: 1 }, { category: 'Frozen', quantity: 3 }],
+          [
+            { category: 'Canned Goods', quantity: 1 },
+            { category: 'Frozen', quantity: 3 },
+          ],
           [{ category: 'Home Base', quantity: 2 }],
           1,
         );
