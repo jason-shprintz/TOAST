@@ -239,7 +239,7 @@ export const PREPPER_TOOLS: ToolType[] = [
   },
   {
     name: 'Barter Estimator',
-    screen: 'ComingSoon',
+    screen: 'BarterEstimator',
     icon: 'cash-outline',
     id: 'prepper_barter_estimator',
   },

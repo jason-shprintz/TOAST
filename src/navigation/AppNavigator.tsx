@@ -10,6 +10,7 @@ import NavigationModule from '../modules/Navigation/NavigationModule';
 import PrepperModule from '../modules/Prepper/PrepperModule';
 import ReferenceModule from '../modules/Reference/ReferenceModule';
 import BarometricPressureScreen from '../screens/BarometricPressure/BarometricPressureScreen';
+import BarterEstimatorScreen from '../screens/BarterEstimator/BarterEstimatorScreen';
 import ChecklistEntryScreen from '../screens/Checklist/ChecklistEntryScreen';
 import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
@@ -287,6 +288,10 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="DepletionCalculator"
             component={DepletionCalculatorScreen}
+          />
+          <Stack.Screen
+            name="BarterEstimator"
+            component={BarterEstimatorScreen}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
