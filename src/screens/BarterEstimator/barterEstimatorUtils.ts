@@ -72,22 +72,27 @@ export function computeBarter(
 
   // Inventory items — scored individually by item name so that "Home Base" and
   // "Main Vehicle" (which are storage categories, not tradeable goods) don't
-  // appear as barter entries. Each distinct item name gets its own score,
-  // weighted by the category it belongs to.
+  // appear as barter entries. Each distinct (name, category) pair gets its own
+  // score entry so that the same item stored across multiple categories is not
+  // incorrectly merged (e.g., "Water" in "Home Base" and "Main Vehicle" stay
+  // separate and each uses the correct category weight).
   // inventoryCategories is kept in the signature for API compatibility but is
   // not used here; weights come from each item's category field.
-  const invByName = new Map<string, BarterItem[]>();
+  const invGroups = new Map<
+    string,
+    { items: BarterItem[]; name: string; cat: string }
+  >();
   for (const item of inventoryItems) {
-    const key = item.name ?? item.category;
-    const group = invByName.get(key);
-    if (group) {
-      group.push(item);
+    const itemName = item.name ?? item.category;
+    const key = `${itemName}::${item.category}`;
+    const existing = invGroups.get(key);
+    if (existing) {
+      existing.items.push(item);
     } else {
-      invByName.set(key, [item]);
+      invGroups.set(key, { items: [item], name: itemName, cat: item.category });
     }
   }
-  for (const [itemName, group] of invByName) {
-    const cat = group[0].category;
+  for (const { items: group, name: itemName, cat } of invGroups.values()) {
     const totalQty = group.reduce((sum, i) => sum + i.quantity, 0);
     const weight = INVENTORY_BARTER_WEIGHT[cat] ?? DEFAULT_INVENTORY_BARTER_WEIGHT;
     scores.push({

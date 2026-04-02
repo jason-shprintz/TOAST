@@ -12,7 +12,9 @@ import { FOOTER_HEIGHT } from '../../theme';
 import {
   BarterSummary,
   CategoryScore,
+  SCARCITY_THRESHOLD,
   StockStatus,
+  SURPLUS_THRESHOLD,
   computeBarter,
 } from './barterEstimatorUtils';
 
@@ -161,7 +163,7 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                   </Text>
                   {summary.offerItems.map((item) => (
                     <CategoryRow
-                      key={`${item.source}-${item.name}`}
+                      key={`${item.source}-${item.name}-${item.category ?? ''}`}
                       item={item}
                       styles={styles}
                       COLORS={COLORS}
@@ -188,7 +190,7 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                   </Text>
                   {summary.wantItems.map((item) => (
                     <CategoryRow
-                      key={`${item.source}-${item.name}`}
+                      key={`${item.source}-${item.name}-${item.category ?? ''}`}
                       item={item}
                       styles={styles}
                       COLORS={COLORS}
@@ -208,7 +210,7 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                   .sort((a, b) => b.rawScore - a.rawScore)
                   .map((item) => (
                     <CategoryRow
-                      key={`${item.source}-${item.name}`}
+                      key={`${item.source}-${item.name}-${item.category ?? ''}`}
                       item={item}
                       styles={styles}
                       COLORS={COLORS}
@@ -223,8 +225,9 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
                   Each item category earns a weighted score based on post-crisis
                   desirability. Dry goods and canned goods score high; frozen
                   items score low since freezers fail quickly without power.
-                  Categories above 35% of your total score are surplus; categories
-                  below 15% are scarce.
+                  Categories above {Math.round(SURPLUS_THRESHOLD * 100)}% of
+                  your total score are surplus; categories below{' '}
+                  {Math.round(SCARCITY_THRESHOLD * 100)}% are scarce.
                 </Text>
               </View>
             </>

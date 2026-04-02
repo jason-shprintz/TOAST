@@ -29,8 +29,8 @@ describe('computeBarter()', () => {
       );
       expect(result.totalScore).toBe(0);
       expect(result.overallReadiness).toBe('poor');
-      // Only pantry categories create zero-score entries; inventory categories
-      // without items produce no entries (items are scored individually).
+      // Only pantry categories create zero-score entries; inventory entries are
+      // created only when items exist (keyed by name::category composite).
       expect(result.categories).toHaveLength(2);
       result.categories.forEach((cat) => {
         expect(cat.rawScore).toBe(0);
@@ -361,6 +361,65 @@ describe('computeBarter()', () => {
         ['Home Base'],
       );
       expect(result.categories[0].source).toBe('inventory');
+    });
+  });
+
+  describe('composite key grouping for inventory', () => {
+    test('same-named items in different inventory categories score separately', () => {
+      // "Water" in Home Base (weight 3) and "Water" in Main Vehicle (weight 2)
+      // must NOT be merged — each should keep its own score and category weight.
+      const result = computeBarter(
+        [],
+        [],
+        [
+          { name: 'Water', category: 'Home Base', quantity: 2 },
+          { name: 'Water', category: 'Main Vehicle', quantity: 3 },
+        ],
+        ['Home Base', 'Main Vehicle'],
+      );
+      expect(result.categories).toHaveLength(2);
+
+      const homeEntry = result.categories.find(
+        (c) => c.name === 'Water' && c.category === 'Home Base',
+      );
+      const vehicleEntry = result.categories.find(
+        (c) => c.name === 'Water' && c.category === 'Main Vehicle',
+      );
+
+      expect(homeEntry).toBeDefined();
+      expect(homeEntry!.rawScore).toBe(6); // 2 * 3 (Home Base weight)
+      expect(homeEntry!.totalQuantity).toBe(2);
+
+      expect(vehicleEntry).toBeDefined();
+      expect(vehicleEntry!.rawScore).toBe(6); // 3 * 2 (Main Vehicle weight)
+      expect(vehicleEntry!.totalQuantity).toBe(3);
+    });
+
+    test('same-named items in the same category are aggregated', () => {
+      // Multiple "Water" entries in the same category should still be combined.
+      const result = computeBarter(
+        [],
+        [],
+        [
+          { name: 'Water', category: 'Home Base', quantity: 2 },
+          { name: 'Water', category: 'Home Base', quantity: 3 },
+        ],
+        ['Home Base'],
+      );
+      expect(result.categories).toHaveLength(1);
+      expect(result.categories[0].totalQuantity).toBe(5);
+      expect(result.categories[0].itemCount).toBe(2);
+      expect(result.categories[0].rawScore).toBe(15); // 5 * 3
+    });
+
+    test('unnamed items fall back to category as display name', () => {
+      const result = computeBarter(
+        [],
+        [],
+        [{ category: 'Home Base', quantity: 4 }],
+        ['Home Base'],
+      );
+      expect(result.categories[0].name).toBe('Home Base');
     });
   });
 });
