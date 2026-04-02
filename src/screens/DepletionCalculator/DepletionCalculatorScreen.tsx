@@ -3,84 +3,17 @@ import React, { JSX, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ScreenBody from '../../components/ScreenBody';
+import { Text } from '../../components/ScaledText';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
-import { useInventoryStore } from '../../stores/StoreContext';
-import { usePantryStore } from '../../stores/StoreContext';
-
-/**
- * Category-level estimates for how many person-days a single unit provides.
- * These are intentionally rough — the feature is for entertainment.
- */
-const PANTRY_DAYS_PER_UNIT: Record<string, number> = {
-  'Canned Goods': 1.5,
-  'Dry Goods': 3,
-  Frozen: 2,
-  Fresh: 0.5,
-};
-const DEFAULT_PANTRY_DAYS_PER_UNIT = 1;
-
-/** Non-food inventory contributes to a generic "supply readiness" score (days). */
-const INVENTORY_DAYS_PER_UNIT: Record<string, number> = {
-  'Home Base': 0.5,
-  'Main Vehicle': 0.25,
-};
-const DEFAULT_INVENTORY_DAYS_PER_UNIT = 0.3;
-
-interface ResultBreakdown {
-  pantryDays: number;
-  inventoryBonus: number;
-  totalDays: number;
-  itemCount: number;
-}
-
-function calculate(
-  pantryItems: ReturnType<typeof usePantryStore>['items'],
-  inventoryItems: ReturnType<typeof useInventoryStore>['items'],
-  people: number,
-): ResultBreakdown {
-  const safepeople = Math.max(1, people);
-
-  // Food supply estimate
-  let rawFoodPersonDays = 0;
-  for (const item of pantryItems) {
-    const rate =
-      PANTRY_DAYS_PER_UNIT[item.category] ?? DEFAULT_PANTRY_DAYS_PER_UNIT;
-    rawFoodPersonDays += item.quantity * rate;
-  }
-  const pantryDays = rawFoodPersonDays / safepeople;
-
-  // Inventory "bonus" days (water, gear, medical adds resilience)
-  let rawInventoryPersonDays = 0;
-  for (const item of inventoryItems) {
-    const rate =
-      INVENTORY_DAYS_PER_UNIT[item.category] ?? DEFAULT_INVENTORY_DAYS_PER_UNIT;
-    rawInventoryPersonDays += item.quantity * rate;
-  }
-  const inventoryBonus = rawInventoryPersonDays / safepeople;
-
-  return {
-    pantryDays,
-    inventoryBonus,
-    totalDays: pantryDays + inventoryBonus,
-    itemCount: pantryItems.length + inventoryItems.length,
-  };
-}
-
-function readinessLabel(days: number): { label: string; icon: string } {
-  if (days < 3) return { label: 'Critical — less than 72 hours', icon: 'warning-outline' };
-  if (days < 7) return { label: 'Low — under a week', icon: 'alert-circle-outline' };
-  if (days < 30) return { label: 'Moderate — a few weeks', icon: 'checkmark-circle-outline' };
-  if (days < 90) return { label: 'Good — over a month', icon: 'shield-checkmark-outline' };
-  return { label: 'Excellent — 3+ months', icon: 'star-outline' };
-}
+import { useInventoryStore, usePantryStore } from '../../stores/StoreContext';
+import { calculate, readinessLabel } from './depletionCalculatorUtils';
 
 /**
  * DepletionCalculatorScreen
@@ -95,15 +28,19 @@ export default observer(function DepletionCalculatorScreen(): JSX.Element {
   const inventoryStore = useInventoryStore();
 
   const [peopleInput, setPeopleInput] = useState('1');
-  const [calculated, setCalculated] = useState<ResultBreakdown | null>(null);
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   const people = Math.max(1, parseInt(peopleInput, 10) || 1);
   const hasItems =
     pantryStore.items.length > 0 || inventoryStore.items.length > 0;
 
+  // Derive result inline so MobX observer always keeps it fresh after Calculate is pressed
+  const calculated = hasCalculated
+    ? calculate(pantryStore.items, inventoryStore.items, people)
+    : null;
+
   function handleCalculate() {
-    const result = calculate(pantryStore.items, inventoryStore.items, people);
-    setCalculated(result);
+    setHasCalculated(true);
   }
 
   function formatDays(days: number): string {
