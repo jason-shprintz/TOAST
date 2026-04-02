@@ -20,7 +20,7 @@ describe('computeBarter()', () => {
       expect(result.wantItems).toHaveLength(0);
     });
 
-    test('categories with no items produce zero scores', () => {
+    test('pantry categories with no items produce zero scores; empty inventory categories produce no entries', () => {
       const result = computeBarter(
         [],
         ['Canned Goods', 'Dry Goods'],
@@ -29,7 +29,9 @@ describe('computeBarter()', () => {
       );
       expect(result.totalScore).toBe(0);
       expect(result.overallReadiness).toBe('poor');
-      expect(result.categories).toHaveLength(3);
+      // Only pantry categories create zero-score entries; inventory categories
+      // without items produce no entries (items are scored individually).
+      expect(result.categories).toHaveLength(2);
       result.categories.forEach((cat) => {
         expect(cat.rawScore).toBe(0);
         expect(cat.itemCount).toBe(0);
@@ -175,12 +177,7 @@ describe('computeBarter()', () => {
     });
 
     test('all-zero scores produce all-scarce status', () => {
-      const result = computeBarter(
-        [],
-        ['Canned Goods', 'Dry Goods'],
-        [],
-        [],
-      );
+      const result = computeBarter([], ['Canned Goods', 'Dry Goods'], [], []);
       // totalScore is 0, so fraction is 0 for all → all scarce
       result.categories.forEach((cat) => {
         expect(cat.status).toBe('scarce');
@@ -192,7 +189,7 @@ describe('computeBarter()', () => {
     test('offerItems sorted descending by rawScore', () => {
       const result = computeBarter(
         [
-          { category: 'Dry Goods', quantity: 10 },  // score 40
+          { category: 'Dry Goods', quantity: 10 }, // score 40
           { category: 'Canned Goods', quantity: 10 }, // score 30
         ],
         ['Dry Goods', 'Canned Goods'],
@@ -210,9 +207,9 @@ describe('computeBarter()', () => {
       // Create scenario with multiple scarce items
       const result = computeBarter(
         [
-          { category: 'Dry Goods', quantity: 50 },   // dominates
-          { category: 'Frozen', quantity: 1 },        // scarce
-          { category: 'Fresh', quantity: 1 },         // potentially scarce
+          { category: 'Dry Goods', quantity: 50 }, // dominates
+          { category: 'Frozen', quantity: 1 }, // scarce
+          { category: 'Fresh', quantity: 1 }, // potentially scarce
         ],
         ['Dry Goods', 'Frozen', 'Fresh'],
         [],
@@ -237,7 +234,7 @@ describe('computeBarter()', () => {
       // Actually need 2 categories each > 35%; with exactly 2 equal categories each is 50%
       const result = computeBarter(
         [
-          { category: 'Dry Goods', quantity: 5 },    // 20 pts
+          { category: 'Dry Goods', quantity: 5 }, // 20 pts
           { category: 'Canned Goods', quantity: 5 }, // 15 pts — these two dominate
         ],
         ['Dry Goods', 'Canned Goods'],

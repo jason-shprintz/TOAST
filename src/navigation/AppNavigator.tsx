@@ -292,7 +292,7 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="BarterEstimator"
             component={BarterEstimatorScreen}
-           />
+          />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
           <Stack.Screen name="Category" component={CategoryScreen} />

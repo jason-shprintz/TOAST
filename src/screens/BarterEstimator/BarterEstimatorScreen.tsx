@@ -5,8 +5,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import SectionSubHeader from '../../components/SectionSubHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useInventoryStore, usePantryStore } from '../../stores/StoreContext';
+import { FOOTER_HEIGHT } from '../../theme';
 import {
   BarterSummary,
   CategoryScore,
@@ -61,9 +63,11 @@ function CategoryRow({
       <View style={styles.rowMain}>
         <Text style={styles.rowName}>{item.name}</Text>
         <Text style={styles.rowMeta}>
-          {item.source === 'pantry' ? 'Pantry' : 'Inventory'} ·{' '}
-          {item.itemCount} item{item.itemCount !== 1 ? 's' : ''},{' '}
-          qty {Math.round(item.totalQuantity)}
+          {item.source === 'pantry'
+            ? 'Pantry'
+            : (item.category ?? 'Inventory')}{' '}
+          · {item.itemCount} item{item.itemCount !== 1 ? 's' : ''}, qty{' '}
+          {Math.round(item.totalQuantity)}
         </Text>
       </View>
       <Text style={[styles.rowStatus, { color: iconColor }]}>
@@ -103,153 +107,143 @@ export default observer(function BarterEstimatorScreen(): JSX.Element {
     <ScreenBody>
       <SectionHeader>Barter Estimator</SectionHeader>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-      >
-        {/* Disclaimer */}
-        <View style={styles.disclaimerBox}>
-          <Ionicons
-            name="information-circle-outline"
-            size={16}
-            color={COLORS.TOAST_BROWN}
-          />
-          <Text style={styles.disclaimerText}>
+      <View style={styles.scrollWrapper}>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+          <SectionSubHeader>
             Trade values are rough estimates for entertainment only. Real barter
             depends on local scarcity, relationships, and circumstances.
-          </Text>
-        </View>
+          </SectionSubHeader>
 
-        {!hasItems ? (
-          <View style={styles.emptyCard}>
-            <Ionicons
-              name="cube-outline"
-              size={36}
-              color={COLORS.TOAST_BROWN}
-              style={{ marginBottom: 8 }}
-            />
-            <Text style={styles.emptyText}>
-              Add items to your Pantry and Inventory to see your barter
-              profile.
-            </Text>
-          </View>
-        ) : (
-          <>
-            {/* Overall readiness */}
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Barter Position</Text>
-              <View style={styles.badgeRow}>
-                <Ionicons
-                  name={READINESS_ICON[summary.overallReadiness]}
-                  size={20}
-                  color={COLORS.ACCENT}
-                />
-                <Text style={styles.badgeText}>
-                  {READINESS_LABEL[summary.overallReadiness]}
-                </Text>
-              </View>
-            </View>
-
-            {/* What to offer */}
-            {summary.offerItems.length > 0 && (
-              <View style={styles.card}>
-                <View style={styles.cardHeaderRow}>
-                  <Ionicons
-                    name="arrow-up-circle-outline"
-                    size={18}
-                    color={COLORS.SUCCESS}
-                  />
-                  <Text style={[styles.cardTitle, { color: COLORS.SUCCESS }]}>
-                    You can offer
-                  </Text>
-                </View>
-                <Text style={styles.cardSubtitle}>
-                  You have surplus in these categories — good trade chips.
-                </Text>
-                {summary.offerItems.map((item) => (
-                  <CategoryRow key={`${item.source}-${item.name}`} item={item} styles={styles} COLORS={COLORS} />
-                ))}
-              </View>
-            )}
-
-            {/* What to seek */}
-            {summary.wantItems.length > 0 && (
-              <View style={styles.card}>
-                <View style={styles.cardHeaderRow}>
-                  <Ionicons
-                    name="arrow-down-circle-outline"
-                    size={18}
-                    color={COLORS.ERROR}
-                  />
-                  <Text style={[styles.cardTitle, { color: COLORS.ERROR }]}>
-                    You should seek
-                  </Text>
-                </View>
-                <Text style={styles.cardSubtitle}>
-                  These categories are thin — prioritize acquiring them.
-                </Text>
-                {summary.wantItems.map((item) => (
-                  <CategoryRow key={`${item.source}-${item.name}`} item={item} styles={styles} COLORS={COLORS} />
-                ))}
-              </View>
-            )}
-
-            {/* Full breakdown */}
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Full Breakdown</Text>
-              <Text style={styles.cardSubtitle}>
-                All categories ranked by barter value.
-              </Text>
-              {summary.categories
-                .slice()
-                .sort((a, b) => b.rawScore - a.rawScore)
-                .map((item) => (
-                  <CategoryRow
-                    key={`${item.source}-${item.name}`}
-                    item={item}
-                    styles={styles}
-                    COLORS={COLORS}
-                  />
-                ))}
-            </View>
-
-            {/* How scores work */}
-            <View style={styles.infoBox}>
-              <Text style={styles.infoTitle}>How scores work</Text>
-              <Text style={styles.infoText}>
-                Each item category earns a weighted score based on post-crisis
-                desirability. Dry goods and canned goods score high; frozen
-                items score low since freezers fail quickly without power.
-                Categories above 35% of your total score are surplus;
-                categories below 15% are scarce.
+          {!hasItems ? (
+            <View style={styles.emptyCard}>
+              <Ionicons
+                name="cube-outline"
+                size={36}
+                color={COLORS.TOAST_BROWN}
+                style={{ marginBottom: 8 }}
+              />
+              <Text style={styles.emptyText}>
+                Add items to your Pantry and Inventory to see your barter profile.
               </Text>
             </View>
-          </>
-        )}
-      </ScrollView>
+          ) : (
+            <>
+              {/* Overall readiness */}
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>Barter Position</Text>
+                <View style={styles.badgeRow}>
+                  <Ionicons
+                    name={READINESS_ICON[summary.overallReadiness]}
+                    size={20}
+                    color={COLORS.ACCENT}
+                  />
+                  <Text style={styles.badgeText}>
+                    {READINESS_LABEL[summary.overallReadiness]}
+                  </Text>
+                </View>
+              </View>
+
+              {/* What to offer */}
+              {summary.offerItems.length > 0 && (
+                <View style={styles.card}>
+                  <View style={styles.cardHeaderRow}>
+                    <Ionicons
+                      name="arrow-up-circle-outline"
+                      size={18}
+                      color={COLORS.SUCCESS}
+                    />
+                    <Text style={[styles.cardTitle, { color: COLORS.SUCCESS }]}>
+                      You can offer
+                    </Text>
+                  </View>
+                  <Text style={styles.cardSubtitle}>
+                    You have surplus in these categories — good trade chips.
+                  </Text>
+                  {summary.offerItems.map((item) => (
+                    <CategoryRow
+                      key={`${item.source}-${item.name}`}
+                      item={item}
+                      styles={styles}
+                      COLORS={COLORS}
+                    />
+                  ))}
+                </View>
+              )}
+
+              {/* What to seek */}
+              {summary.wantItems.length > 0 && (
+                <View style={styles.card}>
+                  <View style={styles.cardHeaderRow}>
+                    <Ionicons
+                      name="arrow-down-circle-outline"
+                      size={18}
+                      color={COLORS.ERROR}
+                    />
+                    <Text style={[styles.cardTitle, { color: COLORS.ERROR }]}>
+                      You should seek
+                    </Text>
+                  </View>
+                  <Text style={styles.cardSubtitle}>
+                    These categories are thin — prioritize acquiring them.
+                  </Text>
+                  {summary.wantItems.map((item) => (
+                    <CategoryRow
+                      key={`${item.source}-${item.name}`}
+                      item={item}
+                      styles={styles}
+                      COLORS={COLORS}
+                    />
+                  ))}
+                </View>
+              )}
+
+              {/* Full breakdown */}
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>Full Breakdown</Text>
+                <Text style={styles.cardSubtitle}>
+                  All categories ranked by barter value.
+                </Text>
+                {summary.categories
+                  .slice()
+                  .sort((a, b) => b.rawScore - a.rawScore)
+                  .map((item) => (
+                    <CategoryRow
+                      key={`${item.source}-${item.name}`}
+                      item={item}
+                      styles={styles}
+                      COLORS={COLORS}
+                    />
+                  ))}
+              </View>
+
+              {/* How scores work */}
+              <View style={styles.infoBox}>
+                <Text style={styles.infoTitle}>How scores work</Text>
+                <Text style={styles.infoText}>
+                  Each item category earns a weighted score based on post-crisis
+                  desirability. Dry goods and canned goods score high; frozen
+                  items score low since freezers fail quickly without power.
+                  Categories above 35% of your total score are surplus; categories
+                  below 15% are scarce.
+                </Text>
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </View>
     </ScreenBody>
   );
 });
 
 function makeStyles(COLORS: ReturnType<typeof useTheme>) {
   return StyleSheet.create({
-    scroll: { flex: 1 },
-    content: { padding: 16, paddingBottom: 40, gap: 16 },
-    disclaimerBox: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      gap: 8,
-      backgroundColor: COLORS.BACKGROUND,
-      borderRadius: 10,
-      padding: 12,
-    },
-    disclaimerText: {
+    scrollWrapper: {
       flex: 1,
-      fontSize: 12,
-      color: COLORS.PRIMARY_DARK,
-      opacity: 0.75,
-      lineHeight: 18,
+      width: '100%',
+      paddingBottom: FOOTER_HEIGHT,
     },
+    scroll: { flex: 1 },
+    content: { padding: 16, paddingBottom: 24, gap: 16 },
     emptyCard: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -341,4 +335,3 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
     rowStatus: { fontSize: 13, fontWeight: '600' },
   });
 }
-

@@ -25,6 +25,7 @@ export type StockStatus = 'scarce' | 'balanced' | 'surplus';
 
 export interface CategoryScore {
   name: string;
+  category?: string; // source category (populated for inventory items)
   source: 'pantry' | 'inventory';
   rawScore: number;
   status: StockStatus;
@@ -34,13 +35,14 @@ export interface CategoryScore {
 
 export interface BarterSummary {
   categories: CategoryScore[];
-  offerItems: CategoryScore[];  // surplus — good to trade away
-  wantItems: CategoryScore[];   // scarce — seek in trade
+  offerItems: CategoryScore[]; // surplus — good to trade away
+  wantItems: CategoryScore[]; // scarce — seek in trade
   totalScore: number;
   overallReadiness: 'poor' | 'fair' | 'good' | 'excellent';
 }
 
 export interface BarterItem {
+  name?: string; // item name; used for per-item inventory scoring
   category: string;
   quantity: number;
 }
@@ -49,7 +51,7 @@ export function computeBarter(
   pantryItems: BarterItem[],
   pantryCategories: string[],
   inventoryItems: BarterItem[],
-  inventoryCategories: string[],
+  _inventoryCategories: string[],
 ): BarterSummary {
   const scores: CategoryScore[] = [];
 
@@ -68,18 +70,33 @@ export function computeBarter(
     });
   }
 
-  // Inventory categories
-  for (const cat of inventoryCategories) {
-    const catItems = inventoryItems.filter((i) => i.category === cat);
-    const totalQty = catItems.reduce((sum, i) => sum + i.quantity, 0);
-    const weight =
-      INVENTORY_BARTER_WEIGHT[cat] ?? DEFAULT_INVENTORY_BARTER_WEIGHT;
+  // Inventory items — scored individually by item name so that "Home Base" and
+  // "Main Vehicle" (which are storage categories, not tradeable goods) don't
+  // appear as barter entries. Each distinct item name gets its own score,
+  // weighted by the category it belongs to.
+  // inventoryCategories is kept in the signature for API compatibility but is
+  // not used here; weights come from each item's category field.
+  const invByName = new Map<string, BarterItem[]>();
+  for (const item of inventoryItems) {
+    const key = item.name ?? item.category;
+    const group = invByName.get(key);
+    if (group) {
+      group.push(item);
+    } else {
+      invByName.set(key, [item]);
+    }
+  }
+  for (const [itemName, group] of invByName) {
+    const cat = group[0].category;
+    const totalQty = group.reduce((sum, i) => sum + i.quantity, 0);
+    const weight = INVENTORY_BARTER_WEIGHT[cat] ?? DEFAULT_INVENTORY_BARTER_WEIGHT;
     scores.push({
-      name: cat,
+      name: itemName,
+      category: cat,
       source: 'inventory',
       rawScore: totalQty * weight,
       status: 'balanced',
-      itemCount: catItems.length,
+      itemCount: group.length,
       totalQuantity: totalQty,
     });
   }
@@ -119,5 +136,11 @@ export function computeBarter(
     overallReadiness = 'fair';
   }
 
-  return { categories: scores, offerItems, wantItems, totalScore, overallReadiness };
+  return {
+    categories: scores,
+    offerItems,
+    wantItems,
+    totalScore,
+    overallReadiness,
+  };
 }
