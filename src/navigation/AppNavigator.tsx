@@ -15,6 +15,7 @@ import ChecklistScreen from '../screens/Checklist/ChecklistScreen';
 import ComingSoonScreen from '../screens/Common/ComingSoonScreen';
 import SearchScreen from '../screens/Common/SearchScreen';
 import DecibelMeterScreen from '../screens/DecibelMeter/DecibelMeterScreen';
+import DepletionCalculatorScreen from '../screens/DepletionCalculator/DepletionCalculatorScreen';
 import DeviceStatusScreen from '../screens/DeviceStatus/DeviceStatusScreen';
 import DigitalWhistleScreen from '../screens/DigitalWhistle/DigitalWhistleScreen';
 import CommunicationPlanScreen from '../screens/EmergencyPlan/CommunicationPlanScreen';
@@ -281,6 +282,11 @@ function NavigatorContent(): JSX.Element {
           <Stack.Screen
             name="EditPantryItem"
             component={EditPantryItemScreen}
+          />
+          {/* Prepper Module */}
+          <Stack.Screen
+            name="DepletionCalculator"
+            component={DepletionCalculatorScreen}
           />
           {/* Reference Module */}
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
