@@ -129,5 +129,6 @@ const styles = StyleSheet.create({
   },
   headerWithSearch: {
     paddingRight: 40,
+    paddingLeft: 40,
   },
 });
