@@ -1,7 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Text } from '../../../components/ScaledText';
-import { useTheme } from '../../../hooks/useTheme';
+import AppButton from '../../../components/AppButton';
 import { inventoryFormStyles as styles } from '../../Inventory/inventoryFormStyles';
 
 interface DeleteButtonProps {
@@ -16,21 +14,13 @@ export function DeleteButton({
   onPress,
   label = 'Delete Item',
 }: DeleteButtonProps): React.JSX.Element {
-  const COLORS = useTheme();
-
   return (
-    <TouchableOpacity
-      style={[
-        styles.deleteButton,
-        { backgroundColor: COLORS.ERROR || '#d32f2f' },
-      ]}
+    <AppButton
+      label={label}
       onPress={onPress}
-      accessibilityLabel={label}
-      accessibilityRole="button"
-    >
-      <Text style={[styles.deleteButtonText, { color: COLORS.PRIMARY_LIGHT }]}>
-        {label}
-      </Text>
-    </TouchableOpacity>
+      variant="destructive"
+      icon="trash-outline"
+      style={styles.deleteButtonContainer}
+    />
   );
 }

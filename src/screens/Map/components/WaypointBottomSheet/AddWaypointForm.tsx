@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AppButton from '../../../../components/AppButton';
 import { useTheme } from '../../../../hooks/useTheme';
 
 type AddMode = 'location' | 'manual';
@@ -140,22 +141,19 @@ export default function AddWaypointForm({
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <View style={styles.formActions}>
-        <TouchableOpacity
-          style={[styles.formBtn, styles.cancelBtn]}
+        <AppButton
+          label="Cancel"
           onPress={onCancel}
+          variant="destructive"
           accessibilityLabel="Cancel adding waypoint"
-          accessibilityRole="button"
-        >
-          <Text style={styles.cancelBtnText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.formBtn}
+          style={styles.actionBtnFlex}
+        />
+        <AppButton
+          label="Save"
           onPress={handleSubmit}
           accessibilityLabel="Save waypoint"
-          accessibilityRole="button"
-        >
-          <Text style={styles.formBtnText}>Save</Text>
-        </TouchableOpacity>
+          style={styles.actionBtnFlex}
+        />
       </View>
     </View>
   );
@@ -218,25 +216,8 @@ function makeStyles(colors: ReturnType<typeof useTheme>) {
       gap: 10,
       marginTop: 4,
     },
-    formBtn: {
+    actionBtnFlex: {
       flex: 1,
-      backgroundColor: colors.SECONDARY_ACCENT,
-      borderRadius: 8,
-      paddingVertical: 10,
-      alignItems: 'center',
-    },
-    formBtnText: {
-      color: colors.PRIMARY_LIGHT,
-      fontWeight: '700',
-      fontSize: 14,
-    },
-    cancelBtn: {
-      backgroundColor: colors.ERROR,
-    },
-    cancelBtnText: {
-      color: colors.PRIMARY_LIGHT,
-      fontWeight: '700',
-      fontSize: 14,
     },
   });
 }

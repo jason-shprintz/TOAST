@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AppButton from '../../components/AppButton';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -138,16 +139,13 @@ export default observer(function DepletionCalculatorScreen(): JSX.Element {
           </View>
 
           {/* Calculate button */}
-          <TouchableOpacity
-            style={[styles.calcBtn, !hasItems && styles.calcBtnDisabled]}
+          <AppButton
+            label="Calculate"
             onPress={handleCalculate}
             disabled={!hasItems}
+            icon="calculator-outline"
             accessibilityLabel="Calculate depletion estimate"
-            accessibilityRole="button"
-          >
-            <Ionicons name="calculator-outline" size={20} color="#fff" />
-            <Text style={styles.calcBtnText}>Calculate</Text>
-          </TouchableOpacity>
+          />
 
           {/* Results */}
           {calculated !== null && (
@@ -267,23 +265,6 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       opacity: 0.6,
       fontStyle: 'italic',
       marginTop: 4,
-    },
-    calcBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 8,
-      backgroundColor: COLORS.ACCENT,
-      borderRadius: 12,
-      paddingVertical: 14,
-    },
-    calcBtnDisabled: {
-      opacity: 0.4,
-    },
-    calcBtnText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: '#fff',
     },
     resultsCard: {
       backgroundColor: COLORS.PRIMARY_LIGHT,
