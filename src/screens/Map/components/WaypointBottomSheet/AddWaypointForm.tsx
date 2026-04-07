@@ -144,7 +144,7 @@ export default function AddWaypointForm({
         <AppButton
           label="Cancel"
           onPress={onCancel}
-          variant="destructive"
+          variant="secondary"
           accessibilityLabel="Cancel adding waypoint"
           style={styles.actionBtnFlex}
         />
