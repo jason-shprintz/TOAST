@@ -259,3 +259,40 @@ describe('CoreStore - Morse Code Transmission', () => {
     });
   });
 });
+
+describe('CoreStore - SOS audio lazy loading', () => {
+  let Sound: jest.Mock & { setCategory: jest.Mock; MAIN_BUNDLE: string };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+    Sound = require('react-native-sound') as typeof Sound;
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('should NOT instantiate Sound or call setCategory on construction', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+    expect(Sound.setCategory).not.toHaveBeenCalled();
+    store.dispose();
+  });
+
+  it('should instantiate Sound and call setCategory only when SOS is activated with tone enabled', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    // Activate SOS mode (sosWithTone defaults to true)
+    store.setFlashlightMode('sos');
+
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled(); // sound files loaded
+    store.dispose();
+  });
+});
