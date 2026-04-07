@@ -91,9 +91,6 @@ export class CoreStore {
    * @private
    */
   private loadSosAudio() {
-    // Enable playback in silent mode
-    Sound.setCategory('Playback');
-
     let dotLoaded = false;
     let dashLoaded = false;
 
@@ -235,6 +232,10 @@ export class CoreStore {
    */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
+    // Only claim audio focus when the tone accompaniment is enabled
+    if (this.sosWithTone) {
+      Sound.setCategory('Playback');
+    }
     // Sequence builder: returns array of {on:boolean, ms:number, type:'dot'|'dash'|null}
     const unit = this.sosUnitMs;
     const dot = [
