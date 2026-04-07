@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   headerWithSearch: {
-    paddingRight: 40,
-    paddingLeft: 40,
+    paddingHorizontal: 40,
   },
 });
