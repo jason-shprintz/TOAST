@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../../hooks/useTheme';
+import { LIGHT_COLORS } from '../../../theme';
 
 type InfoBoxProps = {
   icon: string;
@@ -20,7 +21,7 @@ export default function InfoBox({ icon, children }: InfoBoxProps) {
         end={{ x: 1, y: 0 }}
         style={styles.background}
       />
-      <Icon name={icon} size={20} color={COLORS.PRIMARY_DARK} />
+      <Icon name={icon} size={20} color={LIGHT_COLORS.PRIMARY_DARK} />
       <View style={styles.content}>{children}</View>
     </View>
   );

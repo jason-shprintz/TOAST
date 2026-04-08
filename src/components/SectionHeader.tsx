@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
-import { SPACING } from '../theme';
+import { LIGHT_COLORS, SPACING } from '../theme';
 import { HorizontalRule } from './HorizontalRule';
 import { Text } from './ScaledText';
 
@@ -56,7 +56,7 @@ export default function SectionHeader({
         styles.header,
         enableSearch && styles.headerWithSearch,
         {
-          color: COLORS.PRIMARY_DARK,
+          color: LIGHT_COLORS.PRIMARY_DARK,
           backgroundColor: COLORS.SECONDARY_ACCENT,
           borderColor: COLORS.TOAST_BROWN,
         },
@@ -83,7 +83,7 @@ export default function SectionHeader({
             <Ionicons
               name="search-outline"
               size={16}
-              color={COLORS.PRIMARY_DARK}
+              color={LIGHT_COLORS.PRIMARY_DARK}
               style={styles.searchIcon}
               accessible={false}
             />

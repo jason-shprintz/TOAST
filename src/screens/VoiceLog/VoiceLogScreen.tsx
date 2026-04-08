@@ -27,7 +27,7 @@ import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { FOOTER_HEIGHT, SCROLL_PADDING } from '../../theme';
+import { FOOTER_HEIGHT, LIGHT_COLORS, SCROLL_PADDING } from '../../theme';
 import EmptyState from './components/EmptyState';
 import InfoBox from './components/InfoBox';
 import RecordingControls from './components/RecordingControls';
@@ -378,7 +378,7 @@ export default observer(function VoiceLogScreen() {
                 <Icon
                   name="time-outline"
                   size={16}
-                  color={COLORS.PRIMARY_DARK}
+                  color={LIGHT_COLORS.PRIMARY_DARK}
                 />
                 <Text style={styles.featureText}>Timestamp</Text>
               </View>
@@ -386,7 +386,7 @@ export default observer(function VoiceLogScreen() {
                 <Icon
                   name="location-outline"
                   size={16}
-                  color={COLORS.PRIMARY_DARK}
+                  color={LIGHT_COLORS.PRIMARY_DARK}
                 />
                 <Text style={styles.featureText}>
                   GPS Location (if available)
@@ -455,13 +455,13 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
     },
     infoText: {
       fontSize: 14,
-      color: COLORS.PRIMARY_DARK,
+      color: LIGHT_COLORS.PRIMARY_DARK,
       lineHeight: 20,
     },
     featuresTitle: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: COLORS.PRIMARY_DARK,
+      color: LIGHT_COLORS.PRIMARY_DARK,
       marginBottom: 12,
     },
     featureRow: {
@@ -471,7 +471,7 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
     },
     featureText: {
       fontSize: 14,
-      color: COLORS.PRIMARY_DARK,
+      color: LIGHT_COLORS.PRIMARY_DARK,
       marginLeft: 8,
     },
     voiceLogsList: {

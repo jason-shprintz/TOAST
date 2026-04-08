@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TextProps } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
+import { LIGHT_COLORS } from '../theme';
 import { Text } from './ScaledText';
 
 type Props = TextProps & { title?: string };
@@ -37,7 +38,7 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
     header: {
       fontSize: 14,
       fontFamily: 'Bitter-Bold',
-      color: COLORS.PRIMARY_DARK,
+      color: LIGHT_COLORS.PRIMARY_DARK,
       backgroundColor: COLORS.SECONDARY_ACCENT,
       borderWidth: 2,
       borderColor: COLORS.TOAST_BROWN,
