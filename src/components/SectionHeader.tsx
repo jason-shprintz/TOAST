@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleProp,
   StyleSheet,
@@ -34,6 +34,8 @@ type SectionHeaderNavigationProp = NativeStackNavigationProp<{
  * When the title fits within the available width it is displayed centred.
  * When the title is too long it scrolls horizontally like a ticker via
  * `MarqueeText`, looping continuously until the component unmounts.
+ * While scrolling, the left padding is removed so the text starts from the
+ * container edge; the right padding is preserved to avoid crowding the icon.
  *
  * @param title - Text to display. If omitted, `children` is used instead.
  * @param children - Fallback content when `title` is not provided.
@@ -50,6 +52,7 @@ export default function SectionHeader({
 }: Props) {
   const navigation = useNavigation<SectionHeaderNavigationProp>();
   const COLORS = useTheme();
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const handlePress = () => {
     navigation.navigate('Search');
@@ -59,7 +62,12 @@ export default function SectionHeader({
     <View
       style={[
         styles.headerContainer,
-        enableSearch && styles.headerContainerWithSearch,
+        // Padding depends on both overflow state and whether search is active.
+        isScrolling
+          ? enableSearch
+            ? styles.headerScrollingWithSearch
+            : styles.headerScrollingNoSearch
+          : enableSearch && styles.headerWithSearch,
         {
           backgroundColor: COLORS.SECONDARY_ACCENT,
           borderColor: COLORS.TOAST_BROWN,
@@ -69,6 +77,7 @@ export default function SectionHeader({
     >
       <MarqueeText
         style={[styles.headerText, { color: LIGHT_COLORS.PRIMARY_DARK }]}
+        onOverflowChange={setIsScrolling}
       >
         {title ?? children}
       </MarqueeText>
@@ -115,8 +124,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: SPACING.md,
   },
-  headerContainerWithSearch: {
+  /** Non-scrolling with search icon: wider horizontal padding to clear the icon. */
+  headerWithSearch: {
     paddingHorizontal: 40,
+  },
+  /** Scrolling with search icon: no left padding so text starts at the edge;
+   *  right padding clears the search icon. */
+  headerScrollingWithSearch: {
+    paddingLeft: 0,
+    paddingRight: 40,
+  },
+  /** Scrolling without search icon: no left padding, standard right padding. */
+  headerScrollingNoSearch: {
+    paddingLeft: 0,
+    paddingRight: SPACING.md,
   },
   headerText: {
     fontSize: 20,

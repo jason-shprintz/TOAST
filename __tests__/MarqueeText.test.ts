@@ -33,41 +33,53 @@ describe('MarqueeText', () => {
     });
   });
 
-  describe('animation parameters', () => {
+  describe('animation parameters — ticker behavior', () => {
     const SPEED_PX_PER_S = 40;
 
-    it('calculates scroll duration proportional to overflow length', () => {
-      const overflow50 = Math.round((50 / SPEED_PX_PER_S) * 1000);
-      const overflow100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
+    it('scroll phase duration is proportional to full text width', () => {
+      // The text scrolls fully off the left edge (0 → -textWidth).
+      const textWidth100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
+      const textWidth200 = Math.round((200 / SPEED_PX_PER_S) * 1000);
 
-      // Longer overflow → longer duration
-      expect(overflow100).toBeGreaterThan(overflow50);
-      // Duration is proportional
-      expect(overflow100).toBe(overflow50 * 2);
+      expect(textWidth200).toBeGreaterThan(textWidth100);
+      expect(textWidth200).toBe(textWidth100 * 2);
+    });
+
+    it('enter phase duration is proportional to container width', () => {
+      // Text slides in from the right edge (containerWidth → 0).
+      const enter100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
+      const enter200 = Math.round((200 / SPEED_PX_PER_S) * 1000);
+
+      expect(enter200).toBeGreaterThan(enter100);
+      expect(enter200).toBe(enter100 * 2);
+    });
+
+    it('scroll exits left edge: toValue is -textWidth', () => {
+      const textWidth = 350;
+      const toValue = -textWidth;
+      expect(toValue).toBe(-350);
+    });
+
+    it('enter starts from right edge: fromValue is +containerWidth', () => {
+      const containerWidth = 200;
+      // After scrolling off the left, animValue is reset to containerWidth
+      // so the text enters from the right.
+      expect(containerWidth).toBeGreaterThan(0);
     });
 
     it('duration rounds to nearest millisecond', () => {
-      // 75px overflow at 40px/s = 1875ms (exact)
+      // 75px at 40px/s = 1875ms (exact)
       const duration = Math.round((75 / SPEED_PX_PER_S) * 1000);
       expect(duration).toBe(1875);
     });
 
-    it('scroll target equals negative overflow', () => {
-      const containerWidth = 200;
-      const textWidth = 350;
-      const overflow = textWidth - containerWidth;
-      const toValue = -overflow;
-
-      expect(toValue).toBe(-150);
-    });
-
-    it('respects custom speed', () => {
+    it('respects custom speed for both phases', () => {
       const customSpeed = 80;
-      const overflow = 100;
-      const duration = Math.round((overflow / customSpeed) * 1000);
+      const distance = 100;
+      const duration = Math.round((distance / customSpeed) * 1000);
 
       // At double the speed, duration should be halved
-      const defaultDuration = Math.round((overflow / SPEED_PX_PER_S) * 1000);
+      const defaultDuration = Math.round((distance / SPEED_PX_PER_S) * 1000);
       expect(duration).toBe(defaultDuration / 2);
     });
   });

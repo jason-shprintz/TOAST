@@ -22,10 +22,14 @@ type Props = {
    * @default 40
    */
   speed?: number;
+  /**
+   * Called when the overflow state changes so that parents can adjust layout
+   * (e.g. remove left padding when the text is scrolling).
+   */
+  onOverflowChange?: (isOverflowing: boolean) => void;
 };
 
 const PAUSE_START_MS = 1500;
-const PAUSE_END_MS = 800;
 const DEFAULT_SPEED_PX_PER_S = 40;
 
 /**
@@ -33,8 +37,12 @@ const DEFAULT_SPEED_PX_PER_S = 40;
  * wider than the available container.
  *
  * When the text fits within the container it renders statically, centred.
- * When it overflows it animates continuously to the left, pauses at the end,
- * snaps back to the start, and loops.
+ * When it overflows it behaves like a stock ticker:
+ *   1. Pause at the start so the user can read the beginning of the text.
+ *   2. Scroll smoothly to the left until the text exits the left edge.
+ *   3. Jump invisibly to the right edge.
+ *   4. Slide in from the right back to the start position.
+ *   5. Repeat from step 1.
  *
  * Font scaling from SettingsStore is applied automatically (mirrors ScaledText).
  */
@@ -43,15 +51,19 @@ const MarqueeText = observer(function MarqueeText({
   style,
   containerStyle,
   speed = DEFAULT_SPEED_PX_PER_S,
+  onOverflowChange,
 }: Props) {
   const settingsStore = useSettingsStore();
   const [containerWidth, setContainerWidth] = useState(0);
   const [textWidth, setTextWidth] = useState(0);
   const animValue = useRef(new Animated.Value(0)).current;
-  const animRef = useRef<Animated.CompositeAnimation | null>(null);
+
+  // Tracks whether the current loop iteration should continue running.
+  const activeRef = useRef(false);
+  // The currently running animation, kept so we can stop it on cleanup.
+  const runningAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
   const isOverflowing = containerWidth > 0 && textWidth > containerWidth;
-  const overflow = isOverflowing ? textWidth - containerWidth : 0;
 
   // Apply font scaling the same way ScaledText does.
   const flatStyle = StyleSheet.flatten(style) ?? {};
@@ -62,38 +74,74 @@ const MarqueeText = observer(function MarqueeText({
       : {}),
   };
 
+  // Notify parent whenever the overflow state changes.
+  const prevOverflowRef = useRef<boolean | null>(null);
   useEffect(() => {
-    if (!isOverflowing) {
-      animRef.current?.stop();
+    if (prevOverflowRef.current !== isOverflowing) {
+      prevOverflowRef.current = isOverflowing;
+      onOverflowChange?.(isOverflowing);
+    }
+  }, [isOverflowing, onOverflowChange]);
+
+  useEffect(() => {
+    if (!isOverflowing || containerWidth === 0 || textWidth === 0) {
+      activeRef.current = false;
+      runningAnimRef.current?.stop();
       animValue.setValue(0);
       return;
     }
 
-    const duration = Math.round((overflow / speed) * 1000);
+    activeRef.current = true;
     animValue.setValue(0);
-    animRef.current?.stop();
-    animRef.current = Animated.loop(
-      Animated.sequence([
+
+    // Duration to scroll the full text width off the left edge.
+    const scrollDuration = Math.round((textWidth / speed) * 1000);
+    // Duration to slide in from the right edge to position 0.
+    const enterDuration = Math.round((containerWidth / speed) * 1000);
+
+    const runLoop = () => {
+      if (!activeRef.current) return;
+
+      // Phase 1 — pause at start, then scroll text fully off the left edge.
+      const scrollAnim = Animated.sequence([
         Animated.delay(PAUSE_START_MS),
         Animated.timing(animValue, {
-          toValue: -overflow,
-          duration,
+          toValue: -textWidth,
+          duration: scrollDuration,
           useNativeDriver: true,
         }),
-        Animated.delay(PAUSE_END_MS),
-        Animated.timing(animValue, {
+      ]);
+      runningAnimRef.current = scrollAnim;
+
+      scrollAnim.start(({ finished }) => {
+        if (!finished || !activeRef.current) return;
+
+        // Instant: place text just off the right edge (not visible to user
+        // because the container clips overflow).
+        animValue.setValue(containerWidth);
+
+        // Phase 2 — slide in from the right edge back to position 0.
+        const enterAnim = Animated.timing(animValue, {
           toValue: 0,
-          duration: 0,
+          duration: enterDuration,
           useNativeDriver: true,
-        }),
-      ]),
-    );
-    animRef.current.start();
+        });
+        runningAnimRef.current = enterAnim;
+
+        enterAnim.start(({ finished: enterFinished }) => {
+          if (!enterFinished || !activeRef.current) return;
+          runLoop();
+        });
+      });
+    };
+
+    runLoop();
 
     return () => {
-      animRef.current?.stop();
+      activeRef.current = false;
+      runningAnimRef.current?.stop();
     };
-  }, [isOverflowing, overflow, speed, animValue]);
+  }, [isOverflowing, textWidth, containerWidth, speed, animValue]);
 
   const onContainerLayout = useCallback(
     (e: { nativeEvent: { layout: { width: number } } }) => {
@@ -126,9 +174,9 @@ const MarqueeText = observer(function MarqueeText({
           When overflowing, width is set to the measured natural width so the
           full text renders on a single line at its native size (no wrapping,
           no ellipsis). The parent's overflow:hidden provides the visual clip.
-          numberOfLines is intentionally omitted in this case: setting it to 1
-          would cause React Native to truncate the text with an ellipsis, which
-          defeats the purpose of the marquee. */}
+          numberOfLines is intentionally omitted when overflowing: setting it to
+          1 would cause React Native to truncate with an ellipsis, defeating the
+          purpose of the marquee. */}
       <Animated.Text
         style={[
           scaledStyle,
