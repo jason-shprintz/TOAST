@@ -31,21 +31,34 @@ type Props = {
 
 const PAUSE_START_MS = 1500;
 const DEFAULT_SPEED_PX_PER_S = 40;
+/**
+ * Pixel gap between the trailing edge of the exiting copy and the leading edge
+ * of the entering copy. At this gap the second copy starts appearing from the
+ * right before the first has fully left the left edge — giving a continuous,
+ * overlap-free ticker effect.
+ */
+const TICKER_GAP_PX = 100;
 
 /**
  * Renders text that scrolls horizontally like a stock ticker when the content
  * is wider than the available container.
  *
  * When the text fits within the container it renders statically, centred.
- * When it overflows it loops continuously:
- *   1. Pause 1.5 s at position 0 so the user can read the start.
- *   2. Scroll left until the text fully exits the left edge (x = -textWidth).
- *   3. Jump instantly to x = containerWidth (just off the right edge — hidden
- *      because the container uses overflow: 'hidden').
- *   4. Slide in from the right to position 0.
- *   5. Repeat.
+ * When it overflows it loops continuously using two copies of the text:
+ *   1. Pause 1.5 s at position 0 (copy A visible, copy B off the right edge).
+ *   2. Both copies scroll left at the same speed.  When copy A's trailing
+ *      edge is TICKER_GAP_PX (100 px) from the right edge of the container,
+ *      copy B's leading edge starts entering from the right.
+ *   3. Copy A exits the left edge; copy B reaches position 0.
+ *   4. Loop resets seamlessly — copy B is now at 0, which is exactly where
+ *      copy A was at step 1, so no visual jump occurs.
  *
- * Font scaling from SettingsStore is applied automatically (mirrors ScaledText).
+ * ### Row animation
+ * Both copies live in a single `Animated.View` row:
+ *   [copy A][TICKER_GAP_PX spacer][copy B]
+ * The row is translated by `animValue` which cycles from 0 to
+ * -(textWidth + TICKER_GAP_PX). At the end of the cycle copy B is at 0;
+ * the loop reset to 0 puts copy A back at 0 — seamless.
  *
  * ### Measurement
  * A hidden, absolutely-positioned RNText with `alignSelf: 'flex-start'` is used
@@ -117,39 +130,24 @@ const MarqueeText = observer(function MarqueeText({
     animRef.current?.stop();
     animValue.setValue(0);
 
-    if (!shouldScroll || containerWidth === 0 || textWidth === 0) {
+    if (!shouldScroll || textWidth === 0) {
       return;
     }
 
-    // Duration to scroll the full text width off the left edge (0 → -textWidth).
-    const scrollDuration = Math.round((textWidth / speed) * 1000);
-    // Duration to slide in from the right edge (containerWidth → 0).
-    const enterDuration = Math.round((containerWidth / speed) * 1000);
+    // One full cycle moves the row by (textWidth + gap).  At the end of the
+    // cycle, copy B is at position 0 — identical to copy A's start position —
+    // so the Animated.loop reset is seamless with no visible jump.
+    const cycleLength = textWidth + TICKER_GAP_PX;
+    const cycleDuration = Math.round((cycleLength / speed) * 1000);
 
-    // The entire loop runs on the native thread via Animated.loop.
-    // The duration: 0 timing performs an instant (invisible) jump from the
-    // exited-left position to just beyond the right edge; the container's
-    // overflow: 'hidden' ensures the text is never seen at that position.
     animRef.current = Animated.loop(
       Animated.sequence([
         // Pause so the user can read the beginning of the title.
         Animated.delay(PAUSE_START_MS),
-        // Scroll text fully off the left edge.
+        // Scroll both copies left by one full cycle length.
         Animated.timing(animValue, {
-          toValue: -textWidth,
-          duration: scrollDuration,
-          useNativeDriver: true,
-        }),
-        // Jump invisibly to just beyond the right edge.
-        Animated.timing(animValue, {
-          toValue: containerWidth,
-          duration: 0,
-          useNativeDriver: true,
-        }),
-        // Slide in from the right edge back to position 0.
-        Animated.timing(animValue, {
-          toValue: 0,
-          duration: enterDuration,
+          toValue: -cycleLength,
+          duration: cycleDuration,
           useNativeDriver: true,
         }),
       ]),
@@ -159,7 +157,7 @@ const MarqueeText = observer(function MarqueeText({
     return () => {
       animRef.current?.stop();
     };
-  }, [shouldScroll, textWidth, containerWidth, speed, animValue]);
+  }, [shouldScroll, textWidth, speed, animValue]);
 
   const onContainerLayout = useCallback(
     (e: { nativeEvent: { layout: { width: number } } }) => {
@@ -195,20 +193,28 @@ const MarqueeText = observer(function MarqueeText({
         </RNText>
       </View>
 
-      {/* Visible animated text.
-          When scrolling, width is pinned to the measured natural width so the
-          full text renders on a single line. The container's overflow: 'hidden'
-          clips it. numberOfLines is omitted when scrolling to avoid ellipsis. */}
-      <Animated.Text
-        style={[
-          scaledStyle,
-          shouldScroll ? { width: textWidth } : styles.centeredText,
-          { transform: [{ translateX: animValue }] },
-        ]}
-        numberOfLines={shouldScroll ? undefined : 1}
-      >
-        {children}
-      </Animated.Text>
+      {shouldScroll ? (
+        /* Ticker: an Animated.View row containing two copies of the text
+           separated by TICKER_GAP_PX.  Both copies translate together so the
+           second copy enters from the right as the first exits to the left,
+           giving continuous seamless overlap-free scrolling. */
+        <Animated.View
+          style={[styles.tickerRow, { transform: [{ translateX: animValue }] }]}
+        >
+          <RNText style={[scaledStyle, { width: textWidth }]}>
+            {children}
+          </RNText>
+          <View style={styles.tickerGap} accessible={false} />
+          <RNText style={[scaledStyle, { width: textWidth }]}>
+            {children}
+          </RNText>
+        </Animated.View>
+      ) : (
+        /* Static: centred, single line. */
+        <RNText style={[scaledStyle, styles.centeredText]} numberOfLines={1}>
+          {children}
+        </RNText>
+      )}
     </View>
   );
 });
@@ -237,5 +243,12 @@ const styles = StyleSheet.create({
   centeredText: {
     textAlign: 'center',
     width: '100%',
+  },
+  tickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tickerGap: {
+    width: TICKER_GAP_PX,
   },
 });
