@@ -295,4 +295,66 @@ describe('CoreStore - SOS audio lazy loading', () => {
     expect(Sound).toHaveBeenCalled(); // sound files loaded
     store.dispose();
   });
+
+  it('should instantiate Sound and call setCategory when morse transmission starts with tone enabled', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    store.transmitMorseMessage('... --- ...', true);
+
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled(); // sound files loaded
+    store.dispose();
+  });
+
+  it('should NOT instantiate Sound when morse transmission starts with tone disabled', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    store.transmitMorseMessage('... --- ...', false);
+
+    expect(Sound).not.toHaveBeenCalled();
+    expect(Sound.setCategory).not.toHaveBeenCalled();
+    store.dispose();
+  });
+
+  it('should NOT trigger a second load when ensureAudioReady is called again while loading', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+
+    // First SOS activation triggers the load
+    store.setFlashlightMode('sos');
+    const firstCallCount = Sound.mock.calls.length;
+    expect(firstCallCount).toBe(2); // dot + dash
+
+    // Second activation while still loading should not trigger another load
+    store.setFlashlightMode('off');
+    store.setFlashlightMode('sos');
+    expect(Sound.mock.calls.length).toBe(2); // still only 2 calls
+
+    store.dispose();
+  });
+
+  it('should call ensureAudioReady when setSosWithTone enables tone while SOS is active', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CoreStore } = require('../src/stores/CoreStore');
+    const store = new CoreStore();
+
+    // Start SOS with tone disabled so audio is NOT loaded
+    store.setSosWithTone(false);
+    store.setFlashlightMode('sos');
+    expect(Sound).not.toHaveBeenCalled();
+
+    // Now enable tone while SOS is active — should trigger load
+    store.setSosWithTone(true);
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled();
+
+    store.dispose();
+  });
 });
