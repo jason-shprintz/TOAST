@@ -14,10 +14,11 @@ import { HorizontalRule } from '../../../components/HorizontalRule';
 import { Text } from '../../../components/ScaledText';
 import ScreenBody from '../../../components/ScreenBody';
 import SectionHeader from '../../../components/SectionHeader';
+import { useTheme } from '../../../hooks/useTheme';
 import { useCoreStore } from '../../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../../theme';
+import { FOOTER_HEIGHT } from '../../../theme';
 import { formatDateTime } from '../../../utils/timeFormat';
-import { noteListSharedStyles as shared } from '../noteListStyles';
+import { makeNoteListSharedStyles } from '../noteListStyles';
 
 /**
  * Displays a single note in fully expanded state.
@@ -42,6 +43,9 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(
     route.params?.note?.bookmarked ?? false,
   );
+  const COLORS = useTheme();
+  const shared = makeNoteListSharedStyles(COLORS);
+  const styles = makeStyles(COLORS);
 
   const { note } = route.params || {};
 
@@ -156,44 +160,46 @@ export default observer(function NoteEntryScreen(): React.JSX.Element {
   );
 });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderWidth: 2,
-    borderRadius: 12,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    alignSelf: 'stretch',
-    marginTop: 12,
-    marginBottom: FOOTER_HEIGHT + 12,
-  },
-  noteHeader: {
-    width: '75%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    width: '100%',
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-  },
-  sketchView: {
-    width: '100%',
-    minHeight: 200,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderRadius: 8,
-    padding: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sketchImage: {
-    width: '100%',
-    height: 300,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderWidth: 2,
+      borderRadius: 12,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      alignSelf: 'stretch',
+      marginTop: 12,
+      marginBottom: FOOTER_HEIGHT + 12,
+    },
+    noteHeader: {
+      width: '75%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      width: '100%',
+      paddingHorizontal: 16,
+      paddingBottom: 24,
+    },
+    sketchView: {
+      width: '100%',
+      minHeight: 200,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderRadius: 8,
+      padding: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    sketchImage: {
+      width: '100%',
+      height: 300,
+    },
+  });
+}

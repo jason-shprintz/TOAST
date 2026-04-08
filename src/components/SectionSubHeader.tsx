@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextProps } from 'react-native';
-import { COLORS } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 import { Text } from './ScaledText';
 
 type Props = TextProps & { title?: string };
@@ -22,6 +22,9 @@ export default function SectionSubHeader({
   style,
   ...rest
 }: Props) {
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
+
   return (
     <Text {...rest} style={[styles.header, style]}>
       {title ?? children}
@@ -29,20 +32,22 @@ export default function SectionSubHeader({
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    fontSize: 14,
-    fontFamily: 'Bitter-Bold',
-    color: COLORS.PRIMARY_DARK,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    maxWidth: 300,
-    textAlign: 'center',
-    alignSelf: 'center',
-    marginVertical: 4,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    header: {
+      fontSize: 14,
+      fontFamily: 'Bitter-Bold',
+      color: COLORS.PRIMARY_DARK,
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 2,
+      borderColor: COLORS.TOAST_BROWN,
+      borderRadius: 8,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      maxWidth: 300,
+      textAlign: 'center',
+      alignSelf: 'center',
+      marginVertical: 4,
+    },
+  });
+}

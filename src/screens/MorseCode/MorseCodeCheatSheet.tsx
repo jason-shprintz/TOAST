@@ -3,7 +3,8 @@ import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { morseCodeData, MorseItem } from '../../utils/morseCodeMapping';
 
 type SortType = 'alphabetical' | 'morse';
@@ -19,6 +20,8 @@ type SortType = 'alphabetical' | 'morse';
  */
 export default function MorseCodeCheatSheet() {
   const [sortType, setSortType] = useState<SortType>('alphabetical');
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
 
   const getSortedData = (): MorseItem[] => {
     if (sortType === 'alphabetical') {
@@ -68,68 +71,70 @@ export default function MorseCodeCheatSheet() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignSelf: 'stretch',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  sortButton: {
-    backgroundColor: COLORS.TOAST_BROWN,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginHorizontal: 14,
-    marginTop: 8,
-    marginBottom: 8,
-    alignItems: 'center',
-  },
-  sortButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    paddingTop: 8,
-    paddingHorizontal: 14,
-    paddingBottom: 24,
-  },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.TOAST_BROWN,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-  },
-  char: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
-    width: 40,
-  },
-  separator: {
-    fontSize: 20,
-    color: COLORS.PRIMARY_DARK,
-    marginHorizontal: 5,
-  },
-  morse: {
-    fontSize: 30,
-    fontFamily: 'monospace',
-    color: COLORS.PRIMARY_DARK,
-    marginHorizontal: 5,
-    minWidth: 60,
-  },
-  spellOut: {
-    fontSize: 18,
-    color: COLORS.PRIMARY_DARK,
-    flex: 1,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      alignSelf: 'stretch',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    sortButton: {
+      backgroundColor: COLORS.TOAST_BROWN,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      marginHorizontal: 14,
+      marginTop: 8,
+      marginBottom: 8,
+      alignItems: 'center',
+    },
+    sortButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      paddingTop: 8,
+      paddingHorizontal: 14,
+      paddingBottom: 24,
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: COLORS.TOAST_BROWN,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 8,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+    },
+    char: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: COLORS.PRIMARY_DARK,
+      width: 40,
+    },
+    separator: {
+      fontSize: 20,
+      color: COLORS.PRIMARY_DARK,
+      marginHorizontal: 5,
+    },
+    morse: {
+      fontSize: 30,
+      fontFamily: 'monospace',
+      color: COLORS.PRIMARY_DARK,
+      marginHorizontal: 5,
+      minWidth: 60,
+    },
+    spellOut: {
+      fontSize: 18,
+      color: COLORS.PRIMARY_DARK,
+      flex: 1,
+    },
+  });
+}

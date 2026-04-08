@@ -9,8 +9,8 @@ import Grid from '../../components/Grid';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS } from '../../theme';
 import { FlashlightModeType } from '../../types/common-types';
 
 /**
@@ -32,6 +32,8 @@ const FlashlightScreenImpl = () => {
   const core = useCoreStore();
   const navigation = useNavigation();
   const mode = core.flashlightMode;
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
 
   const selectMode = (next: FlashlightModeType[keyof FlashlightModeType]) => {
     core.setFlashlightMode(next);
@@ -123,31 +125,33 @@ const FlashlightScreenImpl = () => {
 
 export default observer(FlashlightScreenImpl);
 
-const styles = StyleSheet.create({
-  activeCard: {
-    borderColor: COLORS.ACCENT,
-    borderWidth: 3,
-  },
-  controlsContainer: {
-    width: '100%',
-    paddingHorizontal: 10,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
-  },
-  sectionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  sectionText: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: COLORS.PRIMARY_DARK,
-  },
-  switchContainer: {
-    paddingHorizontal: 20,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    activeCard: {
+      borderColor: COLORS.ACCENT,
+      borderWidth: 3,
+    },
+    controlsContainer: {
+      width: '100%',
+      paddingHorizontal: 10,
+    },
+    slider: {
+      width: '100%',
+      height: 40,
+    },
+    sectionContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    sectionText: {
+      fontSize: 20,
+      fontWeight: '800',
+      color: COLORS.PRIMARY_DARK,
+    },
+    switchContainer: {
+      paddingHorizontal: 20,
+    },
+  });
+}

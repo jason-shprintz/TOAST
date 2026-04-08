@@ -12,8 +12,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 
 /**
  * Screen for managing note categories.
@@ -29,6 +30,8 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
   const core = useCoreStore();
   const [newCategoryName, setNewCategoryName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
 
   const handleAddCategory = async () => {
     const trimmedName = newCategoryName.trim();
@@ -226,115 +229,117 @@ export default observer(function ManageCategoriesScreen(): React.JSX.Element {
   );
 });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  headerSection: {
-    width: '100%',
-    paddingVertical: 12,
-    paddingHorizontal: 6,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.PRIMARY_DARK,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  addButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  addCategoryForm: {
-    width: '100%',
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 6,
-    paddingBottom: 12,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    color: COLORS.PRIMARY_DARK,
-    fontSize: 16,
-  },
-  saveButton: {
-    backgroundColor: COLORS.PRIMARY_DARK,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    justifyContent: 'center',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  saveButtonText: {
-    color: COLORS.PRIMARY_LIGHT,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    paddingHorizontal: 6,
-    paddingBottom: 24,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    textAlign: 'center',
-    marginTop: 24,
-  },
-  categoryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginBottom: 8,
-  },
-  categoryInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  categoryIcon: {
-    marginRight: 12,
-  },
-  categoryTextContainer: {
-    flex: 1,
-  },
-  categoryName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 2,
-  },
-  categoryCount: {
-    fontSize: 13,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-  },
-  deleteButton: {
-    padding: 8,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    headerSection: {
+      width: '100%',
+      paddingVertical: 12,
+      paddingHorizontal: 6,
+    },
+    addButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: COLORS.PRIMARY_DARK,
+      borderRadius: 8,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      gap: 8,
+    },
+    addButtonText: {
+      color: COLORS.PRIMARY_LIGHT,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    addCategoryForm: {
+      width: '100%',
+      flexDirection: 'row',
+      gap: 8,
+      paddingHorizontal: 6,
+      paddingBottom: 12,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 16,
+    },
+    saveButton: {
+      backgroundColor: COLORS.PRIMARY_DARK,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      justifyContent: 'center',
+    },
+    disabledButton: {
+      opacity: 0.5,
+    },
+    saveButtonText: {
+      color: COLORS.PRIMARY_LIGHT,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      paddingHorizontal: 6,
+      paddingBottom: 24,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+      textAlign: 'center',
+      marginTop: 24,
+    },
+    categoryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 12,
+      marginBottom: 8,
+    },
+    categoryInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    categoryIcon: {
+      marginRight: 12,
+    },
+    categoryTextContainer: {
+      flex: 1,
+    },
+    categoryName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 2,
+    },
+    categoryCount: {
+      fontSize: 13,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+    },
+    deleteButton: {
+      padding: 8,
+    },
+  });
+}

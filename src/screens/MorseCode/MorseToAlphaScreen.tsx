@@ -3,7 +3,8 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { morseToText } from '../../utils/morseCodeMapping';
 
 /**
@@ -17,6 +18,8 @@ import { morseToText } from '../../utils/morseCodeMapping';
  */
 const MorseToAlphaScreen = () => {
   const [morseInput, setMorseInput] = useState('');
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
 
   // Compute translation directly from morse input
   const translatedText = morseToText(morseInput);
@@ -158,104 +161,106 @@ const MorseToAlphaScreen = () => {
 
 export default MorseToAlphaScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    paddingHorizontal: 14,
-    paddingTop: 8,
-    paddingBottom: FOOTER_HEIGHT + 10,
-  },
-  displayContainer: {
-    width: '100%',
-    marginBottom: 10,
-  },
-  displayLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 5,
-  },
-  displayBox: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    borderRadius: 8,
-    padding: 10,
-    minHeight: 50,
-    justifyContent: 'center',
-  },
-  displayText: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    fontFamily: 'monospace',
-  },
-  translatedText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.ACCENT,
-  },
-  buttonGrid: {
-    width: '100%',
-    marginTop: 4,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-    gap: 8,
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryButton: {
-    backgroundColor: COLORS.ACCENT,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-  primaryButtonText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  secondaryButton: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-  secondaryButtonText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-  },
-  buttonLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginTop: 2,
-  },
-  clearButton: {
-    backgroundColor: COLORS.TOAST_BROWN,
-  },
-  clearButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  helpContainer: {
-    marginTop: 10,
-    padding: 8,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-  },
-  helpText: {
-    fontSize: 11,
-    color: COLORS.SECONDARY_ACCENT,
-    textAlign: 'center',
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      width: '100%',
+      paddingHorizontal: 14,
+      paddingTop: 8,
+      paddingBottom: FOOTER_HEIGHT + 10,
+    },
+    displayContainer: {
+      width: '100%',
+      marginBottom: 10,
+    },
+    displayLabel: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 5,
+    },
+    displayBox: {
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderWidth: 2,
+      borderColor: COLORS.TOAST_BROWN,
+      borderRadius: 8,
+      padding: 10,
+      minHeight: 50,
+      justifyContent: 'center',
+    },
+    displayText: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+      fontFamily: 'monospace',
+    },
+    translatedText: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: COLORS.ACCENT,
+    },
+    buttonGrid: {
+      width: '100%',
+      marginTop: 4,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+      gap: 8,
+    },
+    button: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    primaryButton: {
+      backgroundColor: COLORS.ACCENT,
+      borderWidth: 2,
+      borderColor: COLORS.TOAST_BROWN,
+    },
+    primaryButtonText: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    secondaryButton: {
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderWidth: 2,
+      borderColor: COLORS.TOAST_BROWN,
+    },
+    secondaryButtonText: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_DARK,
+    },
+    buttonLabel: {
+      fontSize: 10,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_DARK,
+      marginTop: 2,
+    },
+    clearButton: {
+      backgroundColor: COLORS.TOAST_BROWN,
+    },
+    clearButtonText: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    helpContainer: {
+      marginTop: 10,
+      padding: 8,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: COLORS.SECONDARY_ACCENT,
+    },
+    helpText: {
+      fontSize: 11,
+      color: COLORS.SECONDARY_ACCENT,
+      textAlign: 'center',
+    },
+  });
+}

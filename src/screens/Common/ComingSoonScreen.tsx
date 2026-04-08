@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
-import { COLORS } from '../../theme';
+import { useTheme } from '../../hooks/useTheme';
 
 type ComingSoonParams = {
   title?: string;
@@ -31,6 +31,9 @@ export default function ComingSoonScreen({ route }: Props) {
   const message =
     route?.params?.message ?? 'This feature is under construction.';
 
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
+
   return (
     <ScreenBody>
       <SectionHeader>{title}</SectionHeader>
@@ -48,30 +51,32 @@ export default function ComingSoonScreen({ route }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    width: '100%',
-    alignItems: 'center',
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-    paddingVertical: 40,
-    paddingHorizontal: 16,
-    marginTop: 20,
-  },
-  icon: {
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    textAlign: 'center',
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    card: {
+      width: '100%',
+      alignItems: 'center',
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: COLORS.TOAST_BROWN,
+      paddingVertical: 40,
+      paddingHorizontal: 16,
+      marginTop: 20,
+    },
+    icon: {
+      marginBottom: 10,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 8,
+    },
+    message: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+      textAlign: 'center',
+    },
+  });
+}

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../../components/ScaledText';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 import { formatDateTime } from '../../../utils/timeFormat';
 
 type VoiceLogCardProps = {
@@ -25,6 +25,8 @@ export default function VoiceLogCard({
   onPlay,
   onDelete,
 }: VoiceLogCardProps) {
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
   return (
     <View style={[styles.container, isPlaying && styles.containerPlaying]}>
       <LinearGradient
@@ -80,70 +82,72 @@ export default function VoiceLogCard({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    marginBottom: 12,
-    overflow: 'hidden',
-  },
-  containerPlaying: {
-    borderColor: COLORS.ACCENT,
-  },
-  background: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  content: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.PRIMARY_DARK,
-    marginBottom: 4,
-  },
-  time: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  duration: {
-    fontSize: 12,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  playingIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  playingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    marginRight: 6,
-  },
-  playingText: {
-    fontSize: 12,
-    color: COLORS.SECONDARY_ACCENT,
-    fontWeight: '600',
-  },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionButton: {
-    padding: 8,
-    marginLeft: 8,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      marginBottom: 12,
+      overflow: 'hidden',
+    },
+    containerPlaying: {
+      borderColor: COLORS.ACCENT,
+    },
+    background: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    content: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 12,
+    },
+    info: {
+      flex: 1,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: COLORS.PRIMARY_DARK,
+      marginBottom: 4,
+    },
+    time: {
+      fontSize: 12,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+      marginBottom: 4,
+    },
+    duration: {
+      fontSize: 12,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.7,
+      marginBottom: 4,
+    },
+    playingIndicator: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 4,
+    },
+    playingDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: COLORS.SECONDARY_ACCENT,
+      marginRight: 6,
+    },
+    playingText: {
+      fontSize: 12,
+      color: COLORS.SECONDARY_ACCENT,
+      fontWeight: '600',
+    },
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    actionButton: {
+      padding: 8,
+      marginLeft: 8,
+    },
+  });
+}

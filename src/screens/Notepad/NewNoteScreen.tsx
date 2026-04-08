@@ -25,8 +25,9 @@ import SketchCanvas, {
   SketchCanvasHandle,
 } from '../../components/SketchCanvas';
 import { useKeyboardStatus } from '../../hooks/useKeyboardStatus';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { pickPhoto } from '../../utils/photoPicker';
 import { MAX_TITLE_LENGTH } from './constants';
 
@@ -76,6 +77,8 @@ export default observer(function NewNoteScreen() {
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const [photoUris, setPhotoUris] = useState<string[]>([]);
   const { isKeyboardVisible } = useKeyboardStatus();
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
   const hasContent: boolean =
     noteType === 'text'
       ? text.trim().length > 0
@@ -426,161 +429,163 @@ export default observer(function NewNoteScreen() {
   );
 });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  innerContainer: {
-    flex: 1,
-    width: '100%',
-  },
-  card: {
-    flex: 1 - FOOTER_HEIGHT,
-    width: '100%',
-    backgroundColor: COLORS.TOAST_BROWN,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    marginTop: 6,
-    marginBottom: FOOTER_HEIGHT + 6,
-  },
-  label: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.9,
-    marginBottom: 6,
-    fontWeight: '700',
-  },
-  value: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-  },
-  titleInput: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
-    color: COLORS.PRIMARY_DARK,
-    fontSize: 14,
-  },
-  inline: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  spacer: {
-    flex: 1,
-  },
-  sketchControls: {
-    flexDirection: 'row',
-    gap: 16,
-    alignItems: 'center',
-  },
-  inlineCenter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  animatedInputContainer: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
-    overflow: 'hidden',
-  },
-  textInput: {
-    flex: 1,
-    color: COLORS.PRIMARY_DARK,
-  },
-  sketchContainer: {
-    height: 250,
-    marginBottom: 12,
-  },
-  dropdown: {
-    flex: 1,
-    position: 'relative',
-  },
-  dropdownHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  dropdownHeaderText: {
-    color: COLORS.PRIMARY_DARK,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  dropdownMenu: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    right: 0,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    borderWidth: 1,
-    borderRadius: 8,
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  dropdownItem: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderBottomColor: 'rgba(0,0,0,0.06)',
-    borderBottomWidth: 1,
-  },
-  dropdownItemText: {
-    color: COLORS.PRIMARY_DARK,
-    fontSize: 14,
-  },
-  iconButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  iconButtonDisabled: {
-    opacity: 0.3,
-  },
-  photosContainer: {
-    marginBottom: 12,
-  },
-  photosScroll: {
-    maxHeight: 100,
-  },
-  photoWrapper: {
-    marginRight: 8,
-    position: 'relative',
-  },
-  photoThumb: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-  },
-  removePhotoButton: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-    borderRadius: 12,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    innerContainer: {
+      flex: 1,
+      width: '100%',
+    },
+    card: {
+      flex: 1 - FOOTER_HEIGHT,
+      width: '100%',
+      backgroundColor: COLORS.TOAST_BROWN,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      marginTop: 6,
+      marginBottom: FOOTER_HEIGHT + 6,
+    },
+    label: {
+      fontSize: 14,
+      color: COLORS.PRIMARY_DARK,
+      opacity: 0.9,
+      marginBottom: 6,
+      fontWeight: '700',
+    },
+    value: {
+      fontSize: 16,
+      color: COLORS.PRIMARY_DARK,
+    },
+    titleInput: {
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      padding: 8,
+      marginBottom: 12,
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 14,
+    },
+    inline: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    spacer: {
+      flex: 1,
+    },
+    sketchControls: {
+      flexDirection: 'row',
+      gap: 16,
+      alignItems: 'center',
+    },
+    inlineCenter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginBottom: 12,
+    },
+    animatedInputContainer: {
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      padding: 8,
+      marginBottom: 12,
+      overflow: 'hidden',
+    },
+    textInput: {
+      flex: 1,
+      color: COLORS.PRIMARY_DARK,
+    },
+    sketchContainer: {
+      height: 250,
+      marginBottom: 12,
+    },
+    dropdown: {
+      flex: 1,
+      position: 'relative',
+    },
+    dropdownHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    dropdownHeaderText: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    dropdownMenu: {
+      position: 'absolute',
+      top: 40,
+      left: 0,
+      right: 0,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderWidth: 1,
+      borderRadius: 8,
+      zIndex: 10,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+    },
+    dropdownItem: {
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      borderBottomColor: 'rgba(0,0,0,0.06)',
+      borderBottomWidth: 1,
+    },
+    dropdownItemText: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 14,
+    },
+    iconButton: {
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    iconButtonDisabled: {
+      opacity: 0.3,
+    },
+    photosContainer: {
+      marginBottom: 12,
+    },
+    photosScroll: {
+      maxHeight: 100,
+    },
+    photoWrapper: {
+      marginRight: 8,
+      position: 'relative',
+    },
+    photoThumb: {
+      width: 80,
+      height: 80,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: COLORS.SECONDARY_ACCENT,
+    },
+    removePhotoButton: {
+      position: 'absolute',
+      top: -8,
+      right: -8,
+      backgroundColor: COLORS.PRIMARY_LIGHT,
+      borderRadius: 12,
+    },
+  });
+}

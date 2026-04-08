@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../../../theme';
+import { useTheme } from '../../../hooks/useTheme';
 
 type InfoBoxProps = {
   icon: string;
@@ -10,6 +10,8 @@ type InfoBoxProps = {
 };
 
 export default function InfoBox({ icon, children }: InfoBoxProps) {
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -24,23 +26,25 @@ export default function InfoBox({ icon, children }: InfoBoxProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    padding: 12,
-    marginBottom: 40,
-    width: '100%',
-    overflow: 'hidden',
-  },
-  background: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  content: {
-    flex: 1,
-    marginLeft: 8,
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: COLORS.SECONDARY_ACCENT,
+      padding: 12,
+      marginBottom: 40,
+      width: '100%',
+      overflow: 'hidden',
+    },
+    background: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    content: {
+      flex: 1,
+      marginLeft: 8,
+    },
+  });
+}

@@ -6,12 +6,13 @@ import { HorizontalRule } from '../../components/HorizontalRule';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import {
   addBookmark,
   removeBookmark,
   isBookmarked,
 } from '../../stores/BookmarksStore';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { ScenarioCardType } from '../../types/data-type';
 
 type ScenarioDetailScreenRouteProp = RouteProp<
@@ -42,6 +43,8 @@ export default function ScenarioDetailScreen(): JSX.Element {
   }, [routeScenario]);
 
   const [bookmarked, setBookmarked] = useState<boolean>(false);
+  const COLORS = useTheme();
+  const styles = makeStyles(COLORS);
 
   useEffect(() => {
     const check = async () => {
@@ -210,72 +213,74 @@ export default function ScenarioDetailScreen(): JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: '100%',
-    paddingHorizontal: 12,
-    marginBottom: 8,
-  },
-  actionBtn: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  bodyWrap: {
-    flex: 1,
-    width: '100%',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  scroll: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    paddingHorizontal: 12,
-    paddingBottom: 32,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 10,
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  bodyText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  bulletWrap: {
-    flexDirection: 'row',
-    marginBottom: 8,
-    paddingLeft: 4,
-  },
-  bullet: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 8,
-    color: COLORS.PRIMARY_LIGHT,
-    minWidth: 20,
-  },
-  bulletText: {
-    flex: 1,
-    fontSize: 16,
-    lineHeight: 24,
-    color: COLORS.PRIMARY_LIGHT,
-  },
-  missingWrap: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  helperText: {
-    fontSize: 16,
-    opacity: 0.8,
-    textAlign: 'center',
-  },
-});
+function makeStyles(COLORS: ReturnType<typeof useTheme>) {
+  return StyleSheet.create({
+    actions: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      width: '100%',
+      paddingHorizontal: 12,
+      marginBottom: 8,
+    },
+    actionBtn: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    bodyWrap: {
+      flex: 1,
+      width: '100%',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    scroll: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      paddingHorizontal: 12,
+      paddingBottom: 32,
+    },
+    section: {
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      marginBottom: 10,
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    bodyText: {
+      fontSize: 16,
+      lineHeight: 24,
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    bulletWrap: {
+      flexDirection: 'row',
+      marginBottom: 8,
+      paddingLeft: 4,
+    },
+    bullet: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginRight: 8,
+      color: COLORS.PRIMARY_LIGHT,
+      minWidth: 20,
+    },
+    bulletText: {
+      flex: 1,
+      fontSize: 16,
+      lineHeight: 24,
+      color: COLORS.PRIMARY_LIGHT,
+    },
+    missingWrap: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 24,
+    },
+    helperText: {
+      fontSize: 16,
+      opacity: 0.8,
+      textAlign: 'center',
+    },
+  });
+}
