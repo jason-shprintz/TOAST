@@ -169,7 +169,7 @@ function SunTimeScreen() {
               <Text style={styles.sectionTitle}>Dawn & Dusk</Text>
               {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
               {renderCard('Sunrise', sunTimes.sunrise)}
-              {renderCard('Golden Hour Start', sunTimes.goldenHour)}
+              {renderCard('Golden Hour End (Morning)', sunTimes.goldenHourEnd)}
             </View>
 
             <View style={styles.section}>
@@ -179,7 +179,7 @@ function SunTimeScreen() {
 
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Evening</Text>
-              {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
+              {renderCard('Golden Hour Start (Evening)', sunTimes.goldenHour)}
               {renderCard('Sunset', sunTimes.sunset)}
               {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
               {renderCard('Night Start', sunTimes.night)}
