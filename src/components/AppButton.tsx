@@ -64,11 +64,7 @@ export default function AppButton({
       case 'primary':
         return { backgroundColor: COLORS.ACCENT };
       case 'secondary':
-        return {
-          backgroundColor: COLORS.PRIMARY_LIGHT,
-          borderWidth: 2,
-          borderColor: COLORS.PRIMARY_DARK,
-        };
+        return { backgroundColor: COLORS.PRIMARY_LIGHT };
       case 'destructive':
         return { backgroundColor: COLORS.ERROR };
       case 'success':
