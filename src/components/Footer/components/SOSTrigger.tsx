@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react-lite';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
+  Alert,
   Animated,
+  Pressable,
+  StyleSheet,
   Vibration,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -104,6 +104,39 @@ const SOSTrigger = ({
     }
   };
 
+  // Shared activation logic used by both the long-press and accessibility paths
+  const activateSOS = useCallback(() => {
+    core.setSosWithTone(true);
+    core.setFlashlightMode(FlashlightModes.SOS);
+    Vibration.vibrate(200);
+  }, [core]);
+
+  // Long-press fires after delayLongPress — mirrors the hold-timer path for
+  // keyboard / TV / switch-access users who cannot use press-and-hold
+  const handleLongPress = useCallback(() => {
+    activateSOS();
+    setIsSOSPressing(false);
+    sosProgressAnim.setValue(0);
+  }, [activateSOS, sosProgressAnim]);
+
+  // Accessibility action handler — shows a confirmation dialog so assistive-
+  // tech users can trigger SOS intentionally without a physical hold
+  const handleAccessibilityAction = useCallback(
+    ({ nativeEvent }: { nativeEvent: { actionName: string } }) => {
+      if (nativeEvent.actionName === 'activate') {
+        Alert.alert(
+          'Activate SOS?',
+          'This will enable SOS flashlight mode with tone.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Activate', style: 'destructive', onPress: activateSOS },
+          ],
+        );
+      }
+    },
+    [activateSOS],
+  );
+
   // Cleanup on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
@@ -123,38 +156,35 @@ const SOSTrigger = ({
   }, []);
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       onPressIn={handleSOSPressIn}
       onPressOut={handleSOSPressOut}
+      onLongPress={handleLongPress}
+      delayLongPress={1000}
       accessibilityLabel="Emergency SOS - Hold for 1 Second to Activate"
       accessibilityRole="button"
+      accessibilityActions={[{ name: 'activate', label: 'Activate SOS' }]}
+      onAccessibilityAction={handleAccessibilityAction}
+      style={({ pressed }) => [
+        styles.sosSection,
+        { backgroundColor: isSOSPressing ? COLORS.ACCENT : COLORS.ERROR },
+        pressed && styles.pressed,
+      ]}
     >
-      <View
+      <Ionicons
+        name="warning-outline"
+        size={24}
+        color={isSOSPressing ? COLORS.PRIMARY_DARK : COLORS.PRIMARY_LIGHT}
+      />
+      <Text
         style={[
-          styles.sosSection,
-          {
-            borderColor: COLORS.SECONDARY_ACCENT,
-            boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
-          },
-          isSOSPressing && { backgroundColor: COLORS.ACCENT },
+          styles.sosText,
+          { color: isSOSPressing ? COLORS.PRIMARY_DARK : COLORS.PRIMARY_LIGHT },
         ]}
       >
-        <Ionicons
-          name="warning-outline"
-          size={32}
-          color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
-        />
-        <Text
-          style={[
-            styles.sosText,
-            { color: COLORS.PRIMARY_DARK },
-            isSOSPressing && { color: COLORS.PRIMARY_LIGHT },
-          ]}
-        >
-          SOS
-        </Text>
-      </View>
-    </TouchableWithoutFeedback>
+        SOS
+      </Text>
+    </Pressable>
   );
 };
 
@@ -163,14 +193,17 @@ export default observer(SOSTrigger);
 const styles = StyleSheet.create({
   sosSection: {
     width: '25%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 50,
+    borderRadius: 12,
+    gap: 2,
+  },
+  pressed: {
+    opacity: 0.8,
   },
   sosText: {
     fontSize: 12,
     fontWeight: '700',
-    marginTop: 4,
   },
 });

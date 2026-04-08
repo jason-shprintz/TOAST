@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FlashlightModes } from '../../../../constants';
 import { useTheme } from '../../../hooks/useTheme';
@@ -80,21 +80,13 @@ const ActiveItemButton = () => {
   };
 
   return (
-    <TouchableOpacity
-      style={[
+    <Pressable
+      style={({ pressed }) => [
         styles.container,
-        {
-          borderColor: COLORS.SECONDARY_ACCENT,
-          boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
-        },
-        activeItem && [
-          styles.containerActive,
-          {
-            backgroundColor: COLORS.ACCENT,
-            borderColor: COLORS.SECONDARY_ACCENT,
-            boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
-          },
-        ],
+        activeItem
+          ? { backgroundColor: COLORS.ACCENT }
+          : { backgroundColor: COLORS.PRIMARY_LIGHT },
+        pressed && styles.pressed,
       ]}
       onPress={handlePress}
       accessibilityLabel={
@@ -104,10 +96,10 @@ const ActiveItemButton = () => {
     >
       <Ionicons
         name={activeItem ? activeItem.icon : 'moon-outline'}
-        size={32}
+        size={24}
         color={COLORS.PRIMARY_DARK}
       />
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -116,14 +108,13 @@ export default observer(ActiveItemButton);
 const styles = StyleSheet.create({
   container: {
     width: '25%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 50,
+    borderRadius: 12,
     marginHorizontal: 2,
   },
-  containerActive: {
-    borderRadius: 50,
-    borderWidth: 2,
+  pressed: {
+    opacity: 0.8,
   },
 });
