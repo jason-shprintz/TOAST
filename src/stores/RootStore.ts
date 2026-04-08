@@ -5,6 +5,7 @@ import { CoreStore } from './CoreStore';
 import { EmergencyPlanStore } from './EmergencyPlanStore';
 import { InventoryStore } from './InventoryStore';
 import { NavigationStore } from './NavigationStore';
+import { NotificationsStore } from './NotificationsStore';
 import { PantryStore } from './PantryStore';
 import { ReferenceStore } from './ReferenceStore';
 import { RepeaterBookStore } from './RepeaterBookStore';
@@ -25,6 +26,7 @@ export class RootStore {
   settingsStore: SettingsStore;
   signalsStore: SignalsStore;
   solarCycleNotificationStore: SolarCycleNotificationStore;
+  notificationsStore: NotificationsStore;
   barometerStore: BarometerStore;
   repeaterBookStore: RepeaterBookStore;
   weatherOutlookStore: WeatherOutlookStore;
@@ -43,6 +45,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.notificationsStore = new NotificationsStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
@@ -78,6 +81,8 @@ export class RootStore {
     await this.inventoryStore.initDatabase();
     await this.pantryStore.initDatabase();
     await this.emergencyPlanStore.initDatabase();
+    // Load persisted notification hidden keys from AsyncStorage
+    await this.notificationsStore.loadHiddenKeys();
   }
 
   // Global app state
@@ -109,6 +114,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.notificationsStore = new NotificationsStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
