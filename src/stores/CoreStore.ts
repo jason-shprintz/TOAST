@@ -68,6 +68,7 @@ export class CoreStore {
   private dotSound: Sound | null = null;
   private dashSound: Sound | null = null;
   private audioLoaded: boolean = false;
+  private audioLoading: boolean = false;
 
   constructor() {
     makeAutoObservable(
@@ -82,30 +83,58 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
-    // Load SOS audio files
+    // SOS audio files are loaded lazily on first SOS activation to avoid
+    // activating the iOS audio session (and interrupting background audio)
+    // at app startup.
+  }
+
+  /**
+   * Ensures the SOS audio session category is claimed and sound files are
+   * loaded. Idempotent — safe to call multiple times; the load is only
+   * triggered once (`audioLoading` guards against concurrent calls).
+   * @private
+   */
+  private ensureAudioReady() {
+    if (this.audioLoaded || this.audioLoading) return;
+    this.audioLoading = true;
+    Sound.setCategory('Playback');
     this.loadSosAudio();
   }
 
   /**
    * Loads the SOS audio files (dot and dash beeps).
+   * Releases any previously allocated Sound instances before creating new
+   * ones to avoid leaking native resources on repeated calls.
    * @private
    */
   private loadSosAudio() {
-    // Enable playback in silent mode
-    Sound.setCategory('Playback');
+    // Release any previously allocated sounds before loading fresh instances.
+    if (this.dotSound) {
+      this.dotSound.release();
+      this.dotSound = null;
+    }
+    if (this.dashSound) {
+      this.dashSound.release();
+      this.dashSound = null;
+    }
 
     let dotLoaded = false;
     let dashLoaded = false;
+    let hasError = false;
 
     const checkBothLoaded = () => {
+      if (hasError) return;
       if (dotLoaded && dashLoaded) {
         this.audioLoaded = true;
+        this.audioLoading = false;
       }
     };
 
     this.dotSound = new Sound('sos_dot.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dot sound:', error);
+        hasError = true;
+        this.audioLoading = false;
         return;
       }
       dotLoaded = true;
@@ -115,6 +144,8 @@ export class CoreStore {
     this.dashSound = new Sound('sos_dash.wav', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.error('Failed to load dash sound:', error);
+        hasError = true;
+        this.audioLoading = false;
         return;
       }
       dashLoaded = true;
@@ -235,6 +266,11 @@ export class CoreStore {
    */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
+    // Kick off lazy audio loading when tone is enabled so sounds are ready
+    // as soon as possible for the first flash step.
+    if (this.sosWithTone) {
+      this.ensureAudioReady();
+    }
     // Sequence builder: returns array of {on:boolean, ms:number, type:'dot'|'dash'|null}
     const unit = this.sosUnitMs;
     const dot = [
@@ -296,7 +332,11 @@ export class CoreStore {
    * @private
    */
   private playSosTone(type: 'dot' | 'dash' | null) {
-    if (!type || !this.audioLoaded) return;
+    if (!type) return;
+    // Trigger audio loading if it hasn't started yet (e.g. when called from
+    // Morse transmission before SOS mode has ever been activated).
+    this.ensureAudioReady();
+    if (!this.audioLoaded) return;
 
     const sound = type === 'dot' ? this.dotSound : this.dashSound;
     if (sound) {
@@ -391,6 +431,11 @@ export class CoreStore {
    */
   setSosWithTone(enabled: boolean) {
     this.sosWithTone = enabled;
+    // If SOS is currently active and tone is being switched on, start loading
+    // audio immediately so tones are available as soon as possible.
+    if (enabled && this.flashlightMode === FlashlightModes.SOS) {
+      this.ensureAudioReady();
+    }
   }
 
   // --------------------------------------------------------------------
@@ -443,6 +488,11 @@ export class CoreStore {
     runInAction(() => {
       this.isMorseTransmitting = true;
     });
+
+    // Start loading audio early so sounds are ready by the first tone step.
+    if (withTone) {
+      this.ensureAudioReady();
+    }
 
     const unit = this.sosUnitMs;
     const sequence: Array<{

@@ -259,3 +259,90 @@ describe('CoreStore - Morse Code Transmission', () => {
     });
   });
 });
+
+describe('CoreStore - SOS audio lazy loading', () => {
+  let Sound: jest.Mock & { setCategory: jest.Mock; MAIN_BUNDLE: string };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+    Sound = require('react-native-sound') as typeof Sound;
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('should NOT instantiate Sound or call setCategory on construction', () => {
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+    expect(Sound.setCategory).not.toHaveBeenCalled();
+    store.dispose();
+  });
+
+  it('should instantiate Sound and call setCategory only when SOS is activated with tone enabled', () => {
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    // Activate SOS mode (sosWithTone defaults to true)
+    store.setFlashlightMode('sos');
+
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled(); // sound files loaded
+    store.dispose();
+  });
+
+  it('should instantiate Sound and call setCategory when morse transmission starts with tone enabled', () => {
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    store.transmitMorseMessage('... --- ...', true);
+
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled(); // sound files loaded
+    store.dispose();
+  });
+
+  it('should NOT instantiate Sound when morse transmission starts with tone disabled', () => {
+    const store = new CoreStore();
+    expect(Sound).not.toHaveBeenCalled();
+
+    store.transmitMorseMessage('... --- ...', false);
+
+    expect(Sound).not.toHaveBeenCalled();
+    expect(Sound.setCategory).not.toHaveBeenCalled();
+    store.dispose();
+  });
+
+  it('should NOT trigger a second load when ensureAudioReady is called again while loading', () => {
+    const store = new CoreStore();
+
+    // First SOS activation triggers the load
+    store.setFlashlightMode('sos');
+    const firstCallCount = Sound.mock.calls.length;
+    expect(firstCallCount).toBe(2); // dot + dash
+
+    // Second activation while still loading should not trigger another load
+    store.setFlashlightMode('off');
+    store.setFlashlightMode('sos');
+    expect(Sound.mock.calls.length).toBe(2); // still only 2 calls
+
+    store.dispose();
+  });
+
+  it('should call ensureAudioReady when setSosWithTone enables tone while SOS is active', () => {
+    const store = new CoreStore();
+
+    // Start SOS with tone disabled so audio is NOT loaded
+    store.setSosWithTone(false);
+    store.setFlashlightMode('sos');
+    expect(Sound).not.toHaveBeenCalled();
+
+    // Now enable tone while SOS is active — should trigger load
+    store.setSosWithTone(true);
+    expect(Sound.setCategory).toHaveBeenCalledWith('Playback');
+    expect(Sound).toHaveBeenCalled();
+
+    store.dispose();
+  });
+});
