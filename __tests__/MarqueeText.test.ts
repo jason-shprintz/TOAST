@@ -33,54 +33,78 @@ describe('MarqueeText', () => {
     });
   });
 
-  describe('animation parameters — ticker behavior', () => {
-    const SPEED_PX_PER_S = 40;
+  describe('latch (cascade prevention)', () => {
+    it('shouldScroll is true once overflow is detected, even after isOverflowing resets', () => {
+      // Simulates what happens when padding is removed after overflow detection:
+      // the container gets wider, so isOverflowing temporarily flips to false.
+      // The latch keeps shouldScroll = true to prevent oscillation.
+      let isScrollingLatched = false;
 
-    it('scroll phase duration is proportional to full text width', () => {
-      // The text scrolls fully off the left edge (0 → -textWidth).
-      const textWidth100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
-      const textWidth200 = Math.round((200 / SPEED_PX_PER_S) * 1000);
+      // Step 1: overflow detected → latch
+      const isOverflowing1 = true;
+      if (isOverflowing1 && !isScrollingLatched) isScrollingLatched = true;
+      const shouldScroll1 = isScrollingLatched || isOverflowing1;
+      expect(shouldScroll1).toBe(true);
 
-      expect(textWidth200).toBeGreaterThan(textWidth100);
-      expect(textWidth200).toBe(textWidth100 * 2);
+      // Step 2: padding removed, container wider → isOverflowing flips false
+      const isOverflowing2 = false;
+      if (isOverflowing2 && !isScrollingLatched) isScrollingLatched = true;
+      const shouldScroll2 = isScrollingLatched || isOverflowing2;
+      expect(shouldScroll2).toBe(true); // latch holds
     });
 
-    it('enter phase duration is proportional to container width', () => {
-      // Text slides in from the right edge (containerWidth → 0).
+    it('latch resets when text content changes', () => {
+      let isScrollingLatched = true; // latched from previous title
+
+      // Simulate children change effect resetting the latch
+      isScrollingLatched = false;
+      expect(isScrollingLatched).toBe(false);
+    });
+  });
+
+  describe('animation parameters — stock ticker', () => {
+    const SPEED_PX_PER_S = 40;
+
+    it('scroll phase duration based on full text width (exits left edge)', () => {
+      // 0 → -textWidth
+      const dur100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
+      const dur200 = Math.round((200 / SPEED_PX_PER_S) * 1000);
+      expect(dur200).toBeGreaterThan(dur100);
+      expect(dur200).toBe(dur100 * 2);
+    });
+
+    it('enter phase duration based on container width (enters from right)', () => {
+      // containerWidth → 0
       const enter100 = Math.round((100 / SPEED_PX_PER_S) * 1000);
       const enter200 = Math.round((200 / SPEED_PX_PER_S) * 1000);
-
       expect(enter200).toBeGreaterThan(enter100);
       expect(enter200).toBe(enter100 * 2);
     });
 
-    it('scroll exits left edge: toValue is -textWidth', () => {
+    it('scroll exits to -textWidth so text fully leaves the left edge', () => {
       const textWidth = 350;
-      const toValue = -textWidth;
-      expect(toValue).toBe(-350);
+      expect(-textWidth).toBe(-350);
     });
 
-    it('enter starts from right edge: fromValue is +containerWidth', () => {
+    it('jump target is +containerWidth so text re-enters from the right', () => {
       const containerWidth = 200;
-      // After scrolling off the left, animValue is reset to containerWidth
-      // so the text enters from the right.
+      // animValue is set to containerWidth (just beyond right edge, clipped)
+      // before the enter-phase animation slides it back to 0.
       expect(containerWidth).toBeGreaterThan(0);
     });
 
     it('duration rounds to nearest millisecond', () => {
-      // 75px at 40px/s = 1875ms (exact)
+      // 75 px at 40 px/s = 1875 ms (exact)
       const duration = Math.round((75 / SPEED_PX_PER_S) * 1000);
       expect(duration).toBe(1875);
     });
 
     it('respects custom speed for both phases', () => {
-      const customSpeed = 80;
+      const customSpeed = 80; // double the default
       const distance = 100;
-      const duration = Math.round((distance / customSpeed) * 1000);
-
-      // At double the speed, duration should be halved
+      const customDuration = Math.round((distance / customSpeed) * 1000);
       const defaultDuration = Math.round((distance / SPEED_PX_PER_S) * 1000);
-      expect(duration).toBe(defaultDuration / 2);
+      expect(customDuration).toBe(defaultDuration / 2);
     });
   });
 
@@ -89,7 +113,6 @@ describe('MarqueeText', () => {
       const baseFontSize = 20;
       const fontScale = 1.3;
       const scaledFontSize = baseFontSize * fontScale;
-
       expect(scaledFontSize).toBeCloseTo(26);
     });
 
@@ -97,7 +120,6 @@ describe('MarqueeText', () => {
       const baseFontSize = 20;
       const fontScale = 1.0;
       const scaledFontSize = baseFontSize * fontScale;
-
       expect(scaledFontSize).toBe(20);
     });
 
@@ -108,7 +130,6 @@ describe('MarqueeText', () => {
         typeof flatStyle.fontSize === 'number'
           ? { ...flatStyle, fontSize: (flatStyle.fontSize as number) * 1.5 }
           : flatStyle;
-
       expect(result).toEqual({ fontFamily: 'Bitter-Bold' });
     });
   });

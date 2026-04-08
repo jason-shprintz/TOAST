@@ -23,8 +23,8 @@ type Props = {
    */
   speed?: number;
   /**
-   * Called when the overflow state changes so that parents can adjust layout
-   * (e.g. remove left padding when the text is scrolling).
+   * Called when the overflow/scroll state changes so that parents can adjust
+   * layout (e.g. remove left padding when the text is scrolling).
    */
   onOverflowChange?: (isOverflowing: boolean) => void;
 };
@@ -33,18 +33,33 @@ const PAUSE_START_MS = 1500;
 const DEFAULT_SPEED_PX_PER_S = 40;
 
 /**
- * Renders text that scrolls horizontally like a ticker when the content is
- * wider than the available container.
+ * Renders text that scrolls horizontally like a stock ticker when the content
+ * is wider than the available container.
  *
  * When the text fits within the container it renders statically, centred.
- * When it overflows it behaves like a stock ticker:
- *   1. Pause at the start so the user can read the beginning of the text.
- *   2. Scroll smoothly to the left until the text exits the left edge.
- *   3. Jump invisibly to the right edge.
- *   4. Slide in from the right back to the start position.
- *   5. Repeat from step 1.
+ * When it overflows it loops continuously:
+ *   1. Pause 1.5 s at position 0 so the user can read the start.
+ *   2. Scroll left until the text fully exits the left edge (x = -textWidth).
+ *   3. Jump instantly to x = containerWidth (just off the right edge — hidden
+ *      because the container uses overflow: 'hidden').
+ *   4. Slide in from the right to position 0.
+ *   5. Repeat.
  *
  * Font scaling from SettingsStore is applied automatically (mirrors ScaledText).
+ *
+ * ### Measurement
+ * A hidden, absolutely-positioned RNText with `alignSelf: 'flex-start'` is used
+ * to measure the text's natural single-line width. Without `alignSelf:
+ * 'flex-start'` the Text node would stretch to fill the 9999 px measurement
+ * container (Yoga's default `alignItems: stretch`), making every title appear
+ * to overflow.
+ *
+ * ### Cascade prevention
+ * When scrolling starts, `onOverflowChange(true)` is called and the parent
+ * typically removes left padding, widening the container. To prevent the
+ * resulting `containerWidth` change from flipping `isOverflowing` back to
+ * `false` (and oscillating), the "should scroll" decision is latched once
+ * overflow is first detected, and only resets when the text content changes.
  */
 const MarqueeText = observer(function MarqueeText({
   children,
@@ -56,14 +71,29 @@ const MarqueeText = observer(function MarqueeText({
   const settingsStore = useSettingsStore();
   const [containerWidth, setContainerWidth] = useState(0);
   const [textWidth, setTextWidth] = useState(0);
+  const animRef = useRef<Animated.CompositeAnimation | null>(null);
   const animValue = useRef(new Animated.Value(0)).current;
 
-  // Tracks whether the current loop iteration should continue running.
-  const activeRef = useRef(false);
-  // The currently running animation, kept so we can stop it on cleanup.
-  const runningAnimRef = useRef<Animated.CompositeAnimation | null>(null);
+  // Once overflow is confirmed for the current text content, latch the "scroll"
+  // decision so that a subsequent padding-driven container resize cannot flip it
+  // back to false and cause an oscillation.
+  const [isScrollingLatched, setIsScrollingLatched] = useState(false);
+
+  // Reset the latch whenever the text content itself changes.
+  useEffect(() => {
+    setIsScrollingLatched(false);
+  }, [children]);
 
   const isOverflowing = containerWidth > 0 && textWidth > containerWidth;
+
+  // Latch: once overflow is detected, commit to scrolling.
+  useEffect(() => {
+    if (isOverflowing && !isScrollingLatched) {
+      setIsScrollingLatched(true);
+    }
+  }, [isOverflowing, isScrollingLatched]);
+
+  const shouldScroll = isScrollingLatched || isOverflowing;
 
   // Apply font scaling the same way ScaledText does.
   const flatStyle = StyleSheet.flatten(style) ?? {};
@@ -74,74 +104,62 @@ const MarqueeText = observer(function MarqueeText({
       : {}),
   };
 
-  // Notify parent whenever the overflow state changes.
-  const prevOverflowRef = useRef<boolean | null>(null);
+  // Notify parent when the scroll state changes.
+  const prevScrollRef = useRef<boolean | null>(null);
   useEffect(() => {
-    if (prevOverflowRef.current !== isOverflowing) {
-      prevOverflowRef.current = isOverflowing;
-      onOverflowChange?.(isOverflowing);
+    if (prevScrollRef.current !== shouldScroll) {
+      prevScrollRef.current = shouldScroll;
+      onOverflowChange?.(shouldScroll);
     }
-  }, [isOverflowing, onOverflowChange]);
+  }, [shouldScroll, onOverflowChange]);
 
   useEffect(() => {
-    if (!isOverflowing || containerWidth === 0 || textWidth === 0) {
-      activeRef.current = false;
-      runningAnimRef.current?.stop();
-      animValue.setValue(0);
+    animRef.current?.stop();
+    animValue.setValue(0);
+
+    if (!shouldScroll || containerWidth === 0 || textWidth === 0) {
       return;
     }
 
-    activeRef.current = true;
-    animValue.setValue(0);
-
-    // Duration to scroll the full text width off the left edge.
+    // Duration to scroll the full text width off the left edge (0 → -textWidth).
     const scrollDuration = Math.round((textWidth / speed) * 1000);
-    // Duration to slide in from the right edge to position 0.
+    // Duration to slide in from the right edge (containerWidth → 0).
     const enterDuration = Math.round((containerWidth / speed) * 1000);
 
-    const runLoop = () => {
-      if (!activeRef.current) return;
-
-      // Phase 1 — pause at start, then scroll text fully off the left edge.
-      const scrollAnim = Animated.sequence([
+    // The entire loop runs on the native thread via Animated.loop.
+    // The duration: 0 timing performs an instant (invisible) jump from the
+    // exited-left position to just beyond the right edge; the container's
+    // overflow: 'hidden' ensures the text is never seen at that position.
+    animRef.current = Animated.loop(
+      Animated.sequence([
+        // Pause so the user can read the beginning of the title.
         Animated.delay(PAUSE_START_MS),
+        // Scroll text fully off the left edge.
         Animated.timing(animValue, {
           toValue: -textWidth,
           duration: scrollDuration,
           useNativeDriver: true,
         }),
-      ]);
-      runningAnimRef.current = scrollAnim;
-
-      scrollAnim.start(({ finished }) => {
-        if (!finished || !activeRef.current) return;
-
-        // Instant: place text just off the right edge (not visible to user
-        // because the container clips overflow).
-        animValue.setValue(containerWidth);
-
-        // Phase 2 — slide in from the right edge back to position 0.
-        const enterAnim = Animated.timing(animValue, {
+        // Jump invisibly to just beyond the right edge.
+        Animated.timing(animValue, {
+          toValue: containerWidth,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+        // Slide in from the right edge back to position 0.
+        Animated.timing(animValue, {
           toValue: 0,
           duration: enterDuration,
           useNativeDriver: true,
-        });
-        runningAnimRef.current = enterAnim;
-
-        enterAnim.start(({ finished: enterFinished }) => {
-          if (!enterFinished || !activeRef.current) return;
-          runLoop();
-        });
-      });
-    };
-
-    runLoop();
+        }),
+      ]),
+    );
+    animRef.current.start();
 
     return () => {
-      activeRef.current = false;
-      runningAnimRef.current?.stop();
+      animRef.current?.stop();
     };
-  }, [isOverflowing, textWidth, containerWidth, speed, animValue]);
+  }, [shouldScroll, textWidth, containerWidth, speed, animValue]);
 
   const onContainerLayout = useCallback(
     (e: { nativeEvent: { layout: { width: number } } }) => {
@@ -162,28 +180,32 @@ const MarqueeText = observer(function MarqueeText({
       style={[styles.container, containerStyle]}
       onLayout={onContainerLayout}
     >
-      {/* Hidden measurement node — absolutely positioned so it is unconstrained
-          and always reports the text's natural (unwrapped) width. */}
+      {/* Hidden measurement node.
+          `alignItems: 'flex-start'` on the wrapper (and `alignSelf: 'flex-start'`
+          on the Text) prevents Yoga's default stretch behaviour from expanding the
+          Text to the wrapper's 9999 px width. Without this the measured width is
+          always ≈ 9999, causing every title to be treated as overflowing. */}
       <View style={styles.measureContainer}>
-        <RNText style={scaledStyle} numberOfLines={1} onLayout={onTextLayout}>
+        <RNText
+          style={[scaledStyle, styles.measureText]}
+          numberOfLines={1}
+          onLayout={onTextLayout}
+        >
           {children}
         </RNText>
       </View>
 
       {/* Visible animated text.
-          When overflowing, width is set to the measured natural width so the
-          full text renders on a single line at its native size (no wrapping,
-          no ellipsis). The parent's overflow:hidden provides the visual clip.
-          numberOfLines is intentionally omitted when overflowing: setting it to
-          1 would cause React Native to truncate with an ellipsis, defeating the
-          purpose of the marquee. */}
+          When scrolling, width is pinned to the measured natural width so the
+          full text renders on a single line. The container's overflow: 'hidden'
+          clips it. numberOfLines is omitted when scrolling to avoid ellipsis. */}
       <Animated.Text
         style={[
           scaledStyle,
-          isOverflowing ? { width: textWidth } : styles.centeredText,
+          shouldScroll ? { width: textWidth } : styles.centeredText,
           { transform: [{ translateX: animValue }] },
         ]}
-        numberOfLines={isOverflowing ? undefined : 1}
+        numberOfLines={shouldScroll ? undefined : 1}
       >
         {children}
       </Animated.Text>
@@ -203,6 +225,14 @@ const styles = StyleSheet.create({
     width: 9999,
     top: 0,
     left: 0,
+    // Prevent Yoga's default alignItems: 'stretch' from expanding the Text
+    // child to the full 9999 px width of this container.
+    alignItems: 'flex-start',
+  },
+  measureText: {
+    // Belt-and-suspenders: also override alignSelf so the text always
+    // reports its natural single-line content width.
+    alignSelf: 'flex-start',
   },
   centeredText: {
     textAlign: 'center',
