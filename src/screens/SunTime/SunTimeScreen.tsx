@@ -6,8 +6,9 @@ import * as SunCalc from 'suncalc';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { formatTime } from '../../utils/timeFormat';
 
 interface SunTimes {
@@ -43,6 +44,7 @@ const LOCATION_WAIT_TIMEOUT_MS = 3000;
 const LOCATION_CHECK_INTERVAL_MS = 500;
 
 function SunTimeScreen() {
+  const COLORS = useTheme();
   const core = useCoreStore();
   const [sunTimes, setSunTimes] = useState<SunTimes | null>(null);
   const [loading, setLoading] = useState(true);
@@ -127,15 +129,18 @@ function SunTimeScreen() {
   }, []);
 
   const renderCard = (label: string, value: string) => (
-    <View style={styles.card} key={label}>
+    <View
+      style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT, borderWidth: 2 }]}
+      key={label}
+    >
       <LinearGradient
         colors={COLORS.TOAST_BROWN_GRADIENT}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}
         style={styles.cardBackground}
       />
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value}</Text>
+      <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>{label}</Text>
+      <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>{value}</Text>
     </View>
   );
 
@@ -146,13 +151,13 @@ function SunTimeScreen() {
       {loading && (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={COLORS.ACCENT} />
-          <Text style={styles.loadingText}>Getting location...</Text>
+          <Text style={[styles.loadingText, { color: COLORS.PRIMARY_DARK }]}>Getting location...</Text>
         </View>
       )}
 
       {error && !loading && (
         <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+          <Text style={[styles.errorText, { color: COLORS.PRIMARY_DARK }]}>{error}</Text>
         </View>
       )}
 
@@ -162,15 +167,32 @@ function SunTimeScreen() {
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
           >
-            {renderCard('Sunrise', sunTimes.sunrise)}
-            {renderCard('Sunset', sunTimes.sunset)}
-            {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
-            {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
-            {renderCard('Solar Noon', sunTimes.solarNoon)}
-            {renderCard('Golden Hour Start', sunTimes.goldenHour)}
-            {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
-            {renderCard('Night Start', sunTimes.night)}
-            {renderCard('Night End', sunTimes.nightEnd)}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>
+                Dawn & Dusk
+              </Text>
+              {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
+              {renderCard('Sunrise', sunTimes.sunrise)}
+              {renderCard('Golden Hour Start', sunTimes.goldenHour)}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>
+                Midday
+              </Text>
+              {renderCard('Solar Noon', sunTimes.solarNoon)}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: COLORS.PRIMARY_DARK }]}>
+                Evening
+              </Text>
+              {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
+              {renderCard('Sunset', sunTimes.sunset)}
+              {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
+              {renderCard('Night Start', sunTimes.night)}
+              {renderCard('Night End', sunTimes.nightEnd)}
+            </View>
           </ScrollView>
         </View>
       )}
@@ -197,11 +219,18 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 24,
   },
-  card: {
+  section: {
     width: '90%',
+    marginTop: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  card: {
+    width: '100%',
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginTop: 12,
@@ -214,14 +243,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
     opacity: 0.9,
     marginBottom: 6,
     fontWeight: '700',
   },
   value: {
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
   },
   centerContainer: {
     flex: 1,
@@ -232,11 +259,9 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
   },
   errorText: {
     fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
