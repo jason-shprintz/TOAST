@@ -1,16 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { StyleSheet, TextProps, TouchableOpacity, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../hooks/useTheme';
 import { SPACING } from '../theme';
 import { LIGHT_COLORS } from '../theme/colors';
 import { HorizontalRule } from './HorizontalRule';
-import { Text } from './ScaledText';
+import MarqueeText from './MarqueeText';
 
-type Props = TextProps & {
+type Props = {
   title?: string;
+  children?: React.ReactNode;
+  /** Custom styles applied to the header container (border, background, etc.). */
+  style?: StyleProp<ViewStyle>;
   isShowHr?: boolean;
   enableSearch?: boolean;
 };
@@ -20,17 +29,17 @@ type SectionHeaderNavigationProp = NativeStackNavigationProp<{
 }>;
 
 /**
- * Renders a section header using a `Text` component.
+ * Renders a section header with optional search shortcut.
  *
- * Displays either the provided `title` prop or the `children` as the header content.
- * Additional styles can be applied via the `style` prop, and other props are spread onto the `Text` component.
+ * When the title fits within the available width it is displayed centred.
+ * When the title is too long it scrolls horizontally like a ticker via
+ * `MarqueeText`, looping continuously until the component unmounts.
  *
- * @param title - The text to display as the section header. If not provided, `children` will be used.
- * @param children - Alternative content to display if `title` is not specified.
- * @param style - Custom styles to apply to the header.
- * @param isShowHr - Whether to show the horizontal rule below the header. Default is true.
- * @param enableSearch - Whether clicking the header opens the search screen. Default is true.
- * @param rest - Additional props to pass to the `Text` component.
+ * @param title - Text to display. If omitted, `children` is used instead.
+ * @param children - Fallback content when `title` is not provided.
+ * @param style - Custom styles for the header container.
+ * @param isShowHr - Whether to render the horizontal rule below. Default true.
+ * @param enableSearch - Whether tapping opens the search screen. Default true.
  */
 export default function SectionHeader({
   title,
@@ -38,7 +47,6 @@ export default function SectionHeader({
   style,
   isShowHr = true,
   enableSearch = true,
-  ...rest
 }: Props) {
   const navigation = useNavigation<SectionHeaderNavigationProp>();
   const COLORS = useTheme();
@@ -48,24 +56,23 @@ export default function SectionHeader({
   };
 
   const header = (
-    <Text
-      {...rest}
-      numberOfLines={
-        enableSearch ? (rest.numberOfLines ?? 1) : rest.numberOfLines
-      }
+    <View
       style={[
-        styles.header,
-        enableSearch && styles.headerWithSearch,
+        styles.headerContainer,
+        enableSearch && styles.headerContainerWithSearch,
         {
-          color: LIGHT_COLORS.PRIMARY_DARK,
           backgroundColor: COLORS.SECONDARY_ACCENT,
           borderColor: COLORS.TOAST_BROWN,
         },
         style,
       ]}
     >
-      {title ?? children}
-    </Text>
+      <MarqueeText
+        style={[styles.headerText, { color: LIGHT_COLORS.PRIMARY_DARK }]}
+      >
+        {title ?? children}
+      </MarqueeText>
+    </View>
   );
 
   return (
@@ -99,17 +106,21 @@ export default function SectionHeader({
 }
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 20,
-    fontFamily: 'Bitter-Bold',
+  headerContainer: {
     borderWidth: 2,
     borderRadius: 8,
     paddingVertical: SPACING.sm,
     paddingHorizontal: SPACING.md,
     width: '100%',
-    textAlign: 'center',
     alignSelf: 'center',
     marginVertical: SPACING.md,
+  },
+  headerContainerWithSearch: {
+    paddingHorizontal: 40,
+  },
+  headerText: {
+    fontSize: 20,
+    fontFamily: 'Bitter-Bold',
   },
   searchBar: {
     width: '80%',
@@ -126,8 +137,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: SPACING.md,
     opacity: 0.6,
-  },
-  headerWithSearch: {
-    paddingHorizontal: 40,
   },
 });
