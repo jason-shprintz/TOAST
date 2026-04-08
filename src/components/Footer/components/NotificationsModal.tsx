@@ -70,7 +70,7 @@ function useAllNotifications(
     notifications.push({
       key: 'lunar-phase',
       type: 'solar',
-      icon: 'moon',
+      icon: 'moon-outline',
       iconEmoji: null,
       iconColor: COLORS.ACCENT,
       message: `${lunar.phaseName} (${lunar.illumination}%)`,
@@ -111,7 +111,7 @@ function useAllNotifications(
       type: 'pantry',
       icon: 'nutrition-outline',
       iconEmoji: null,
-      iconColor: isExpired ? '#d32f2f' : '#f9a825',
+      iconColor: isExpired ? COLORS.ERROR : '#f9a825',
       message: isExpired
         ? `Must use today: ${alert.item.name} has expired`
         : `Heads up: ${alert.item.name} expires within the month`,
