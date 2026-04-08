@@ -5,6 +5,7 @@
 import {
   getPressureTrend,
   getTrendInterpretation,
+  hasSufficientDataForTrend,
   hpaToInhg,
 } from '../src/utils/barometricPressure';
 
@@ -87,6 +88,64 @@ describe('barometricPressure utils', () => {
       trends.forEach((t) => {
         expect(getTrendInterpretation(t).length).toBeGreaterThan(0);
       });
+    });
+  });
+
+  describe('hasSufficientDataForTrend', () => {
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+
+    test('returns false for an empty array', () => {
+      expect(hasSufficientDataForTrend([], ONE_HOUR_MS)).toBe(false);
+    });
+
+    test('returns false for a single sample', () => {
+      expect(
+        hasSufficientDataForTrend([{ timestamp: Date.now() }], ONE_HOUR_MS),
+      ).toBe(false);
+    });
+
+    test('returns false when span is less than 50% of the window', () => {
+      const now = Date.now();
+      // Two samples only 20 min apart; 3 h window requires 1.5 h coverage
+      const samples = [{ timestamp: now - 20 * 60 * 1000 }, { timestamp: now }];
+      expect(hasSufficientDataForTrend(samples, 3 * ONE_HOUR_MS)).toBe(false);
+    });
+
+    test('returns true when span exactly equals 50% of the window', () => {
+      const now = Date.now();
+      // 3 h window → needs 1.5 h span → exactly 90 min
+      const samples = [{ timestamp: now - 90 * 60 * 1000 }, { timestamp: now }];
+      expect(hasSufficientDataForTrend(samples, 3 * ONE_HOUR_MS)).toBe(true);
+    });
+
+    test('returns true when span exceeds 50% of the window', () => {
+      const now = Date.now();
+      // 1 h window → needs 30 min span → 45 min is more than enough
+      const samples = [{ timestamp: now - 45 * 60 * 1000 }, { timestamp: now }];
+      expect(hasSufficientDataForTrend(samples, ONE_HOUR_MS)).toBe(true);
+    });
+
+    test('returns true when span covers the full window', () => {
+      const now = Date.now();
+      // 24 h window; spread samples across the full 24 h
+      const samples = [
+        { timestamp: now - 24 * ONE_HOUR_MS },
+        { timestamp: now - 12 * ONE_HOUR_MS },
+        { timestamp: now },
+      ];
+      expect(hasSufficientDataForTrend(samples, 24 * ONE_HOUR_MS)).toBe(true);
+    });
+
+    test('evaluates span based on first and last sample only', () => {
+      const now = Date.now();
+      // Middle sample is irrelevant; first–last span is 2 h on a 3 h window
+      const samples = [
+        { timestamp: now - 2 * ONE_HOUR_MS },
+        { timestamp: now - 30 * 60 * 1000 }, // middle
+        { timestamp: now },
+      ];
+      // 2 h span ≥ 1.5 h required → sufficient
+      expect(hasSufficientDataForTrend(samples, 3 * ONE_HOUR_MS)).toBe(true);
     });
   });
 });
