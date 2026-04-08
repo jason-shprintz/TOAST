@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Platform,
   PermissionsAndroid,
   Alert,
@@ -11,8 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Sound, { type RecordBackType } from 'react-native-nitro-sound';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Text } from '../../components/ScaledText';
+import AppButton from '../../components/AppButton';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
 import { useTheme } from '../../hooks/useTheme';
@@ -280,45 +278,23 @@ const DecibelMeterScreenImpl = () => {
           {/* Controls */}
           <View style={styles.controlsContainer}>
             {!isActive ? (
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: COLORS.SUCCESS,
-                    borderColor: COLORS.SECONDARY_ACCENT,
-                  },
-                ]}
+              <AppButton
+                label="Start Monitoring"
                 onPress={handleStart}
+                variant="success"
+                icon="play"
+                iconSize={24}
                 accessibilityLabel="Start Decibel Meter"
-                accessibilityRole="button"
-              >
-                <Icon name="play" size={24} color={COLORS.PRIMARY_LIGHT} />
-                <Text
-                  style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}
-                >
-                  Start Monitoring
-                </Text>
-              </TouchableOpacity>
+              />
             ) : (
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: COLORS.ERROR,
-                    borderColor: COLORS.SECONDARY_ACCENT,
-                  },
-                ]}
+              <AppButton
+                label="Stop Monitoring"
                 onPress={handleStop}
+                variant="destructive"
+                icon="stop"
+                iconSize={24}
                 accessibilityLabel="Stop Decibel Meter"
-                accessibilityRole="button"
-              >
-                <Icon name="stop" size={24} color={COLORS.PRIMARY_LIGHT} />
-                <Text
-                  style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}
-                >
-                  Stop Monitoring
-                </Text>
-              </TouchableOpacity>
+              />
             )}
           </View>
         </ScrollView>
@@ -392,19 +368,6 @@ const styles = StyleSheet.create({
   controlsContainer: {
     paddingHorizontal: 16,
     marginBottom: 20,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    gap: 12,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: '600',
   },
   referenceContainer: {
     marginHorizontal: 16,

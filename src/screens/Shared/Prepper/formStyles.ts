@@ -69,6 +69,9 @@ export const formStyles = StyleSheet.create({
     gap: 12,
     marginTop: 12,
   },
+  buttonFlex: {
+    flex: 1,
+  },
   cancelButton: {
     flex: 1,
     borderWidth: 1,
@@ -102,5 +105,8 @@ export const formStyles = StyleSheet.create({
   deleteButtonText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  deleteButtonContainer: {
+    marginTop: 24,
   },
 });

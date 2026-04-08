@@ -35,24 +35,8 @@ export const createStyles = (COLORS: ColorScheme) =>
       justifyContent: 'space-between',
       gap: 12,
     },
-    button: {
+    buttonFlex: {
       flex: 1,
-      backgroundColor: COLORS.ACCENT,
-      paddingVertical: 16,
-      paddingHorizontal: 20,
-      borderRadius: 12,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      gap: 8,
-    },
-    buttonActive: {
-      backgroundColor: COLORS.TOAST_BROWN,
-    },
-    buttonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: COLORS.PRIMARY_DARK,
     },
     separator: {
       height: 2,

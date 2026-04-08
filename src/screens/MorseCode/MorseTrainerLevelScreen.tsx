@@ -1,13 +1,8 @@
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import Sound from 'react-native-sound';
+import AppButton from '../../components/AppButton';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -344,26 +339,21 @@ export default function MorseTrainerLevelScreen() {
         </View>
 
         {/* Play Button */}
-        <TouchableOpacity
-          style={[
-            styles.playButton,
-            (isPlaying || (!soundsLoaded && !soundLoadError)) &&
-              styles.playButtonDisabled,
-          ]}
+        <AppButton
+          label={
+            isPlaying
+              ? 'Playing...'
+              : soundLoadError
+                ? '⚠ Audio Error'
+                : !soundsLoaded
+                  ? 'Loading Sounds...'
+                  : '▶ Play Morse Code'
+          }
           onPress={playMorseCode}
           disabled={isPlaying || (!soundsLoaded && !soundLoadError)}
           accessibilityLabel="Play morse code"
-        >
-          {isPlaying ? (
-            <ActivityIndicator size="large" color={COLORS.PRIMARY_LIGHT} />
-          ) : soundLoadError ? (
-            <Text style={styles.playButtonText}>⚠ AUDIO ERROR</Text>
-          ) : !soundsLoaded ? (
-            <Text style={styles.playButtonText}>LOADING SOUNDS...</Text>
-          ) : (
-            <Text style={styles.playButtonText}>▶ PLAY MORSE CODE</Text>
-          )}
-        </TouchableOpacity>
+          style={styles.playButton}
+        />
 
         {/* Answer Input */}
         <View style={styles.answerContainer}>
@@ -409,35 +399,21 @@ export default function MorseTrainerLevelScreen() {
         {/* Action Buttons */}
         {feedback === null && (
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                styles.submitButton,
-                (userAnswer.trim().length === 0 || !playedChallenge) &&
-                  styles.submitButtonDisabled,
-              ]}
+            <AppButton
+              label="Submit"
               onPress={checkAnswer}
               disabled={userAnswer.trim().length === 0 || !playedChallenge}
               accessibilityLabel="Submit answer"
-              accessibilityState={{
-                disabled: userAnswer.trim().length === 0 || !playedChallenge,
-              }}
-            >
-              <Text style={styles.buttonText}>SUBMIT</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.button,
-                styles.hintButton,
-                !playedChallenge && styles.hintButtonDisabled,
-              ]}
+              style={styles.buttonFlex}
+            />
+            <AppButton
+              label="Show Answer"
               onPress={showAnswer}
               disabled={!playedChallenge}
+              variant="secondary"
               accessibilityLabel="Show answer"
-            >
-              <Text style={styles.buttonText}>SHOW ANSWER</Text>
-            </TouchableOpacity>
+              style={styles.buttonFlex}
+            />
           </View>
         )}
 
@@ -475,22 +451,7 @@ const styles = StyleSheet.create({
     color: COLORS.PRIMARY_DARK,
   },
   playButton: {
-    backgroundColor: COLORS.ACCENT,
-    paddingVertical: 24,
-    borderRadius: 12,
-    alignItems: 'center',
     marginBottom: 20,
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-  playButtonDisabled: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    opacity: 0.7,
-  },
-  playButtonText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_LIGHT,
   },
   answerContainer: {
     marginBottom: 16,
@@ -535,31 +496,8 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 16,
   },
-  button: {
+  buttonFlex: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.TOAST_BROWN,
-  },
-  submitButton: {
-    backgroundColor: COLORS.ACCENT,
-  },
-  submitButtonDisabled: {
-    backgroundColor: COLORS.SECONDARY_ACCENT,
-    opacity: 0.6,
-  },
-  hintButton: {
-    backgroundColor: COLORS.PRIMARY_LIGHT,
-  },
-  hintButtonDisabled: {
-    opacity: 0.5,
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.PRIMARY_DARK,
   },
   helpContainer: {
     padding: 10,

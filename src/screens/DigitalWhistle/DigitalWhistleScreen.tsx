@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, TouchableOpacity, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import Sound from 'react-native-sound';
-import Icon from 'react-native-vector-icons/Ionicons';
+import AppButton from '../../components/AppButton';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -171,20 +171,15 @@ export default function DigitalWhistleScreen() {
           </Text>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.button}
+            <AppButton
+              label="Short Burst"
               onPress={() => playShortBurst(true)}
-            >
-              <Icon
-                name="flash-outline"
-                size={20}
-                color={COLORS.PRIMARY_LIGHT}
-              />
-              <Text style={styles.buttonText}>Short Burst</Text>
-            </TouchableOpacity>
+              icon="flash-outline"
+              style={styles.buttonFlex}
+            />
 
-            <TouchableOpacity
-              style={[styles.button, isPlayingNormal && styles.buttonActive]}
+            <AppButton
+              label={isPlayingNormal ? 'Stop' : 'Continuous'}
               onPress={() => {
                 if (isPlayingNormal) {
                   stopContinuous(true);
@@ -192,16 +187,10 @@ export default function DigitalWhistleScreen() {
                   startContinuous(true);
                 }
               }}
-            >
-              <Icon
-                name={isPlayingNormal ? 'stop' : 'play'}
-                size={20}
-                color={COLORS.PRIMARY_LIGHT}
-              />
-              <Text style={styles.buttonText}>
-                {isPlayingNormal ? 'Stop' : 'Continuous'}
-              </Text>
-            </TouchableOpacity>
+              variant={isPlayingNormal ? 'destructive' : 'primary'}
+              icon={isPlayingNormal ? 'stop' : 'play'}
+              style={styles.buttonFlex}
+            />
           </View>
         </View>
 
@@ -215,20 +204,15 @@ export default function DigitalWhistleScreen() {
           </Text>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.button}
+            <AppButton
+              label="Short Burst"
               onPress={() => playShortBurst(false)}
-            >
-              <Icon
-                name="flash-outline"
-                size={20}
-                color={COLORS.PRIMARY_LIGHT}
-              />
-              <Text style={styles.buttonText}>Short Burst</Text>
-            </TouchableOpacity>
+              icon="flash-outline"
+              style={styles.buttonFlex}
+            />
 
-            <TouchableOpacity
-              style={[styles.button, isPlayingDog && styles.buttonActive]}
+            <AppButton
+              label={isPlayingDog ? 'Stop' : 'Continuous'}
               onPress={() => {
                 if (isPlayingDog) {
                   stopContinuous(false);
@@ -236,16 +220,10 @@ export default function DigitalWhistleScreen() {
                   startContinuous(false);
                 }
               }}
-            >
-              <Icon
-                name={isPlayingDog ? 'stop' : 'play'}
-                size={20}
-                color={COLORS.PRIMARY_LIGHT}
-              />
-              <Text style={styles.buttonText}>
-                {isPlayingDog ? 'Stop' : 'Continuous'}
-              </Text>
-            </TouchableOpacity>
+              variant={isPlayingDog ? 'destructive' : 'primary'}
+              icon={isPlayingDog ? 'stop' : 'play'}
+              style={styles.buttonFlex}
+            />
           </View>
         </View>
       </View>

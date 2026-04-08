@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, StyleSheet, TextInput, View } from 'react-native';
+import AppButton from '../../components/AppButton';
 import { Text } from '../../components/ScaledText';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -95,41 +90,18 @@ export function ImportModal({
           ) : null}
 
           <View style={styles.buttons}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                styles.cancelButton,
-                {
-                  backgroundColor: COLORS.PRIMARY_LIGHT,
-                  borderColor: COLORS.PRIMARY_DARK,
-                },
-              ]}
+            <AppButton
+              label="Cancel"
               onPress={handleClose}
-              accessibilityLabel="Cancel"
-              accessibilityRole="button"
-            >
-              <Text style={[styles.buttonText, { color: COLORS.PRIMARY_DARK }]}>
-                Cancel
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                styles.importButton,
-                { backgroundColor: COLORS.PRIMARY_DARK },
-                !text.trim() && styles.disabledButton,
-              ]}
+              variant="secondary"
+              style={styles.buttonFlex}
+            />
+            <AppButton
+              label="Import"
               onPress={handleImport}
               disabled={!text.trim()}
-              accessibilityLabel="Import"
-              accessibilityRole="button"
-            >
-              <Text
-                style={[styles.buttonText, { color: COLORS.PRIMARY_LIGHT }]}
-              >
-                Import
-              </Text>
-            </TouchableOpacity>
+              style={styles.buttonFlex}
+            />
           </View>
         </View>
       </View>
@@ -175,21 +147,7 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 8,
   },
-  button: {
+  buttonFlex: {
     flex: 1,
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    borderWidth: 1,
-  },
-  importButton: {},
-  disabledButton: {
-    opacity: 0.5,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AppButton from '../../components/AppButton';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
@@ -166,33 +167,17 @@ export default function RepeaterDetailScreen(): JSX.Element {
           {/* Custom repeater actions */}
           {repeater.isCustom && (
             <>
-              <TouchableOpacity
-                style={[
-                  styles.actionButton,
-                  { backgroundColor: COLORS.PRIMARY_DARK },
-                ]}
+              <AppButton
+                label="Edit Repeater"
                 onPress={() =>
                   navigation.navigate('AddCustomRepeater', { repeater })
                 }
                 accessibilityLabel="Edit this custom repeater"
-                accessibilityRole="button"
-              >
-                <Text
-                  style={[
-                    styles.actionButtonText,
-                    { color: COLORS.PRIMARY_LIGHT },
-                  ]}
-                >
-                  Edit Repeater
-                </Text>
-              </TouchableOpacity>
+                style={styles.actionButtonSpacing}
+              />
 
-              <TouchableOpacity
-                style={[
-                  styles.actionButton,
-                  styles.deleteButton,
-                  { borderColor: COLORS.ERROR },
-                ]}
+              <AppButton
+                label="Delete Repeater"
                 onPress={() => {
                   Alert.alert(
                     'Delete Repeater',
@@ -221,15 +206,11 @@ export default function RepeaterDetailScreen(): JSX.Element {
                     ],
                   );
                 }}
+                variant="destructive"
+                icon="trash-outline"
                 accessibilityLabel="Delete this custom repeater"
-                accessibilityRole="button"
-              >
-                <Text
-                  style={[styles.actionButtonText, { color: COLORS.ERROR }]}
-                >
-                  Delete Repeater
-                </Text>
-              </TouchableOpacity>
+                style={styles.actionButtonSpacing}
+              />
             </>
           )}
 
@@ -327,18 +308,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  actionButton: {
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
+  actionButtonSpacing: {
     marginBottom: 10,
-  },
-  deleteButton: {
-    borderWidth: 1,
-  },
-  actionButtonText: {
-    fontSize: 15,
-    fontWeight: '700',
   },
   disclaimerText: {
     fontSize: 12,
