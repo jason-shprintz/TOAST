@@ -133,6 +133,7 @@ const SOSTrigger = ({
         style={[
           styles.sosSection,
           {
+            backgroundColor: COLORS.PRIMARY_LIGHT,
             borderColor: COLORS.SECONDARY_ACCENT,
             boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
           },
