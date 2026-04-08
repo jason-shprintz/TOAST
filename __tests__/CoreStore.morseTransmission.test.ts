@@ -274,8 +274,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should NOT instantiate Sound or call setCategory on construction', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
     expect(Sound).not.toHaveBeenCalled();
     expect(Sound.setCategory).not.toHaveBeenCalled();
@@ -283,8 +281,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should instantiate Sound and call setCategory only when SOS is activated with tone enabled', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
     expect(Sound).not.toHaveBeenCalled();
 
@@ -297,8 +293,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should instantiate Sound and call setCategory when morse transmission starts with tone enabled', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
     expect(Sound).not.toHaveBeenCalled();
 
@@ -310,8 +304,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should NOT instantiate Sound when morse transmission starts with tone disabled', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
     expect(Sound).not.toHaveBeenCalled();
 
@@ -323,8 +315,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should NOT trigger a second load when ensureAudioReady is called again while loading', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
 
     // First SOS activation triggers the load
@@ -341,8 +331,6 @@ describe('CoreStore - SOS audio lazy loading', () => {
   });
 
   it('should call ensureAudioReady when setSosWithTone enables tone while SOS is active', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CoreStore } = require('../src/stores/CoreStore');
     const store = new CoreStore();
 
     // Start SOS with tone disabled so audio is NOT loaded
