@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as SunCalc from 'suncalc';
 import { Text } from '../../components/ScaledText';
 import ScreenBody from '../../components/ScreenBody';
 import SectionHeader from '../../components/SectionHeader';
+import { useTheme } from '../../hooks/useTheme';
 import { useCoreStore } from '../../stores/StoreContext';
-import { COLORS, FOOTER_HEIGHT } from '../../theme';
+import { FOOTER_HEIGHT } from '../../theme';
 import { formatTime } from '../../utils/timeFormat';
 
 interface SunTimes {
@@ -43,6 +44,8 @@ const LOCATION_WAIT_TIMEOUT_MS = 3000;
 const LOCATION_CHECK_INTERVAL_MS = 500;
 
 function SunTimeScreen() {
+  const COLORS = useTheme();
+  const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const core = useCoreStore();
   const [sunTimes, setSunTimes] = useState<SunTimes | null>(null);
   const [loading, setLoading] = useState(true);
@@ -162,15 +165,26 @@ function SunTimeScreen() {
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
           >
-            {renderCard('Sunrise', sunTimes.sunrise)}
-            {renderCard('Sunset', sunTimes.sunset)}
-            {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
-            {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
-            {renderCard('Solar Noon', sunTimes.solarNoon)}
-            {renderCard('Golden Hour Start', sunTimes.goldenHour)}
-            {renderCard('Golden Hour End', sunTimes.goldenHourEnd)}
-            {renderCard('Night Start', sunTimes.night)}
-            {renderCard('Night End', sunTimes.nightEnd)}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Dawn & Dusk</Text>
+              {renderCard('Dawn (Civil Twilight)', sunTimes.dawn)}
+              {renderCard('Sunrise', sunTimes.sunrise)}
+              {renderCard('Golden Hour End (Morning)', sunTimes.goldenHourEnd)}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Midday</Text>
+              {renderCard('Solar Noon', sunTimes.solarNoon)}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Evening</Text>
+              {renderCard('Golden Hour Start (Evening)', sunTimes.goldenHour)}
+              {renderCard('Sunset', sunTimes.sunset)}
+              {renderCard('Dusk (Civil Twilight)', sunTimes.dusk)}
+              {renderCard('Night Start', sunTimes.night)}
+              {renderCard('Night End', sunTimes.nightEnd)}
+            </View>
           </ScrollView>
         </View>
       )}
@@ -180,64 +194,75 @@ function SunTimeScreen() {
 
 export default observer(SunTimeScreen);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignSelf: 'stretch',
-    paddingBottom: FOOTER_HEIGHT,
-  },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  scrollContent: {
-    width: '100%',
-    alignItems: 'center',
-    paddingTop: 8,
-    paddingBottom: 24,
-  },
-  card: {
-    width: '90%',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.SECONDARY_ACCENT,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    marginTop: 12,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  cardBackground: {
-    ...StyleSheet.absoluteFill,
-  },
-  label: {
-    fontSize: 14,
-    color: COLORS.PRIMARY_DARK,
-    opacity: 0.9,
-    marginBottom: 6,
-    fontWeight: '700',
-  },
-  value: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-  },
-  errorText: {
-    fontSize: 16,
-    color: COLORS.PRIMARY_DARK,
-    textAlign: 'center',
-    paddingHorizontal: 20,
-  },
-});
+const makeStyles = (COLORS: ReturnType<typeof useTheme>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      alignSelf: 'stretch',
+      paddingBottom: FOOTER_HEIGHT,
+    },
+    scrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    scrollContent: {
+      width: '100%',
+      alignItems: 'center',
+      paddingTop: 8,
+      paddingBottom: 24,
+    },
+    section: {
+      width: '90%',
+      marginTop: 16,
+    },
+    sectionTitle: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 12,
+    },
+    card: {
+      width: '100%',
+      borderColor: COLORS.SECONDARY_ACCENT,
+      borderRadius: 12,
+      borderWidth: 2,
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      marginTop: 12,
+      overflow: 'hidden',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    cardBackground: {
+      ...StyleSheet.absoluteFill,
+    },
+    label: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 14,
+      opacity: 0.9,
+      marginBottom: 6,
+      fontWeight: '700',
+    },
+    value: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 16,
+    },
+    centerContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 40,
+    },
+    loadingText: {
+      color: COLORS.PRIMARY_DARK,
+      marginTop: 12,
+      fontSize: 16,
+    },
+    errorText: {
+      color: COLORS.PRIMARY_DARK,
+      fontSize: 16,
+      textAlign: 'center',
+      paddingHorizontal: 20,
+    },
+  });
