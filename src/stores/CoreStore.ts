@@ -82,8 +82,9 @@ export class CoreStore {
       'change',
       this.handleAppStateChange,
     );
-    // Load SOS audio files
-    this.loadSosAudio();
+    // SOS audio files are loaded lazily on first SOS activation to avoid
+    // activating the iOS audio session (and interrupting background audio)
+    // at app startup.
   }
 
   /**
@@ -232,9 +233,14 @@ export class CoreStore {
    */
   private startSOS() {
     this.stopSOS(); // Stop any existing SOS pattern
-    // Only claim audio focus when the tone accompaniment is enabled
+    // Only claim audio focus and load sound files when the tone accompaniment
+    // is enabled. Lazy-loading here prevents the iOS audio session from being
+    // activated at app startup, which would interrupt background audio.
     if (this.sosWithTone) {
       Sound.setCategory('Playback');
+      if (!this.audioLoaded) {
+        this.loadSosAudio();
+      }
     }
     // Sequence builder: returns array of {on:boolean, ms:number, type:'dot'|'dash'|null}
     const unit = this.sosUnitMs;
