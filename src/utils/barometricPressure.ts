@@ -19,7 +19,7 @@ const FALLING_THRESHOLD = -1.0;
  * before a trend is considered meaningful.  A 3 h window requires at least
  * 1.5 h of accumulated data; a 24 h window requires at least 12 h, etc.
  */
-const MIN_WINDOW_COVERAGE = 0.5;
+export const MIN_WINDOW_COVERAGE = 0.5;
 
 /**
  * Returns true when the provided samples span at least MIN_WINDOW_COVERAGE

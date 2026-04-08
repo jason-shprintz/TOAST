@@ -20,6 +20,7 @@ import {
   getTrendInterpretation,
   hasSufficientDataForTrend,
   hpaToInhg,
+  MIN_WINDOW_COVERAGE,
   PressureTrend,
 } from '../../utils/barometricPressure';
 import { displayPressure } from '../../utils/unitConversions';
@@ -77,16 +78,20 @@ function BarometricPressureScreen() {
     const spanMs =
       windowSamples[windowSamples.length - 1].timestamp -
       windowSamples[0].timestamp;
-    const spanMin = Math.round(spanMs / 60_000);
-    if (spanMin < 60) {
-      return `${spanMin} min of data collected.`;
+    const totalMinutes = Math.floor(spanMs / 60_000);
+    if (totalMinutes < 60) {
+      return `${totalMinutes} min of data collected.`;
     }
-    const spanHr = (spanMs / 3_600_000).toFixed(1);
-    return `${spanHr}h of data collected.`;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (minutes === 0) {
+      return `${hours}h of data collected.`;
+    }
+    return `${hours}h ${minutes} min of data collected.`;
   })();
 
-  /** Minimum hours of span needed for the current window. */
-  const neededHours = windowHours * 0.5;
+  /** Minimum hours of span needed for the current window (mirrors the gate in hasSufficientDataForTrend). */
+  const neededHours = windowHours * MIN_WINDOW_COVERAGE;
 
   const pressureDisplay =
     pressure !== null
