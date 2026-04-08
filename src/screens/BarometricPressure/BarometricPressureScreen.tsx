@@ -18,7 +18,9 @@ import { FOOTER_HEIGHT } from '../../theme';
 import {
   getPressureTrend,
   getTrendInterpretation,
+  hasSufficientDataForTrend,
   hpaToInhg,
+  MIN_WINDOW_COVERAGE,
   PressureTrend,
 } from '../../utils/barometricPressure';
 import { displayPressure } from '../../utils/unitConversions';
@@ -52,14 +54,44 @@ function BarometricPressureScreen() {
     useBarometricPressure();
   const [windowHours, setWindowHours] = useState<WindowHours>(3);
 
-  /** Filter history to the selected window */
-  const windowReadings = (() => {
+  /** Filter history to the selected window (full samples, preserving timestamps) */
+  const windowSamples = (() => {
     const cutoff = Date.now() - windowHours * 60 * 60 * 1000;
-    return history.filter((s) => s.timestamp >= cutoff).map((s) => s.pressure);
+    return history.filter((s) => s.timestamp >= cutoff);
   })();
+  const windowReadings = windowSamples.map((s) => s.pressure);
+
+  const windowMs = windowHours * 60 * 60 * 1000;
+  const sufficientData = hasSufficientDataForTrend(windowSamples, windowMs);
 
   const trend = getPressureTrend(windowReadings);
   const interpretation = getTrendInterpretation(trend);
+
+  /**
+   * Human-readable description of how much pressure history has been
+   * accumulated inside the current window (used in the gathering-data card).
+   */
+  const dataSpanLabel = (() => {
+    if (windowSamples.length < 2) {
+      return 'No readings collected yet.';
+    }
+    const spanMs =
+      windowSamples[windowSamples.length - 1].timestamp -
+      windowSamples[0].timestamp;
+    const totalMinutes = Math.floor(spanMs / 60_000);
+    if (totalMinutes < 60) {
+      return `${totalMinutes} min of data collected.`;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (minutes === 0) {
+      return `${hours}h of data collected.`;
+    }
+    return `${hours}h ${minutes} min of data collected.`;
+  })();
+
+  /** Minimum hours of span needed for the current window (mirrors the gate in hasSufficientDataForTrend). */
+  const neededHours = windowHours * MIN_WINDOW_COVERAGE;
 
   const pressureDisplay =
     pressure !== null
@@ -197,27 +229,54 @@ function BarometricPressureScreen() {
                   end={{ x: 1, y: 0 }}
                   style={styles.cardBackground}
                 />
-                <Text
-                  style={[styles.trendLabel, { color: COLORS.PRIMARY_DARK }]}
-                  accessibilityLabel={`Pressure trend: ${trend}`}
-                >
-                  {TREND_ARROW[trend]} {trend}
-                </Text>
-                <Text
-                  style={[
-                    styles.trendInterpretation,
-                    { color: COLORS.PRIMARY_DARK },
-                  ]}
-                  accessibilityLabel={interpretation}
-                >
-                  {interpretation}
-                </Text>
-                {windowReadings.length < 2 && (
-                  <Text
-                    style={[styles.trendNote, { color: COLORS.PRIMARY_DARK }]}
-                  >
-                    Collecting data — trend will update as more readings arrive.
-                  </Text>
+                {sufficientData ? (
+                  <>
+                    <Text
+                      style={[
+                        styles.trendLabel,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                      accessibilityLabel={`Pressure trend: ${trend}`}
+                    >
+                      {TREND_ARROW[trend]} {trend}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.trendInterpretation,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                      accessibilityLabel={interpretation}
+                    >
+                      {interpretation}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text
+                      style={[
+                        styles.trendLabel,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                      accessibilityLabel="Gathering pressure data"
+                    >
+                      Gathering Data…
+                    </Text>
+                    <Text
+                      style={[
+                        styles.trendInterpretation,
+                        { color: COLORS.PRIMARY_DARK },
+                      ]}
+                    >
+                      Not enough data for a reliable {windowHours}h trend yet.
+                      About {neededHours}h of readings needed.
+                    </Text>
+                    <Text
+                      style={[styles.trendNote, { color: COLORS.PRIMARY_DARK }]}
+                    >
+                      {dataSpanLabel} Readings are saved each time you open the
+                      app.
+                    </Text>
+                  </>
                 )}
               </View>
             </View>
