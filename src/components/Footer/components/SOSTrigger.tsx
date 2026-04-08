@@ -2,8 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
-  View,
-  TouchableWithoutFeedback,
+  Pressable,
   Animated,
   Vibration,
 } from 'react-native';
@@ -123,39 +122,31 @@ const SOSTrigger = ({
   }, []);
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       onPressIn={handleSOSPressIn}
       onPressOut={handleSOSPressOut}
       accessibilityLabel="Emergency SOS - Hold for 1 Second to Activate"
       accessibilityRole="button"
+      style={({ pressed }) => [
+        styles.sosSection,
+        { backgroundColor: isSOSPressing ? COLORS.ACCENT : COLORS.ERROR },
+        pressed && styles.pressed,
+      ]}
     >
-      <View
+      <Ionicons
+        name="warning-outline"
+        size={24}
+        color={isSOSPressing ? COLORS.PRIMARY_DARK : COLORS.PRIMARY_LIGHT}
+      />
+      <Text
         style={[
-          styles.sosSection,
-          {
-            backgroundColor: COLORS.PRIMARY_LIGHT,
-            borderColor: COLORS.SECONDARY_ACCENT,
-            boxShadow: '0 0 10px ' + COLORS.SECONDARY_ACCENT,
-          },
-          isSOSPressing && { backgroundColor: COLORS.ACCENT },
+          styles.sosText,
+          { color: isSOSPressing ? COLORS.PRIMARY_DARK : COLORS.PRIMARY_LIGHT },
         ]}
       >
-        <Ionicons
-          name="warning-outline"
-          size={32}
-          color={isSOSPressing ? COLORS.PRIMARY_LIGHT : COLORS.PRIMARY_DARK}
-        />
-        <Text
-          style={[
-            styles.sosText,
-            { color: COLORS.PRIMARY_DARK },
-            isSOSPressing && { color: COLORS.PRIMARY_LIGHT },
-          ]}
-        >
-          SOS
-        </Text>
-      </View>
-    </TouchableWithoutFeedback>
+        SOS
+      </Text>
+    </Pressable>
   );
 };
 
@@ -164,14 +155,17 @@ export default observer(SOSTrigger);
 const styles = StyleSheet.create({
   sosSection: {
     width: '25%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 50,
+    borderRadius: 12,
+    gap: 2,
+  },
+  pressed: {
+    opacity: 0.8,
   },
   sosText: {
     fontSize: 12,
     fontWeight: '700',
-    marginTop: 4,
   },
 });
