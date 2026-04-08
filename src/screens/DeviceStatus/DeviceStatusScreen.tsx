@@ -45,48 +45,72 @@ function DeviceStatusScreen() {
               Device Metrics
             </Text>
 
-            <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <View
+              style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}
+            >
               <LinearGradient
                 colors={COLORS.TOAST_BROWN_GRADIENT}
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.cardBackground}
               />
-              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>Battery</Text>
-              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>{batteryText}</Text>
+              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+                Battery
+              </Text>
+              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>
+                {batteryText}
+              </Text>
             </View>
 
-            <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <View
+              style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}
+            >
               <LinearGradient
                 colors={COLORS.TOAST_BROWN_GRADIENT}
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.cardBackground}
               />
-              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>Last GPS Fix</Text>
-              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>{lastFixText}</Text>
+              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+                Last GPS Fix
+              </Text>
+              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>
+                {lastFixText}
+              </Text>
             </View>
 
-            <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <View
+              style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}
+            >
               <LinearGradient
                 colors={COLORS.TOAST_BROWN_GRADIENT}
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.cardBackground}
               />
-              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>Storage</Text>
-              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>{storageText}</Text>
+              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+                Storage
+              </Text>
+              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>
+                {storageText}
+              </Text>
             </View>
 
-            <View style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}>
+            <View
+              style={[styles.card, { borderColor: COLORS.SECONDARY_ACCENT }]}
+            >
               <LinearGradient
                 colors={COLORS.TOAST_BROWN_GRADIENT}
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.cardBackground}
               />
-              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>Connectivity</Text>
-              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>{offlineText}</Text>
+              <Text style={[styles.label, { color: COLORS.PRIMARY_DARK }]}>
+                Connectivity
+              </Text>
+              <Text style={[styles.value, { color: COLORS.PRIMARY_DARK }]}>
+                {offlineText}
+              </Text>
             </View>
           </View>
         </ScrollView>
