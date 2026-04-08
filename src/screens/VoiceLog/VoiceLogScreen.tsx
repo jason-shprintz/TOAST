@@ -1,6 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   StyleSheet,
   View,
@@ -55,7 +61,7 @@ export default observer(function VoiceLogScreen() {
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const COLORS = useTheme();
-  const styles = makeStyles(COLORS);
+  const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
   const soundRef = useRef<Sound | null>(null);
   const stopRecorderRef = useRef<(() => Promise<string | undefined>) | null>(
     null,

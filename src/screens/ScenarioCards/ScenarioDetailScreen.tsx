@@ -104,7 +104,7 @@ export default function ScenarioDetailScreen(): JSX.Element {
           <Ionicons
             name={bookmarked ? 'bookmark' : 'bookmark-outline'}
             size={28}
-            color={COLORS.PRIMARY_LIGHT}
+            color={COLORS.PRIMARY_DARK}
           />
         </TouchableOpacity>
       </View>
@@ -246,12 +246,12 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       fontSize: 20,
       fontWeight: '700',
       marginBottom: 10,
-      color: COLORS.PRIMARY_LIGHT,
+      color: COLORS.PRIMARY_DARK,
     },
     bodyText: {
       fontSize: 16,
       lineHeight: 24,
-      color: COLORS.PRIMARY_LIGHT,
+      color: COLORS.PRIMARY_DARK,
     },
     bulletWrap: {
       flexDirection: 'row',
@@ -262,14 +262,14 @@ function makeStyles(COLORS: ReturnType<typeof useTheme>) {
       fontSize: 16,
       fontWeight: '600',
       marginRight: 8,
-      color: COLORS.PRIMARY_LIGHT,
+      color: COLORS.PRIMARY_DARK,
       minWidth: 20,
     },
     bulletText: {
       flex: 1,
       fontSize: 16,
       lineHeight: 24,
-      color: COLORS.PRIMARY_LIGHT,
+      color: COLORS.PRIMARY_DARK,
     },
     missingWrap: {
       flex: 1,

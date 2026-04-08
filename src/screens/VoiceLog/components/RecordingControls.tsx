@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Text } from '../../../components/ScaledText';
@@ -22,7 +22,7 @@ export default function RecordingControls({
   onStopRecording,
 }: RecordingControlsProps) {
   const COLORS = useTheme();
-  const styles = makeStyles(COLORS);
+  const styles = useMemo(() => makeStyles(COLORS), [COLORS]);
 
   const formatTime = (seconds: number): string => {
     const remaining = maxDuration - seconds;
