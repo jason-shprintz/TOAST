@@ -5,6 +5,7 @@ import { CoreStore } from './CoreStore';
 import { EmergencyPlanStore } from './EmergencyPlanStore';
 import { InventoryStore } from './InventoryStore';
 import { NavigationStore } from './NavigationStore';
+import { NotificationsStore } from './NotificationsStore';
 import { PantryStore } from './PantryStore';
 import { ReferenceStore } from './ReferenceStore';
 import { RepeaterBookStore } from './RepeaterBookStore';
@@ -25,6 +26,7 @@ export class RootStore {
   settingsStore: SettingsStore;
   signalsStore: SignalsStore;
   solarCycleNotificationStore: SolarCycleNotificationStore;
+  notificationsStore: NotificationsStore;
   barometerStore: BarometerStore;
   repeaterBookStore: RepeaterBookStore;
   weatherOutlookStore: WeatherOutlookStore;
@@ -43,6 +45,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.notificationsStore = new NotificationsStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
@@ -56,6 +59,10 @@ export class RootStore {
    * Initialize settings by loading them from the database
    */
   private async initializeSettings() {
+    // Load persisted notification hidden keys first — this is AsyncStorage-based
+    // and has no dependency on the SQLite database, so it can run immediately
+    // and avoids a brief window where dismissed notifications appear in the UI.
+    await this.notificationsStore.loadHiddenKeys();
     // Wait for CoreStore to initialize the database, then load categories and settings
     await this.coreStore.initNotesDb();
     if (this.coreStore.notesDb) {
@@ -109,6 +116,7 @@ export class RootStore {
     this.settingsStore = new SettingsStore();
     this.signalsStore = new SignalsStore();
     this.solarCycleNotificationStore = new SolarCycleNotificationStore();
+    this.notificationsStore = new NotificationsStore();
     this.barometerStore = new BarometerStore();
     this.repeaterBookStore = new RepeaterBookStore();
     this.weatherOutlookStore = new WeatherOutlookStore();
