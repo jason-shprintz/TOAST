@@ -37,6 +37,11 @@ export class NotificationsStore {
   hiddenKeys: Set<string> = new Set();
 
   private _loaded = false;
+  /**
+   * Internal promise chain used to serialize AsyncStorage writes so that
+   * rapid successive hide/unhide calls never clobber each other.
+   */
+  private _persistChain: Promise<void> = Promise.resolve();
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -50,9 +55,12 @@ export class NotificationsStore {
     try {
       const raw = await AsyncStorage.getItem(HIDDEN_KEYS_STORAGE_KEY);
       if (raw) {
-        const parsed: string[] = JSON.parse(raw);
+        const parsed: unknown = JSON.parse(raw);
+        const validKeys = Array.isArray(parsed)
+          ? parsed.filter((v): v is string => typeof v === 'string')
+          : [];
         runInAction(() => {
-          this.hiddenKeys = new Set(parsed);
+          this.hiddenKeys = new Set(validKeys);
         });
       }
     } catch (e) {
@@ -111,12 +119,18 @@ export class NotificationsStore {
     this._persist();
   }
 
-  private async _persist(): Promise<void> {
-    try {
-      const serialised = JSON.stringify([...this.hiddenKeys]);
-      await AsyncStorage.setItem(HIDDEN_KEYS_STORAGE_KEY, serialised);
-    } catch (e) {
-      console.warn('NotificationsStore: failed to persist hidden keys', e);
-    }
+  private _persist(): void {
+    // Snapshot current state immediately so the written value is always the
+    // state at the time _persist() was called, not at some later tick.
+    const snapshot = [...this.hiddenKeys];
+    // Chain onto the previous persist so writes are always serialized and the
+    // last caller's snapshot wins even when multiple updates arrive quickly.
+    this._persistChain = this._persistChain
+      .then(() =>
+        AsyncStorage.setItem(HIDDEN_KEYS_STORAGE_KEY, JSON.stringify(snapshot)),
+      )
+      .catch((e) =>
+        console.warn('NotificationsStore: failed to persist hidden keys', e),
+      );
   }
 }

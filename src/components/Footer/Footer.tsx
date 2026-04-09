@@ -3,14 +3,7 @@ import React, { useRef, useState, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../hooks/useTheme';
-import {
-  useAstronomyEventStore,
-  useCoreStore,
-  useNotificationsStore,
-  usePantryStore,
-  useSolarCycleNotificationStore,
-  useWeatherOutlookStore,
-} from '../../stores/StoreContext';
+import { useCoreStore, useNotificationsStore } from '../../stores/StoreContext';
 import { FOOTER_HEIGHT } from '../../theme';
 import { Text } from '../ScaledText';
 import ActiveItemButton from './components/ActiveItemButton';
@@ -18,60 +11,20 @@ import DecibelMeterVisualization from './components/DecibelMeterVisualization';
 import NotificationsModal from './components/NotificationsModal';
 import SolarCycleNotification from './components/SolarCycleNotification';
 import SOSTrigger from './components/SOSTrigger';
+import { useAllNotifications } from './useAllNotifications';
 
 const FOOTER_BASE_PADDING = 5;
 
 /**
- * Computes the count of currently visible (non-hidden) notifications across
- * all in-app alert sources.  Used to drive the badge on the footer.
+ * Returns the count of currently visible (non-hidden) notifications.
+ * Derived from the shared useAllNotifications hook so that the badge count
+ * and the modal list always reflect the same canonical notification set.
  */
 function useVisibleNotificationCount(): number {
-  const solarStore = useSolarCycleNotificationStore();
-  const weatherOutlook = useWeatherOutlookStore();
-  const pantry = usePantryStore();
-  const astronomyStore = useAstronomyEventStore();
+  const allNotifications = useAllNotifications();
   const notificationsStore = useNotificationsStore();
-
-  let count = 0;
-
-  // Solar events
-  for (const n of solarStore.activeNotifications) {
-    if (!n.dismissed && !notificationsStore.isHidden(`solar-${n.id}`)) {
-      count++;
-    }
-  }
-
-  // Lunar phase (shown when all solar events are done)
-  if (
-    solarStore.allSolarEventsComplete() &&
-    !notificationsStore.isHidden('lunar-phase')
-  ) {
-    count++;
-  }
-
-  // Weather outlook
-  if (
-    weatherOutlook.getCurrentMonthSummary() &&
-    !notificationsStore.isHidden('weather-monthly-outlook')
-  ) {
-    count++;
-  }
-
-  // Next astronomy event
-  const nextAstro = astronomyStore.getNextAstronomyEvent();
-  if (nextAstro && !notificationsStore.isHidden(`astro-${nextAstro.id}`)) {
-    count++;
-  }
-
-  // Pantry expiration alerts
-  for (const alert of pantry.getExpirationAlerts()) {
-    const key = `pantry-${alert.item.id}-${alert.alertType}`;
-    if (!notificationsStore.isHidden(key)) {
-      count++;
-    }
-  }
-
-  return count;
+  return allNotifications.filter((n) => !notificationsStore.isHidden(n.key))
+    .length;
 }
 
 /**
@@ -150,10 +103,12 @@ const FooterImpl = () => {
             {core.decibelMeterActive ? (
               // Decibel meter visualization
               <DecibelMeterVisualization />
-            ) : (
-              // Solar cycle notification (handles empty state internally)
+            ) : visibleNotificationCount > 0 ? (
+              // Rotating solar/notification content — only shown when there
+              // are active (non-dismissed) notifications to avoid displaying
+              // an alert the user has already dismissed.
               <SolarCycleNotification />
-            )}
+            ) : null}
           </View>
 
           {/* Badge showing count of active notifications */}

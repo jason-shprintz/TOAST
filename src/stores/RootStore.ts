@@ -59,6 +59,10 @@ export class RootStore {
    * Initialize settings by loading them from the database
    */
   private async initializeSettings() {
+    // Load persisted notification hidden keys first — this is AsyncStorage-based
+    // and has no dependency on the SQLite database, so it can run immediately
+    // and avoids a brief window where dismissed notifications appear in the UI.
+    await this.notificationsStore.loadHiddenKeys();
     // Wait for CoreStore to initialize the database, then load categories and settings
     await this.coreStore.initNotesDb();
     if (this.coreStore.notesDb) {
@@ -81,8 +85,6 @@ export class RootStore {
     await this.inventoryStore.initDatabase();
     await this.pantryStore.initDatabase();
     await this.emergencyPlanStore.initDatabase();
-    // Load persisted notification hidden keys from AsyncStorage
-    await this.notificationsStore.loadHiddenKeys();
   }
 
   // Global app state

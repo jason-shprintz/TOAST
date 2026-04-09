@@ -7,6 +7,13 @@ import { NotificationsStore } from '../src/stores/NotificationsStore';
 
 const mockAsyncStorage = AsyncStorage as jest.Mocked<typeof AsyncStorage>;
 
+/**
+ * Drain all pending microtasks and I/O callbacks so chained AsyncStorage
+ * writes can complete before we inspect mock call counts.
+ */
+const flushPromises = () =>
+  new Promise<void>((resolve) => setImmediate(resolve));
+
 describe('NotificationsStore', () => {
   let store: NotificationsStore;
 
@@ -50,6 +57,22 @@ describe('NotificationsStore', () => {
       expect(store.isLoaded).toBe(true);
       expect(store.hiddenKeys.size).toBe(0);
     });
+
+    test('ignores non-array JSON values in storage', async () => {
+      mockAsyncStorage.getItem.mockResolvedValue('"not-an-array"');
+      await store.loadHiddenKeys();
+      expect(store.hiddenKeys.size).toBe(0);
+    });
+
+    test('filters out non-string entries from stored array', async () => {
+      mockAsyncStorage.getItem.mockResolvedValue(
+        JSON.stringify(['valid-key', 42, null, true, 'another-key']),
+      );
+      await store.loadHiddenKeys();
+      expect(store.hiddenKeys.size).toBe(2);
+      expect(store.hiddenKeys.has('valid-key')).toBe(true);
+      expect(store.hiddenKeys.has('another-key')).toBe(true);
+    });
   });
 
   describe('isHidden()', () => {
@@ -71,8 +94,8 @@ describe('NotificationsStore', () => {
 
     test('persists to AsyncStorage', async () => {
       store.hideNotification('astro-lunar-eclipse-1');
-      // Allow microtask queue to flush
-      await Promise.resolve();
+      // Allow the serialized persist chain to flush
+      await flushPromises();
       expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(
         '@notifications/hidden_keys',
         JSON.stringify(['astro-lunar-eclipse-1']),
@@ -103,8 +126,9 @@ describe('NotificationsStore', () => {
       store.hideNotification('key-b');
       mockAsyncStorage.setItem.mockClear();
       store.unhideNotification('key-a');
-      await Promise.resolve();
-      expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(
+      // Flush the serialized persist chain (3 chained writes)
+      await flushPromises();
+      expect(mockAsyncStorage.setItem).toHaveBeenLastCalledWith(
         '@notifications/hidden_keys',
         JSON.stringify(['key-b']),
       );
@@ -128,8 +152,9 @@ describe('NotificationsStore', () => {
       store.hideNotification('a');
       mockAsyncStorage.setItem.mockClear();
       store.clearHiddenKeys();
-      await Promise.resolve();
-      expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(
+      // Flush the serialized persist chain (2 chained writes)
+      await flushPromises();
+      expect(mockAsyncStorage.setItem).toHaveBeenLastCalledWith(
         '@notifications/hidden_keys',
         JSON.stringify([]),
       );
