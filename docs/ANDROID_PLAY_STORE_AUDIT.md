@@ -27,7 +27,7 @@ The blockers are configuration issues (Google Maps API key, application ID, sign
 2. Create an API key and restrict it to:
    - **Maps SDK for Android**
    - Your app's SHA-1 fingerprint + package name
-3. Keep the `<meta-data>` entry in `AndroidManifest.xml` wired to a Gradle placeholder (for example `${googleMapsApiKey}`) instead of replacing it with a real key in the manifest.
+3. Keep the `<meta-data>` entry in `AndroidManifest.xml` wired to the `${googleMapsApiKey}` Gradle placeholder instead of replacing it with a real key in the manifest.
 4. In `android/app/build.gradle`, provide that value via `manifestPlaceholders`, sourcing the key from an uncommitted local Gradle properties file for developer machines and from CI/CD secrets for release builds.
 5. For development, you can get your debug keystore SHA-1 with:
    ```bash
