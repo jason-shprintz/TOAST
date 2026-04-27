@@ -27,11 +27,13 @@ The blockers are configuration issues (Google Maps API key, application ID, sign
 2. Create an API key and restrict it to:
    - **Maps SDK for Android**
    - Your app's SHA-1 fingerprint + package name
-3. A placeholder `<meta-data>` tag has been added to `AndroidManifest.xml` in this PR. Replace `YOUR_GOOGLE_MAPS_API_KEY_HERE` with the real key.
-4. For development, you can get your debug keystore SHA-1 with:
+3. Keep the `<meta-data>` entry in `AndroidManifest.xml` wired to a Gradle placeholder (for example `${googleMapsApiKey}`) instead of replacing it with a real key in the manifest.
+4. In `android/app/build.gradle`, provide that value via `manifestPlaceholders`, sourcing the key from an uncommitted local Gradle properties file for developer machines and from CI/CD secrets for release builds.
+5. For development, you can get your debug keystore SHA-1 with:
    ```bash
    keytool -list -v -keystore android/app/debug.keystore -alias androiddebugkey -storepass android -keypass android
    ```
+6. Do not commit the real API key to the repository or replace the checked-in placeholder value directly in `AndroidManifest.xml`.
 
 **Cost:** Google Maps Platform gives you $200/month free credit. For an offline-first app that only loads tiles when the map screen is opened, you'll almost certainly stay within the free tier.
 
@@ -282,7 +284,7 @@ These areas are already correctly set up for Android:
 | File | Change |
 |------|--------|
 | `android/app/src/main/AndroidManifest.xml` | Added Google Maps API key placeholder `<meta-data>` tag; added `POST_NOTIFICATIONS` permission for Android 13+ |
-| `android/app/proguard-rules.pro` | Added keep rules for react-native-maps, react-native-svg, react-native-sensors, Hermes, and MobX |
+| `android/app/proguard-rules.pro` | Added keep rules for react-native-maps, react-native-svg, react-native-sensors, and Hermes |
 | `docs/ANDROID_PLAY_STORE_AUDIT.md` | This document |
 
 ---

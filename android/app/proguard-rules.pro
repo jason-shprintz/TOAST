@@ -23,9 +23,9 @@
 }
 
 # ── react-native-maps (Google Maps) ──────────────────────────────────────────
--keep class com.google.android.gms.maps.** { *; }
--keep class com.google.android.gms.location.** { *; }
--keep interface com.google.android.gms.maps.** { *; }
+# Rely on Google Play Services / react-native-maps consumer ProGuard rules.
+# If a concrete R8/runtime issue appears, add a narrowly scoped keep rule for
+# the specific class accessed via reflection instead of keeping entire packages.
 
 # ── react-native-svg ─────────────────────────────────────────────────────────
 -keep public class com.horcrux.svg.** { *; }
