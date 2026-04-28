@@ -1,4 +1,4 @@
-package com.toast
+package studio.toastbyte.toast
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
