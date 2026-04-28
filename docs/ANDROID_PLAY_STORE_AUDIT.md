@@ -30,9 +30,11 @@ The blockers are configuration issues (Google Maps API key, application ID, sign
 3. Keep the `<meta-data>` entry in `AndroidManifest.xml` wired to the `${googleMapsApiKey}` Gradle placeholder instead of replacing it with a real key in the manifest.
 4. In `android/app/build.gradle`, provide that value via `manifestPlaceholders`, sourcing the key from an uncommitted local Gradle properties file for developer machines and from CI/CD secrets for release builds.
 5. For development, you can get your debug keystore SHA-1 with:
+
    ```bash
    keytool -list -v -keystore android/app/debug.keystore -alias androiddebugkey -storepass android -keypass android
    ```
+
 6. Do not commit the real API key to the repository or replace the checked-in placeholder value directly in `AndroidManifest.xml`.
 
 **Cost:** Google Maps Platform gives you $200/month free credit. For an offline-first app that only loads tiles when the map screen is opened, you'll almost certainly stay within the free tier.
@@ -54,6 +56,7 @@ defaultConfig {
 ```
 
 This also requires renaming the Java/Kotlin package:
+
 - Move files from `android/app/src/main/java/com/toast/` to `android/app/src/main/java/studio/toastbyte/toast/`
 - Update the `package` declaration at the top of each `.kt` file
 - Update `AndroidManifest.xml` references (`.MainActivity`, `.MainApplication`, `.LocationForegroundService`)
@@ -67,19 +70,24 @@ This also requires renaming the Java/Kotlin package:
 **What to do:**
 
 1. Generate a release keystore:
+
    ```bash
    keytool -genkeypair -v -storetype PKCS12 -keystore toast-release.keystore \
      -alias toast -keyalg RSA -keysize 2048 -validity 10000
    ```
+
 2. Store the keystore **outside** the repo (it's in `.gitignore` already, good)
 3. Add to `~/.gradle/gradle.properties` (never commit these):
+
    ```properties
    TOAST_RELEASE_STORE_FILE=/path/to/toast-release.keystore
    TOAST_RELEASE_STORE_PASSWORD=your_password
    TOAST_RELEASE_KEY_ALIAS=toast
    TOAST_RELEASE_KEY_PASSWORD=your_password
    ```
+
 4. Update `android/app/build.gradle` signing config:
+
    ```gradle
    signingConfigs {
        release {
@@ -96,6 +104,7 @@ This also requires renaming the Java/Kotlin package:
        }
    }
    ```
+
 5. Alternatively, use [Play App Signing](https://developer.android.com/studio/publish/app-signing#app-signing-google-play) (recommended) — Google manages the signing key and you upload with an upload key.
 
 ---
@@ -113,6 +122,7 @@ This also requires renaming the Java/Kotlin package:
 1. Create `ic_launcher_foreground.png` (your logo on transparent background) at each density
 2. Create `ic_launcher_background.png` (or use a solid color) at each density
 3. Add `android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml`:
+
    ```xml
    <?xml version="1.0" encoding="utf-8"?>
    <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
@@ -120,6 +130,7 @@ This also requires renaming the Java/Kotlin package:
        <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
    </adaptive-icon>
    ```
+
 4. Easiest path: use [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) or Android Studio's Image Asset wizard with your existing icon source file.
 
 ### 2.2 Foreground Service Notification Icon
@@ -127,6 +138,7 @@ This also requires renaming the Java/Kotlin package:
 **Status:** `LocationForegroundService.kt` uses `android.R.drawable.ic_menu_mylocation` — a stock system icon. This works but looks unprofessional.
 
 **What to do:** Create a monochrome (white on transparent) notification icon and place it in `res/drawable-*dpi/ic_notification.png`, then reference it in the service:
+
 ```kotlin
 .setSmallIcon(R.drawable.ic_notification)
 ```
@@ -134,6 +146,7 @@ This also requires renaming the Java/Kotlin package:
 ### 2.3 Play Store Listing Assets
 
 Google Play requires:
+
 - **App icon**: 512×512 PNG (you probably have this from iOS)
 - **Feature graphic**: 1024×500 PNG (banner shown at top of listing)
 - **Screenshots**: Min 2, max 8. At least phone screenshots; tablet screenshots strongly recommended. Sizes: min 320px, max 3840px on any side.
@@ -161,6 +174,7 @@ You need a publicly accessible URL with a privacy policy. Since TOAST is offline
 ### 3.1 Android Permissions UX
 
 **Status:** Already handled correctly in most places. The code properly uses `PermissionsAndroid.request()` for:
+
 - Contacts (ContactPickerModal)
 - Microphone (DecibelMeter, VoiceLog)
 - Location (MapScreen — including background location upgrade)
@@ -213,9 +227,11 @@ You need a publicly accessible URL with a privacy policy. Since TOAST is offline
 **Status:** Google Play requires AAB format (not APK) for new apps.
 
 **What to do:** Build with:
+
 ```bash
 cd android && ./gradlew bundleRelease
 ```
+
 The output will be at `android/app/build/outputs/bundle/release/app-release.aab`.
 
 ### 4.2 Version Code Strategy
@@ -228,6 +244,7 @@ The output will be at `android/app/build/outputs/bundle/release/app-release.aab`
 
 - Enable ProGuard/R8 for release builds (see 3.7)
 - Consider ABI splits to generate per-architecture APKs:
+
   ```gradle
   splits {
       abi {
@@ -238,6 +255,7 @@ The output will be at `android/app/build/outputs/bundle/release/app-release.aab`
       }
   }
   ```
+
   However, AAB format handles this automatically, so this is only needed if distributing APKs directly.
 
 ### 4.4 Deep Linking
@@ -247,6 +265,7 @@ The output will be at `android/app/build/outputs/bundle/release/app-release.aab`
 ### 4.5 Android Back Button / Gesture Navigation
 
 **Status:** `react-navigation` handles the hardware back button by default. Verify that:
+
 - Back button navigates correctly through the stack
 - Back button from the home screen exits the app (not loops)
 - Android gesture navigation (swipe from edge) works correctly — note `setDisableGestureNavigation` is used in MapScreen
@@ -281,11 +300,11 @@ These areas are already correctly set up for Android:
 
 ## 6. Code Changes in This PR
 
-| File | Change |
-|------|--------|
+| File                                       | Change                                                                                                         |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `android/app/src/main/AndroidManifest.xml` | Added Google Maps API key placeholder `<meta-data>` tag; added `POST_NOTIFICATIONS` permission for Android 13+ |
-| `android/app/proguard-rules.pro` | Added keep rules for react-native-maps, react-native-svg, react-native-sensors, and Hermes |
-| `docs/ANDROID_PLAY_STORE_AUDIT.md` | This document |
+| `android/app/proguard-rules.pro`           | Added keep rules for react-native-maps, react-native-svg, react-native-sensors, and Hermes                     |
+| `docs/ANDROID_PLAY_STORE_AUDIT.md`         | This document                                                                                                  |
 
 ---
 
