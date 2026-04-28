@@ -11,7 +11,9 @@ This patch fixes `react-native-sensors@7.3.6` for Android builds using Gradle 9.
 ### What is patched
 
 - File: `node_modules/react-native-sensors/android/build.gradle`
-- Change: Replace `jcenter()` with `mavenCentral()` in both the top-level `repositories` block and the `buildscript.repositories` block.
+- Changes:
+  - Top-level `repositories` block: removes the redundant `jcenter()` (since `mavenCentral()` is already present)
+  - `buildscript.repositories` block: replaces `jcenter()` with `mavenCentral()`
 
 ### Why this is needed
 
@@ -33,7 +35,9 @@ This patch fixes `react-native-sensors@7.3.6` for Android builds using Gradle 9.
   - `npm install` (postinstall runs `patch-package`)
 - If you wipe `node_modules`, simply run install again; the patch reapplies.
 - To regenerate the patch after upgrading the library:
-  1. In `node_modules/react-native-sensors/android/build.gradle`, replace `jcenter()` with `mavenCentral()` in both the top-level `repositories` block and the `buildscript.repositories` block.
+  1. In `node_modules/react-native-sensors/android/build.gradle`:
+     - Top-level `repositories` block: remove `jcenter()` (leave the existing `mavenCentral()` and `google()`)
+     - `buildscript.repositories` block: replace `jcenter()` with `mavenCentral()`
   2. Run:
 
   ```zsh
@@ -41,6 +45,46 @@ This patch fixes `react-native-sensors@7.3.6` for Android builds using Gradle 9.
   ```
 
   3. Commit the updated file under `patches/react-native-sensors+<new-version>.patch`.
+
+---
+
+## Patch: react-native-sqlite-storage Android — Gradle 9 `jcenter()` removal
+
+This patch fixes `react-native-sqlite-storage@6.0.1` for Android builds using Gradle 9.
+
+### What is patched
+
+- File: `node_modules/react-native-sqlite-storage/platforms/android/build.gradle`
+- Change: `buildscript.repositories` block: replaces `jcenter()` with `mavenCentral()`
+
+### Why this is needed
+
+- Gradle 9 removed `jcenter()`. The upstream `react-native-sqlite-storage` package still references it in the `buildscript` block, causing the Android build to fail immediately with:
+  ```
+  Could not find method jcenter() for arguments [] on repository container
+  of type org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.
+  ```
+- The upstream package appears unmaintained, so a long-term alternative may be worth evaluating.
+
+### How it is applied
+
+- Patch file: `patches/react-native-sqlite-storage+6.0.1.patch`
+- Script: `postinstall` runs `patch-package` automatically after `npm install` to reapply the patch.
+
+### Developer instructions
+
+- Installing dependencies applies the patch:
+  - `npm install` (postinstall runs `patch-package`)
+- If you wipe `node_modules`, simply run install again; the patch reapplies.
+- To regenerate the patch after upgrading the library:
+  1. In `node_modules/react-native-sqlite-storage/platforms/android/build.gradle`, replace `jcenter()` with `mavenCentral()` in the `buildscript.repositories` block.
+  2. Run:
+
+  ```zsh
+  npx patch-package react-native-sqlite-storage
+  ```
+
+  3. Commit the updated file under `patches/react-native-sqlite-storage+<new-version>.patch`.
 
 ---
 
