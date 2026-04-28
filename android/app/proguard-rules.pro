@@ -8,3 +8,51 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+# ── Hermes ────────────────────────────────────────────────────────────────────
+-keep class com.facebook.hermes.unicode.** { *; }
+-keep class com.facebook.jni.** { *; }
+
+# ── React Native ──────────────────────────────────────────────────────────────
+-keep,allowobfuscation @interface com.facebook.proguard.annotations.DoNotStrip
+-keep,allowobfuscation @interface com.facebook.proguard.annotations.KeepGettersAndSetters
+-keep @com.facebook.proguard.annotations.DoNotStrip class *
+-keepclassmembers class * {
+    @com.facebook.proguard.annotations.DoNotStrip *;
+    @com.facebook.proguard.annotations.KeepGettersAndSetters *;
+}
+
+# ── react-native-maps (Google Maps) ──────────────────────────────────────────
+# Rely on Google Play Services / react-native-maps consumer ProGuard rules.
+# If a concrete R8/runtime issue appears, add a narrowly scoped keep rule for
+# the specific class accessed via reflection instead of keeping entire packages.
+
+# ── react-native-svg ─────────────────────────────────────────────────────────
+-keep public class com.horcrux.svg.** { *; }
+
+# ── react-native-sensors ─────────────────────────────────────────────────────
+-keep class com.sensors.** { *; }
+
+# ── react-native-sqlite-storage ──────────────────────────────────────────────
+-keep class org.pgsqlite.** { *; }
+
+# ── react-native-geolocation-service ─────────────────────────────────────────
+-keep class com.agontuk.RNFusedLocation.** { *; }
+
+# ── react-native-device-info ─────────────────────────────────────────────────
+-keep class com.learnium.RNDeviceInfo.** { *; }
+
+# ── react-native-linear-gradient ─────────────────────────────────────────────
+-keep class com.BV.LinearGradient.** { *; }
+
+# ── react-native-vector-icons ────────────────────────────────────────────────
+-keep class com.oblador.vectoricons.** { *; }
+
+# ── react-native-webview ─────────────────────────────────────────────────────
+-keep class com.reactnativecommunity.webview.** { *; }
+
+# ── react-native-bootsplash ──────────────────────────────────────────────────
+-keep class com.zoontek.rnbootsplash.** { *; }
+
+# ── TOAST native modules ─────────────────────────────────────────────────────
+-keep class com.toast.** { *; }
