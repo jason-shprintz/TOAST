@@ -1,4 +1,4 @@
-package com.toast
+package studio.toastbyte.toast
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
