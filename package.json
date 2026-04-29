@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "preandroid": "node scripts/android-apfs-symlinks.js",
     "ios": "react-native run-ios",
     "clean:appledouble": "find . -type f -name '._*' -delete",
     "cleanup": "npm run clean:appledouble && npm run format && npm run lint && npm test",
