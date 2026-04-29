@@ -1,5 +1,55 @@
+diff --git a/node_modules/react-native-sqlite-storage/.github/ISSUE_TEMPLATE/bug_report.md b/node_modules/react-native-sqlite-storage/.github/ISSUE_TEMPLATE/bug_report.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/CHANGELOG.md b/node_modules/react-native-sqlite-storage/CHANGELOG.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/LICENSE b/node_modules/react-native-sqlite-storage/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/Podfile b/node_modules/react-native-sqlite-storage/Podfile
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/README.md b/node_modules/react-native-sqlite-storage/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/lib/sqlite.core.js b/node_modules/react-native-sqlite-storage/lib/sqlite.core.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/build.gradle b/node_modules/react-native-sqlite-storage/platforms/android-native/build.gradle
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/gradle.properties b/node_modules/react-native-sqlite-storage/platforms/android-native/gradle.properties
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/libs/sqlite-connector.jar b/node_modules/react-native-sqlite-storage/platforms/android-native/libs/sqlite-connector.jar
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/settings.gradle b/node_modules/react-native-sqlite-storage/platforms/android-native/settings.gradle
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/CallbackContext.java b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/CallbackContext.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLiteAndroidDatabase.java b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLiteAndroidDatabase.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePlugin.java b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePlugin.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePluginConverter.java b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePluginConverter.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePluginPackage.java b/node_modules/react-native-sqlite-storage/platforms/android-native/src/main/java/io/liteglue/SQLitePluginPackage.java
+old mode 100644
+new mode 100755
 diff --git a/node_modules/react-native-sqlite-storage/platforms/android/build.gradle b/node_modules/react-native-sqlite-storage/platforms/android/build.gradle
-index ff79b10..7d0395e 100644
+old mode 100644
+new mode 100755
+index ff79b10..7d0395e
 --- a/node_modules/react-native-sqlite-storage/platforms/android/build.gradle
 +++ b/node_modules/react-native-sqlite-storage/platforms/android/build.gradle
 @@ -1,7 +1,7 @@
@@ -11,3 +61,666 @@ index ff79b10..7d0395e 100644
      }
  
      dependencies {
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/settings.gradle b/node_modules/react-native-sqlite-storage/platforms/android/settings.gradle
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/src/main/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/platforms/android/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/CallbackContext.java b/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/CallbackContext.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePlugin.java b/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePlugin.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePluginConverter.java b/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePluginConverter.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePluginPackage.java b/node_modules/react-native-sqlite-storage/platforms/android/src/main/java/org/pgsqlite/SQLitePluginPackage.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.h b/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.m b/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.xcodeproj/project.pbxproj b/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.xcodeproj/project.pbxproj
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.xcodeproj/project.xcworkspace/contents.xcworkspacedata b/node_modules/react-native-sqlite-storage/platforms/ios/SQLite.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLiteResult.h b/node_modules/react-native-sqlite-storage/platforms/ios/SQLiteResult.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/ios/SQLiteResult.m b/node_modules/react-native-sqlite-storage/platforms/ios/SQLiteResult.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin.sln b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin.sln
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/PropertySheet.props b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/PropertySheet.props
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.cpp b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.cpp
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.h b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.idl b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/ReactPackageProvider.idl
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.cpp b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.cpp
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.def b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.def
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.h b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.vcxproj b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.vcxproj
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.vcxproj.filters b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/SQLitePlugin.vcxproj.filters
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/packages.config b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/packages.config
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/pch.cpp b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/pch.cpp
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/pch.h b/node_modules/react-native-sqlite-storage/platforms/windows/SQLitePlugin/pch.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/react-native-sqlite-storage.podspec b/node_modules/react-native-sqlite-storage/react-native-sqlite-storage.podspec
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/react-native.config.js b/node_modules/react-native-sqlite-storage/react-native.config.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/sqlite.js b/node_modules/react-native-sqlite-storage/sqlite.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/buildConfig/debug/io/liteglue/BuildConfig.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/buildConfig/debug/io/liteglue/BuildConfig.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v4/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v4/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v7/appcompat/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v7/appcompat/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v7/recyclerview/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/android/support/v7/recyclerview/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/drawee/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/drawee/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/drawee/backends/pipeline/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/drawee/backends/pipeline/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/fbcore/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/fbcore/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/imagepipeline/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/imagepipeline/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/imagepipeline/backends/okhttp/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/imagepipeline/backends/okhttp/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/react/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/com/facebook/react/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/io/liteglue/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/io/liteglue/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/org/webkit/android_jsc/R.java b/node_modules/react-native-sqlite-storage/src/android-native/build/generated/source/r/debug/org/webkit/android_jsc/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/attr/R.txt b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/attr/R.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v4/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v4/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$anim.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$bool.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$color.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$id.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$integer.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$layout.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$string.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$style.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/appcompat/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$id.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/android/support/v7/recyclerview/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/fbcore/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/fbcore/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/imagepipeline/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/imagepipeline/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/imagepipeline/backends/okhttp/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/imagepipeline/backends/okhttp/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$anim.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$bool.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$color.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$id.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$integer.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$layout.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$string.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$style.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$xml.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R$xml.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/com/facebook/react/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/BuildConfig.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/BuildConfig.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/CallbackContext.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/CallbackContext.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$anim.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$attr.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$bool.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$color.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$id.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$integer.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$layout.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$string.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$style.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$xml.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R$xml.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLiteAndroidDatabase$QueryType.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLiteAndroidDatabase$QueryType.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLiteAndroidDatabase.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLiteAndroidDatabase.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$1.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$1.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$Action.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$Action.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$DBQuery.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$DBQuery.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$DBRunner.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$DBRunner.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$SQLiteDatabaseNDK.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin$SQLiteDatabaseNDK.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePlugin.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginConverter$1.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginConverter$1.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginConverter.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginConverter.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginPackage.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/io/liteglue/SQLitePluginPackage.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/org/webkit/android_jsc/R.class b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/classes/debug/org/webkit/android_jsc/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/compileDebugAidl/dependency.store b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/compileDebugAidl/dependency.store
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/packageDebugResources/compile-file-map.properties b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/packageDebugResources/merger.xml b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/incremental/packageDebugResources/merger.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/javaPrecompile/debug/annotationProcessors.json b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/javaPrecompile/debug/annotationProcessors.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/aapt/debug/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/aapt/debug/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/aapt/debug/output.json b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/aapt/debug/output.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/full/debug/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/full/debug/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/full/debug/output.json b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/manifests/full/debug/output.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/res/symbol-table-with-package/debug/package-aware-r.txt b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/res/symbol-table-with-package/debug/package-aware-r.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/symbols/debug/R.txt b/node_modules/react-native-sqlite-storage/src/android-native/build/intermediates/symbols/debug/R.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/buildConfig/debug/org/pgsqlite/BuildConfig.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/buildConfig/debug/org/pgsqlite/BuildConfig.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v4/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v4/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v7/appcompat/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v7/appcompat/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v7/recyclerview/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/android/support/v7/recyclerview/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/drawee/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/drawee/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/drawee/backends/pipeline/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/drawee/backends/pipeline/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/fbcore/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/fbcore/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/imagepipeline/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/imagepipeline/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/imagepipeline/backends/okhttp/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/imagepipeline/backends/okhttp/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/react/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/com/facebook/react/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/org/pgsqlite/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/org/pgsqlite/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/org/webkit/android_jsc/R.java b/node_modules/react-native-sqlite-storage/src/android/build/generated/source/r/debug/org/webkit/android_jsc/R.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/attr/R.txt b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/attr/R.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v4/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v4/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$anim.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$bool.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$color.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$id.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$integer.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$layout.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$string.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$style.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/appcompat/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$id.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/android/support/v7/recyclerview/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/drawee/backends/pipeline/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/fbcore/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/fbcore/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/imagepipeline/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/imagepipeline/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/imagepipeline/backends/okhttp/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/imagepipeline/backends/okhttp/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$anim.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$bool.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$color.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$id.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$integer.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$layout.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$string.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$style.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$xml.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R$xml.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/com/facebook/react/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/BuildConfig.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/BuildConfig.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/CallbackContext.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/CallbackContext.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$anim.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$anim.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$attr.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$attr.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$bool.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$bool.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$color.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$color.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$dimen.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$dimen.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$drawable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$drawable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$id.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$id.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$integer.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$integer.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$layout.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$layout.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$string.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$string.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$style.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$style.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$styleable.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$styleable.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$xml.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R$xml.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$1.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$1.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$Action.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$Action.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$DBQuery.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$DBQuery.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$DBRunner.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$DBRunner.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$QueryType.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin$QueryType.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePlugin.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginConverter$1.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginConverter$1.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginConverter.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginConverter.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginPackage.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/pgsqlite/SQLitePluginPackage.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/webkit/android_jsc/R.class b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/classes/debug/org/webkit/android_jsc/R.class
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/compileDebugAidl/dependency.store b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/compileDebugAidl/dependency.store
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/debug-mergeJniLibs/merge-state b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/debug-mergeJniLibs/merge-state
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugAssets/merger.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugResources/merger.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/incremental/packageDebugResources/merger.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/javaPrecompile/debug/annotationProcessors.json b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/javaPrecompile/debug/annotationProcessors.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/aapt/debug/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/aapt/debug/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/aapt/debug/output.json b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/aapt/debug/output.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/full/debug/AndroidManifest.xml b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/full/debug/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/full/debug/output.json b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/manifests/full/debug/output.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/res/symbol-table-with-package/debug/package-aware-r.txt b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/res/symbol-table-with-package/debug/package-aware-r.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/symbols/debug/R.txt b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/symbols/debug/R.txt
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/src/android/build/intermediates/transforms/mergeJniLibs/debug/__content__.json b/node_modules/react-native-sqlite-storage/src/android/build/intermediates/transforms/mergeJniLibs/debug/__content__.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/test/index.android.json1.js b/node_modules/react-native-sqlite-storage/test/index.android.json1.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/test/index.ios.callback.js b/node_modules/react-native-sqlite-storage/test/index.ios.callback.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/test/index.ios.promise.js b/node_modules/react-native-sqlite-storage/test/index.ios.promise.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sqlite-storage/test/index.windows.callback.js b/node_modules/react-native-sqlite-storage/test/index.windows.callback.js
+old mode 100644
+new mode 100755

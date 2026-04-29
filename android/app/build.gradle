@@ -1,3 +1,10 @@
+// Build output lives on the local APFS drive, not the ExFAT external SSD.
+// ExFAT can't store xattrs inline, so macOS creates ._* companion files for every
+// directory Gradle touches, which breaks ParseLibraryResourcesTask mid-build.
+// This must be set before plugins apply so the RN autolinking plugin registers
+// the correct generated-sources path when autolinkLibrariesWithApp() is called.
+buildDir = "${System.getProperty('user.home')}/Library/Caches/TOAST/android-build/${project.name}"
+
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
