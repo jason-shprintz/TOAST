@@ -93,6 +93,11 @@ android {
         versionName "1.0"
         manifestPlaceholders = [googleMapsApiKey: project.findProperty("GOOGLE_MAPS_API_KEY") ?: "MAPS_API_KEY_NOT_SET"]
     }
+    externalNativeBuild {
+        cmake {
+            path "src/main/jni/CMakeLists.txt"
+        }
+    }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
