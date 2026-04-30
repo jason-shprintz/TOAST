@@ -1,0 +1,138 @@
+diff --git a/node_modules/react-native-sensors/.all-contributorsrc b/node_modules/react-native-sensors/.all-contributorsrc
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.editorconfig b/node_modules/react-native-sensors/.editorconfig
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/FUNDING.yml b/node_modules/react-native-sensors/.github/FUNDING.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Bug_report.md b/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Bug_report.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Custom.md b/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Custom.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Feature_request.md b/node_modules/react-native-sensors/.github/ISSUE_TEMPLATE/Feature_request.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/invite-contributors.yml b/node_modules/react-native-sensors/.github/invite-contributors.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/stale.yml b/node_modules/react-native-sensors/.github/stale.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/workflows/release.yml b/node_modules/react-native-sensors/.github/workflows/release.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/workflows/test.yml b/node_modules/react-native-sensors/.github/workflows/test.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.github/workflows/website.yml b/node_modules/react-native-sensors/.github/workflows/website.yml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/.prettierignore b/node_modules/react-native-sensors/.prettierignore
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/LICENSE b/node_modules/react-native-sensors/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/README.md b/node_modules/react-native-sensors/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/RNSensors.podspec b/node_modules/react-native-sensors/RNSensors.podspec
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/android/build.gradle b/node_modules/react-native-sensors/android/build.gradle
+old mode 100644
+new mode 100755
+index f1526ec..e7ea93f
+--- a/node_modules/react-native-sensors/android/build.gradle
++++ b/node_modules/react-native-sensors/android/build.gradle
+@@ -6,13 +6,12 @@ def safeExtGet(prop, fallback) {
+ repositories {
+   mavenCentral()
+   google()
+-  jcenter()
+ }
+ 
+ buildscript {
+     repositories {
+         google()
+-        jcenter()
++        mavenCentral()
+     }
+ 
+     dependencies {
+diff --git a/node_modules/react-native-sensors/android/src/main/AndroidManifest.xml b/node_modules/react-native-sensors/android/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/RNSensor.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/RNSensor.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/android/src/main/java/com/sensors/RNSensorsPackage.java b/node_modules/react-native-sensors/android/src/main/java/com/sensors/RNSensorsPackage.java
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/index.d.ts b/node_modules/react-native-sensors/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/index.js b/node_modules/react-native-sensors/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensors.xcodeproj/project.pbxproj b/node_modules/react-native-sensors/ios/RNSensors.xcodeproj/project.pbxproj
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsAccelerometer.h b/node_modules/react-native-sensors/ios/RNSensorsAccelerometer.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsAccelerometer.m b/node_modules/react-native-sensors/ios/RNSensorsAccelerometer.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsBarometer.h b/node_modules/react-native-sensors/ios/RNSensorsBarometer.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsBarometer.m b/node_modules/react-native-sensors/ios/RNSensorsBarometer.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsGravity.h b/node_modules/react-native-sensors/ios/RNSensorsGravity.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsGravity.m b/node_modules/react-native-sensors/ios/RNSensorsGravity.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsGyroscope.h b/node_modules/react-native-sensors/ios/RNSensorsGyroscope.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsGyroscope.m b/node_modules/react-native-sensors/ios/RNSensorsGyroscope.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsMagnetometer.h b/node_modules/react-native-sensors/ios/RNSensorsMagnetometer.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsMagnetometer.m b/node_modules/react-native-sensors/ios/RNSensorsMagnetometer.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsOrientation.h b/node_modules/react-native-sensors/ios/RNSensorsOrientation.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsOrientation.m b/node_modules/react-native-sensors/ios/RNSensorsOrientation.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsUtils.h b/node_modules/react-native-sensors/ios/RNSensorsUtils.h
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/ios/RNSensorsUtils.m b/node_modules/react-native-sensors/ios/RNSensorsUtils.m
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/mock.js b/node_modules/react-native-sensors/mock.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/renovate.json b/node_modules/react-native-sensors/renovate.json
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/src/rnsensors.js b/node_modules/react-native-sensors/src/rnsensors.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/react-native-sensors/src/sensors.js b/node_modules/react-native-sensors/src/sensors.js
+old mode 100644
+new mode 100755

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "preandroid": "node scripts/android-apfs-symlinks.js",
     "ios": "react-native run-ios",
     "clean:appledouble": "find . -type f -name '._*' -delete",
     "cleanup": "npm run clean:appledouble && npm run format && npm run lint && npm test",
@@ -17,7 +18,7 @@
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/netinfo": "^11.3.1",
-    "@react-native-community/slider": "^4.5.7",
+    "@react-native-community/slider": "^5.2.0",
     "@react-native/new-app-screen": "0.82.1",
     "@react-navigation/native": "^7.1.22",
     "@react-navigation/native-stack": "^7.8.2",
